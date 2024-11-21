@@ -8,11 +8,11 @@
 # Chutney
 ## Spice up your spec , Better `taste` your app !
 
-[![Build](https://github.com/chutney-testing/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/chutney-testing/chutney/actions/workflows/build-all.yml)
+[![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/559893368d134d729b204891e3ce0239)](https://www.codacy.com/gh/chutney-testing/chutney?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chutney-testing/chutney&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://codecov.io/gh/chutney-testing/chutney/branch/master/graph/badge.svg)](https://codecov.io/gh/chutney-testing/chutney/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server)
-[![REUSE Compliance Check](https://github.com/chutney-testing/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/chutney-testing/chutney/actions/workflows/reuse.yml)
+[![REUSE Compliance Check](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml)
 
 -------------
 
@@ -35,10 +35,10 @@ Chutney scenarios are **declarative** written with a **kotlin dsl**. They provid
 
 Chutney is also released as a standalone application including a test execution engine and a a web front end to consult test reports.  
 
-Technical details are provided by generic [Actions](https://github.com/chutney-testing/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/Action.java) (such as HTTP, AMQP, MongoDB, Kafka, Selenium, etc.)  
+Technical details are provided by generic [Actions](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/Action.java) (such as HTTP, AMQP, MongoDB, Kafka, Selenium, etc.)  
 Those Actions are extensions, and you can easily develop yours, even proprietary or non-generic one, and include them in your own release.
 
-In addition, Chutney provide SpEL evaluation and extensible [Function](https://github.com/chutney-testing/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/SpelFunction.java) in order to ease the use of managing scenario data like JSON path or Date comparison.
+In addition, Chutney provide SpEL evaluation and extensible [Function](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/SpelFunction.java) in order to ease the use of managing scenario data like JSON path or Date comparison.
 
 [Find out more in the documentation !](https://www.chutney-testing.com/)
 
@@ -66,8 +66,8 @@ You can find all the documentation of [how to write a scenario here](https://www
 ### Example of a scenario
 
 Here is an example of a scenario written in Kotlin.
-* [Scenario source](https://github.com/chutney-testing/chutney/blob/main/example/src/main/kotlin/com/chutneytesting/example/scenario/http_scenario.kt)
-* [How to run it locally with test containers](https://github.com/chutney-testing/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/HttpScenarioTest.kt)
+* [Scenario source](https://github.com/Enedis-OSS/chutney/blob/main/example/src/main/kotlin/com/chutneytesting/example/scenario/http_scenario.kt)
+* [How to run it locally with test containers](https://github.com/Enedis-OSS/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/HttpScenarioTest.kt)
 
 ```kotlin
     const val HTTP_TARGET_NAME = "HTTP_TARGET"
@@ -151,7 +151,7 @@ Here is an example of a scenario written in Kotlin.
 * In this example the scenario will save the content of FILM to an external server.
 * Then it will update it, fetch it and finally verify that the FILM has indeed been updated.
 * In this scenario we perform Http Actions, you can find [all available Chutney Actions here](https://www.chutney-testing.com/documentation/actions/)
-* You can find some other example with jms, kafka, rabbit or sql [here](https://github.com/chutney-testing/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
+* You can find some other example with jms, kafka, rabbit or sql [here](https://github.com/Enedis-OSS/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
 -------------
 
 ## <a name="documentation"></a> Documentation
@@ -169,9 +169,9 @@ See the [Getting started](GETTING_STARTED.md), which document how to install and
 You don't need to be a developer to contribute, nor do much, you can simply:
 * Enhance documentation,
 * Correct a spelling,
-* [Report a bug](https://github.com/chutney-testing/chutney/issues/new/choose)
-* [Ask a feature](https://github.com/chutney-testing/chutney/issues/new/choose)
-* [Give us advices or ideas](https://github.com/chutney-testing/chutney/discussions/categories/ideas),
+* [Report a bug](https://github.com/Enedis-OSS/chutney/issues/new/choose)
+* [Ask a feature](https://github.com/Enedis-OSS/chutney/issues/new/choose)
+* [Give us advices or ideas](https://github.com/Enedis-OSS/chutney/discussions/categories/ideas),
 * etc.
 
 To help you start, we invite you to read [Contributing](CONTRIBUTING.md), which gives you rules and code conventions to respect
@@ -180,7 +180,7 @@ To contribute to this documentation (README, CONTRIBUTING, etc.), we conform to 
 
 ## <a name="support"></a> Support
 
-We’re using [Discussions](https://github.com/chutney-testing/chutney/discussions) as a place to connect with members of our - slow pace growing - community. We hope that you:
+We’re using [Discussions](https://github.com/Enedis-OSS/chutney/discussions) as a place to connect with members of our - slow pace growing - community. We hope that you:
   * Ask questions you’re wondering about,
   * Share ideas,
   * Engage with other community members,

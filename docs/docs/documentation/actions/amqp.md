@@ -7,13 +7,13 @@
 
 ??? info "Browse implementations"
 
-    - [Basic publish](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicPublishAction.java){:target="_blank"}
-    - [Basic consume](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicConsumeAction.java){:target="_blank"}
-    - [Basic get](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicGetAction.java){:target="_blank"}
-    - [Clean queues](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCleanQueuesAction.java){:target="_blank"}
-    - [Create and bind temporary queue](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCreateBoundTemporaryQueueAction.java){:target="_blank"}
-    - [Unbind queue](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpUnbindQueueAction.java){:target="_blank"}
-    - [Delete queue](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpDeleteQueueAction.java){:target="_blank"}
+    - [Basic publish](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicPublishAction.java){:target="_blank"}
+    - [Basic consume](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicConsumeAction.java){:target="_blank"}
+    - [Basic get](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicGetAction.java){:target="_blank"}
+    - [Clean queues](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCleanQueuesAction.java){:target="_blank"}
+    - [Create and bind temporary queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCreateBoundTemporaryQueueAction.java){:target="_blank"}
+    - [Unbind queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpUnbindQueueAction.java){:target="_blank"}
+    - [Delete queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpDeleteQueueAction.java){:target="_blank"}
 
 
 !!! important "Target Configuration"
@@ -36,7 +36,7 @@
 }
 ```
 # Basic publish
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicPublishAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicPublishAction.java){:target="_blank"}"
 
 Use this action to publish a message to an exchange.
 
@@ -84,7 +84,7 @@ Use this action to publish a message to an exchange.
     ```
 
 # Basic consume
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicConsumeAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicConsumeAction.java){:target="_blank"}"
 
 Use this action to consume messages from a queue.
 
@@ -145,7 +145,7 @@ Use this action to consume messages from a queue.
     ```
 
 # Basic get
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicGetAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicGetAction.java){:target="_blank"}"
 
 Use this action to have a direct access to available messages in a queue.
 
@@ -176,7 +176,7 @@ Use this action to have a direct access to available messages in a queue.
     ```
 
 # Clean queues
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCleanQueuesAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCleanQueuesAction.java){:target="_blank"}"
 
 Use this action to purges the content of the given queues.
 For example, it can be used at the beginning of your scenario to ensure that used queues are empty.
@@ -208,7 +208,7 @@ For example, it can be used at the beginning of your scenario to ensure that use
 
 
 # Create and bind temporary queue
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCreateBoundTemporaryQueueAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpCreateBoundTemporaryQueueAction.java){:target="_blank"}"
 
 Use this action to create a temporary queue and bind it to an existing exchange using a routing key.
 
@@ -243,7 +243,7 @@ Use this action to create a temporary queue and bind it to an existing exchange 
 
 
 # Unbind queue
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpUnbindQueueAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpUnbindQueueAction.java){:target="_blank"}"
 
 Use this action to delete a binding between exchange and queue.
 
@@ -268,7 +268,7 @@ routingKey = "children.*"
 ```
 
 # Delete queue
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpDeleteQueueAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpDeleteQueueAction.java){:target="_blank"}"
 
 Use this action to delete an existing queue without regard for whether it is in use or has messages on it.
 === "Inputs"

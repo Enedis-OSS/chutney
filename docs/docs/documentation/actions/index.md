@@ -7,7 +7,7 @@
 
 # Actions
 
-[^1]: [Here, you can see the code for all actions.](https://github.com/chutney-testing/chutney/tree/main/chutney/action-impl/src/main/java/com/chutneytesting/action)
+[^1]: [Here, you can see the code for all actions.](https://github.com/Enedis-OSS/chutney/tree/main/chutney/action-impl/src/main/java/com/chutneytesting/action)
 
 
 Chutney provides a set of capabilities, or `Actions`, you can use in your scenarios.
@@ -37,8 +37,8 @@ Obviously, you should be familiar with the technology behind each action you use
     Please, refer to [target configuration](/configuration/env/#target-configuration) for further details.
 
 !!! note
-    All actions must have a [Logger](https://github.com/chutney-testing/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/injectable/Logger.java){:target=_blank} class as input.
-    At runtime a [DelagateLogger](https://github.com/chutney-testing/chutney/blob/main/chutney/engine/src/main/java/com/chutneytesting/engine/domain/execution/engine/parameterResolver/DelegateLogger.java){:target=_blank} is automatically injected by the execution engine.</br>
+    All actions must have a [Logger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/injectable/Logger.java){:target=_blank} class as input.
+    At runtime a [DelagateLogger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/engine/src/main/java/com/chutneytesting/engine/domain/execution/engine/parameterResolver/DelegateLogger.java){:target=_blank} is automatically injected by the execution engine.</br>
     This logger contains action's logs which be present in the execution report.
 
 ## Outputs

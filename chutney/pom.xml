@@ -20,7 +20,7 @@
     <packaging>pom</packaging>
 
     <name>Chutney</name>
-    <url>https://github.com/chutney-testing/chutney</url>
+    <url>https://github.com/Enedis-OSS/chutney</url>
     <description>An opinionated test application to help you practice Specification by Example.</description>
     <inceptionYear>2017</inceptionYear>
 

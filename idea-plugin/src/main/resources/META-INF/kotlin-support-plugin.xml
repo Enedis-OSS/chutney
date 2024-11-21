@@ -9,7 +9,7 @@
     <id>com.chutneytesting.idea.chutney-idea-plugin.spring</id>
     <name>Chutney Spring SpEL Support</name>
     <version>0.1.0</version>
-    <vendor email="support@chutneytesting.com" url="https://github.com/chutney-testing/chutney">ChutneyTesting</vendor>
+    <vendor email="support@chutneytesting.com" url="https://github.com/Enedis-OSS/chutney">ChutneyTesting</vendor>
 
     <description><![CDATA[
        <p>A plugin to support spring el expressions.</p><br/>

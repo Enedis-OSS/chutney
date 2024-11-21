@@ -8,13 +8,13 @@
 <idea-plugin>
     <id>com.chutneytesting.idea.chutney-idea-plugin</id>
     <name>Chutney</name>
-    <vendor email="support@chutneytesting.com" url="https://github.com/chutney-testing/chutney-idea-plugin">ChutneyTesting</vendor>
+    <vendor email="support@chutneytesting.com" url="https://github.com/Enedis-OSS/chutney-idea-plugin">ChutneyTesting</vendor>
     <description><![CDATA[
         <p>A plugin to help you easily edit, run chutney scenario files.</p><br/>
     ]]></description>
 
     <change-notes><![CDATA[
-      <p>Check <a href="https://github.com/chutney-testing/chutney/releases">Chutney GitHub releases</a></p><br/>
+      <p>Check <a href="https://github.com/Enedis-OSS/chutney/releases">Chutney GitHub releases</a></p><br/>
     ]]></change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html

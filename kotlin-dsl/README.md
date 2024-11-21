@@ -81,7 +81,7 @@ How (k)ool is Kotlin? super (k)ool!
 
 # How to run Kotlin scenarios
 
-> Some examples are available in [example module](https://github.com/chutney-testing/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example)
+> Some examples are available in [example module](https://github.com/Enedis-OSS/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example)
 
 You want to run Chutney scenarios from your local environment or on your CI/CD ?
 
@@ -144,7 +144,7 @@ val envB = ChutneyEnvironment(
 
 Alternatively, you can describe your environments with JSON files.
 
-They follow the model from Chutney [Environment module](https://github.com/chutney-testing/chutney/blob/main/chutney/environment/src/main/java/com/chutneytesting/environment/api/dto/EnvironmentDto.java).
+They follow the model from Chutney [Environment module](https://github.com/Enedis-OSS/chutney/blob/main/chutney/environment/src/main/java/com/chutneytesting/environment/api/dto/EnvironmentDto.java).
 
 In order to use environments from JSON files, you should store them in a folder named **environment** under some directory whose default path is ```./chutney```, but you can override it with a constructor parameter : ```Launcher(environmentJsonRootPath = "./chutney_env")```
 

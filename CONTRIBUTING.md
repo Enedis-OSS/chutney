@@ -169,7 +169,7 @@ As a general rule, the style and formatting of commit messages should follow the
 ## <a name="build"></a> Build Process
 
 We use Github Actions to build and release Chutney.
-[![Build](https://github.com/chutney-testing/chutney/workflows/Build/badge.svg?branch=main)](https://github.com/chutney-testing/chutney/actions)
+[![Build](https://github.com/Enedis-OSS/chutney/workflows/Build/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions)
 
 ## <a name="release"></a> Release Management
 
@@ -322,7 +322,7 @@ Always update the changelog before creating a release. This ensures the changes 
 Refer to this page for guidance on automatically generated release notes:  [Automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes)
 
 Do not hesitate to update the release note generated especially the titles of pull request :)
-Use it to update [CHANGELOG.md](https://github.com/chutney-testing/chutney/blob/main/chutney/CHANGELOG.md)
+Use it to update [CHANGELOG.md](https://github.com/Enedis-OSS/chutney/blob/main/CHANGELOG.md)
 
 ### Releasing version to Maven Central
 
@@ -337,7 +337,7 @@ Use it to update [CHANGELOG.md](https://github.com/chutney-testing/chutney/blob/
 ```shell
 git switch -c release/<RELEASE_VERSION>
 git add CHANGELOG.md (see Update Changelog file section)
-Update manually `chutneyVersion`  in [idea-plugin/gradle.properties](https://github.com/chutney-testing/chutney/blob/main/idea-plugin/gradle.properties)
+Update manually `chutneyVersion`  in [idea-plugin/gradle.properties](https://github.com/Enedis-OSS/chutney/blob/main/idea-plugin/gradle.properties)
 mvn versions:set -DnewVersion=<RELEASE_VERSION> -DgenerateBackupPoms=false
 mvn versions:set-scm-tag -DnewTag=<RELEASE_VERSION> -DgenerateBackupPoms=false
 git add .
@@ -361,7 +361,7 @@ git push origin <TAG_VERSION>
 
 #### Update Github release note
 
-- Update the release note on [github](https://github.com/chutney-testing/chutney/releases)
+- Update the release note on [github](https://github.com/Enedis-OSS/chutney/releases)
 
 #### Release on Maven central
 
@@ -380,7 +380,7 @@ In order to effectively release artifacts :
 #### Prepare next development
 
 ```shell
-Update manually `chutneyVersion`  in [idea-plugin/gradle.properties](https://github.com/chutney-testing/chutney/blob/main/idea-plugin/gradle.properties)
+Update manually `chutneyVersion`  in [idea-plugin/gradle.properties](https://github.com/Enedis-OSS/chutney/blob/main/idea-plugin/gradle.properties)
 mvn versions:set -DnewVersion=<NEXT_DEV_VERSION> -DgenerateBackupPoms=false
 mvn versions:set-scm-tag -DnewTag=HEAD -DgenerateBackupPoms=false
 git diff HEAD
@@ -402,7 +402,7 @@ git push origin
 ```shell
 git switch -c release/<RELEASE_VERSION>
 git add CHANGELOG.md (see Update Changelog file section)
-Update manually `chutneyVersion`  in [idea-plugin/gradle.properties](https://github.com/chutney-testing/chutney/blob/main/idea-plugin/gradle.properties)
+Update manually `chutneyVersion`  in [idea-plugin/gradle.properties](https://github.com/Enedis-OSS/chutney/blob/main/idea-plugin/gradle.properties)
 mvn versions:set -DnewVersion=<RELEASE_VERSION> -DgenerateBackupPoms=false
 mvn versions:set-scm-tag -DnewTag=<RELEASE_VERSION> -DgenerateBackupPoms=false
 git add .
@@ -416,7 +416,7 @@ git tag <TAG_VERSION>
 git push origin <TAG_VERSION>
 ```
 
-- Update the release note on [github](https://github.com/chutney-testing/chutney/releases)
+- Update the release note on [github](https://github.com/Enedis-OSS/chutney/releases)
 
 ## <a name="task"></a> Adding a task
 

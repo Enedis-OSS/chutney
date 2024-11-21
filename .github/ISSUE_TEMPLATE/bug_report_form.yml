@@ -14,7 +14,7 @@ body:
         🙌 Please, make sure your bug report is unique 🦄 !
         Did you search issues labeled with Bug ? If you find anything relevant to you, up-vote 👍 or add a comment 💬 !
 
-        For more information, please visit our [contribute section](https://github.com/chutney-testing/chutney/blob/main/chutney/CONTRIBUTING.md)
+        For more information, please visit our [contribute section](https://github.com/Enedis-OSS/chutney/blob/main/CONTRIBUTING.md)
   - type: dropdown
     id: component
     attributes:

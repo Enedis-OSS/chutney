@@ -8,7 +8,7 @@
 This plugin provides support for working with Chutney scenarios files in IntelliJ IDEA based IDEs.
 # Installation
 
-* Download chutney-idea-plugin-X.Y.zip from [available releases](https://github.com/chutney-testing/chutney-idea-plugin/releases){:target=_blank}.
+* Download chutney-idea-plugin-X.Y.zip from [available releases](https://github.com/Enedis-OSS/chutney-idea-plugin/releases){:target=_blank}.
 * In your Intellij Ide, go to File -> Settings -> Plugins.
 * Click install plugin from disc and select the downloaded zip.
   ![plugin installation](../img/idea_plugin/install-plugin.gif)
@@ -31,7 +31,7 @@ You can find [here](/getting_started/write/#define-your-test-environment-alterna
     This file can be generated automatically by the [synchronize](/installation/ci_cd/scenario_sync/) feature.
 
 ## Completion
-The plugin use custom [Chutney JSON Schemas](https://github.com/chutney-testing/chutney-idea-plugin/blob/2.1/src/main/resources/chutney-v2.schema.json){:target=_blank} to enable code completion and validation in JSON Scenarios files.
+The plugin use custom [Chutney JSON Schemas](https://github.com/Enedis-OSS/chutney-idea-plugin/blob/2.1/src/main/resources/chutney-v2.schema.json){:target=_blank} to enable code completion and validation in JSON Scenarios files.
 
 Examples:
 === "target Completion"

@@ -31,7 +31,7 @@ In order to take part in Chutney plugin development, you need to:
 2. Clone this repository to your computer
 
   ```
-  $ git clone https://github.com/chutney-testing/chutney-idea-plugin.git
+  $ git clone https://github.com/Enedis-OSS/chutney-idea-plugin.git
   ```
 
 3. Open IntelliJ IDEA, select `File -> New -> Module from existing sources`, point to

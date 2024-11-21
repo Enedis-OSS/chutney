@@ -16,7 +16,7 @@
   <packaging>pom</packaging>
 
   <name>chutney-testing</name>
-  <url>https://github.com/chutney-testing/chutney</url>
+  <url>https://github.com/Enedis-OSS/chutney</url>
   <description>An opinionated test application to help you practice Specification by Example.</description>
   <inceptionYear>2017</inceptionYear>
 
@@ -56,20 +56,20 @@
   </developers>
 
   <scm>
-    <url>https://github.com/chutney-testing/chutney.git</url>
-    <connection>scm:git:git@github.com:chutney-testing/chutney.git</connection>
-    <developerConnection>scm:git:git@github.com:chutney-testing/chutney.git</developerConnection>
+    <url>https://github.com/Enedis-OSS/chutney.git</url>
+    <connection>scm:git:git@github.com:Enedis-OSS/chutney.git</connection>
+    <developerConnection>scm:git:git@github.com:Enedis-OSS/chutney.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/chutney-testing/chutney/issues</url>
+    <url>https://github.com/Enedis-OSS/chutney/issues</url>
   </issueManagement>
 
   <ciManagement>
     <system>github-actions-ci</system>
-    <url>https://github.com/chutney-testing/chutney/actions</url>
+    <url>https://github.com/Enedis-OSS/chutney/actions</url>
   </ciManagement>
 
   <modules>

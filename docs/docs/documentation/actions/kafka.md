@@ -7,8 +7,8 @@
 
 ??? info "Browse implementations"
 
-    - [Publish](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicPublishAction.java){:target="_blank"}
-    - [Consume](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicConsumeAction.java){:target="_blank"}
+    - [Publish](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicPublishAction.java){:target="_blank"}
+    - [Consume](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicConsumeAction.java){:target="_blank"}
 
 !!! important "Target Configuration"
     For all actions, a target should be defined and have a `name` and a valid `url`.
@@ -60,7 +60,7 @@
     ```
 
 # Publish
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicPublishAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicPublishAction.java){:target="_blank"}"
 
 Use this action to publish a message to a Kafka topic.
 
@@ -103,7 +103,7 @@ KafkaBasicPublishTask(
 ```
 
 # Consume
-!!! info "[Browse implementation](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicConsumeAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/kafka/KafkaBasicConsumeAction.java){:target="_blank"}"
 
 Use this action to consume a message from a Kafka topic.
 

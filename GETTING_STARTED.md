@@ -45,7 +45,7 @@ You can use a Javascript launcher such as [Volta](https://volta.sh/) to take car
 
 * Build and install Chutney: `mvn clean install -DskipTests -f chutney/pom.xml`
 * Build and install kotlin-dsl: `cd kotlin-dsl && gradlew clean build -x test publishToMavenLocal`
-* Install local-api-insecure-jar: use install-local-api-unsecure-jar [run configuration](https://github.com/chutney-testing/chutney/blob/main/.idea/runConfigurations/install_local_api_unsecure_jar.xml) or manually run maven command with options in this file as arguments.
+* Install local-api-insecure-jar: use install-local-api-unsecure-jar [run configuration](https://github.com/Enedis-OSS/chutney/blob/main/.idea/runConfigurations/install_local_api_unsecure_jar.xml) or manually run maven command with options in this file as arguments.
 * Build plugin: `idea-plugin/gradlew clean buildPlugin`
 
 ## Modules explanation

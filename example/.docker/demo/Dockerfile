@@ -3,7 +3,7 @@
 
 FROM ghcr.io/chutney-testing/chutney/chutney-server
 
-LABEL org.opencontainers.image.source https://github.com/chutney-testing/chutney
+LABEL org.opencontainers.image.source https://github.com/Enedis-OSS/chutney
 
 ARG CONF=.docker/demo
 COPY $CONF/conf /.chutney

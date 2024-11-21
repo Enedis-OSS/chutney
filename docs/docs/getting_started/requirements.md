@@ -13,7 +13,7 @@ Those scenarios validate high level requirements and are not tied to your applic
 Instead, you will target I/O interfaces of your application (i.e. HTTP endpoints, Kafka topics, AMQP queues, etc.)
 without writing the same boilerplate code for respective clients, consumers, or even mock clients or producers.
 
-To get you started, we will cover how to write scenarios with the [Chutney Kotlin DSL](https://github.com/chutney-testing/chutney-kotlin-dsl){:target="_blank"}
+To get you started, we will cover how to write scenarios with the [Chutney Kotlin DSL](https://github.com/Enedis-OSS/chutney-kotlin-dsl){:target="_blank"}
 and run them with JUnit5.
 
 # Minimal Setup

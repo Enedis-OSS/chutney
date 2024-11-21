@@ -7,8 +7,8 @@
 
 ??? info "Browse implementations"
 
-    - [Accounting](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAccountingAction.java){:target="_blank"}
-    - [Authenticate](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAuthenticateAction.java){:target="_blank"}
+    - [Accounting](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAccountingAction.java){:target="_blank"}
+    - [Authenticate](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAuthenticateAction.java){:target="_blank"}
 
 !!! note "Define a radius target"
 
@@ -31,7 +31,7 @@
 ```
 
 # Radius accounting
-!!! info "[Browse implementations](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAccountingAction.java){:target="_blank"}"
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAccountingAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -65,7 +65,7 @@
     ```
 
 # Radius authenticate
-!!! info "[Browse implementations](https://github.com/chutney-testing/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAuthenticateAction.java){:target="_blank"}"
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/radius/RadiusAuthenticateAction.java){:target="_blank"}"
 
 Protocols `mschapv2` and `eap` are not yet supported by our client. See [AccessRequest.encodeRequestAttributes(...)](https://github.com/ctran/TinyRadius/blob/master/src/main/java/org/tinyradius/packet/AccessRequest.java){:target="_blank"}
 
