@@ -21,7 +21,7 @@ fun main() {
 
 object SWAPISpecs {
     private const val TAG = "SWAPI"
-    private const val TARGET = "SWAPI"
+    const val TARGET = "SWAPI"
 
     fun synchronize(serverInfo: ChutneyServerInfo, env: String) {
         serverInfo.apply {

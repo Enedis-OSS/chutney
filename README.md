@@ -10,9 +10,11 @@
 
 [![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/559893368d134d729b204891e3ce0239)](https://www.codacy.com/gh/chutney-testing/chutney?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chutney-testing/chutney&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://codecov.io/gh/chutney-testing/chutney/branch/master/graph/badge.svg)](https://codecov.io/gh/chutney-testing/chutney/)
+[![Coverage Status](https://codecov.io/gh/Enedis-OSS/chutney/branch/master/graph/badge.svg)](https://codecov.io/gh/chutney-testing/chutney/)
+[![REUSE](https://github.com/Enedis-oss/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-oss/chutney/actions/workflows/reuse.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server)
-[![REUSE Compliance Check](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney?label=docker)](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server)
 
 -------------
 
@@ -45,6 +47,12 @@ In addition, Chutney provide SpEL evaluation and extensible [Function](https://g
 Still asking yourself ["Why another test tool ?"](https://www.chutney-testing.com/concepts/)
 
 -------------
+## <a name="demo"></a> Demo
+
+Follow [this](https://github.com/Enedis-OSS/chutney/tree/main/example/.docker#demo-server-container-using-docker-compose) documentation to launch a [docker compose](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/dev-docker-compose-demo.yml) stack.  
+The Chutney web interface should be visible at http://localhost (admin/Admin).
+
+-------------
 
 ## <a name="installation"></a> Installation
 
@@ -61,97 +69,62 @@ See [installation on premise](https://www.chutney-testing.com/installation/on_pr
 
 ## <a name="scenario_example"></a> Scenario Example
 
-You can find all the documentation of [how to write a scenario here](https://www.chutney-testing.com/getting_started/write/)
+You can find all the documentation of how to write a scenario [here](https://www.chutney-testing.com/getting_started/write/).
 
-### Example of a scenario
+### Scenario
 
-Here is an example of a scenario written in Kotlin.
-* [Scenario source](https://github.com/Enedis-OSS/chutney/blob/main/example/src/main/kotlin/com/chutneytesting/example/scenario/http_scenario.kt)
-* [How to run it locally with test containers](https://github.com/Enedis-OSS/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/HttpScenarioTest.kt)
+Here is an example of a scenario written in Kotlin ([source code](https://github.com/Enedis-OSS/chutney/blob/2effe53b2b73fc3b89b6f072b57a02c0e856e0a1/example/src/main/kotlin/com/chutneytesting/demo/spec/swapi.kt#L48))
 
 ```kotlin
-    const val HTTP_TARGET_NAME = "HTTP_TARGET"
-
-    const val FILMS_ENDPOINT = "/films"
-    private val JSON_CONTENT_TYPE = "Content-Type" to "application/json";
-
-    var FILM = """
-    {
-        "title": "Castle in the Sky",
-        "director": "Hayao Miyazaki",
-        "rating": "%rating%",
-        "category": "fiction"
+  const val TARGET = "SWAPI"
+  
+  val root_list_all_resources =
+  Scenario(
+    id = 666000,
+    title = "SWAPI - The Root resource provides information on all available resources",
+    tags = listOf(TAG)
+  ) {
+    When("When request SWAPI root") {
+      HttpGetAction(
+        target = TARGET,
+        uri = "/",
+        validations = mapOf(
+          httpStatusOK()
+        )
+      )
     }
-    """
-
-    val http_scenario = Scenario(title = "Films library") {
-        Given("I save a new film") {
-            HttpPostAction(
-                target = HTTP_TARGET_NAME,
-                uri = FILMS_ENDPOINT,
-                body = FILM.trimIndent(),
-                headers = mapOf(
-                    JSON_CONTENT_TYPE
-                ),
-                validations = mapOf(
-                    statusValidation(201)
-                ),
-                outputs = mapOf(
-                    "filmId" to "#body".elEval()
-                )
-            )
-        }
-    
-        When ("I update rating") {
-            HttpPatchAction(
-                target = HTTP_TARGET_NAME,
-                uri = "$FILMS_ENDPOINT/\${#filmId}",
-                body = """
-                    {
-                    "rating": "79",
-                    }
-                """.trimIndent(),
-                headers = mapOf(
-                    JSON_CONTENT_TYPE
-                ),
-                validations = mapOf(
-                    statusValidation(200)
-                )
-            )
-        }
-    
-        Then ("I check that rating was updated") {
-            Step("I get film by id") {
-                HttpGetAction(
-                    target = HTTP_TARGET_NAME,
-                    uri = "$FILMS_ENDPOINT/\${#filmId}",
-                    headers = mapOf(
-                        JSON_CONTENT_TYPE
-                    ),
-                    validations = mapOf(
-                        statusValidation(200)
-                    ),
-                    outputs = mapOf(
-                        "title" to "jsonPath(#body, '\$.title')".spEL(),
-                        "rating" to "jsonPath(#body, '\$.rating')".spEL()
-                    )
-                )
-            }
-        Step ("I check rating"){
-            AssertAction(
-                asserts = listOf(
-                    "title.equals('Castle in the Sky')".spEL(),
-                    "rating.equals('79')".spEL()
-                )
-            )
-        }
+    Then("Then all resources are listed") {
+      JsonAssertAction(
+        document = "body".spEL(),
+        expected = mapOf(
+          "$.films" to "\$isNotNull",
+          "$.people" to "\$isNotNull",
+          "$.planets" to "\$isNotNull",
+          "$.species" to "\$isNotNull",
+          "$.starships" to "\$isNotNull",
+          "$.vehicles" to "\$isNotNull"
+        )
+      )
     }
+  }
 ```
 
-* In this example the scenario will save the content of FILM to an external server.
-* Then it will update it, fetch it and finally verify that the FILM has indeed been updated.
-* In this scenario we perform Http Actions, you can find [all available Chutney Actions here](https://www.chutney-testing.com/documentation/actions/)
-* You can find some other example with jms, kafka, rabbit or sql [here](https://github.com/Enedis-OSS/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
+* In this example the scenario will list resources provided by [swapi](https://swapi.dev/api) api using http get action.
+* Then it will some expected resources are found in the api response using json assertion action.
+* All available Chutney Actions are documented [here](https://www.chutney-testing.com/documentation/actions/).
+
+### Execution report
+#### In Intellij
+When executing the previous scenario from your intellij using a [junit test](https://github.com/Enedis-oss/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/SwapiTest.kt), the execution report will be printed in the console.
+![swapi-ide-report.png](docs/docs/img/swapi-ide-report.png)
+
+#### In chutney UI
+After [synchronizing](https://github.com/Enedis-OSS/chutney/blob/main/example/src/main/kotlin/com/chutneytesting/demo/sync/demoServer.kt#L29) the previous scenario with a running chutney server, you can run it from the UI.
+![swapi-ui-report.png](docs/docs/img/swapi-ui-report.png)
+
+### More examples
+You can find some other example with http,jms, kafka, rabbit or sql [here](https://github.com/Enedis-oss/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
+
 -------------
 
 ## <a name="documentation"></a> Documentation
