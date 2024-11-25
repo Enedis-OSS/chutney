@@ -11,7 +11,7 @@
 [![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/559893368d134d729b204891e3ce0239)](https://www.codacy.com/gh/chutney-testing/chutney?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chutney-testing/chutney&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://codecov.io/gh/Enedis-OSS/chutney/branch/master/graph/badge.svg)](https://codecov.io/gh/chutney-testing/chutney/)
-[![REUSE](https://github.com/Enedis-oss/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-oss/chutney/actions/workflows/reuse.yml)
+[![REUSE](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server)
 [![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney?label=docker)](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server)
@@ -116,7 +116,7 @@ Here is an example of a scenario written in Kotlin ([source code](https://github
 
 ### Execution report
 #### In Intellij
-When executing the previous scenario from your intellij using a [junit test](https://github.com/Enedis-oss/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/SwapiTest.kt), the execution report will be printed in the console.
+When executing the previous scenario from your intellij using a [junit test](https://github.com/Enedis-OSS/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/SwapiTest.kt), the execution report will be printed in the console.
 ![swapi-ide-report.png](docs/docs/img/swapi-ide-report.png)
 
 #### In chutney UI
@@ -124,7 +124,7 @@ After [synchronizing](https://github.com/Enedis-OSS/chutney/blob/main/example/sr
 ![swapi-ui-report.png](docs/docs/img/swapi-ui-report.png)
 
 ### More examples
-You can find some other example with http,jms, kafka, rabbit or sql [here](https://github.com/Enedis-oss/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
+You can find some other example with http,jms, kafka, rabbit or sql [here](https://github.com/Enedis-OSS/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
 
 -------------
 
