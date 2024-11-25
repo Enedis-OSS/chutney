@@ -13,7 +13,8 @@
 * Schedule campaign: Overload environment and dataset by @nbrouand in https://github.com/chutney-testing/chutney/pull/191
 * SSH action proxy jump by @boddissattva in https://github.com/chutney-testing/chutney/pull/219
 * Sql action can read blob type by @rbenyoussef in https://github.com/chutney-testing/chutney/pull/220
-
+### 🔧 Technical enhancements:
+* Fix dsl javadoc generation by @KarimGl in https://github.com/chutney-testing/chutney/pull/224
 
 **Full Changelog**: https://github.com/chutney-testing/chutney/compare/2.9.0.7...3.0.0
 
