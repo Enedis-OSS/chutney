@@ -181,7 +181,7 @@ class CampaignExecutionTest {
             ExecutionHistory.Execution scenarioExecution = mock(ExecutionHistory.Execution.class);
             when(scenarioExecution.scenarioId()).thenReturn(testCase.metadata().id());
             when(scenarioExecution.testCaseTitle()).thenReturn(testCase.metadata().title());
-            when(scenarioExecution.executionId()).thenReturn(666L);
+            when(scenarioExecution.executionId()).thenReturn(123L);
             when(scenarioExecution.dataset()).thenReturn(Optional.of(campaignReport.dataset));
 
             campaignReport.updateScenarioExecutionId(scenarioExecution);
@@ -192,7 +192,7 @@ class CampaignExecutionTest {
                 assertThat(report.scenarioId()).isEqualTo(testCase.metadata().id());
                 assertThat(report.scenarioName()).isEqualTo(testCase.metadata().title());
                 assertThat(report.execution()).satisfies(executionSummary -> {
-                    assertThat(executionSummary.executionId()).isEqualTo(666L);
+                    assertThat(executionSummary.executionId()).isEqualTo(123L);
                     assertThat(executionSummary.time()).isAfter(beforeStartExecution);
                     assertThat(executionSummary.status()).isEqualTo(RUNNING);
                     assertThat(executionSummary.environment()).isEqualTo("env");

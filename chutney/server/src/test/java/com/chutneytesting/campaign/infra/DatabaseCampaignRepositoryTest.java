@@ -209,7 +209,7 @@ public class DatabaseCampaignRepositoryTest {
             sut.createOrUpdate(campaign1);
 
             // When
-            List<Campaign> scenarioCampaigns = sut.findCampaignsByScenarioId(String.valueOf(s1.getId() + 666));
+            List<Campaign> scenarioCampaigns = sut.findCampaignsByScenarioId(String.valueOf(s1.getId() + 123));
 
             // Then
             Assertions.assertThat(scenarioCampaigns).isEmpty();

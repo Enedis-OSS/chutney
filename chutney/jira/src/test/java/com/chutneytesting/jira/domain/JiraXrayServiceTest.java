@@ -36,7 +36,7 @@ class JiraXrayServiceTest {
         jiraConfigurationField.setAccessible(true);
 
         // When empty initial configuration
-        assertThatThrownBy(() -> sut.getTestExecutionScenarios("NOP-666"))
+        assertThatThrownBy(() -> sut.getTestExecutionScenarios("NOP-123"))
             .isInstanceOf(NoJiraConfigurationException.class);
 
         assertThat(jiraConfigurationField.get(sut)).isEqualTo(initialJiraConfiguration);
@@ -44,9 +44,9 @@ class JiraXrayServiceTest {
         // When new configuration
         var newJiraConfiguration = new JiraServerConfiguration("http://jira.server", "", "", null, null, null);
         when(jiraRepository.loadServerConfiguration()).thenReturn(newJiraConfiguration);
-        sut.getTestExecutionScenarios("NOP-666");
+        sut.getTestExecutionScenarios("NOP-123");
 
         assertThat(jiraConfigurationField.get(sut)).isEqualTo(newJiraConfiguration);
-        verify(jiraXrayApi).getTestExecutionScenarios("NOP-666");
+        verify(jiraXrayApi).getTestExecutionScenarios("NOP-123");
     }
 }

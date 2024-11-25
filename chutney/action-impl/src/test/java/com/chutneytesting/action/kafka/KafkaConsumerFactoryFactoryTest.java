@@ -39,10 +39,10 @@ class KafkaConsumerFactoryFactoryTest {
         @DisplayName("from configuration")
         void should_use_configuration_for_bootstrap_servers_kafka_client_configuration() {
             Target target = targetWithoutProperties
-                .withProperty(BOOTSTRAP_SERVERS_CONFIG, "target.host:6666")
+                .withProperty(BOOTSTRAP_SERVERS_CONFIG, "target.host:1236")
                 .build();
 
-            Map<String, String> config = Map.of(BOOTSTRAP_SERVERS_CONFIG, "conf.host:9999");
+            Map<String, String> config = Map.of(BOOTSTRAP_SERVERS_CONFIG, "conf.host:4567");
 
             ConsumerFactory<String, String> consumerFactoryFactory = new KafkaConsumerFactoryFactory().create(target, "", config);
 
@@ -55,7 +55,7 @@ class KafkaConsumerFactoryFactoryTest {
         @DisplayName("from target properties")
         void should_use_target_properties_for_bootstrap_servers_kafka_client_configuration() {
             Target target = targetWithoutProperties
-                .withProperty(BOOTSTRAP_SERVERS_CONFIG, "target.host:6666")
+                .withProperty(BOOTSTRAP_SERVERS_CONFIG, "target.host:1236")
                 .build();
 
             ConsumerFactory<String, String> consumerFactoryFactory = new KafkaConsumerFactoryFactory().create(target, "", emptyMap());

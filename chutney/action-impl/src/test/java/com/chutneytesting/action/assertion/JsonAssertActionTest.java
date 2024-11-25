@@ -421,24 +421,24 @@ public class JsonAssertActionTest {
                 Arguments.of("{}", null, Success),
                 Arguments.of("[1, \"value\"]", null, Success),
                 Arguments.of("{\"string\": \"value\"}", null, Success),
-                Arguments.of("{\"number\": 666}", null, Success),
+                Arguments.of("{\"number\": 123}", null, Success),
                 Arguments.of("{\"array\": [1, 2, 3]}", null, Success),
                 Arguments.of("{\"object\":{\"string\":\"value\"}}", null, Success),
 
                 // Extra attributes
-                Arguments.of("{\"number\": 666}", "{}", Success),
+                Arguments.of("{\"number\": 123}", "{}", Success),
                 Arguments.of("{\"string\": \"val\"}", "{}", Success),
-                Arguments.of("{\"array\": [666, \"val\", {\"att\": \"val\"}]}", "{}", Success),
+                Arguments.of("{\"array\": [123, \"val\", {\"att\": \"val\"}]}", "{}", Success),
                 Arguments.of("{\"object\": {\"att\": \"val\"}}", "{}", Success),
 
-                Arguments.of("{\"string\": \"val\", \"extra_number\": 666}", "{\"string\": \"val\"}", Success),
+                Arguments.of("{\"string\": \"val\", \"extra_number\": 123}", "{\"string\": \"val\"}", Success),
                 Arguments.of("{\"string\": \"val\", \"extra_string\": \"value\"}", "{\"string\": \"val\"}", Success),
-                Arguments.of("{\"string\": \"val\", \"extra_array\": [666, \"val\", {\"att\": \"val\"}]}", "{\"string\": \"val\"}", Success),
+                Arguments.of("{\"string\": \"val\", \"extra_array\": [123, \"val\", {\"att\": \"val\"}]}", "{\"string\": \"val\"}", Success),
                 Arguments.of("{\"string\": \"val\", \"extra_object\": {\"att\": \"val\"}}", "{\"string\": \"val\"}", Success),
 
                 Arguments.of("{\"object\": {\"att\": \"val\", \"extra_att\": \"extra_val\"}}", "{\"object\": {\"att\": \"val\"}}", Success),
 
-                Arguments.of("{\"string\": \"val\", \"extra_number_one\": 666}", "{\"string\": \"val\", \"extra_number_two\": 666}", Failure),
+                Arguments.of("{\"string\": \"val\", \"extra_number_one\": 123}", "{\"string\": \"val\", \"extra_number_two\": 123}", Failure),
                 Arguments.of("{\"string\": \"val\", \"object\": {\"att\": \"val\", \"extra_att_one\": \"val\"}}", "{\"string\": \"val\", \"object\": {\"att\": \"val\", \"extra_att_two\": \"val\"}}", Failure),
 
                 // Array order

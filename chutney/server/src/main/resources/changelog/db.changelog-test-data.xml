@@ -72,7 +72,7 @@
         </insert>
         <insert tableName="CAMPAIGN_SCENARIOS">
             <column name="CAMPAIGN_ID" valueNumeric="1"/>
-            <column name="SCENARIO_ID" value="16-666"/>
+            <column name="SCENARIO_ID" value="16-123"/>
             <column name="INDEX" valueNumeric="2"/>
         </insert>
         <insert tableName="CAMPAIGN_SCENARIOS">

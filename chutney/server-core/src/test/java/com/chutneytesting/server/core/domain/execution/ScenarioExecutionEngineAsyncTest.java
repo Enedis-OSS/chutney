@@ -369,7 +369,7 @@ public class ScenarioExecutionEngineAsyncTest {
             .time(now())
             .status(ServerReportStatus.SUCCESS)
             .executionId(executionId)
-            .duration(666L)
+            .duration(123L)
             .report("")
             .testCaseTitle("fake")
             .environment("")

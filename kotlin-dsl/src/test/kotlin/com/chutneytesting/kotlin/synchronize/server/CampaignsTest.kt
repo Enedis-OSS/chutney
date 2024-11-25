@@ -20,7 +20,7 @@ class CampaignsTest : ChutneyServerServiceImplTest() {
     fun new_id_from_remote() {
         // Given
         val campaign = Campaign(title = "Campaign title", environment = "DEV", tags = listOf("TAG_1", "TAG_2"))
-        val newIdFromRemote = 666
+        val newIdFromRemote = 123
 
         val createStub = wireMockServer.stubFor(
             post(urlPathMatching("/api/ui/campaign/v1"))
@@ -72,12 +72,12 @@ class CampaignsTest : ChutneyServerServiceImplTest() {
     fun id_from_code() {
         // Given
         val campaign = Campaign(
-            id = 666,
+            id = 123,
             title = "Campaign title",
             description = "Campaign description",
             scenarios = listOf(
                 CampaignScenario(111, "dataset_1"),
-                CampaignScenario(666),
+                CampaignScenario(123),
                 CampaignScenario(8888, "dataset_2")
             ),
             environment = "STAGING",
@@ -96,7 +96,7 @@ class CampaignsTest : ChutneyServerServiceImplTest() {
                                   "id": ${campaign.id},
                                   "title": "${campaign.title}",
                                   "description": "",
-                                  "scenarios": [{"scenarioId": "111", "datasetId": "dataset_1"}, {"scenarioId": "666"}, {"scenarioId": "8888", "datasetId": "dataset_2"}],
+                                  "scenarios": [{"scenarioId": "111", "datasetId": "dataset_1"}, {"scenarioId": "123"}, {"scenarioId": "8888", "datasetId": "dataset_2"}],
                                   "campaignExecutionReports": [],
                                   "datasetId": "${campaign.datasetId}",
                                   "environment": "${campaign.environment}",

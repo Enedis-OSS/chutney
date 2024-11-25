@@ -81,7 +81,7 @@ Here is an example of a scenario written in Kotlin ([source code](https://github
   
   val root_list_all_resources =
   Scenario(
-    id = 666000,
+    id = 123000,
     title = "SWAPI - The Root resource provides information on all available resources",
     tags = listOf(TAG)
   ) {

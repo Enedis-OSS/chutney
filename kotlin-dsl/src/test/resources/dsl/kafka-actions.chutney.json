@@ -15,7 +15,7 @@
                     "payload": "payload",
                     "key": "key",
                     "properties": {
-                        "bootstrap.servers": "a.host:666,b.host:999"
+                        "bootstrap.servers": "a.host:123,b.host:456"
                     }
                 }
             }

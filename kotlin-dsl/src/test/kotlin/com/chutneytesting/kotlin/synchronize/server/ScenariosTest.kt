@@ -79,7 +79,7 @@ class ScenariosTest : ChutneyServerServiceImplTest() {
         @Test
         fun id_from_code() {
             // Given
-            val scenario = Scenario(id = 666, title = "A scenario", tags = listOf("TAG")) {
+            val scenario = Scenario(id = 123, title = "A scenario", tags = listOf("TAG")) {
                 When("Something happens") {
                     SuccessAction()
                 }
@@ -129,7 +129,7 @@ class ScenariosTest : ChutneyServerServiceImplTest() {
         fun update_from_code() {
             // Given
             val scenario = Scenario(
-                id = 666,
+                id = 123,
                 title = "A new scenario",
                 defaultDataset = "NEW_DATASET",
                 tags = listOf("STAG_1", "STAG_2")

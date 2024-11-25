@@ -70,7 +70,7 @@ public class HttpJiraXrayImplTest {
         @Test
         void test_issue_as_test_plan() {
             // Given
-            String issueId = "PRJ-666";
+            String issueId = "PRJ-123";
 
             var config = new JiraServerConfiguration(
                 "http://fake-server-jira",
@@ -87,7 +87,7 @@ public class HttpJiraXrayImplTest {
                 sut.isTestPlan(issueId)
             )
                 .isExactlyInstanceOf(RuntimeException.class)
-                .hasMessage("Unable to get issue [PRJ-666] : ")
+                .hasMessage("Unable to get issue [PRJ-123] : ")
                 .hasRootCauseExactlyInstanceOf(UnknownHostException.class);
         }
 
@@ -149,7 +149,7 @@ public class HttpJiraXrayImplTest {
         @Test
         void test_issue_as_test_plan() {
             // Given
-            String issueId = "PRJ-666";
+            String issueId = "PRJ-123";
 
             var config = new JiraServerConfiguration(
                 "http://fake-server-jira",
@@ -268,7 +268,7 @@ public class HttpJiraXrayImplTest {
         @Test
         void test_issue_as_test_plan() {
             // Given
-            String issueId = "PRJ-666";
+            String issueId = "PRJ-123";
 
             var config = new JiraServerConfiguration(
                 "http://fake-server-jira",

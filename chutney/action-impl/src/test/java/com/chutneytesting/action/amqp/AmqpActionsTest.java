@@ -173,7 +173,7 @@ public class AmqpActionsTest {
             "test",
             ImmutableMap.of("header1", value1, "header2", ImmutableList.of(value1, value2, value3)),
             Collections.singletonMap("content_type", "application/json"),
-            "{\"value\": \"test message\", \"id\": \"999999\"}",
+            "{\"value\": \"test message\", \"id\": \"456456\"}",
             logger
         ), mockConnectionFactory);
 

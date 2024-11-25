@@ -24,7 +24,7 @@ describe('filterOnTextContent function...', () => {
 
     describe('with objects list...', () => {
         const objects = [
-            { stringKey : 'one', numKey: 666 },
+            { stringKey : 'one', numKey: 123 },
             { stringKey : 'two', numKey: 676 },
             { stringKey : 'three', numKey: 677 }
         ];
@@ -50,7 +50,7 @@ describe('filterOnTextContent function...', () => {
 
         it('should filter on string attribute', () => {
             const expectedFilteredObjects = [
-                { stringKey : 'one', numKey: 666 },
+                { stringKey : 'one', numKey: 123 },
                 { stringKey : 'two', numKey: 676 }
             ];
             expect(filterOnTextContent(objects, 'o', ['stringKey']))

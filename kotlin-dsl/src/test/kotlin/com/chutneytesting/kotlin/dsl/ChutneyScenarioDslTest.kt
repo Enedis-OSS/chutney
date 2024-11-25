@@ -195,7 +195,7 @@ class ChutneyScenarioDslTest {
             Then("Publish") {
                 KafkaBasicPublishAction(
                     target = "target", topic = "topic", payload = "payload", key = "key",
-                    properties = mapOf("bootstrap.servers" to "a.host:666,b.host:999")
+                    properties = mapOf("bootstrap.servers" to "a.host:123,b.host:456")
                 )
             }
             And("Consume") {

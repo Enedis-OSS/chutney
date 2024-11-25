@@ -56,7 +56,7 @@ class HttpsClientTest {
                         aResponse()
                             .withStatus(200)
                             .withHeader("Content-Type", "application/json")
-                            .withBody("999")
+                            .withBody("456")
                     )
             )
 
@@ -78,7 +78,7 @@ class HttpsClientTest {
             fun explicit() {
                 // Given
                 val serverInfo = ChutneyServerInfo(
-                    "http://chutney.server:999",
+                    "http://chutney.server:456",
                     "user",
                     "password",
                     wireMockServer.baseUrl(),
@@ -95,7 +95,7 @@ class HttpsClientTest {
                             aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "application/json")
-                                .withBody("999")
+                                .withBody("456")
                         )
                 )
 
@@ -117,7 +117,7 @@ class HttpsClientTest {
                 System.setProperty("https.proxyUser", "proxyUer")
                 System.setProperty("https.proxyPassword", "proxyPassword")
 
-                val serverInfo = ChutneyServerInfo("http://chutney.server:999", "user", "password")
+                val serverInfo = ChutneyServerInfo("http://chutney.server:456", "user", "password")
 
                 val expectedProxyAuthorization = Base64.getEncoder()
                     .encodeToString((serverInfo.proxyUser + ":" + serverInfo.proxyPassword).toByteArray())
@@ -128,7 +128,7 @@ class HttpsClientTest {
                             aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "application/json")
-                                .withBody("999")
+                                .withBody("456")
                         )
                 )
 
@@ -182,7 +182,7 @@ class HttpsClientTest {
                         aResponse()
                             .withStatus(200)
                             .withHeader("Content-Type", "application/json")
-                            .withBody("999")
+                            .withBody("456")
                     )
             )
 
@@ -190,7 +190,7 @@ class HttpsClientTest {
             val result = HttpClient.get<Long>(serverInfo, "/pre")
 
             // Then
-            Assertions.assertThat(result).isEqualTo(999)
+            Assertions.assertThat(result).isEqualTo(456)
             wireMockServer.verify(
                 1, getRequestedFor(urlPathMatching("/pre"))
             )

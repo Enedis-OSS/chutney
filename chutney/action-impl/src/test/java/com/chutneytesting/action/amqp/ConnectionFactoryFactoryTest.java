@@ -50,7 +50,7 @@ class ConnectionFactoryFactoryTest {
         Target target = TestTarget.TestTargetBuilder.builder()
             .withTargetId("target with adresses property")
             .withUrl("scheme://host:888")
-            .withProperty("addresses", "localhost:666,localhost:999")
+            .withProperty("addresses", "localhost:123,localhost:456")
             .build();
 
         // When

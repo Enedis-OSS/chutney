@@ -358,9 +358,9 @@ public class KafkaBasicConsumeActionTest {
         // Given
         ImmutableList<Header> headers = ImmutableList.of(
             new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
-            new RecordHeader("header", "666".getBytes())
+            new RecordHeader("header", "123".getBytes())
         );
-        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='666')]", null, null);
+        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123')]", null, null);
         String textMessageToSelect = "first text message";
         String xmlMessageToSelect = "<root>first xml message</root>";
         String jsonMessageToSelect = "first json message";
@@ -392,10 +392,10 @@ public class KafkaBasicConsumeActionTest {
     public void should_consume_message_with_duplicated_header_pair_key_value() {
         // Given
         ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("header", "666".getBytes()),
-            new RecordHeader("header", "666".getBytes())
+            new RecordHeader("header", "123".getBytes()),
+            new RecordHeader("header", "123".getBytes())
         );
-        Action action = givenKafkaConsumeAction(1, null, "$..[?($.header=='666')]", null, null);
+        Action action = givenKafkaConsumeAction(1, null, "$..[?($.header=='123')]", null, null);
         String textMessageToSelect = "first text message";
         givenActionReceiveMessages(action,
             buildRecord(FIRST_OFFSET, "KEY1", textMessageToSelect, headers),

@@ -32,7 +32,7 @@ object SWAPISpecs {
 
     fun campaign(env: String) =
         Campaign(
-            id = 666500,
+            id = 123500,
             title = "SWAPI - All scenarios",
             environment = env,
             retryAuto = true,
@@ -47,7 +47,7 @@ object SWAPISpecs {
 
     val root_list_all_resources =
         Scenario(
-            id = 666000,
+            id = 123000,
             title = "SWAPI - The Root resource provides information on all available resources",
             tags = listOf(TAG)
         ) {
@@ -77,7 +77,7 @@ object SWAPISpecs {
 
     val people_json_validation =
         Scenario(
-            id = 666100,
+            id = 123100,
             title = "SWAPI - All people resources are valid",
             tags = listOf(TAG)
         ) {
