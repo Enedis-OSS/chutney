@@ -36,7 +36,7 @@ Chutney aims to **test deployed software** in order to validate functional requi
 
 Chutney scenarios are **declarative** written with a **kotlin dsl**. They provide functional requirements and technical details (needed for automation) in a single view.
 
-Chutney is also released as a standalone application including a test execution engine and a a web front end to consult test reports.  
+Chutney is also released as a standalone application including a test execution engine and a web front end to consult test reports.  
 
 Technical details are provided by generic [Actions](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/Action.java) (such as HTTP, AMQP, MongoDB, Kafka, Selenium, etc.)  
 Those Actions are extensions, and you can easily develop yours, even proprietary or non-generic one, and include them in your own release.

@@ -14,6 +14,7 @@ copyright: © Chutney Testing 2017 | under the Apache License, Version 2.0
 nav:
   - Overview: index.md
   - Getting Started:
+      - Demo: getting_started/demo.md
       - Requirements: getting_started/requirements.md
       - Write your first scenario: getting_started/write.md
       - Run your scenario: getting_started/run.md
