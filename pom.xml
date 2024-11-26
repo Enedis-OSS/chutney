@@ -59,7 +59,7 @@
     <url>https://github.com/Enedis-OSS/chutney.git</url>
     <connection>scm:git:git@github.com:Enedis-OSS/chutney.git</connection>
     <developerConnection>scm:git:git@github.com:Enedis-OSS/chutney.git</developerConnection>
-    <tag>3.0.1-SNAPSHOT</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
