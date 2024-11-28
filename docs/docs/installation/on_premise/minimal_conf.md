@@ -6,15 +6,14 @@
 -->
 
 !!! note "Packaging example"
-    Maven module [local-dev](https://github.com/Enedis-OSS/chutney/tree/main/chutney/packaging/local-dev){:target="_blank"} shows one way of packaging Chutney.  
+    Maven module [chutney/packaging/local-dev](https://github.com/Enedis-OSS/chutney/tree/main/chutney/packaging/local-dev){:target="_blank"} shows one way of packaging Chutney.  
     Use it as an example to make your own package, custom to your needs.
 
 
 # Maven configuration
 
-Use [Spring Boot Build Tool Plugins](https://docs.spring.io/spring-boot/build-tool-plugin/index.html){:target="_blank"} to package Chutney as an executable jar.
-
-=== "maven"
+=== "Executable jar package"
+    Use [Spring Boot Build Tool Plugins](https://docs.spring.io/spring-boot/build-tool-plugin/index.html){:target="_blank"} to package Chutney as an executable jar.  
     ``` xml
     <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -35,9 +34,8 @@ Use [Spring Boot Build Tool Plugins](https://docs.spring.io/spring-boot/build-to
     </plugin>
     ```
 
-Declare a BOM dependency on Chutney parent.
-
-=== "maven"
+=== "Chutney dependencies"
+    Declare a BOM dependency on Chutney parent.  
     ``` xml
     <dependencyManagement>
         <dependencies>
@@ -50,11 +48,8 @@ Declare a BOM dependency on Chutney parent.
             </dependency>
         </dependencies>
     </dependencyManagement>
-    ```
-
-Add Chutney server and UI as dependencies.
-
-=== "maven"
+    ```  
+    Add Chutney server and UI as dependencies.  
     ``` xml
     <dependency>
         <groupId>com.chutneytesting</groupId>
@@ -66,33 +61,34 @@ Add Chutney server and UI as dependencies.
         <artifactId>ui</artifactId>
         <scope>runtime</scope>
     </dependency>
-    ```
-
-Then, add dependency for your chosen database.
-
-=== "maven"
+    ```  
+    Then, add JDBC driver dependency for your chosen Chutney main database.
     ``` xml
     <dependency> <!-- (1) -->
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+    </dependency>
+    <dependency> <!-- (2) -->
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
     </dependency>
-    <dependency> <!-- (2) -->
+    <dependency> <!-- (3) -->
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
     </dependency>
     ```
 
-    1. If you want to use H2 as Chutney main database
-    2. If you want to use PostgreSQL as Chutney main database
+    1. For SQLite as Chutney main database
+    2. For H2 as Chutney main database
+    3. For PostgreSQL as Chutney main database
 
-Also, you should add any dependencies you would need to run your scenarios.  
-This may depend on the underlying Chutney actions you are using.
-
-=== "maven"
+=== "Proprietary dependencies"
+    Also, you should add any dependencies you would need to run your scenarios.  
+    This may depend on the underlying Chutney actions you are using.  
     ``` xml
     <dependency> <!-- (1) -->
         <groupId>com.oracle</groupId>
-        <artifactId>ojdbc6</artifactId>
+        <artifactId>ojdbc11</artifactId>
         <version>x.x.x</version>
         <scope>runtime</scope>
     </dependency>
@@ -107,9 +103,8 @@ This may depend on the underlying Chutney actions you are using.
     1. Example for using [SQL actions](/documentation/actions/sql.md) and query an Oracle database
     2. Example for using [JMS actions](/documentation/actions/jms.md) with a WebLogic server
 
-Finally, add your own [Actions](/documentation/extension/action.md) and [Functions](/documentation/extension/function.md)
-
-=== "maven"
+=== "Custom extensions"
+    Optionally, add your own [Actions](/documentation/extension/action.md) and [Functions](/documentation/extension/function.md).  
     ``` xml
     <dependency>
         <groupId>com.my.company</groupId>

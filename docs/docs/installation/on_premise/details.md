@@ -11,9 +11,17 @@
 You can find corresponding changelog [here](https://github.com/Enedis-OSS/chutney/blob/main/chutney/server/src/main/resources/changelog/db.changelog-master.xml){:target="_blank"}.
 
 !!! note
-    Chutney has been tested with H2 and PostgreSQL databases.
+    * Chutney is tested with SQLite, H2 and PostgreSQL databases.  
+    * You can find complete examples in maven module [chutny/packaging/local-dev](https://github.com/Enedis-OSS/chutney/tree/main/chutney/packaging/local-dev){:target="_blank"}, for all three database types.
 
 To configure your datasource, use the property `spring.datasource`
+
+=== "SQLite"
+    ``` yaml
+    spring:
+        datasource:
+            url: jdbc:sqlite:.chutney/data/chutney.db
+    ```
 
 === "H2 (memory)"
     ``` yaml
@@ -21,8 +29,6 @@ To configure your datasource, use the property `spring.datasource`
         datasource:
             url: jdbc:h2:mem:dbName
     ```
-    !!! note
-        You can find an example in maven module [local-dev](https://github.com/Enedis-OSS/chutney/tree/main/chutney/packaging/local-dev){:target="_blank"}, which uses an embedded H2 with filesystem persistence.
 
 === "PostgreSQL (SSL two way)"
     ``` yaml
@@ -39,7 +45,7 @@ Chutney depends on [SLF4J](https://www.slf4j.org/){:target="_blank"} API logging
 At runtime, the Chutney server use the [Logback](https://logback.qos.ch/){:target="_blank"} SLF4J implementation and bridges all legacy APIs (JCL, LOG4J and JUL).
 
 !!! warning
-Since the server bridges all legacy APIs, you must be careful to not include any of the following libraries :
+    Since the server bridges all legacy APIs, you must be careful to not include any of the following libraries :
 
     * jcl-over-slf4j
     * log4j-over-slf4j and slf4j-reload4j
