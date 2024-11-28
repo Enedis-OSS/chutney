@@ -86,10 +86,10 @@ A dataset contains :
 === "UI"
     ### Link dataset to a scenario
     
-    In scenario edition page:
+    In scenario edition page:  
     ![link-dataset-to-scenario-ui.png](../img/dataset/link-dataset-to-scenario-ui.png)
     
     ### Link dataset to a campaign
     
-    In campaign edition page:
+    In campaign edition page:  
     ![link-dataset-to-campaign-ui.png](../img/dataset/link-dataset-to-campaign-ui.png)

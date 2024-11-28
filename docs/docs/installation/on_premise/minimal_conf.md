@@ -12,14 +12,13 @@
 
 # Maven configuration
 
-Use [Spring Boot Build Tool Plugins](https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/build-tool-plugins.html#build-tool-plugins){:target="_blank"} to package Chutney as an executable jar.
+Use [Spring Boot Build Tool Plugins](https://docs.spring.io/spring-boot/build-tool-plugin/index.html){:target="_blank"} to package Chutney as an executable jar.
 
 === "maven"
     ``` xml
     <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.7.5</version>
         <configuration>
             <executable>true</executable>
             <layout>ZIP</layout>
@@ -105,10 +104,10 @@ This may depend on the underlying Chutney actions you are using.
     </dependency>
     ```
 
-    1. Example for using [SQL actions](/documentation/actions/sql) and query an Oracle database
-    2. Example for using [JMS actions](/documentation/actions/jms) with a WebLogic server
+    1. Example for using [SQL actions](/documentation/actions/sql.md) and query an Oracle database
+    2. Example for using [JMS actions](/documentation/actions/jms.md) with a WebLogic server
 
-Finally, add your own [Actions](/documentation/actions/) and [Functions](/documentation/functions/classpath) (see [extending Chutney](/documentation/actions/extension) for further details)
+Finally, add your own [Actions](/documentation/extension/action.md) and [Functions](/documentation/extension/function.md)
 
 === "maven"
     ``` xml
@@ -167,4 +166,4 @@ A [Logback configuration](https://logback.qos.ch/manual/configuration.html){:tar
 
 # Application.yml
 
-// TODO
+--8<-- "docs/common/todo.md"

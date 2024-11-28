@@ -21,7 +21,7 @@ In the following sections :
 
 # Using Chutney JUnit5 Engine
 
-When using the JUnit5 engine, we recommend you to use JSON files to [declare your environments and targets](/getting_started/write/#define-your-test-environment-alternative).
+When using the JUnit5 engine, we recommend you to use JSON files to [declare your environments and targets](/getting_started/write.md/#define-your-test-environment-alternative).
 
 Create a Kotlin file (ex. `Junit5SearchFeat.kt`) with the following content :
 
@@ -84,7 +84,7 @@ class SearchFeat {
                 <dependency>
                     <groupId>org.junit.jupiter</groupId>
                     <artifactId>junit-jupiter-engine</artifactId>
-                    <version>5.8.2</version>
+                    <version>5.10.1</version>
                 </dependency>
             </dependencies>
         </plugin>
@@ -123,7 +123,3 @@ success { }
 3. Step validation on the HTTP status succeed
 4. Information about which action was performed and with which parameters
 5. Information about the target on which the action was performed
-
-
-# Chutney Idea plugin
-You can run scenarios using our [IntelliJ Idea plugin](/getting_started/intellij_plugin).

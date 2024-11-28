@@ -21,16 +21,17 @@ nav:
   - Installation:
       - Local Development: installation/local_dev.md
       - On premise:
-          - Introduction: installation/on_premise/index.md
+          - installation/on_premise/introduction.md
           - Minimal configuration: installation/on_premise/minimal_conf.md
           - Further details: installation/on_premise/details.md
-      - Advance topics: installation/advance_topics.md
-      - CI/CD integration:
-          - synchronize: installation/ci_cd/scenario_sync.md
+      - Advanced topics: installation/advanced_topics.md
   - Documentation:
       - Write a scenario: documentation/write.md
+      - Synchronize: documentation/scenario_sync.md
+      - Dataset: documentation/dataset.md
+      - Idea Plugin: documentation/intellij_plugin.md
       - Actions:
-          - documentation/actions/index.md
+          - documentation/actions/introduction.md
           - AMQP: documentation/actions/amqp.md
           - Groovy: documentation/actions/groovy.md
           - HTTP: documentation/actions/http.md
@@ -45,8 +46,8 @@ nav:
           - Assertions: documentation/actions/assertions.md
           - Micrometer: documentation/actions/micrometer.md
           - Other: documentation/actions/other.md
-          - Extension: documentation/actions/extension.md
       - Functions:
+          - documentation/functions/introduction.md
           - Classpath: documentation/functions/classpath.md
           - Dates & Time: documentation/functions/datetime.md
           - Escape: documentation/functions/escape.md
@@ -59,8 +60,10 @@ nav:
           - String: documentation/functions/string.md
           - Wiremock: documentation/functions/wiremock.md
           - XPath: documentation/functions/xpath.md
-          - Extension: documentation/functions/extension.md
-#  - Toolbox: toolbox.md # hidden page
+      - Extension:
+          - Action: documentation/extension/action.md
+          - Function: documentation/extension/function.md
+          - Strategy: documentation/extension/strategy.md
 
 extra_css:
   - stylesheets/extra.css
@@ -89,6 +92,7 @@ theme:
         name: Switch to light mode
   features:
     - content.code.annotate
+    - content.code.copy
     - content.tabs.link
     - navigation.tracking
     - navigation.tabs
@@ -133,3 +137,9 @@ plugins:
   - redirects:
         redirect_maps:
           'install.md': 'index.md'   # to be removed after fixing in chutney
+
+validation:
+  links:
+    absolute_links: relative_to_docs
+    anchors: warn
+    unrecognized_links: warn

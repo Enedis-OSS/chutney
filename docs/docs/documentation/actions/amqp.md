@@ -107,7 +107,7 @@ Use this action to consume messages from a queue.
     |    *     | `queue-name`  | string      |            | Queue name.                         |
     |          | `nb-messages` | integer     |   1        | How many messages to be consumed. Throw error if got messages number is less than nb-messages.   |
     |          | `selector`    | string      |            |                                     |
-    |          | `timeout`     | [duration](/documentation/actions/other/#duration-type) | `"10 sec"` |   In how many time a consume connection must be established and messages must be read     |
+    |          | `timeout`     | [duration](/documentation/actions/other.md/#duration-type) | `"10 sec"` |   In how many time a consume connection must be established and messages must be read     |
     |          | `ack`         | boolean     |    true    | [Basic.ack](https://www.rabbitmq.com/confirms.html#acknowledgement-modes){:target=_blank} acknowledgements mode is used if true.    |
 
 === "Outputs"
@@ -147,7 +147,7 @@ Use this action to consume messages from a queue.
 # Basic get
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpBasicGetAction.java){:target="_blank"}"
 
-Use this action to have a direct access to available messages in a queue.
+Use this action to have direct access to available messages in a queue.
 
 === "Inputs"
 
@@ -239,7 +239,7 @@ Use this action to create a temporary queue and bind it to an existing exchange 
     ```
 
 !!! info
-    At the end of the scenario execution, the created binding and queue will be automatically deleted respectively by [amqp-unbind-queue](/documentation/actions/amqp/#unbind-queue) and [amqp-delete-queue](/documentation/actions/amqp/#delete-queue) final actions.
+    At the end of the scenario execution, the created binding and queue will be automatically deleted respectively by [amqp-unbind-queue](#unbind-queue) and [amqp-delete-queue](#delete-queue) final actions.
 
 
 # Unbind queue

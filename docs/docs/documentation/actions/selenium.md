@@ -46,7 +46,7 @@
 
 !!! important "About `web-driver` input"
 
-    Most actions requires a `web-driver` input. It's value comes from the output off the action [DriverInit](#driverInit).  
+    Most actions requires a `web-driver` input. It's value comes from the output off the actions [DriverInit](#driver-init) or [RemoteDriverInit](#remote-driver-init).  
     So the most probable value for it would come from the execution context : `${#webDriver}`
 
     **While required in a Chutney scenario, it is set by default using the Chutney Kotlin DSL so you don't need to provide it.**
@@ -102,7 +102,7 @@ See [WebDriver.close()](https://www.selenium.dev/selenium/docs/api/java/org/open
     SeleniumCloseAction()
     ```
 
-# DriverInit
+# Driver init
 
 !!! info "[Browse Implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/selenium/SeleniumDriverInitAction.java){:target="_blank"}"
 
@@ -146,7 +146,7 @@ This action instantiate a webdriver
     |:-----------:|:------------------------------------------------------------------------------------------------------------------|
     | `webDriver` | [WebDriver](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebDriver.html){:target="_blank"} |
 
-### Finally Action
+### Finally action
 
 Performs the action [Quit](#quit) when the scenario ends.
 
@@ -191,7 +191,7 @@ See [WebDriver.get(String url)](https://www.selenium.dev/selenium/docs/api/java/
     )
     ```
 
-# GetAttribute
+# Get attribute
 
 !!! info "[Browse Implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/selenium/SeleniumGetAttributeAction.java){:target="_blank"}"
 
@@ -225,7 +225,7 @@ See [WebElement.getAttribute()](https://www.selenium.dev/selenium/docs/api/java/
     )
     ```
 
-# GetText
+# Get text
 
 !!! info "[Browse Implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/selenium/SeleniumGetTextAction.java){:target="_blank"}"
 
@@ -300,7 +300,7 @@ See [WebDriver.quit()](https://www.selenium.dev/selenium/docs/api/java/org/openq
     |    *     | `web-driver` | String |         |
 
 
-# Remote Driver Init
+# Remote driver init
 
 !!! info "[Browse Implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/selenium/SeleniumRemoteDriverInitAction.java){:target="_blank"}"
 
@@ -350,7 +350,7 @@ See [WebDriver.quit()](https://www.selenium.dev/selenium/docs/api/java/org/openq
     | `webDriver` | [WebDriver](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebDriver.html){:target="_blank"} |
 
 
-### Finally Action
+### Finally action
 
 Performs the action [Quit](#quit) when the scenario ends.
 

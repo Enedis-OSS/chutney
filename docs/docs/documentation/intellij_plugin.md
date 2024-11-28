@@ -8,7 +8,7 @@
 This plugin provides support for working with Chutney scenarios files in IntelliJ IDEA based IDEs.
 # Installation
 
-* Download chutney-idea-plugin-X.Y.zip from [available releases](https://github.com/Enedis-OSS/chutney-idea-plugin/releases){:target=_blank}.
+* Download chutney-idea-plugin-X.Y.zip asset from [available releases](https://github.com/Enedis-OSS/chutney/releases){:target=_blank}.
 * In your Intellij Ide, go to File -> Settings -> Plugins.
 * Click install plugin from disc and select the downloaded zip.
   ![plugin installation](../img/idea_plugin/install-plugin.gif)
@@ -23,15 +23,15 @@ An environment named `GLOBAL` must be created in `intellij_config_folder/conf/GL
 You can get access to this file directly from your IDE
 ![config file](../img/idea_plugin/config_file.png)
 
-You can find [here](/getting_started/write/#define-your-test-environment-alternative) an example of how to declare an environment using JSON.
+You can find [here](/getting_started/write.md/#define-your-test-environment-alternative) an example of how to declare an environment using JSON.
 
 # Features
 !!! important
     To be recognized by the plugin, a scenario's json file must be suffixed with `.chutney.json`.
-    This file can be generated automatically by the [synchronize](/installation/ci_cd/scenario_sync/) feature.
+    This file can be generated automatically by the [synchronize](scenario_sync.md) feature.
 
 ## Completion
-The plugin use custom [Chutney JSON Schemas](https://github.com/Enedis-OSS/chutney-idea-plugin/blob/2.1/src/main/resources/chutney-v2.schema.json){:target=_blank} to enable code completion and validation in JSON Scenarios files.
+The plugin use custom [Chutney JSON Schemas](https://github.com/Enedis-OSS/chutney/blob/main/idea-plugin/src/main/resources/chutney-v2.schema.json){:target=_blank} to enable code completion and validation in JSON Scenarios files.
 
 Examples:
 === "target Completion"
@@ -53,9 +53,9 @@ You can run your scenario from the json file by clicking on:
   ![embedded Chutney](../img/idea_plugin/local_server.png)
 * run menu item in the contextual menu when right-click:
 
-    - on scenario json file.
+    - on scenario json file.  
       ![run scenario](../img/idea_plugin/run_scenario.png)
-    - on a folder. <br>
+    - on a folder.  
       ![run all](../img/idea_plugin/run_scenarios.png)
 
 You can also define a run configuration and choose if execution will be done on the embedded or the remote Chutney instance.

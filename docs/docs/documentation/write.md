@@ -5,4 +5,4 @@
   ~
 -->
 
-../getting_started/write.md
+--8<-- "docs/getting_started/write.md"

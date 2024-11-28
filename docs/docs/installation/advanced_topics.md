@@ -7,16 +7,16 @@
 
 # Spring Boot Server
 
-Following section shows how to configure the [Spring Boot server](https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/application-properties.html#appendix.application-properties.server){:target="_blank"}.
+Following section shows how to configure the [Spring Boot server](https://docs.spring.io/spring-boot/appendix/application-properties/index.html){:target="_blank"}.
 
 # Liquibase
 
-// TODO
+--8<-- "docs/common/todo.md"
 
 # Metrics
 
-Since Chutney relies on Spring Boot [Actuator](#spring-boot-actuator) and [Micrometer](https://micrometer.io/){:target="_blank"} auto-configuration, it includes [Prometheus](https://micrometer.io/docs/registry/prometheus) by default.  
-So you can find and use [default metrics](https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/actuator.html#actuator.metrics.supported) : JVM, System, Datasource, Loggers, Executors and Spring MVC metrics.
+Since Chutney relies on Spring Boot [Actuator](#actuator) and [Micrometer](https://micrometer.io/){:target="_blank"} autoconfiguration, it includes [Prometheus](https://micrometer.io/docs/registry/prometheus) by default.  
+So you can find and use [default metrics](https://docs.spring.io/spring-boot/reference/actuator/metrics.html#actuator.metrics.supported) : JVM, System, Datasource, Loggers, Executors and Spring MVC metrics.
 
 Moreover, Chutney provides following metrics and corresponding Micrometer tags :
 
@@ -38,14 +38,15 @@ Moreover, Chutney provides following metrics and corresponding Micrometer tags :
 !!! important
     Maven module [local-dev](https://github.com/Enedis-OSS/chutney/tree/main/chutney/packaging/local-dev) shows :
 
-    * How to use in memory authentication and roles, see the `mem-auth` profile.
-    * How to use a custom LDAP authentication (for example purpose, it uses an embedded LDAP server).
+    * How to use in memory authentication and roles, see the `mem-auth` profile  
+    * How to use a custom LDAP authentication (for example purpose, it uses an embedded LDAP server)  
+    * How to use a OIDC provider authentication (for example purpose, it uses a local server)
 
 Chutney uses Spring Security for :
 
 * Basic authentication
-* Enforce authentication and check authorization on API (ex. admin rights Spring Boot [Actuator](#spring-boot-actuator) endpoints)
-* Configuring in memory users and roles with a Spring profile [mem-auth](link) if needed
+* Enforce authentication and check authorization on API (ex. admin rights Spring Boot [Actuator](#actuator) endpoints)
+* Configuring in memory users and roles with the Spring profile `mem-auth` if needed
 
 
 ??? note "How to use in memory Spring profile `mem-auth`"
@@ -136,7 +137,7 @@ Spring Boot allows to configure session management.
 
 # Actuator
 
-Spring Boot provides [production-ready features](https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/actuator.html#actuator) with the Actuator module.
+Spring Boot provides [production-ready features](https://docs.spring.io/spring-boot/reference/actuator/index.html) with the Actuator module.
 Since Chutney includes this module, you can also configure it.
 
 !!! note "Actuator configuration examples"

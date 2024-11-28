@@ -24,7 +24,7 @@
 
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/AssertAction.java){:target="_blank"}"
 
-This action takes a list of assertions written using [SpEL](https://docs.spring.io/spring-framework/docs/5.3.23/reference/html/core.html#expressions-language-ref){:target="_blank"} and validates they are all true.
+This action takes a list of assertions written using [SpEL](https://docs.spring.io/spring-framework/reference/core/expressions/language-ref.html){:target="_blank"} and validates they are all true.
 === "Inputs"
 
     | Required | Name            | Type        |     Default     |
@@ -55,7 +55,7 @@ Asserts that JSON nodes have expected values.
     | Required | Name            | Type                |     Default     | Description                                                                                                                                                                                                                                         |
     |:--------:|:----------------|:--------------------|:----------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     |    *     | `document`      | String              |                 | json's string representation                                                                                                                                                                                                                        |
-    |    *     | `expected`      | Map<String, Object> |                 | Keys contain [json paths](https://github.com/json-path/JsonPath){:target="_blank"} used to extract json node's data. <br/> Values contain expected nodes values or [assertions functions](/documentation/actions/assertions/#assertions-functions). |
+    |    *     | `expected`      | Map<String, Object> |                 | Keys contain [json paths](https://github.com/json-path/JsonPath){:target="_blank"} used to extract json node's data. <br/> Values contain expected nodes values or [assertions functions](#assertions-functions). |
 
 === "Outputs"
     No outputs
@@ -88,7 +88,7 @@ Asserts that XML nodes have expected values.
     | Required | Name            | Type        |     Default     | Description                                                                                                                                                                                                                                            |
     |:--------:|:----------------|:------------|:----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     |    *     | `document`      | String      |                 | xml's string representation                                                                                                                                                                                                                            |
-    |    *     | `expected`      | Map         |                 | keys contain [xml paths](https://www.w3schools.com/xml/xml_xpath.asp){:target="_blank"} used to extract xml node's data.<br/> Values contain expected nodes values or [assertions functions](/documentation/actions/assertions/#assertions-functions). |
+    |    *     | `expected`      | Map         |                 | keys contain [xml paths](https://www.w3schools.com/xml/xml_xpath.asp){:target="_blank"} used to extract xml node's data.<br/> Values contain expected nodes values or [assertions functions](#assertions-functions). |
 
 === "Outputs"
     No outputs
@@ -116,7 +116,7 @@ Asserts that XML nodes have expected values.
     ```
 ## Assertions functions
 
-Placeholders used by [xml-assert](/documentation/actions/assertions/#xml-assert) and [json-assert](/documentation/actions/assertions/#json-assert) actions to assert actual values.
+Placeholders used by [xml-assert](#xml-assert) and [json-assert](#json-assert) actions to assert actual values.
 
 | Placeholder                                                                                                                                                                                     | Description                                            | Example                                            |
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------|:---------------------------------------------------|
@@ -138,7 +138,7 @@ Placeholders used by [xml-assert](/documentation/actions/assertions/#xml-assert)
 
 !!! Step validation 
     For functional validations, it's recommended to use above actions.
-    For technical validations, it's possible to do them on scenario step [validation](/documentation/actions/#validation).
+    For technical validations, it's possible to do them on scenario step [validation](/documentation/actions/introduction.md/#validation).
 
 ## Json validation
 

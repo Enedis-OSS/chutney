@@ -52,7 +52,7 @@ There is another way to declare environments and targets by using JSON files.
 Create a folder `.chutney/environments` in your project root folder.  
 Then, create a file `environment.json` with the following content :
 
-``` json
+```
 {
     "name" : "World Wide Web",
     "description" : "The World Wide Web",
@@ -92,10 +92,6 @@ Then, create a file `environment.json` with the following content :
     | `force`            | `Boolean`                  |           | `false`                 | if true, locally existing environments files will be overridden.</br>Else they will be kept unchanged |
 
 
-# Declare dataset
-Full dataset documentation can be found [here](../documentation/dataset.md).
-
-
 # Write a scenario
 
 Under `src/main/kotlin`, in the same package or another, create a Kotlin file (ex. `Scenarios.kt`) with the following content :
@@ -125,9 +121,9 @@ val search_scenario = Scenario(title = "Search documents") {
 * The scenario title `Search documents` will be shown in the execution report.
 * There are 2 steps `When I visit a search engine` and `Then I am on the front page`
 * The first step will execute an HTTP GET call on the target name `search_engine` on the uri `/`
-    * It also has one [validation](/documentation/actions/#validation) `request accepted` to check the response code status is 200.
+    * It also has one [validation](/documentation/actions/introduction.md/#validation) `request accepted` to check the response code status is 200.
 * The second step does nothing meaningful in this example
 
 !!! tip "Et voilà !"
     You have successfully setup and written your first scenario using Chutney.  
-    Now, you will see how to [run it ! :material-rocket-launch:](/getting_started/run "🏃")
+    Now, you will see how to [run it ! :material-rocket-launch:](/getting_started/run.md "🏃")

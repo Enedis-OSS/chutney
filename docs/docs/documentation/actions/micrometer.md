@@ -181,9 +181,9 @@ metric.
     |                      | `description`                  | String                           | Timer  description                                       |
     |                      | `tags`                         | List<String\>                    | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements   |
     |                      | `bufferLength`                 | Integer as String                | Distribution statistic buffer length |
-    |                      | `expiry`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type) | Distribution statistic expiry |
-    |                      | `maxValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type) | Timer max duration |
-    |                      | `minValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type) | Timer min duration |
+    |                      | `expiry`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distribution statistic expiry |
+    |                      | `maxValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Timer max duration |
+    |                      | `minValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Timer min duration |
     |                      | `percentilePrecision`          | Integer as String                | Percentile precision                                      |
     |                      | `publishPercentilesHistogram`  | Boolean                          | Publish percentile histogram or not                       |
     |                      | `percentiles`                  | String                           | Comma separated list of doublepercentiles doubles         |
@@ -191,7 +191,7 @@ metric.
     | if `name` is null    | `timer`                        | [Timer](https://micrometer.io/docs/concepts#_gauges:~:text=11.-,Timers,-Timers%20are%20intended){:target=_blank}  | Timer instance. |
     |                      | `registry`                     | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}   | Creates and manages your application's set of meters  |
     |                      | `timeunit`                     | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String | Time unit                                                 |
-    |                      | `record`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type)       | The timer will be updated by the record duration |
+    |                      | `record`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type)       | The timer will be updated by the record duration |
 
 === "Outputs"
 
@@ -281,9 +281,9 @@ Use this action to report a [distribution summary](https://micrometer.io/docs/co
     |                                       | `description`                  | String                           | Distrubution summary description                                       |
     |                                       | `tags`                         | List<String\>                    | Key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements   |
     |                                       | `bufferLength`                 | Integer as String                | Distribution statistic buffer length |
-    |                                       | `expiry`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type) | Distribution statistic expiry |
-    |                                       | `maxValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type) | Distrubution max duration |
-    |                                       | `minValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other/#duration-type) | Distrubution min duration |
+    |                                       | `expiry`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distribution statistic expiry |
+    |                                       | `maxValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distrubution max duration |
+    |                                       | `minValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distrubution min duration |
     |                                       | `percentilePrecision`          | Integer as String                | Percentile precision                                      |
     |                                       | `publishPercentilesHistogram`  | Boolean                          | Publish percentile histogram or not                       |
     |                                       | `percentiles`                  | String                           | Comma separated list of doublepercentiles doubles         |

@@ -8,7 +8,7 @@
 # Synchronize *your* kotlin scenario with a server
 
 ## Create your Kotlin scenario locally
-Follow [this](/getting_started/write/#write-a-scenario) documentation to write your first Kotlin scenario.
+Follow [this](/documentation/write/#write-a-scenario) documentation to write your first Kotlin scenario.
 
 ## Create your scenario on chutney server
 

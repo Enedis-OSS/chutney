@@ -8,6 +8,7 @@
 [![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml){:target="_blank"}
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server){:target="_blank"}
 [![GitHub release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases/latest){:target="_blank"}
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ----
 **Spice up your spec , Better `taste` your app !**
@@ -15,8 +16,8 @@
 Chutney helps you test deployed applications and validate functional requirements.  
 Chutney provides you a set of capabilities for executing your scenario without having to write and maintain glue code.  
 
-:material-rocket-launch: Install, configure, write and run your first scenario [here](getting_started/requirements) !  
-:octicons-book-16: You can find out a comprehensive list of what Chutney can do in the [documentation](documentation/actions).
+:material-rocket-launch: Install, configure, write and run your first scenario [here](/getting_started/requirements.md) !  
+:octicons-book-16: You can find out a comprehensive list of what Chutney can do in the [documentation](/documentation/actions/introduction.md).
 
 ----
 # Why another test tool ?

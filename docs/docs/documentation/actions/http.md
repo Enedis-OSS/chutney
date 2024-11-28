@@ -65,7 +65,7 @@
     |    *     | `target`  | String                                                           |           |
     |    *     | `uri`     | String                                                           |           |
     |          | `headers` | Map<String, String\>                                             |           |
-    |          | `timeout` | [Duration](/documentation/actions/other/#duration-type) (String) | "2000 ms" |
+    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms" |
 
 === "Outputs"
 
@@ -100,7 +100,7 @@
     |    *     | `uri`     | String                                                           |            |
     |          | `body`    | String                                                           | `{}`       |
     |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other/#duration-type) (String) | "2000 ms"  |
+    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
 
 === "Outputs"
 
@@ -135,7 +135,7 @@
     |    *     | `uri`     | String                                                           |            |
     |          | `body`    | String                                                           | `{}`       |
     |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other/#duration-type) (String) | "2000 ms"  |
+    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
 
 === "Outputs"
 
@@ -169,7 +169,7 @@
     |    *     | `target`  | String                                                           |            |
     |    *     | `uri`     | String                                                           |            |
     |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other/#duration-type) (String) | "2000 ms"  |
+    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
 
 === "Outputs"
 
@@ -204,7 +204,7 @@
     |    *     | `uri`     | String                                                           |            |
     |          | `body`    | String                                                           | `{}`       |
     |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other/#duration-type) (String) | "2000 ms"  |
+    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
 
 === "Outputs"
 

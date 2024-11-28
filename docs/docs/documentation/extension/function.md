@@ -5,17 +5,20 @@
   ~
 -->
 
+<h1>Custom function</h1>
+
 When you need a custom function which is not provided by Chutney, you can implement it and load it to your chutney server.
 
-# Implement your custom function
-* Create a new java class.
-* Declare a static method and implement it.
-* Annotate it with `@SpelFunction`.
+# Implement
+
+ * Create a new java class.
+ * Declare a static method and implement it.
+ * Annotate it with `@SpelFunction`.
 
 !!! warning
     Method overloading does not work with SpEL.
 
-Example
+=== "Custom function"
 
 ``` java
     package my.custom.package;
@@ -34,23 +37,24 @@ Example
 }
 ```
 
-# Load it to Chutney
-* create a `chutney.functions` in resources/META-INF/extension
-* declare your custom class inside it:
+# Package
+
+ 1. Create a `chutney.functions` in resources/META-INF/extension.
+
+ 2. Declare your custom class inside it  
     ```
     my.custom.package.MyCustomFunctions
-
     ```
-  
 
-* Restart Chutney server and all annotated methods with `@SpelFunction` are now loaded.
-    </br> Check your server log, you will see something like: </br>
-    `[main] DEBUG c.c.e.d.e.evaluation.SpelFunctions - Loading function: stringSum (MyCustomFunctions)`
+ 3. Restart Chutney server and all annotated methods with `@SpelFunction` are now loaded.
 
-# Use it
-Call your custom function from your Kotlin scenario:
+    !!! info "Custom function starting server debug log"
+        Check your server log, you will see something like  
+        `[main] DEBUG c.c.e.d.e.evaluation.SpelFunctions - Loading function: stringSum (MyCustomFunctions)`
 
-Example:
+# Use
+
+Call your custom function from your Kotlin scenario.
 
 ``` kotlin
     import com.chutneytesting.kotlin.dsl.AssertAction
@@ -60,10 +64,10 @@ Example:
         When("I test my string sum function") {
             AssertAction(
                 asserts = listOf(
-                    "\${#stringSum(\"1\", \"2\") == 3}",
-                    "\${#stringSum(\"1\", null) == 1}",
-                    "\${#stringSum(null, \"2\") == 2}",
-                    "\${#stringSum(null, null) == 0}",
+                    "stringSum('1', '2') == 3".spEL(),
+                    "stringSum('1', null) == 1".spEL(),
+                    "stringSum(null, '2') == 2".spEL(),
+                    "stringSum(null, null) == 0".spEL(),
                 ),
             )
         }

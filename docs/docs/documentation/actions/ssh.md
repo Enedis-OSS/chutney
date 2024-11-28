@@ -58,7 +58,7 @@
     |    *     | `target`      | String                                                           |         |
     |    *     | `source`      | String                                                           |         |
     |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other/#duration-type)) | `5 sec` |
+    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
 
 SCP download has no outputs
 
@@ -89,7 +89,7 @@ ScpDownloadAction(
     |    *     | `target`      | String                                                           |         |
     |    *     | `source`      | String                                                           |         |
     |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other/#duration-type)) | `5 sec` |
+    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
 
 SCP upload has no outputs
 
@@ -125,7 +125,7 @@ ScpUploadAction(
     |    *     | `target`      | String                                                           |         |
     |    *     | `source`      | String                                                           |         |
     |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other/#duration-type)) | `5 sec` |
+    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
 
 SFTP download has no outputs
 
@@ -155,7 +155,7 @@ SftpDownloadAction(
     |:--------:|:----------|:-----------------------------------------------------------------|:-------:|
     |    *     | `target`  | String                                                           |         |
     |    *     | `file`    | String                                                           |         |
-    |          | `timeout` | String ([Duration](/documentation/actions/other/#duration-type)) | `5 sec` |
+    |          | `timeout` | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
 
 === "Outputs"
 
@@ -191,7 +191,7 @@ SftpFileInfoAction(
     |:--------:|:------------|:-----------------------------------------------------------------|:-------:|
     |    *     | `target`    | String                                                           |         |
     |    *     | `directory` | String                                                           |         |
-    |          | `timeout`   | String ([Duration](/documentation/actions/other/#duration-type)) | `5 sec` |
+    |          | `timeout`   | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
 
 === "Outputs"
 
@@ -224,7 +224,7 @@ SftpListDirAction(
     |    *     | `target`      | String                                                           |         |
     |    *     | `source`      | String                                                           |         |
     |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other/#duration-type)) | `5 sec` |
+    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
 
 SCP upload has no outputs
 
@@ -279,7 +279,7 @@ SshClientAction(
 ```
 
 1. Syntax is either a list of String or a List of Command in JSON (ex. {command: "xxx", timeout:"10 s"})  
-   You can set a timeout for each command, format is a [Duration](/documentation/actions/other/#duration-type)  
+   You can set a timeout for each command, format is a [Duration](/documentation/actions/other.md/#duration-type)  
    Default timeout value is 5 seconds
 
 ### CommandResult
@@ -306,6 +306,6 @@ The following attributes can be used in SpEL :
 
 * `command`: Get the actual command (String)  
   -> `${#command.command}`
-* `timeout`: Get the command timeout ([Duration](/documentation/actions/other/#duration-type))  
+* `timeout`: Get the command timeout ([Duration](/documentation/actions/other.md/#duration-type))  
   -> `${#command.timeout}`
 
