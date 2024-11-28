@@ -8,7 +8,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { EMPTY, Observable, of, Subscription, zip } from 'rxjs';
+import { EMPTY, Observable, of, Subscription, timer, zip } from 'rxjs';
 import { delay, map, repeat, switchMap, tap } from 'rxjs/operators';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
@@ -100,9 +100,10 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
 
     private replay() {
         const lastReport = this.campaignReports[0]
-        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset).pipe(
-            map(campaignExecutionReport => this.refreshCampaign())
-        ).subscribe()
+        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset).subscribe()
+        timer(1000).pipe(
+            switchMap(() => of(this.eventManagerService.broadcast({ name: 'execute', env: lastReport.report.executionEnvironment })))
+        ).subscribe();
     }
 
     private checkForRefresh() {
