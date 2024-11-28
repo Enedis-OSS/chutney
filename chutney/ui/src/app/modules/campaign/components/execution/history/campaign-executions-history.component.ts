@@ -102,7 +102,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
         const lastReport = this.campaignReports[0]
         this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset).subscribe()
         timer(1000).pipe(
-            switchMap(() => of(this.eventManagerService.broadcast({ name: 'execute', env: lastReport.report.executionEnvironment })))
+            switchMap(() => of(this.refreshCampaign()))
         ).subscribe();
     }
 
