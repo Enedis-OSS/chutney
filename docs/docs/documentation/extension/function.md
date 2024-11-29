@@ -39,18 +39,24 @@ When you need a custom function which is not provided by Chutney, you can implem
 
 # Package
 
- 1. Create a `chutney.functions` in resources/META-INF/extension.
+ 1. Declare your custom actions full class names inside the file `META-INF/extension/chutney.functions`.
+   ```
+   my.custom.package.MyCustomFunctions
+   ```
 
- 2. Declare your custom class inside it  
-    ```
-    my.custom.package.MyCustomFunctions
-    ```
-
- 3. Restart Chutney server and all annotated methods with `@SpelFunction` are now loaded.
+ 2. Add your custom functions' code and meta file in the classpath of a Chutney engine.
 
     !!! info "Custom function starting server debug log"
         Check your server log, you will see something like  
-        `[main] DEBUG c.c.e.d.e.evaluation.SpelFunctions - Loading function: stringSum (MyCustomFunctions)`
+        ```
+        [main] DEBUG c.c.e.d.e.evaluation.SpelFunctions - Loading function: stringSum (MyCustomFunctions)
+        ```
+
+!!! tip "Add custom functions to an already packaged Chutney server"
+
+    1. Package a JAR archive with your custom functions and associated meta file.
+    2. Use the [`loader.path`](https://docs.spring.io/spring-boot/specification/executable-jar/property-launcher.html){:target=_blank} Java system properties to add your archive to classpath.
+
 
 # Use
 

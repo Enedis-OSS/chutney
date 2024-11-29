@@ -9,7 +9,7 @@ Following section shows how to configure the [Spring Boot server](https://docs.s
 
 # Liquibase
 
---8<-- "docs/common/todo.md"
+--8<-- "docs/common/coming_soon.md"
 
 # Metrics
 
@@ -21,11 +21,11 @@ Moreover, Chutney provides following metrics and corresponding Micrometer tags :
 * `scenario_execution_count` counter (execution status, scenario id, scenario tags) is incremented after a scenario execution.
 * `scenario_execution_timer` timer (execution status, scenario id, scenario tags) is recorded after a scenario execution.
 * `scenario_in_campaign_gauge` gauge (campaign id, execution status) counts the scenario execution status after a campaign execution.
-* `campaign_execution_count` counter (campaign id, campaign title, execution status) is incremented after a campaign execution..
+* `campaign_execution_count` counter (campaign id, campaign title, execution status) is incremented after a campaign execution.
 * `campaign_execution_timer` timer (campaign id) is recorded after a campaign execution.
 
 !!! important
-    We won't document how to collect and manage your metrics outside Chutney.  
+    We won't thoroughly document how to collect and manage your metrics outside Chutney (even if the [demo](/getting_started/demo.md/#supervision-bonus) includes one).  
     Some hints could be :
 
     * Use the Actuator Prometheus endpoint to get the metrics with the appropriate format

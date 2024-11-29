@@ -104,7 +104,7 @@ Asserting a step depends on your feature and requirements.
 For example, if an HTTP GET request returns a status code 500, the step is _technically_ complete and succeed.  
 But, you may want to fail the step if the status is different from 200.
 
-Each validation has a name and evaluates to a boolean, using [expressions](/common/todo.md) and [functions](/common/todo.md). 
+Each validation has a name and evaluates to a boolean, using [expressions](/common/coming_soon.md) and [functions](/common/coming_soon.md). 
 
 === "Kotlin"
 

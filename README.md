@@ -50,8 +50,8 @@ Still asking yourself ["Why another test tool ?"](https://www.chutney-testing.co
 -------------
 ## <a name="demo"></a> Demo
 
-Follow [this](https://github.com/Enedis-OSS/chutney/tree/main/example/.docker#demo-server-container-using-docker-compose) documentation to launch a [docker compose](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/dev-docker-compose-demo.yml) stack.  
-The Chutney web interface should be visible at http://localhost (admin/Admin).
+Follow the [documentation](https://www.chutney-testing.com/getting_started/demo/) to launch a Chutney demo container.  
+The Chutney web interface should be visible at http://localhost.
 
 -------------
 

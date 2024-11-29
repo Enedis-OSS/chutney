@@ -5,7 +5,7 @@
   ~
 -->
 
-If you want to have a quick tour of Chutney, a [demonstration container](https://github.com/Enedis-OSS/chutney/blob/a55aadce85de6fa99c0d653286200a16bfdf1176/example/.docker/dev-docker-compose-demo.yml){:target="_blank"} could be launched locally.
+If you want to have a quick tour of Chutney, a [demonstration container](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/dev-docker-compose-demo.yml){:target="_blank"} could be launched locally.
 
 !!! note "Launch demonstration container"
 
