@@ -190,7 +190,7 @@
                 <ngb-highlight [result]="execution.user" [term]="filtersForm.get('keyword').value"></ngb-highlight>
               </td>
               <td>
-                <div class="float-end d-flex">
+                <div class="float-end d-flex" *hasAuthorization="[Authorization.SCENARIO_WRITE]">
                   <button class="btn btn-sm btn-primary me-2" (click)="replay(execution, $event)"
                           [ngbTooltip]="'global.actions.replay' | translate" placement="left">
                       <i  class="bi bi-repeat" ></i>
