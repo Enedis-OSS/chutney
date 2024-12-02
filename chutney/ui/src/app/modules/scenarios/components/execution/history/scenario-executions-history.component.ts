@@ -95,17 +95,17 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
         this.updateQueryParams();
     }
 
-
     openReport(request: { execution: Execution, focus: boolean }) {
+        if (this.isStillOnThePage()) {
+            let tabs = this.tabs;
+            if (!this.isOpened(request.execution.executionId.toString())) {
+                tabs = tabs.concat(request.execution);
+            }
+            this.tabFilters['open'] = tabs.map(exec => exec.executionId).toString();
+            this.tabFilters['active'] = request.focus ? request.execution.executionId : null;
 
-        let tabs = this.tabs;
-        if (!this.isOpened(request.execution.executionId.toString())) {
-            tabs = tabs.concat(request.execution);
+            this.updateQueryParams();
         }
-        this.tabFilters['open'] = tabs.map(exec => exec.executionId).toString();
-        this.tabFilters['active'] = request.focus ? request.execution.executionId : null;
-
-        this.updateQueryParams();
     }
 
     onTabChange(changeEvent: NgbNavChangeEvent) {
@@ -317,5 +317,9 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
             }
         }
         );
+    }
+
+    private isStillOnThePage(): boolean {
+        return this.scenarioExecutionLast$ && !this.scenarioExecutionLast$.closed;
     }
 }
