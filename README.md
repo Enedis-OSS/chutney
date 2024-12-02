@@ -10,7 +10,6 @@
 
 [![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/559893368d134d729b204891e3ce0239)](https://www.codacy.com/gh/chutney-testing/chutney?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=chutney-testing/chutney&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://codecov.io/gh/Enedis-OSS/chutney/branch/master/graph/badge.svg)](https://codecov.io/gh/chutney-testing/chutney/)
 [![REUSE](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server)
@@ -45,7 +44,7 @@ In addition, Chutney provide SpEL evaluation and extensible [Function](https://g
 
 [Find out more in the documentation !](https://www.chutney-testing.com/)
 
-Still asking yourself ["Why another test tool ?"](https://www.chutney-testing.com/concepts/)
+Still asking yourself ["Why another test tool ?"](https://www.chutney-testing.com/#why-another-test-tool)
 
 -------------
 ## <a name="demo"></a> Demo
@@ -64,7 +63,7 @@ See [Start a server](https://www.chutney-testing.com/installation/local_dev/#sta
 
 #### On premise
 
-See [installation on premise](https://www.chutney-testing.com/installation/on_premise/), for details if you want to customize your own version of chutney server.
+See [installation on premise](https://www.chutney-testing.com/installation/on_premise/introduction/), for details if you want to customize your own version of chutney server.
 
 -------------
 

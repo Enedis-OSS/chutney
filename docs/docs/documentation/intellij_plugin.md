@@ -23,12 +23,12 @@ An environment named `GLOBAL` must be created in `intellij_config_folder/conf/GL
 You can get access to this file directly from your IDE
 ![config file](../img/idea_plugin/config_file.png)
 
-You can find [here](/getting_started/write.md/#define-your-test-environment-alternative) an example of how to declare an environment using JSON.
+You can find [here](/getting_started/write.md/#define-a-test-environment-alternative) an example of how to declare an environment using JSON.
 
 # Features
 !!! important
     To be recognized by the plugin, a scenario's json file must be suffixed with `.chutney.json`.
-    This file can be generated automatically by the [synchronize](scenario_sync.md) feature.
+    This file can be generated automatically by the [synchronize](synchronize.md) feature.
 
 ## Completion
 The plugin use custom [Chutney JSON Schemas](https://github.com/Enedis-OSS/chutney/blob/main/idea-plugin/src/main/resources/chutney-v2.schema.json){:target=_blank} to enable code completion and validation in JSON Scenarios files.
@@ -51,7 +51,7 @@ You can run your scenario from the json file by clicking on:
 * run icon. Scenario will be executed on the embedded Chutney Instance.
  The embedded server will run on a toolWindow where you can see the logs
   ![embedded Chutney](../img/idea_plugin/local_server.png)
-* run menu item in the contextual menu when right-click:
+* run menu item in the contextual menu when right-clicked:
 
     - on scenario json file.  
       ![run scenario](../img/idea_plugin/run_scenario.png)

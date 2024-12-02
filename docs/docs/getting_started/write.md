@@ -7,7 +7,7 @@
 
 In order to write a scenario, you also need to declare environments and services you want to test.
 
-# Define your test environment
+# Define a test environment
 
 ## Declare a target
 
@@ -45,7 +45,7 @@ val environment = ChutneyEnvironment(
 * The environment `name` and `description` can be anything meaningful to you. The name will be shown in the execution report.
 * The variable name `environment` is a reference to set the environment on running tests
 
-# Define your test environment (alternative)
+# Define a test environment (alternative)
 
 There is another way to declare environments and targets by using JSON files.
 

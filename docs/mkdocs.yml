@@ -16,8 +16,8 @@ nav:
   - Getting Started:
       - Demo: getting_started/demo.md
       - Requirements: getting_started/requirements.md
-      - Write your first scenario: getting_started/write.md
-      - Run your scenario: getting_started/run.md
+      - Write a scenario: getting_started/write.md
+      - Run a scenario: getting_started/run.md
   - Installation:
       - Local Development: installation/local_dev.md
       - On premise:
@@ -27,7 +27,7 @@ nav:
       - Advanced topics: installation/advanced_topics.md
   - Documentation:
       - Write a scenario: documentation/write.md
-      - Synchronize: documentation/scenario_sync.md
+      - Synchronize: documentation/synchronize.md
       - Dataset: documentation/dataset.md
       - Idea Plugin: documentation/intellij_plugin.md
       - Actions:

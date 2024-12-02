@@ -20,12 +20,13 @@ Chutney provides you a set of capabilities for executing your scenario without h
 :octicons-book-16: You can find out a comprehensive list of what Chutney can do in the [documentation](/documentation/actions/introduction.md).
 
 ----
+
 # Why another test tool ?
 
 Chutney is an opinionated test tool based upon the practice of Specification by Example.
 
 Chutney was inspired by Seb Rose blog post in which he revised the test pyramid according to test readability
-[The Testing Iceberg](http://claysnow.co.uk/the-testing-iceberg/)
+[The Testing Iceberg](http://claysnow.co.uk/the-testing-iceberg/){:target="_blank"}
 
 Chutney is not exactly what Seb Rose meant by using this metaphor.
 
@@ -66,7 +67,7 @@ is also valuable.
 
 # Why Choose Chutney ?
 
-Chutney stands out for its simple and flexible approach to test automation, focusing on complex scenarios and end-to-end testing. Compared to other similar tools like [Cucumber](https://cucumber.io/) or [Karate](https://karatelabs.github.io/karate/), here are some key points :
+Chutney stands out for its simple and flexible approach to test automation, focusing on complex scenarios and end-to-end testing. Compared to other similar tools like [Cucumber](https://cucumber.io/){:target="_blank"} or [Karate](https://karatelabs.github.io/karate/){:target="_blank"}, here are some key points :
 
  * **Simplified DSL**  
    Chutney offers a Kotlin-based Domain-Specific Language (DSL) that allows writing readable and easy-to-maintain scenarios for developers. This is an attractive alternative for teams preferring a more structured language than the one used by Cucumber with regexp.
@@ -78,7 +79,7 @@ Chutney stands out for its simple and flexible approach to test automation, focu
    Chutney includes an interface specifically designed for non-developers, enabling them to execute tests, plan test campaigns, and analyze reports with ease. This sets it apart from other tools like Cucumber or Karate, which often require technical expertise for these tasks. This accessibility bridges the gap between technical and non-technical teams, fostering collaboration and improving efficiency.
 
  * **Multi-level Gherkin-like language**  
-   Quoting the [Glacio](https://github.com/fridujo/glacio) project
+   Quoting the [Glacio](https://github.com/fridujo/glacio){:target="_blank"} project
 
     > There is a common problem encountered using BDD tools like Cucumber.
     > This is:
@@ -97,6 +98,29 @@ Finally, Chutney is production ready and used in companies by two main types of 
   These users leverage Chutney in a project-based mode to validate their developments. Typically, they use it at the end of the CI/CD pipeline to ensure their work meets integration and functional requirements after deployment.
 * Cross-Application Testing Teams  
   Dedicated testing teams use Chutney across multiple interconnected applications. These teams focus on validating complex integrations and ensuring that end-to-end scenarios work seamlessly in large systems with various dependencies.
+
+# Docker
+
+Along each Chutney release, some built docker images are pushed to the [GitHub Chutney repo](https://github.com/orgs/Enedis-OSS/packages?repo_name=chutney){:target="_blank"} :
+
+* [chutney-server](https://github.com/orgs/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server){:target="_blank"}  
+  This [image](https://github.com/Enedis-OSS/chutney/blob/main/chutney/.docker/server/Dockerfile){:target="_blank"} contains the Chutney server instance with embedded ui.
+
+* [chutney-ui](https://github.com/orgs/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-ui){:target="_blank"}  
+  This [image](https://github.com/Enedis-OSS/chutney/blob/main/chutney/.docker/ui/Dockerfile){:target="_blank"} contains only the Chutney ui.
+    
+* [chutney-demo](https://github.com/orgs/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-demo){:target="_blank"}  
+  This [image](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/demo/Dockerfile){:target="_blank"} contains a Chutney server with some scenarios and campaigns samples.  
+  Check [this](/getting_started/demo.md) for more !!
+
+!!! info "Details and compose"
+
+    For more details information, check the server and ui [readme](https://github.com/Enedis-OSS/chutney/blob/main/chutney/.docker/README.md){:target="_blank"} and the demo [one](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/README.md){:target="_blank"}.  
+    Some Docker compose files are also present in source code to play with.
+
+??? tip "Legacy repo before 3.0.0"
+
+    Checkout for this [legacy repo](https://github.com/orgs/chutney-testing/packages){:target="_blank"} for docker images before version 3.0.0.
 
 # Front end
 

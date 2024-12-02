@@ -5,12 +5,12 @@
   ~
 -->
 
-# Synchronize *your* kotlin scenario with a server
+<h1>Synchronize a Kotlin scenario with a server</h1>
 
-## Create your Kotlin scenario locally
-Follow [this](/documentation/write/#write-a-scenario) documentation to write your first Kotlin scenario.
+# Create a Kotlin scenario locally
+Follow [this](/documentation/write.md/#write-a-scenario) documentation to write your first Kotlin scenario.
 
-## Create your scenario on chutney server
+# Create a scenario on chutney server
 
 To create your scenario on a Chutney server from your IDE,
 
@@ -76,7 +76,7 @@ To create your scenario on a Chutney server from your IDE,
 
     Now your scenario is created on the server ! :material-rocket:
 
-## Update your scenario on chutney server
+# Update a scenario on chutney server
 
 After editing your scenario kotlin code, jut call synchronize function again.
 
@@ -90,7 +90,7 @@ Now your scenario is updated on Chutney server ! :material-rocket-launch:
     * Call synchronize main from an integration server(jenkins, gitlab CI, github actions...) to update scenarios on your remote Chutney instance.
     * Synchronize call can be scheduled just before running your test campaigns to have up-to-date scenarios.
 
-## Configure your environment on the server
+# Configure an environment on the server
 
 Now, the last step before running your scenario from the server is to setup environments and targets.
 
