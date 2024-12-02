@@ -6,7 +6,7 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
-import { Execution, GwtTestCase } from '@model';
+import { Authorization, Execution, GwtTestCase } from '@model';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -48,6 +48,8 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     private executionIdToDelete :number = null;
 
     private readonly iso_Date_Delimiter = '-';
+
+    Authorization = Authorization;
 
     @Input() executions: Execution[] = [];
     @Input() scenario: GwtTestCase;
