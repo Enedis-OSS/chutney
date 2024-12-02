@@ -45,10 +45,10 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     private campaignExecutionLast: Subscription;
 
     constructor(private route: ActivatedRoute,
-                private router: Router,
-                private campaignService: CampaignService,
-                private eventManagerService: EventManagerService,
-                private jiraPluginConfigurationService: JiraPluginConfigurationService) {
+        private router: Router,
+        private campaignService: CampaignService,
+        private eventManagerService: EventManagerService,
+        private jiraPluginConfigurationService: JiraPluginConfigurationService) {
     }
 
     ngOnInit(): void {
@@ -87,7 +87,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private refreshOpenTabs(): void {
-        for(var i=0; i<this.tabs.length; i++) {
+        for (var i = 0; i < this.tabs.length; i++) {
             if (this.tabs[i].isRunning()) {
                 this.tabs[i].refresh(this.campaignReports.find((cr) => cr.report.executionId === this.tabs[i].report.executionId));
             }
@@ -129,7 +129,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private refreshCampaign() {
-        if (this.campaign.scenarios.length > 0) {
+        if (this.isStillOnThePage() && this.campaign.scenarios.length > 0) {
             this.campaign$().subscribe(c => {
                 this.openReport({ execution: this.campaignReports[0], focus: true });
             });
@@ -141,7 +141,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     getActiveTab(): string {
-        if(this.activeTab === CampaignExecutionsHistoryComponent.LAST_ID) {
+        if (this.activeTab === CampaignExecutionsHistoryComponent.LAST_ID) {
             return this.campaign.campaignExecutionReports[0]?.executionId?.toString();
         }
         return this.activeTab;
@@ -154,7 +154,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private updateQueryParams() {
-        let queryParams = this.cleanParams({...this.executionsFilters, ...this.tabFilters});
+        let queryParams = this.cleanParams({ ...this.executionsFilters, ...this.tabFilters });
         this.router.navigate([], {
             relativeTo: this.route,
             queryParams: queryParams
@@ -201,7 +201,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     set executionsFilters(value: Params) {
-        const {open, active, ...executionsParams} = value;
+        const { open, active, ...executionsParams } = value;
         this._executionsFilters = executionsParams;
         this.updateQueryParams();
     }
@@ -294,5 +294,9 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
         if (this.isRefreshActive()) {
             this.refreshSubscription.unsubscribe();
         }
+    }
+
+    private isStillOnThePage(): boolean {
+        return this.onExecuteSubscription && !this.onExecuteSubscription.closed;
     }
 }
