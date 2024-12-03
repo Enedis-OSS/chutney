@@ -7,11 +7,19 @@
 
 ??? info "Browse implementations"
 
-    - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsSenderAction.java){:target="_blank"}
-    - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsListenerAction.java){:target="_blank"}
-    - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsCleanQueueAction.java){:target="_blank"}
+    === "JMS"
 
-!!! note "Define a jms target"
+        - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsSenderAction.java){:target="_blank"}
+        - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsListenerAction.java){:target="_blank"}
+        - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsCleanQueueAction.java){:target="_blank"}
+
+    === "Jakarta"
+
+        - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaSenderAction.java){:target="_blank"}
+        - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaListenerAction.java){:target="_blank"}
+        - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaCleanQueueAction.java){:target="_blank"}
+
+!!! note "Define a jms or jakarta target"
 
     * Default `connectionFactoryName` is `ConnectionFactory`
     * To configure ssl, by default we add these properties in InitialContext : 
@@ -25,12 +33,12 @@
     In order to provide more configuration, you should prefix all other target properties with `jndi.`.  
     By example, if you want to add `com.specific.vendor.properties` key, the key should be `jndi.com.specific.vendor.properties`
 
-```json title="Jms target example"
+```json title="Jms/Jakarta target example"
 {
     "name": "JMS_TARGET",
     "url": "ssl://my.jms.server:61616",
     "properties": {
-        "connectionFactoryName": "MyConnectionFactory"
+        "connectionFactoryName": "MyConnectionFactory",
         "java.naming.factory.initial": "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         
         "username": "myUsername", // (1)
@@ -39,7 +47,7 @@
         "trustStorePassword": "myTrustStorePassword",
         "keyStore": "/home/APP/security/mykeyStore.jks",
         "keyStorePassword": "mykeyStorePassword",
-        "keyPassword": "myKeyStoreKeyPassword",
+        "keyPassword": "myKeyStoreKeyPassword"
     }
 }
 ```
@@ -47,8 +55,9 @@
 1. Valid properties are `username` or `user`. Set this for basic authentication
 2. Valid properties are `userPassword` or `password`. Set this for basic authentication
 
-# Jms Sender
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsSenderAction.java){:target="_blank"}"
+# Sender
+
+!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsSenderAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaSenderAction.java){:target="_blank"} implementation"
 
 === "Inputs"
 
@@ -64,23 +73,34 @@ No output. Only a log in report if message was successfully sent
 
 ### Example
 
-=== "Kotlin"
-``` kotlin
-JmsSenderAction(
-    target = "JMS_TARGET",
-    destination = "jms/domain/my/queue",
-    body = "my text body"
-    attributes = mapOf(
-        "jms.MyProperty" to "some value"
+=== "JMS"
+    ``` kotlin
+    JmsSenderAction(
+        target = "JMS_TARGET",
+        destination = "jms/domain/my/queue",
+        body = "my text body"
+        attributes = mapOf(
+            "jms.MyProperty" to "some value"
+        )
     )
-)
-```
+    ```
+=== "Jakarta"
+    ``` kotlin
+    JakartaSenderAction(
+        target = "JMS_TARGET",
+        destination = "jms/domain/my/queue",
+        body = "my text body"
+        attributes = mapOf(
+            "jms.MyProperty" to "some value"
+        )
+    )
+    ```
 
-# Jms Listener
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsListenerAction.java){:target="_blank"}"
+# Listener
+!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsListenerAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaListenerAction.java){:target="_blank"} implementation"
 
-*  **Only works on javax.jms.TextMessage**
-* `selector` used as message filter in [createConsumer](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createConsumer-javax.jms.Destination-java.lang.String-){:target="_blank"} or in [createBrowser](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createBrowser-javax.jms.Queue-java.lang.String-){:target="_blank"}
+*  **Only works on TextMessage**
+* `selector` used as message filter in **createConsumer** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createConsumer-javax.jms.Destination-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createConsumer(jakarta.jms.Destination,java.lang.String)){:target="_blank"}) or in **createBrowser** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createBrowser-javax.jms.Queue-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createBrowser(jakarta.jms.Queue,java.lang.String)){:target="_blank"})
 * `bodySelector` verify in `browserMaxDepth` messages on the queue if it contains `bodySelector` characters
 
 === "Inputs"
@@ -103,24 +123,34 @@ JmsSenderAction(
 
 ### Example
 
-=== "Kotlin"
-``` kotlin
-JmsListenerAction(
-    target = "JMS_TARGET",
-    destination = "jms/domain/my/queue",
-    selector = "type = 'boat' AND color = 'red'",
-    bodySelector = "some value to search in message",
-    browserMaxDepth = 100,
-    timeOut = "1 s"
-)
-```
+=== "JMS"
+    ``` kotlin
+    JmsListenerAction(
+        target = "JMS_TARGET",
+        destination = "jms/domain/my/queue",
+        selector = "type = 'boat' AND color = 'red'",
+        bodySelector = "some value to search in message",
+        browserMaxDepth = 100,
+        timeOut = "1 s"
+    )
+    ```
+=== "Jakarta"
+    ``` kotlin
+    JakartaListenerAction(
+        target = "JMS_TARGET",
+        destination = "jms/domain/my/queue",
+        selector = "type = 'boat' AND color = 'red'",
+        bodySelector = "some value to search in message",
+        browserMaxDepth = 100,
+        timeOut = "1 s"
+    )
+    ```
 
-# Jms Clean Queue
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsCleanQueueAction.java){:target="_blank"}"
+# Clean Queue
+!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsCleanQueueAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaCleanQueueAction.java){:target="_blank"} implementation"
 
-*  **Only works on javax.jms.TextMessage**
-* `selector` used as message filter in [createConsumer](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createConsumer-javax.jms.Destination-java.lang.String-){:target="_blank"} or in [createBrowser](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createBrowser-javax.jms.Queue-java.lang.String-){:target="_blank"}
-* `bodySelector` verify in `browserMaxDepth` messages on the queue if it contains `bodySelector` characters **(only works on javax.jms.TextMessage)**
+* `selector` used as message filter in **createConsumer** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createConsumer-javax.jms.Destination-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createConsumer(jakarta.jms.Destination,java.lang.String)){:target="_blank"}) or in **createBrowser** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createBrowser-javax.jms.Queue-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createBrowser(jakarta.jms.Queue,java.lang.String)){:target="_blank"})
+* `bodySelector` verify in `browserMaxDepth` messages on the queue if it contains `bodySelector` characters **(only works on TextMessage)**
 
 === "Inputs"
 
@@ -137,14 +167,25 @@ No output. Only a log in report with number of messages removed
 
 ### Example
 
-=== "Kotlin"
-``` kotlin
-JmsCleanQueueAction(
-    target = "JMS_TARGET",
-    destination = "jms/domain/my/queue",
-    selector = "type = 'boat' AND color = 'red'",
-    bodySelector = "some value to search in message",
-    browserMaxDepth = 100,
-    timeOut = "1 s"
-)
-```
+=== "JMS"
+    ``` kotlin
+    JmsCleanQueueAction(
+        target = "JMS_TARGET",
+        destination = "jms/domain/my/queue",
+        selector = "type = 'boat' AND color = 'red'",
+        bodySelector = "some value to search in message",
+        browserMaxDepth = 100,
+        timeOut = "1 s"
+    )
+    ```
+=== "Jakarta"
+    ``` kotlin
+    JakartaCleanQueueAction(
+        target = "JMS_TARGET",
+        destination = "jms/domain/my/queue",
+        selector = "type = 'boat' AND color = 'red'",
+        bodySelector = "some value to search in message",
+        browserMaxDepth = 100,
+        timeOut = "1 s"
+    )
+    ```

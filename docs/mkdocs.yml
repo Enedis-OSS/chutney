@@ -35,7 +35,7 @@ nav:
           - AMQP: documentation/actions/amqp.md
           - Groovy: documentation/actions/groovy.md
           - HTTP: documentation/actions/http.md
-          - JMS: documentation/actions/jms.md
+          - JMS / Jakarta: documentation/actions/jms.md
           - Kafka: documentation/actions/kafka.md
           - MongoDB: documentation/actions/mongo.md
           - Radius: documentation/actions/radius.md
