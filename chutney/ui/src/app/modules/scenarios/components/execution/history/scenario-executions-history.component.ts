@@ -96,16 +96,14 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     openReport(request: { execution: Execution, focus: boolean }) {
-        if (this.isStillOnThePage()) {
-            let tabs = this.tabs;
-            if (!this.isOpened(request.execution.executionId.toString())) {
-                tabs = tabs.concat(request.execution);
-            }
-            this.tabFilters['open'] = tabs.map(exec => exec.executionId).toString();
-            this.tabFilters['active'] = request.focus ? request.execution.executionId : null;
-
-            this.updateQueryParams();
+        let tabs = this.tabs;
+        if (!this.isOpened(request.execution.executionId.toString())) {
+            tabs = tabs.concat(request.execution);
         }
+        this.tabFilters['open'] = tabs.map(exec => exec.executionId).toString();
+        this.tabFilters['active'] = request.focus ? request.execution.executionId : null;
+
+        this.updateQueryParams();
     }
 
     onTabChange(changeEvent: NgbNavChangeEvent) {
@@ -260,8 +258,12 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private onRightMenuAction() {
-        this.scenarioExecutionLast$ = this.eventManagerService.subscribe('executeLast', () => this.replay(this.executions[0].executionId));
-        this.scenarioExecution$ = this.eventManagerService.subscribe('execute', (data) => this.executeScenario(data.env, data.dataset));
+        this.scenarioExecutionLast$ = this.eventManagerService.subscribe('executeLast').pipe(
+            switchMap(() => this.replay(this.executions[0].executionId)) 
+        ).subscribe();
+        this.scenarioExecution$ = this.eventManagerService.subscribe('execute').pipe(
+            switchMap((data) => this.executeScenario(data.env, data.dataset)) 
+        ).subscribe()
     }
 
     private executeScenario(env: string, dataset: Dataset = null) {
@@ -283,7 +285,8 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
                     this.error = error.error;
                 }
             }
-            );
+        );
+        return EMPTY
     }
 
     ngOnDestroy(): void {
@@ -295,14 +298,14 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
         return this.activeTab === this.LAST_ID ? this.executions[0]?.executionId?.toString() : this.activeTab;
     }
 
-    replay(executionId: number) {
+    replay(executionId: number): Observable<any> {
         const execution = this.executions.find(exec => exec.executionId === executionId);
-        this.scenarioExecutionService.findExecutionReport(execution.scenarioId, execution.executionId).pipe(
+        return this.scenarioExecutionService.findExecutionReport(execution.scenarioId, execution.executionId).pipe(
             map(scenarioExecutionReport => {
                 const dataset = scenarioExecutionReport.dataset && (scenarioExecutionReport.dataset.datasetId || scenarioExecutionReport.dataset.constants || scenarioExecutionReport.dataset.datatable) ? new Dataset("", "", [], new Date(), scenarioExecutionReport.dataset.constants, scenarioExecutionReport.dataset.datatable, scenarioExecutionReport.dataset.datasetId) : null;
                 this.executeScenario(execution.environment, dataset)
             })
-        ).subscribe()
+        )
     }
 
     deleteExecution(executionId: number) {
@@ -317,9 +320,5 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
             }
         }
         );
-    }
-
-    private isStillOnThePage(): boolean {
-        return this.scenarioExecutionLast$ && !this.scenarioExecutionLast$.closed;
     }
 }
