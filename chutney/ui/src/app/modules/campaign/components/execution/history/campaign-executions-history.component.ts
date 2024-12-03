@@ -8,7 +8,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { EMPTY, Observable, of, Subscription, timer, zip } from 'rxjs';
+import { empty, EMPTY, Observable, of, Subscription, timer, zip } from 'rxjs';
 import { delay, map, repeat, switchMap, tap } from 'rxjs/operators';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
@@ -45,10 +45,10 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     private campaignExecutionLast: Subscription;
 
     constructor(private route: ActivatedRoute,
-        private router: Router,
-        private campaignService: CampaignService,
-        private eventManagerService: EventManagerService,
-        private jiraPluginConfigurationService: JiraPluginConfigurationService) {
+                private router: Router,
+                private campaignService: CampaignService,
+                private eventManagerService: EventManagerService,
+                private jiraPluginConfigurationService: JiraPluginConfigurationService) {
     }
 
     ngOnInit(): void {
@@ -62,10 +62,10 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
             error: (error) => this.errors.push(error.error)
         });
 
-        this.onExecuteSubscription = this.eventManagerService.subscribe('execute', () => this.refreshCampaign());
-        this.onErrorSubscription = this.eventManagerService.subscribe('error', (event) => this.onMenuError(event));
-        this.onReplaySubscription = this.eventManagerService.subscribe('replay', () => this.refreshCampaign());
-        this.campaignExecutionLast = this.eventManagerService.subscribe('executeLast', () => this.replay());
+        this.onExecuteSubscription = this.eventManagerService.listen('execute', () => this.refreshCampaign()).subscribe();
+        this.onErrorSubscription = this.eventManagerService.listen('error', (event) => of(this.onMenuError(event))).subscribe();  
+        this.onReplaySubscription = this.eventManagerService.listen('replay', () => this.refreshCampaign()).subscribe(); 
+        this.campaignExecutionLast = this.eventManagerService.listen('executeLast', () => this.replay()).subscribe();  
     }
 
     ngOnDestroy(): void {
@@ -87,7 +87,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private refreshOpenTabs(): void {
-        for (var i = 0; i < this.tabs.length; i++) {
+        for(var i=0; i<this.tabs.length; i++) {
             if (this.tabs[i].isRunning()) {
                 this.tabs[i].refresh(this.campaignReports.find((cr) => cr.report.executionId === this.tabs[i].report.executionId));
             }
@@ -98,12 +98,12 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
         this.jiraPluginConfigurationService.getUrl().subscribe(url => this.jiraUrl = url);
     }
 
-    private replay() {
+    private replay(): Observable<any> {
         const lastReport = this.campaignReports[0]
         this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset).subscribe()
-        timer(1000).pipe(
-            switchMap(() => of(this.refreshCampaign()))
-        ).subscribe();
+        return timer(1000).pipe(
+            switchMap(() => this.refreshCampaign())
+        );
     }
 
     private checkForRefresh() {
@@ -128,11 +128,13 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
         );
     }
 
-    private refreshCampaign() {
-        if (this.isStillOnThePage() && this.campaign.scenarios.length > 0) {
-            this.campaign$().subscribe(c => {
-                this.openReport({ execution: this.campaignReports[0], focus: true });
-            });
+    private refreshCampaign(): Observable<Campaign>  {
+        if (this.campaign.scenarios.length > 0) {
+            return this.campaign$().pipe(
+                tap(c => this.openReport({ execution: this.campaignReports[0], focus: true })
+            ));
+        } else {
+            return EMPTY;
         }
     }
 
@@ -141,7 +143,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     getActiveTab(): string {
-        if (this.activeTab === CampaignExecutionsHistoryComponent.LAST_ID) {
+        if(this.activeTab === CampaignExecutionsHistoryComponent.LAST_ID) {
             return this.campaign.campaignExecutionReports[0]?.executionId?.toString();
         }
         return this.activeTab;
@@ -154,7 +156,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private updateQueryParams() {
-        let queryParams = this.cleanParams({ ...this.executionsFilters, ...this.tabFilters });
+        let queryParams = this.cleanParams({...this.executionsFilters, ...this.tabFilters});
         this.router.navigate([], {
             relativeTo: this.route,
             queryParams: queryParams
@@ -201,7 +203,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     set executionsFilters(value: Params) {
-        const { open, active, ...executionsParams } = value;
+        const {open, active, ...executionsParams} = value;
         this._executionsFilters = executionsParams;
         this.updateQueryParams();
     }
@@ -294,9 +296,5 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
         if (this.isRefreshActive()) {
             this.refreshSubscription.unsubscribe();
         }
-    }
-
-    private isStillOnThePage(): boolean {
-        return this.onExecuteSubscription && !this.onExecuteSubscription.closed;
     }
 }

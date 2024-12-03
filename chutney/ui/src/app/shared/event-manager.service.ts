@@ -7,7 +7,7 @@
 
 import { Observable, Observer, Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { filter, share } from 'rxjs/operators';
+import { filter, share, switchMap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -33,18 +33,20 @@ export class EventManagerService {
     }
 
     /**
-     * Method to subscribe to an event with callback
-     */
-    subscribe(eventName, callback) {
-        return this.observable.pipe(filter((event) => {
-            return event.name === eventName;
-        })).subscribe(callback);
-    }
-
-    /**
      * Method to unsubscribe the subscription
      */
     destroy(subscriber: Subscription) {
         subscriber && subscriber.unsubscribe();
+    }
+
+
+    /**
+     * Method to subscribe to an event with callback
+     */
+    listen(eventName, callback: (data) => Observable<any>) {
+        return this.observable.pipe(
+            filter((event) => event.name === eventName),
+            switchMap(callback)
+        );
     }
 }
