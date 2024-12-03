@@ -63,6 +63,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -683,13 +684,17 @@ public class CampaignExecutionEngineTest {
         "123, DEV, dataset123, user123",
         "123, DEV, , user123"
     })
+    @DisplayName("Should not pass dataset empty if not defined in scheduling")
     void testExecuteScheduledCampaign(Long campaignId, String environment, String datasetId, String userId) {
         //Given
+        DataSet dataset = DataSet.builder().withName("A").withId("A").build();
         var scenarios = Lists.list(firstTestCase.id()).stream().map(id -> new Campaign.CampaignScenario(id, null)).toList();
         Campaign campaign = new Campaign(1L, "campaign1", null, scenarios, "DEV", false, false, null, List.of("TAG"));
         when(campaignRepository.findById(any())).thenReturn(campaign);
         if (datasetId != null) {
-            when(datasetRepository.findById(datasetId)).thenReturn(DataSet.NO_DATASET);
+            when(datasetRepository.findById(datasetId)).thenReturn(dataset);
+        } else {
+            when(datasetRepository.findById(any())).thenReturn(DataSet.NO_DATASET);
         }
 
         // When
@@ -698,7 +703,7 @@ public class CampaignExecutionEngineTest {
 
         // Then
         if (datasetId != null) {
-            verify(spySut, times(1)).executeById(campaignId, environment, DataSet.NO_DATASET, userId);
+            verify(spySut, times(1)).executeById(campaignId, environment, dataset, userId);
         } else {
             verify(spySut, times(1)).executeById(campaignId, environment, null, userId);
         }

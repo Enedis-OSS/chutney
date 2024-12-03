@@ -128,8 +128,8 @@ public class CampaignExecutionEngine {
     }
 
     public void executeScheduledCampaign(Long campaignId, String environment, String datasetId, String userId) {
-        if (datasetId != null) {
-            DataSet dataset = datasetRepository.findById(datasetId); //TODO need to manage DatasetNotFound ?
+        DataSet dataset = datasetRepository.findById(datasetId);
+        if (!DataSet.NO_DATASET.equals(dataset)) {
             executeById(campaignId, environment, dataset, userId);
         } else {
             executeById(campaignId, environment, null, userId);
