@@ -5,23 +5,16 @@
  *
  */
 
-package com.chutneytesting.execution.infra.migration;
-
-import static com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository.SCENARIO_EXECUTION_REPORT;
-import static com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository.WHAT;
+package com.chutneytesting.migration.infra;
 
 import com.chutneytesting.execution.infra.storage.ScenarioExecutionReportJpaRepository;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
-import com.chutneytesting.index.infra.IndexRepository;
 import com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository;
+import com.chutneytesting.migration.domain.DataMigrator;
 import jakarta.persistence.EntityManager;
 import java.util.List;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -29,28 +22,28 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class ZipReportMigration implements CommandLineRunner {
+public class ExecutionReportMigrator implements DataMigrator {
 
 
     private final ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository;
     private final ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository;
-    private final IndexRepository indexRepository;
     private final EntityManager entityManager;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ZipReportMigration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionReportMigrator.class);
 
 
-    public ZipReportMigration(ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository, ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository, IndexRepository indexRepository, EntityManager entityManager) {
+    public ExecutionReportMigrator(ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository,
+                                   ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository,
+                                   EntityManager entityManager) {
         this.scenarioExecutionReportIndexRepository = scenarioExecutionReportIndexRepository;
         this.scenarioExecutionReportJpaRepository = scenarioExecutionReportJpaRepository;
-        this.indexRepository = indexRepository;
         this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
-    public void run(String... args) {
+    public void migrate() {
         if (isMigrationDone()) {
-            LOGGER.info("Report compression & indexing already done, skipping...");
+            LOGGER.info("Report index not empty. Skipping indexing and in-db compression...");
             return;
         }
         PageRequest firstPage = PageRequest.of(0, 10);
@@ -74,15 +67,13 @@ public class ZipReportMigration implements CommandLineRunner {
     }
 
     private void compressAndSaveInDb(List<ScenarioExecutionReportEntity> reportsInDb) {
-        // calling scenarioExecutionReportJpaRepository find() and then save() doesn't call ReportConverter
-        // ReportConverter will be called by entityManager update. So compression will be done
-        reportsInDb.forEach(report -> {
-            entityManager.createQuery(
-                    "UPDATE SCENARIO_EXECUTIONS_REPORTS SET report = :report WHERE id = :id")
-                .setParameter("report", report.getReport())
-                .setParameter("id", report.scenarioExecutionId())
-                .executeUpdate();
-        });
+        // calling scenarioExecutionReportJpaRepository find() and then save() doesn't call ReportConverter.
+        // ReportConverter will be called by entityManager update. So compression will be done.
+        reportsInDb.forEach(report -> entityManager.createQuery(
+                "UPDATE SCENARIO_EXECUTIONS_REPORTS SET report = :report WHERE id = :id")
+            .setParameter("report", report.getReport())
+            .setParameter("id", report.scenarioExecutionId())
+            .executeUpdate());
     }
 
     private void index(List<ScenarioExecutionReportEntity> reportsInDb) {
@@ -90,8 +81,7 @@ public class ZipReportMigration implements CommandLineRunner {
     }
 
     private boolean isMigrationDone() {
-        Query whatQuery = new TermQuery(new Term(WHAT, SCENARIO_EXECUTION_REPORT));
-        int indexedReports = indexRepository.count(whatQuery);
+        int indexedReports = scenarioExecutionReportIndexRepository.count();
         return indexedReports > 0;
     }
 }

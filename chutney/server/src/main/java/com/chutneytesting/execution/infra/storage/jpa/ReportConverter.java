@@ -20,34 +20,34 @@ import java.util.zip.GZIPOutputStream;
 public class ReportConverter implements AttributeConverter<String, byte[]> {
     @Override
     public byte[] convertToDatabaseColumn(String report) {
+        byte[] reportBytes = report.getBytes(StandardCharsets.UTF_8);
+        if (isCompressed(reportBytes)) {
+            return reportBytes;
+        }
         return compress(report);
     }
 
     @Override
     public String convertToEntityAttribute(byte[] zippedReport) {
-        if (!isCompressed(zippedReport)) {
-            return new String(zippedReport, StandardCharsets.UTF_8);
+        if (isCompressed(zippedReport)) {
+            return decompress(zippedReport);
         }
-        return decompress(zippedReport);
-    }
-
-    private boolean isCompressed(byte[] data) {
-        return (data != null && data.length >= 2 &&
-            (data[0] == (byte) 0x1f && data[1] == (byte) 0x8b));
+        return new String(zippedReport, StandardCharsets.UTF_8);
     }
 
     private byte[] compress(String report) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-             GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream)) {
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                 GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream)) {
 
-            gzipOutputStream.write(report.getBytes(StandardCharsets.UTF_8));
-            gzipOutputStream.finish();
-            return byteArrayOutputStream.toByteArray();
+                gzipOutputStream.write(report.getBytes(StandardCharsets.UTF_8));
+                gzipOutputStream.finish();
+                return byteArrayOutputStream.toByteArray();
 
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to compress report content", e);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to compress report content", e);
+            }
         }
-    }
+
 
     private String decompress(byte[] compressedData) {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(compressedData);
@@ -59,5 +59,10 @@ public class ReportConverter implements AttributeConverter<String, byte[]> {
         } catch (IOException e) {
             throw new RuntimeException("Failed to decompress report content", e);
         }
+    }
+
+    private boolean isCompressed(byte[] data) {
+        return (data != null && data.length >= 2 &&
+            (data[0] == (byte) 0x1f && data[1] == (byte) 0x8b));
     }
 }
