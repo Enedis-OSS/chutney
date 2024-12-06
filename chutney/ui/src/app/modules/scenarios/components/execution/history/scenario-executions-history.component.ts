@@ -11,7 +11,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
 import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { EMPTY, Observable, of, Subscription, zip } from 'rxjs';
+import { EMPTY, Observable, of, Subscription, throwError, zip } from 'rxjs';
 import { ScenarioService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { AlertService, EventManagerService } from '@shared';
@@ -95,9 +95,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
         this.updateQueryParams();
     }
 
-
     openReport(request: { execution: Execution, focus: boolean }) {
-
         let tabs = this.tabs;
         if (!this.isOpened(request.execution.executionId.toString())) {
             tabs = tabs.concat(request.execution);
@@ -260,30 +258,29 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private onRightMenuAction() {
-        this.scenarioExecutionLast$ = this.eventManagerService.subscribe('executeLast', () => this.replay(this.executions[0].executionId));
-        this.scenarioExecution$ = this.eventManagerService.subscribe('execute', (data) => this.executeScenario(data.env, data.dataset));
+        this.scenarioExecutionLast$ = this.eventManagerService.listen('executeLast', () => this.replay(this.executions[0].executionId)).subscribe();
+        this.scenarioExecution$ = this.eventManagerService.listen('execute', (data) => this.executeScenario(data.env, data.dataset)).subscribe()
     }
 
     private executeScenario(env: string, dataset: Dataset = null) {
-        this.scenarioExecutionService
+        return this.scenarioExecutionService
             .executeScenarioAsync(this.scenarioId, env, dataset)
             .pipe(
-                delay(1000),
-                switchMap(executionId => this.findScenarioExecutionSummary(+executionId)))
-            .subscribe({
-                next: (executionSummary) => {
-                    this.openReport({
-                        execution: executionSummary,
-                        focus: true
-                    });
-                    this.executions.unshift(executionSummary);
-                    this.canReplay = true;
-                },
-                error: error => {
+                delay(3000),
+                switchMap(executionId => this.findScenarioExecutionSummary(+executionId)),
+                tap((executionSummary) => {
+                        this.openReport({
+                            execution: executionSummary,
+                            focus: true
+                        });
+                        this.executions.unshift(executionSummary);
+                        this.canReplay = true;
+                    }),
+                catchError(error => {
                     this.error = error.error;
-                }
-            }
-            );
+                    return throwError(() => error);
+                })
+            )   
     }
 
     ngOnDestroy(): void {
@@ -295,14 +292,15 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
         return this.activeTab === this.LAST_ID ? this.executions[0]?.executionId?.toString() : this.activeTab;
     }
 
-    replay(executionId: number) {
+    replay(executionId: number): Observable<any> {
         const execution = this.executions.find(exec => exec.executionId === executionId);
-        this.scenarioExecutionService.findExecutionReport(execution.scenarioId, execution.executionId).pipe(
-            map(scenarioExecutionReport => {
+        return this.scenarioExecutionService.findExecutionReport(execution.scenarioId, execution.executionId)
+        .pipe(
+            switchMap(scenarioExecutionReport => {
                 const dataset = scenarioExecutionReport.dataset && (scenarioExecutionReport.dataset.datasetId || scenarioExecutionReport.dataset.constants || scenarioExecutionReport.dataset.datatable) ? new Dataset("", "", [], new Date(), scenarioExecutionReport.dataset.constants, scenarioExecutionReport.dataset.datatable, scenarioExecutionReport.dataset.datasetId) : null;
-                this.executeScenario(execution.environment, dataset)
+                return this.executeScenario(execution.environment, dataset)
             })
-        ).subscribe()
+        )
     }
 
     deleteExecution(executionId: number) {

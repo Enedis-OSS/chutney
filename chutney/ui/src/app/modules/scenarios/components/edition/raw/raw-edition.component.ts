@@ -56,7 +56,6 @@ export class RawEditionComponent
     private routeParamsSubscription: Subscription;
 
     constructor(
-        private eventManager: EventManagerService,
         private route: ActivatedRoute,
         private router: Router,
         private scenarioService: ScenarioService,
@@ -80,7 +79,7 @@ export class RawEditionComponent
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.routeParamsSubscription);
+        this.routeParamsSubscription.unsubscribe();
     }
 
     canDeactivatePage(): boolean {
