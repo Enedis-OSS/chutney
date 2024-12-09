@@ -89,4 +89,9 @@ public class ScenarioExecutionReportIndexRepository {
             .toList();
 
     }
+
+    public int count() {
+        Query whatQuery = new TermQuery(new Term(WHAT, SCENARIO_EXECUTION_REPORT));
+        return indexRepository.count(whatQuery);
+    }
 }
