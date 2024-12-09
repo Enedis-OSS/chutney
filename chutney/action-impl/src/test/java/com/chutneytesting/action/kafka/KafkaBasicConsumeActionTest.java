@@ -16,6 +16,7 @@ import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_KEY
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_PAYLOADS;
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.shuffle;
@@ -85,7 +86,7 @@ public class KafkaBasicConsumeActionTest {
 
     @Test
     void should_set_inputs_default_values() {
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(null, null, null, null, null, null, null, null, null, null, null,null);
+        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(null, null, null, null, null, null, null, null, null, null, null, null);
         assertThat(defaultAction)
             .hasFieldOrPropertyWithValue("topic", null)
             .hasFieldOrPropertyWithValue("group", null)
@@ -124,7 +125,7 @@ public class KafkaBasicConsumeActionTest {
     @Test
     void should_validate_timeout_input() {
         String badTimeout = "twenty seconds";
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, badTimeout, null,null, null);
+        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, badTimeout, null, null, null);
 
         List<String> errors = defaultAction.validateInputs();
 
@@ -135,7 +136,7 @@ public class KafkaBasicConsumeActionTest {
     @Test
     void should_validate_ackMode_input() {
         String badTackMode = "UNKNOWN_ACKMODE";
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, null, badTackMode, null,null);
+        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, null, badTackMode, null, null);
 
         List<String> errors = defaultAction.validateInputs();
 
@@ -167,7 +168,7 @@ public class KafkaBasicConsumeActionTest {
             propertyToOverride, "a property value"
         );
 
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(target, null, null, properties, null, null, null, null, null, null, null,null);
+        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(target, null, null, properties, null, null, null, null, null, null, null, null);
         assertThat(defaultAction)
             .hasFieldOrPropertyWithValue("properties", expectedConfig)
         ;
@@ -196,6 +197,31 @@ public class KafkaBasicConsumeActionTest {
         assertThat(headers).containsAllEntriesOf(ImmutableMap.of("X-Custom-HeaderKey", "X-Custom-HeaderValue", "header1", "value1"));
 
         assertThat(logger.errors).isEmpty();
+    }
+
+    @Test
+    public void should_consume_simple_text_message_with_multiple_values_header() {
+        // Given
+        ImmutableList<Header> headers = ImmutableList.of(
+            new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
+            new RecordHeader("key-with-multiple-values", "value 2".getBytes())
+        );
+        Action sut = givenKafkaConsumeAction(null, TEXT_PLAIN_VALUE, null);
+        givenActionReceiveMessages(sut,
+            buildRecord(FIRST_OFFSET, "KEY", "test message", headers)
+        );
+
+        // When
+        ActionExecutionResult actionExecutionResult = sut.execute();
+
+        // Then
+        assertThat(actionExecutionResult.status).isEqualTo(Success);
+        var result_headers = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY_HEADERS_KEY);
+        assertThat(result_headers).hasSize(1);
+        assertThat(result_headers.get(0))
+            .containsExactly(
+                Map.entry("key-with-multiple-values", asList("value 1", "value 2"))
+            );
     }
 
     @Test
@@ -358,9 +384,11 @@ public class KafkaBasicConsumeActionTest {
         // Given
         ImmutableList<Header> headers = ImmutableList.of(
             new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
-            new RecordHeader("header", "123".getBytes())
+            new RecordHeader("header", "123".getBytes()),
+            new RecordHeader("multi-values-header", "value 1".getBytes()),
+            new RecordHeader("multi-values-header", "value 2".getBytes())
         );
-        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123')]", null, null);
+        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123' && $.multi-values-header contains 'value 1')]", null, null);
         String textMessageToSelect = "first text message";
         String xmlMessageToSelect = "<root>first xml message</root>";
         String jsonMessageToSelect = "first json message";
@@ -537,7 +565,7 @@ public class KafkaBasicConsumeActionTest {
     }
 
     private KafkaBasicConsumeAction givenKafkaConsumeAction(int expectedMessageNb, String selector, String headerSelector, String mimeType, String timeout) {
-        return new KafkaBasicConsumeAction(TARGET_STUB, TOPIC, GROUP, emptyMap(), expectedMessageNb, selector, headerSelector, mimeType, timeout, null,null, logger);
+        return new KafkaBasicConsumeAction(TARGET_STUB, TOPIC, GROUP, emptyMap(), expectedMessageNb, selector, headerSelector, mimeType, timeout, null, null, logger);
     }
 
     private void givenActionReceiveMessages(Action action, ConsumerRecord<String, String>... messages) {
