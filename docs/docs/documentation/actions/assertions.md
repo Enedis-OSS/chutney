@@ -18,18 +18,26 @@
         - [Compare](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/CompareAction.java){:target="_blank"}
         - [JSON Compare](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/JsonCompareAction.java){:target="_blank"}
 
+An assertion is a special case of action in Chutney :
+
+* It does not make use of external services (see [target](/documentation/environment.md/#target)).
+* It does not have outputs as two only outcomes could happen : pass or fail.
+* It should not have [validations](/documentation/actions/introduction.md/#validations) included as it is a validation in itself.
+
 # Assertions
 
 ## Assert
 
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/AssertAction.java){:target="_blank"}"
 
-This action takes a list of assertions written using [SpEL](https://docs.spring.io/spring-framework/reference/core/expressions/language-ref.html){:target="_blank"} and validates they are all true.
+!!! tip "This action could be replaced by a direct [validation](/documentation/actions/introduction.md/#validations)"
+
+This action takes a list of assertions evaluated to boolean using [expressions](/documentation/actions/introduction.md/#expressions) and validates they are all true.
 === "Inputs"
 
     | Required | Name            | Type        |     Default     |
     |:--------:|:----------------|:------------|:----------------|
-    |    *     | `asserts`       | List of Map |                 |
+    |    *     | `asserts`       | List of     |                 |
 
 === "Outputs"
     No outputs
@@ -118,8 +126,8 @@ Asserts that XML nodes have expected values.
 
 Placeholders used by [xml-assert](#xml-assert) and [json-assert](#json-assert) actions to assert actual values.
 
-| Placeholder                                                                                                                                                                                     | Description                                            | Example                                            |
-|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------|:---------------------------------------------------|
+| Placeholder                                                                                                                                                                                      | Description                                            | Example                                            |
+|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------|:---------------------------------------------------|
 | [`$isNull`](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/placeholder/IsNullAsserter.java){:target="_blank"}             | must be null                                           | `"$isNull"`                                        |
 | [`$isNotNull`](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/placeholder/NotNullAsserter.java){:target="_blank"}         | must be not null                                       | `"$isNotNull"`                                     |
 | [`$contains`](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/assertion/placeholder/ContainsAsserter.java){:target="_blank"}         | must contains given value                              | `"$contains:abcde"`                                |
@@ -138,7 +146,7 @@ Placeholders used by [xml-assert](#xml-assert) and [json-assert](#json-assert) a
 
 !!! Step validation 
     For functional validations, it's recommended to use above actions.
-    For technical validations, it's possible to do them on scenario step [validation](/documentation/actions/introduction.md/#validation).
+    For technical validations, it's possible to do them on scenario step [validation](/documentation/actions/introduction.md/#validations).
 
 ## Json validation
 

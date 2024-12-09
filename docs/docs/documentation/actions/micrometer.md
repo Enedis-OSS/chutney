@@ -16,29 +16,28 @@
 
 !!! note
     Micrometer provides a static [global registry](https://micrometer.io/docs/concepts#_global_registry){:target=_blank}. This registry is used as default if no registry is given in action's inputs.
+
 # Counter
 
 !!! info "[Browse Implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/micrometer/MicrometerCounterAction.java){:target="_blank"}"
 
-Use this action to report
-a [count](https://micrometer.io/docs/concepts#_counters:~:text=9.-,Counters,-Counters%20report%20a){:target=_blank}
-metric.
+Use this action to report a [counter](https://micrometer.io/docs/concepts#_counters:~:text=9.-,Counters,-Counters%20report%20a){:target=_blank} metric.
 
 === "Inputs"
 
-    | Required                 | Name         | Type                             |  Description                                             |
-    |:------------------------:|:-------------|:---------------------------------|:---------------------------------------------------------|
-    | if `counter` is null     | `name`       | String                           | Counter name.    |
-    | if `name` is null        | `counter`    | [Counter](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Counter.html){:target=_blank}             | Counter instance. |
-    |                          | `description`| String                           | Counter  description                                 |
-    |                          | `unit`       | String                           | Count [unit](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/BaseUnits.java){:target=_blank}                                                 |
-    |                          | `tags`       | List<String\>                    | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements.                                  |
-    |                          | `registry`   | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}             | Creates and manages your application's set of meters  |
-    |           *              | `increment`  | Integer as String                | Positive number by which the counter will be incremented. |
+    |       Required       | Name          | Type                                                                                                                                          | Description                                                                                                                                                               |
+    |:--------------------:|:--------------|:----------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | if `counter` is null | `name`        | String                                                                                                                                        | Counter name                                                                                                                                                              |
+    |  if `name` is null   | `counter`     | [Counter](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Counter.html){:target=_blank}             | Counter instance                                                                                                                                                          |
+    |                      | `description` | String                                                                                                                                        | Counter  description                                                                                                                                                      |
+    |                      | `unit`        | String                                                                                                                                        | Count [unit](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/BaseUnits.java){:target=_blank}|
+    |                      | `tags`        | List<String\>                                                                                                                                 | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements                              |
+    |                      | `registry`    | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank} | Creates and manages your application's set of meters                                                                                                                      |
+    |          *           | `increment`   | Integer as String                                                                                                                             | Positive number by which the counter will be incremented                                                                                                                  |
 
 === "Outputs"
 
-    |    Name               | Type                                                                                                                               | Description             |
+    | Name                  | Type                                                                                                                               | Description             |
     |:----------------------|:-----------------------------------------------------------------------------------------------------------------------------------|:------------------------|
     | `micrometerCounter`   | [Counter](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Counter.html){:target=_blank}  | The incremented counter |
 
@@ -66,16 +65,16 @@ Use this action to report a [gauge](https://micrometer.io/docs/concepts#_gauges)
 
 === "Inputs"
 
-    | Required                   | Name              | Type          |  Description                                               |
-    |:--------------------------:|:------------------|:--------------|:-----------------------------------------------------------|
-    |            *               | `name`            | String        | Gauge name.                                                |
-    |                            | `description`     | String        | Gauge  description                                         |
-    | if `gaugeFunction` is null | `gaugeObject`     | Object        | Gauge will return the current value of this object .       |
-    | if `gaugeObject` is null   | `gaugeFunction`   | String        | Gauge function.                                            |
-    |                            | `unit`            | String        | Count [unit](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/BaseUnits.java){:target=_blank} |
-    |                            | `tags`            | List<String\> | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements.   |
-    |                            | `registry`        | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank} | Creates and manages your application's set of meters  |
-    |                            | `strongReference` | Boolean       | Indicates that the gauge should maintain a strong reference on the object upon which its instantaneous value is determined. Default is False |
+    |          Required          | Name              | Type                                                                                                                                          | Description                                                                                                                                                                |
+    |:--------------------------:|:------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    |             *              | `name`            | String                                                                                                                                        | Gauge name                                                                                                                                                                 |
+    |                            | `description`     | String                                                                                                                                        | Gauge  description                                                                                                                                                         |
+    | if `gaugeFunction` is null | `gaugeObject`     | Object                                                                                                                                        | Gauge will return the current value of this object                                                                                                                         |
+    |  if `gaugeObject` is null  | `gaugeFunction`   | String                                                                                                                                        | Gauge function                                                                                                                                                             |
+    |                            | `unit`            | String                                                                                                                                        | Count [unit](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/BaseUnits.java){:target=_blank} |
+    |                            | `tags`            | List<String\>                                                                                                                                 | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements.                              |
+    |                            | `registry`        | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank} | Creates and manages your application's set of meters                                                                                                                       |
+    |                            | `strongReference` | Boolean                                                                                                                                       | Indicates that the gauge should maintain a strong reference on the object upon which its instantaneous value is determined. Default is False                               |
 
     !!! info
         1. GaugeObject is required and must be a Number, a Collection or a Map if no gaugeFunction supplied.
@@ -138,7 +137,7 @@ Use this action to report a [gauge](https://micrometer.io/docs/concepts#_gauges)
     ```
 
 === "only gaugeFunction"
-    Supposing that we have class with a static methode that return an int.
+    Supposing that we have class with a static method that return an int.
 
     ``` java
     public class MyClass {
@@ -175,27 +174,27 @@ metric.
 
 === "Inputs"
 
-    | Required             | Name                           | Type                             |  Description                                             |
-    |:--------------------:|:-------------------------------|:---------------------------------|:---------------------------------------------------------|
-    | if `timer` is null   | `name`                         | String                           | Timer name.                                              |
-    |                      | `description`                  | String                           | Timer  description                                       |
-    |                      | `tags`                         | List<String\>                    | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements   |
-    |                      | `bufferLength`                 | Integer as String                | Distribution statistic buffer length |
-    |                      | `expiry`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distribution statistic expiry |
-    |                      | `maxValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Timer max duration |
-    |                      | `minValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Timer min duration |
-    |                      | `percentilePrecision`          | Integer as String                | Percentile precision                                      |
-    |                      | `publishPercentilesHistogram`  | Boolean                          | Publish percentile histogram or not                       |
-    |                      | `percentiles`                  | String                           | Comma separated list of doublepercentiles doubles         |
-    |                      | `sla`                          | String                           | Comma separated list of doublepercentiles doubles         |
-    | if `name` is null    | `timer`                        | [Timer](https://micrometer.io/docs/concepts#_gauges:~:text=11.-,Timers,-Timers%20are%20intended){:target=_blank}  | Timer instance. |
-    |                      | `registry`                     | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}   | Creates and manages your application's set of meters  |
-    |                      | `timeunit`                     | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String | Time unit                                                 |
-    |                      | `record`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type)       | The timer will be updated by the record duration |
+    |      Required      | Name                          | Type                                                                                                                                          | Description                                                                                                                                  |
+    |:------------------:|:------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
+    | if `timer` is null | `name`                        | String                                                                                                                                        | Timer name                                                                                                                                   |
+    |                    | `description`                 | String                                                                                                                                        | Timer  description                                                                                                                           |
+    |                    | `tags`                        | List<String\>                                                                                                                                 | key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements |
+    |                    | `bufferLength`                | Integer as String                                                                                                                             | Distribution statistic buffer length                                                                                                         |
+    |                    | `expiry`                      | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                              | Distribution statistic expiry                                                                                                                |
+    |                    | `maxValue`                    | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                              | Timer max duration                                                                                                                           |
+    |                    | `minValue`                    | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                              | Timer min duration                                                                                                                           |
+    |                    | `percentilePrecision`         | Integer as String                                                                                                                             | Percentile precision                                                                                                                         |
+    |                    | `publishPercentilesHistogram` | Boolean                                                                                                                                       | Publish percentile histogram or not                                                                                                          |
+    |                    | `percentiles`                 | String                                                                                                                                        | Comma separated list of doublepercentiles doubles                                                                                            |
+    |                    | `sla`                         | String                                                                                                                                        | Comma separated list of doublepercentiles doubles                                                                                            |
+    | if `name` is null  | `timer`                       | [Timer](https://micrometer.io/docs/concepts#_gauges:~:text=11.-,Timers,-Timers%20are%20intended){:target=_blank}                              | Timer instance.                                                                                                                              |
+    |                    | `registry`                    | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank} | Creates and manages your application's set of meters                                                                                         |
+    |                    | `timeunit`                    | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String        | Time unit                                                                                                                                    |
+    |                    | `record`                      | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                              | The timer will be updated by the record duration                                                                                             |
 
 === "Outputs"
 
-    |    Name               | Type                                                                                                                               | Description             |
+    | Name                  | Type                                                                                                                               | Description             |
     |:----------------------|:-----------------------------------------------------------------------------------------------------------------------------------|:------------------------|
     | `micrometerTimer`     | [Timer](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.html){:target=_blank}  | The timer               |
 
@@ -219,15 +218,15 @@ Use this action to start a [Timer.Sample](https://www.javadoc.io/doc/io.micromet
 
 === "Inputs"
 
-    | Required | Name                           | Type                             |  Description                                             |
-    |:--------:|:-------------------------------|:---------------------------------|:---------------------------------------------------------|
-    |          | `registry`                     | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}   | Creates and manages your application's set of meters  |
+    | Required | Name       | Type                                                                                                                                          | Description                                          |
+    |:--------:|:-----------|:----------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------|
+    |          | `registry` | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank} | Creates and manages your application's set of meters |
 
 === "Outputs"
 
-    |    Name                 | Type                                                                                                                               | Description             |
-    |:------------------------|:-----------------------------------------------------------------------------------------------------------------------------------|:------------------------|
-    | `micrometerTimerSample` | [Timer.Sample](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank}  | The sample               |
+    | Name                    | Type                                                                                                                                            | Description |
+    |:------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------|:------------|
+    | `micrometerTimerSample` | [Timer.Sample](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank} | The sample  |
 
 ### Example
 
@@ -245,14 +244,15 @@ Use this action to stop a [Timer.Sample](https://www.javadoc.io/doc/io.micromete
 
 === "Inputs"
 
-    | Required | Name                           | Type                             |  Description                                             |
-    |:--------:|:-------------------------------|:---------------------------------|:---------------------------------------------------------|
-    |     *    | `sample`                       | [Timer.Sample](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank}   | The previously started sample  |
-    |     *    | `timer`                        | [MeterRegistry](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank}   | Sample's duration will be recorded into this timer  |
-    |          | `timeunit`                     | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String | Time unit. Default is SECONDS                                   |
+    | Required | Name       | Type                                                                                                                                             | Description                                        |
+    |:--------:|:-----------|:-------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|
+    |    *     | `sample`   | [Timer.Sample](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank}  | The previously started sample                      |
+    |    *     | `timer`    | [MeterRegistry](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank} | Sample's duration will be recorded into this timer |
+    |          | `timeunit` | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String           | Time unit. Default is SECONDS                      |
+
 === "Outputs"
 
-    |    Name                         | Type                                                                                                              | Description                  |
+    | Name                            | Type                                                                                                              | Description                  |
     |:--------------------------------|:------------------------------------------------------------------------------------------------------------------|:-----------------------------|
     | `micrometerTimerSampleDuration` | [Duration](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html){:target=_blank}  | The sample recorded duration |
 
@@ -275,30 +275,30 @@ Use this action to report a [distribution summary](https://micrometer.io/docs/co
 
 === "Inputs"
 
-    | Required                              | Name                           | Type                             |  Description                                             |
-    |:-------------------------------------:|:-------------------------------|:---------------------------------|:---------------------------------------------------------|
-    | if `distributionSummary` is null      | `name`                         | String                           | Distrubution summary name.                               |
-    |                                       | `description`                  | String                           | Distrubution summary description                                       |
-    |                                       | `tags`                         | List<String\>                    | Key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements   |
-    |                                       | `bufferLength`                 | Integer as String                | Distribution statistic buffer length |
-    |                                       | `expiry`                       | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distribution statistic expiry |
-    |                                       | `maxValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distrubution max duration |
-    |                                       | `minValue`                     | [Duration](https://www.chutney-testing.com/documentation/actions/other.md/#duration-type) | Distrubution min duration |
-    |                                       | `percentilePrecision`          | Integer as String                | Percentile precision                                      |
-    |                                       | `publishPercentilesHistogram`  | Boolean                          | Publish percentile histogram or not                       |
-    |                                       | `percentiles`                  | String                           | Comma separated list of doublepercentiles doubles         |
-    |                                       | `sla`                          | String                           | Comma separated list of doublepercentiles doubles         |
-    |                                       | `scale`                        | Double as String                 | Scale value         |
-    |  if `name` is null                    | `distributionSummary`          | [DistributionSummary](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/DistributionSummary.java){:target=_blank}  | Distribution instance.|
-    |                                       | `registry`                     | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}   | Creates and manages your application's set of meters  |
-    |                                       | `timeunit`                     | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String | Time unit                                                 |
-    |                                       | `record`                       | Double as String       | The distribution will be updated by the record value |
+    |             Required             | Name                          | Type                                                                                                                                                                                   | Description                                                                                                                                  |
+    |:--------------------------------:|:------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
+    | if `distributionSummary` is null | `name`                        | String                                                                                                                                                                                 | Distrubution summary name.                                                                                                                   |
+    |                                  | `description`                 | String                                                                                                                                                                                 | Distrubution summary description                                                                                                             |
+    |                                  | `tags`                        | List<String\>                                                                                                                                                                          | Key,value list representing tags. A tag is a Key/value pair representing a dimension of a meter used to classify and drill into measurements |
+    |                                  | `bufferLength`                | Integer as String                                                                                                                                                                      | Distribution statistic buffer length                                                                                                         |
+    |                                  | `expiry`                      | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                                                                       | Distribution statistic expiry                                                                                                                |
+    |                                  | `maxValue`                    | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                                                                       | Distrubution max duration                                                                                                                    |
+    |                                  | `minValue`                    | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                                                                       | Distrubution min duration                                                                                                                    |
+    |                                  | `percentilePrecision`         | Integer as String                                                                                                                                                                      | Percentile precision                                                                                                                         |
+    |                                  | `publishPercentilesHistogram` | Boolean                                                                                                                                                                                | Publish percentile histogram or not                                                                                                          |
+    |                                  | `percentiles`                 | String                                                                                                                                                                                 | Comma separated list of doublepercentiles doubles                                                                                            |
+    |                                  | `sla`                         | String                                                                                                                                                                                 | Comma separated list of doublepercentiles doubles                                                                                            |
+    |                                  | `scale`                       | Double as String                                                                                                                                                                       | Scale value                                                                                                                                  |
+    |        if `name` is null         | `distributionSummary`         | [DistributionSummary](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/DistributionSummary.java){:target=_blank} | Distribution instance.                                                                                                                       |
+    |                                  | `registry`                    | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}                                          | Creates and manages your application's set of meters                                                                                         |
+    |                                  | `timeunit`                    | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String                                                 | Time unit                                                                                                                                    |
+    |                                  | `record`                      | Double as String                                                                                                                                                                       | The distribution will be updated by the record value                                                                                         |
 
 === "Outputs"
 
-    |    Name               | Type                                                                                                                               | Description             |
-    |:----------------------|:-----------------------------------------------------------------------------------------------------------------------------------|:------------------------|
-    | `micrometerSummary`   | [DistributionSummary](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/DistributionSummary.java){:target=_blank}  | The distribution summary               |
+    | Name                | Type                                                                                                                                                                                   | Description              |
+    |:--------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------|
+    | `micrometerSummary` | [DistributionSummary](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/DistributionSummary.java){:target=_blank} | The distribution summary |
 
 ### Example
 

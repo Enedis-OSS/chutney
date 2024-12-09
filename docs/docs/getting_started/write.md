@@ -7,7 +7,7 @@
 
 In order to write a scenario, you also need to declare environments and services you want to test.
 
-# Define your test environment
+# Define a test environment
 
 ## Declare a target
 
@@ -45,7 +45,7 @@ val environment = ChutneyEnvironment(
 * The environment `name` and `description` can be anything meaningful to you. The name will be shown in the execution report.
 * The variable name `environment` is a reference to set the environment on running tests
 
-# Define your test environment (alternative)
+# Define a test environment (alternative)
 
 There is another way to declare environments and targets by using JSON files.
 
@@ -121,7 +121,7 @@ val search_scenario = Scenario(title = "Search documents") {
 * The scenario title `Search documents` will be shown in the execution report.
 * There are 2 steps `When I visit a search engine` and `Then I am on the front page`
 * The first step will execute an HTTP GET call on the target name `search_engine` on the uri `/`
-    * It also has one [validation](/documentation/actions/introduction.md/#validation) `request accepted` to check the response code status is 200.
+    * It also has one [validation](/documentation/actions/introduction.md/#validations) `request accepted` to check the response code status is 200.
 * The second step does nothing meaningful in this example
 
 !!! tip "Et voilà !"

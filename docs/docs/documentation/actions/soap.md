@@ -16,7 +16,7 @@
     |    *     | `body`     | String                                                           |    {}     |
     |          | `username` | String                                                           |           |
     |          | `password` | String                                                           |           |
-    |          | `timeout`  | String ([Duration](/documentation/actions/other.md/#duration-type)) | "2000 ms" |
+    |          | `timeout`  | String ([Duration](/documentation/actions/introduction.md/#duration-type)) | "2000 ms" |
     |          | `headers`  | String                                                           |           |
 
 === "Outputs"

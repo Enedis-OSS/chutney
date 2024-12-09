@@ -5,23 +5,27 @@
   ~
 -->
 
-Now, in order to run your first scenario, you need to configure your project and build tool according to your preferences.
+Now, in order to run your first scenario **locally**, you need to configure your project and build tool according to your preferences.  
+Here, you will see how to run your scenario as an integration test with the maven failsafe plugin.
 
-Chutney Kotlin DSL provides a JUnit 5 Runner with annotations.
+Chutney provides two ways for doing this
 
-It provides also a `Launcher` class you can use the way you want. You are free to run your scenarios _when_ and
-_anywhere_ you want (be it in a `main` if you wish).
+ * A JUnit 5 Engine with annotations.
+ * A specific `Launcher` class.
 
+??? tip "Launcher"
 
-In the following sections :
+    The specific `Launcher` class could be used anywhere you need it (let it be a `main` for example).
 
-* you will see how to use the JUnit 5 Runner and annotations.
-* you will see how to use the `Launcher` in a standard test, attached to the `integration` phase and run using the maven failsafe plugin.
+??? note "Other ways to run a scenario"
 
+    * **Web interface** : After defining an environment and your scenario (via [synchronization](/documentation/synchronize.md)), you could use the web interface to launch an execution.
 
-# Using Chutney JUnit5 Engine
+    * **IntelliJ plugin** : The [idea plugin](/documentation/intellij_plugin.md) provides a way to [execute](/documentation/intellij_plugin.md/#execution) a scenario from its JSON representation.
 
-When using the JUnit5 engine, we recommend you to use JSON files to [declare your environments and targets](/getting_started/write.md/#define-your-test-environment-alternative).
+# Chutney JUnit5 Engine
+
+When using the JUnit5 engine, we recommend you to use JSON files to [declare your environments and targets](/getting_started/write.md/#define-a-test-environment-alternative).
 
 Create a Kotlin file (ex. `Junit5SearchFeat.kt`) with the following content :
 
@@ -41,7 +45,7 @@ class Junit5SearchFeat {
 ```
 
 
-# Using Chutney Launcher
+# Chutney Launcher
 
 Under `src/test/kotlin` create a package (ex. `com.chutneytesting.getstart`) and create a Kotlin file (ex. `SearchFeat.kt`) with the following content :
 
@@ -58,6 +62,8 @@ class SearchFeat {
     }
 }
 ```
+
+# Run it !
 
 ??? note "Configure your build tool"
 
@@ -100,9 +106,6 @@ class SearchFeat {
             useJUnitPlatform()
         }
         ```
-
-
-# Run it !
 
 Now you can simply run `mvn verify` or `./gradlew test`.
 
