@@ -5,13 +5,12 @@
  *
  */
 
-package com.chutneytesting.migration.infra;
+package com.chutneytesting.migration.domain;
 
 import com.chutneytesting.execution.infra.storage.ScenarioExecutionReportJpaRepository;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
 import com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository;
-import com.chutneytesting.migration.domain.DataMigrator;
-import jakarta.persistence.EntityManager;
+import com.chutneytesting.migration.infra.ExecutionReportRepository;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,67 +18,48 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ExecutionReportMigrator implements DataMigrator {
 
-
-    private final ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository;
     private final ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository;
-    private final EntityManager entityManager;
+    private final ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository;
+    private final ExecutionReportRepository executionReportRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionReportMigrator.class);
 
-
-    public ExecutionReportMigrator(ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository,
-                                   ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository,
-                                   EntityManager entityManager) {
-        this.scenarioExecutionReportIndexRepository = scenarioExecutionReportIndexRepository;
+    public ExecutionReportMigrator(ExecutionReportRepository executionReportRepository,
+                                   ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository, ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository) {
         this.scenarioExecutionReportJpaRepository = scenarioExecutionReportJpaRepository;
-        this.entityManager = entityManager;
+        this.executionReportRepository = executionReportRepository;
+        this.scenarioExecutionReportIndexRepository = scenarioExecutionReportIndexRepository;
     }
 
     @Override
-    @Transactional
     public void migrate() {
         if (isMigrationDone()) {
             LOGGER.info("Report index not empty. Skipping indexing and in-db compression...");
             return;
         }
-
         LOGGER.info("Start indexing and in-db compression...");
         PageRequest firstPage = PageRequest.of(0, 10);
         int count = 0;
-        compressAndIndex(firstPage, count);
+        migrate(firstPage, count);
     }
 
-    private void compressAndIndex(Pageable pageable, int previousCount) {
+    protected void migrate(Pageable pageable, int previousCount) {
         LOGGER.debug("Indexing and compressing reports in page n° {}", pageable.getPageNumber());
         Slice<ScenarioExecutionReportEntity> slice = scenarioExecutionReportJpaRepository.findAll(pageable);
         List<ScenarioExecutionReportEntity> reports = slice.getContent();
 
-        compressAndSaveInDb(reports);
+        executionReportRepository.compressAndSaveInDb(reports);
         index(reports);
+
         int count = previousCount + slice.getNumberOfElements();
         if (slice.hasNext()) {
-            compressAndIndex(slice.nextPageable(), count);
+            migrate(slice.nextPageable(), count);
         } else {
             LOGGER.info("{} report(s) successfully compressed and indexed", count);
         }
-    }
-
-    private void compressAndSaveInDb(List<ScenarioExecutionReportEntity> reportsInDb) {
-        // calling scenarioExecutionReportJpaRepository find() and then save() doesn't call ReportConverter.
-        // ReportConverter will be called by entityManager update. So compression will be done.
-        reportsInDb.forEach(report -> {
-            entityManager.createQuery(
-                    "UPDATE SCENARIO_EXECUTIONS_REPORTS SET report = :report WHERE id = :id")
-                .setParameter("report", report.getReport())
-                .setParameter("id", report.scenarioExecutionId())
-                .executeUpdate();
-            entityManager.flush();
-            entityManager.detach(report);
-        });
     }
 
     private void index(List<ScenarioExecutionReportEntity> reportsInDb) {
