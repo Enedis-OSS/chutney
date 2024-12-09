@@ -40,7 +40,7 @@
             "password": "myPassword",
             "maxFetchSize": "100",
             "dataSource.driverClassName": "oracle.jdbc.OracleDriver",
-            "dataSource.maximumPoolSize": "5"
+            "dataSource.maximumPoolSize": "1"
         }
     }
     ```
@@ -71,11 +71,11 @@ When you provide only one statement in input, the following outputs and operatio
 
 === "Outputs"
 
-|           Name | Type            | Note                          |
-|---------------:|:----------------|:------------------------------|
-|         `rows` | [`Rows`](#rows) |                               |
-|     `firstRow` | [`Row`](#row)   | is an alias for `rows.get(0)` |
-| `affectedRows` | int             | for non `SELECT` statements   |
+    |           Name | Type            | Note                          |
+    |---------------:|:----------------|:------------------------------|
+    |         `rows` | [`Rows`](#rows) |                               |
+    |     `firstRow` | [`Row`](#row)   | is an alias for `rows.get(0)` |
+    | `affectedRows` | int             | for non `SELECT` statements   |
 
 ## Rows
 

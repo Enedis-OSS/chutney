@@ -11,17 +11,17 @@ This action executes a [Groovy](https://groovy-lang.org/documentation.html){:tar
 
 === "Inputs"
 
-    | Required | Name            | Type                     |     Default     | Description                                                                                                                                                                                                      |
-    |:--------:|:----------------|:-------------------------|:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    |    *     | `script`        | String                   |                 | The groovy script to be executed. The last statement must return a Map either implicitly or explicitly. </br> For a script that just launch background execution, an empty map ([:]) must be the last statement. |
-    |          | `parameters`    | Map <String, Object>     |                 | Key/values parameters to be used in the script                                                                                                                                                                   |
+    | Required | Name         | Type                  | Default | Description                                                                                                                                                                                                      |
+    |:--------:|:-------------|:----------------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    |    *     | `script`     | String                |         | The groovy script to be executed. The last statement must return a Map either implicitly or explicitly. </br> For a script that just launch background execution, an empty map ([:]) must be the last statement. |
+    |          | `parameters` | Map <String, Object/> |         | Key/values parameters to be used in the script                                                                                                                                                                   |
 
 === "Outputs"
 
-    | Name            | Type                           | Description                                                    |
-    |:----------------|:-------------------------------|:---------------------------------------------------------------|
-    | `status`        | Status enum (Success, Failure) | Execution status of the groovy task                            |
-    | `outputs`       | Map <String, Object>           | The map returned by the last statement of the executed script. |
+    | Name      | Type                           | Description                                                    |
+    |:----------|:-------------------------------|:---------------------------------------------------------------|
+    | `status`  | Status enum (Success, Failure) | Execution status of the groovy task                            |
+    | `outputs` | Map <String, Object/>          | The map returned by the last statement of the executed script. |
 
 Example:
 === "Kotlin"

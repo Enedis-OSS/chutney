@@ -68,7 +68,8 @@
     |    *     | `body`        | String                            |            |
     |          | `headers`     | Map<String, String\>              |            |
 
-No output. Only a log in report if message was successfully sent
+=== "Outputs"
+    No output. Only a log in report if message was successfully sent
 
 
 ### Example
@@ -105,14 +106,14 @@ No output. Only a log in report if message was successfully sent
 
 === "Inputs"
 
-    | Required | Name              | Type    |  Default   |
-    |:--------:|:------------------|:--------|:----------:|
-    |    *     | `target`          | String  |            |
-    |    *     | `destination`     | String  |            |
-    |          | `selector`        | String  |            |
-    |          | `bodySelector`    | String  |            |
-    |          | `browserMaxDepth` | Integer |            |
-    |          | `timeOut`         | String  |   500 ms   |
+    | Required | Name              | Type                                                                       | Default |
+    |:--------:|:------------------|:---------------------------------------------------------------------------|:-------:|
+    |    *     | `target`          | String                                                                     |         |
+    |    *     | `destination`     | String                                                                     |         |
+    |          | `selector`        | String                                                                     |         |
+    |          | `bodySelector`    | String                                                                     |         |
+    |          | `browserMaxDepth` | Integer                                                                    |         |
+    |          | `timeOut`         | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | 500 ms  |
 
 === "Outputs"
 
@@ -154,14 +155,14 @@ No output. Only a log in report if message was successfully sent
 
 === "Inputs"
 
-    | Required | Name              | Type         |  Default   |
-    |:--------:|:------------------|:-------------|:----------:|
-    |    *     | `target`          | String       |            |
-    |    *     | `destination`     | String       |            |
-    |          | `selector`        | String       |            |
-    |          | `bodySelector`    | String       |            |
-    |          | `browserMaxDepth` | Integer      |            |
-    |          | `timeOut`         | String       |   500 ms   |
+    | Required | Name              | Type                                                                       | Default |
+    |:--------:|:------------------|:---------------------------------------------------------------------------|:-------:|
+    |    *     | `target`          | String                                                                     |         |
+    |    *     | `destination`     | String                                                                     |         |
+    |          | `selector`        | String                                                                     |         |
+    |          | `bodySelector`    | String                                                                     |         |
+    |          | `browserMaxDepth` | Integer                                                                    |         |
+    |          | `timeOut`         | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | 500 ms  |
 
 No output. Only a log in report with number of messages removed
 

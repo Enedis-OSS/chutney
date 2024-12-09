@@ -26,44 +26,53 @@ nav:
           - Further details: installation/on_premise/details.md
       - Advanced topics: installation/advanced_topics.md
   - Documentation:
-      - Write a scenario: documentation/write.md
-      - Synchronize: documentation/synchronize.md
+      - Scenario: documentation/scenario.md
+#      - Campaign: documentation/campaign.md
       - Dataset: documentation/dataset.md
-      - Idea Plugin: documentation/intellij_plugin.md
+#      - Environment: documentation/environment.md
+      - Synchronize: documentation/synchronize.md
       - Actions:
           - documentation/actions/introduction.md
-          - AMQP: documentation/actions/amqp.md
-          - Groovy: documentation/actions/groovy.md
+          - Assertions: documentation/actions/assertions.md
+          - Context: documentation/actions/context.md
           - HTTP: documentation/actions/http.md
+          - AMQP: documentation/actions/amqp.md
+          - SQL: documentation/actions/sql.md
           - JMS / Jakarta: documentation/actions/jms.md
           - Kafka: documentation/actions/kafka.md
-          - MongoDB: documentation/actions/mongo.md
-          - Radius: documentation/actions/radius.md
           - Selenium: documentation/actions/selenium.md
-          - SOAP: documentation/actions/soap.md
-          - SQL: documentation/actions/sql.md
           - SCP / FTP / SSH: documentation/actions/ssh.md
-          - Assertions: documentation/actions/assertions.md
+          - MongoDB: documentation/actions/mongo.md
           - Micrometer: documentation/actions/micrometer.md
-          - Other: documentation/actions/other.md
+          - Radius: documentation/actions/radius.md
+          - SOAP: documentation/actions/soap.md
+          - Groovy: documentation/actions/groovy.md
       - Functions:
           - documentation/functions/introduction.md
-          - Classpath: documentation/functions/classpath.md
+          - Random values: documentation/functions/generate.md
           - Dates & Time: documentation/functions/datetime.md
+          - JSON: documentation/functions/json.md
+          - XPath: documentation/functions/xpath.md
+          - Network: documentation/functions/network.md
+          - Classpath: documentation/functions/classpath.md
           - Escape: documentation/functions/escape.md
           - Handling null: documentation/functions/nullable.md
-          - JSON: documentation/functions/json.md
           - Micrometer: documentation/functions/micrometer.md
-          - Network: documentation/functions/network.md
-          - Random values: documentation/functions/generate.md
-          - SOAP: documentation/functions/soap.md
           - String: documentation/functions/string.md
           - Wiremock: documentation/functions/wiremock.md
-          - XPath: documentation/functions/xpath.md
+          - SOAP: documentation/functions/soap.md
+#      - Strategies:
+#          - documentation/strategies/introduction.md
+#          - Default: documentation/strategies/default.md
+#          - Retry: documentation/strategies/retry.md
+#          - Soft: documentation/strategies/soft.md
+#          - Foreach: documentation/strategies/foreach.md
+#          - If: documentation/strategies/if.md
       - Extension:
           - Action: documentation/extension/action.md
           - Function: documentation/extension/function.md
-          - Strategy: documentation/extension/strategy.md
+#          - Strategy: documentation/extension/strategy.md
+      - Idea Plugin: documentation/intellij_plugin.md
 
 extra_css:
   - stylesheets/extra.css

@@ -106,7 +106,7 @@ See [WebDriver.close()](https://www.selenium.dev/selenium/docs/api/java/org/open
 
 !!! info "[Browse Implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/selenium/SeleniumDriverInitAction.java){:target="_blank"}"
 
-This action instantiate a webdriver
+This action instantiate a WebDriver
 
 !!! important
     Firefox is the default browser and `browser` input should be empty, but you should provide `browserPath` input.  
@@ -169,18 +169,17 @@ See [WebDriver.get(String url)](https://www.selenium.dev/selenium/docs/api/java/
 
 === "Inputs"
 
-    | Required | Name         | Type    | Note                                           |
-    |:--------:|:-------------|:--------|:----------------------------------------------:|
-    |    *     | `web-driver` | String  |                                                |
-    |          | `selector`   | String  | (Weird implemention) Used as a boolean. If null, the page is opened in current window. If not the page is opened in a new window |
-    |    *     | `value`      | String  | The URL to load. Must be a fully qualified URL |
+    | Required | Name         | Type   |                                                               Note                                                               |
+    |:--------:|:-------------|:-------|:--------------------------------------------------------------------------------------------------------------------------------:|
+    |    *     | `web-driver` | String |                                                                                                                                  |
+    |          | `selector`   | String | (Weird implemention) Used as a boolean. If null, the page is opened in current window. If not the page is opened in a new window |
+    |    *     | `value`      | String |                                          The URL to load. Must be a fully qualified URL                                          |
 
 === "Outputs"
 
-    |     Name    | Type   | Note                                                                                                                                                                                                                                                                    |
+    |    Name     | Type   | Note                                                                                                                                                                                                                                                                    |
     |:-----------:|:-------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | `outputGet` | String | This value can be used to switch to this window using action [SwitchTo](#switch-to).<br> See [WebDriver.getWindowHandle()](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebDriver.html#getWindowHandle()){:target="_blank"} for further details. |
-
 
 ### Example
 
@@ -449,10 +448,10 @@ See [WebDriver.Window.setSize()](https://www.selenium.dev/selenium/docs/api/java
 
 === "Inputs"
 
-| Required | Name      | Type    | Default   |
-|:--------:|:----------|:--------|:---------:|
-|    *     | `width`   | Integer |           |
-|    *     | `height`  | Integer |           |
+    | Required | Name      | Type    | Default   |
+    |:--------:|:----------|:--------|:---------:|
+    |    *     | `width`   | Integer |           |
+    |    *     | `height`  | Integer |           |
 
 ### Example
 
@@ -532,13 +531,13 @@ This action waits N seconds or until the expected conditions are met.
 
 === "Inputs"
 
-| Required | Name         | Type    | Default |  Note   |
-|:--------:|:-------------|:--------|:-------:|:-------:|
-|    *     | `web-driver` | String  |         |         |
-|    *     | `selector`   | String  |         |         |
-|    *     | `by`         | String  |         |         |
-|          | `wait`       | Integer |    1    | seconds |
-|          | `value`      | String  |         |         |
+    | Required | Name         | Type    | Default |  Note   |
+    |:--------:|:-------------|:--------|:-------:|:-------:|
+    |    *     | `web-driver` | String  |         |         |
+    |    *     | `selector`   | String  |         |         |
+    |    *     | `by`         | String  |         |         |
+    |          | `wait`       | Integer |    1    | seconds |
+    |          | `value`      | String  |         |         |
 
 ### Example
 

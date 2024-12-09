@@ -21,9 +21,10 @@
         - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sshj/SshJClient.java){:target="_blank"}
         - [Action](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SshClientAction.java){:target="_blank"}
 
-!!! note "Target Authentication"
+!!! note "Target Authentication and proxy"
 
-    You can either use basic authentication or use a private key and a passphrase. 
+    You can either use basic authentication or use a private key and a passphrase.  
+    You can also use properties to set up a proxy jump connection.
 
     ```json title="target example"
     {
@@ -34,6 +35,11 @@
             "password": "myPassword", // (2)
             "privateKey": "/path/to/the/private/key", // (3)
             "privateKeyPassphrase": "myPrivateKeyPassphrase" // (4)
+            "proxy": "ssh://proxy.host:2222" // (5)
+            "proxyUser": "myProxyUser" // (6)
+            "proxyPassword": "myProxyPassword" // (7)
+            "proxyPrivateKey": "/path/to/the/private/proxy_key", // (8)
+            "proxyPassphrase": "myProxyPrivateKeyPassphrase" // (9)
         }
     }
     ```
@@ -42,6 +48,11 @@
     2. Valid properties are `userPassword` or `password`. Set this for basic authentication
     3. Path to private key file on the machine running Chutney
     4. Valid properties are `privateKeyPassword` or `privateKeyPassphrase`. Set this for basic authentication
+    5. Declare a SSH proxy to use (similar to declare a proxy jump for the connection)
+    6. Proxy user to use
+    7. Proxy user password to use
+    8. Proxy private key to use
+    9. Proxy private key passphrase to use
 
 # SCP
 
@@ -53,12 +64,12 @@
 
 === "Inputs"
 
-    | Required | Name          | Type                                                             | Default |
-    |:--------:|:--------------|:-----------------------------------------------------------------|:-------:|
-    |    *     | `target`      | String                                                           |         |
-    |    *     | `source`      | String                                                           |         |
-    |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
+    | Required | Name          | Type                                                                | Default |
+    |:--------:|:--------------|:--------------------------------------------------------------------|:-------:|
+    |    *     | `target`      | String                                                              |         |
+    |    *     | `source`      | String                                                              |         |
+    |    *     | `destination` | String                                                              |         |
+    |          | `timeout`     | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `5 sec` |
 
 SCP download has no outputs
 
@@ -84,12 +95,12 @@ ScpDownloadAction(
 
 === "Inputs"
 
-    | Required | Name          | Type                                                             | Default |
-    |:--------:|:--------------|:-----------------------------------------------------------------|:-------:|
-    |    *     | `target`      | String                                                           |         |
-    |    *     | `source`      | String                                                           |         |
-    |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
+    | Required | Name          | Type                                                                | Default |
+    |:--------:|:--------------|:--------------------------------------------------------------------|:-------:|
+    |    *     | `target`      | String                                                              |         |
+    |    *     | `source`      | String                                                              |         |
+    |    *     | `destination` | String                                                              |         |
+    |          | `timeout`     | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `5 sec` |
 
 SCP upload has no outputs
 
@@ -120,12 +131,12 @@ ScpUploadAction(
 
 === "Inputs"
 
-    | Required | Name          | Type                                                             | Default |
-    |:--------:|:--------------|:-----------------------------------------------------------------|:-------:|
-    |    *     | `target`      | String                                                           |         |
-    |    *     | `source`      | String                                                           |         |
-    |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
+    | Required | Name          | Type                                                                | Default |
+    |:--------:|:--------------|:--------------------------------------------------------------------|:-------:|
+    |    *     | `target`      | String                                                              |         |
+    |    *     | `source`      | String                                                              |         |
+    |    *     | `destination` | String                                                              |         |
+    |          | `timeout`     | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `5 sec` |
 
 SFTP download has no outputs
 
@@ -151,11 +162,11 @@ SftpDownloadAction(
 
 === "Inputs"
 
-    | Required | Name      | Type                                                             | Default |
-    |:--------:|:----------|:-----------------------------------------------------------------|:-------:|
-    |    *     | `target`  | String                                                           |         |
-    |    *     | `file`    | String                                                           |         |
-    |          | `timeout` | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
+    | Required | Name      | Type                                                                | Default |
+    |:--------:|:----------|:--------------------------------------------------------------------|:-------:|
+    |    *     | `target`  | String                                                              |         |
+    |    *     | `file`    | String                                                              |         |
+    |          | `timeout` | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `5 sec` |
 
 === "Outputs"
 
@@ -187,11 +198,11 @@ SftpFileInfoAction(
 
 === "Inputs"
 
-    | Required | Name        | Type                                                             | Default |
-    |:--------:|:------------|:-----------------------------------------------------------------|:-------:|
-    |    *     | `target`    | String                                                           |         |
-    |    *     | `directory` | String                                                           |         |
-    |          | `timeout`   | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
+    | Required | Name        | Type                                                                | Default |
+    |:--------:|:------------|:--------------------------------------------------------------------|:-------:|
+    |    *     | `target`    | String                                                              |         |
+    |    *     | `directory` | String                                                              |         |
+    |          | `timeout`   | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `5 sec` |
 
 === "Outputs"
 
@@ -219,12 +230,12 @@ SftpListDirAction(
 
 === "Inputs"
 
-    | Required | Name          | Type                                                             | Default |
-    |:--------:|:--------------|:-----------------------------------------------------------------|:-------:|
-    |    *     | `target`      | String                                                           |         |
-    |    *     | `source`      | String                                                           |         |
-    |    *     | `destination` | String                                                           |         |
-    |          | `timeout`     | String ([Duration](/documentation/actions/other.md/#duration-type)) | `5 sec` |
+    | Required | Name          | Type                                                                | Default |
+    |:--------:|:--------------|:--------------------------------------------------------------------|:-------:|
+    |    *     | `target`      | String                                                              |         |
+    |    *     | `source`      | String                                                              |         |
+    |    *     | `destination` | String                                                              |         |
+    |          | `timeout`     | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `5 sec` |
 
 SCP upload has no outputs
 
@@ -279,7 +290,7 @@ SshClientAction(
 ```
 
 1. Syntax is either a list of String or a List of Command in JSON (ex. {command: "xxx", timeout:"10 s"})  
-   You can set a timeout for each command, format is a [Duration](/documentation/actions/other.md/#duration-type)  
+   You can set a timeout for each command, format is a [Duration](/documentation/actions/introduction.md/#duration-type)  
    Default timeout value is 5 seconds
 
 ### CommandResult
@@ -306,6 +317,6 @@ The following attributes can be used in SpEL :
 
 * `command`: Get the actual command (String)  
   -> `${#command.command}`
-* `timeout`: Get the command timeout ([Duration](/documentation/actions/other.md/#duration-type))  
+* `timeout`: Get the command timeout ([Duration](/documentation/actions/introduction.md/#duration-type))  
   -> `${#command.timeout}`
 

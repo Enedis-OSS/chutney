@@ -8,7 +8,7 @@
 <h1>Synchronize a Kotlin scenario with a server</h1>
 
 # Create a Kotlin scenario locally
-Follow [this](/documentation/write.md/#write-a-scenario) documentation to write your first Kotlin scenario.
+Follow [this](/documentation/scenario.md/#write-a-scenario) documentation to write your first Kotlin scenario.
 
 # Create a scenario on chutney server
 

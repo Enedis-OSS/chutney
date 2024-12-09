@@ -42,13 +42,14 @@ Use this action to publish a message to an exchange.
 
 === "Inputs"
 
-    | Required | Name            | Type                     |   Description   |
-    |:--------:|:----------------|:-------------------------|:----------------|
-    |    *     | `exchange-name` | String                   | The exchange to publish the message to. Must exist                  |
-    |          | `routing-key`   | String                   | The routing key. See this [example](https://www.rabbitmq.com/tutorials/tutorial-five-python.html#:~:text=complex%20topic%20exchange.-,Topic%20exchange,-Messages%20sent%20to){:target=_blank} for more details.                                                     |
-    |          | `headers`       | Map<String, Object\>     | Message headers                                                     |
-    |          | `properties`    | Map<String, String\>     | Other message's [properties](https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/AMQP.BasicProperties.html){:target=_blank}. Actually only content_type property is handled. |
-    |    *     | `payload`       | String                   |  Message content                                                    |
+    | Required | Name            | Type                 | Description                                                                                                                                                                                                     |
+    |:--------:|:----------------|:---------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    |    *     | `target`        | String               | The AMQP service name to use                                                                                                                                                                                    |
+    |    *     | `exchange-name` | String               | The exchange to publish the message to                                                                                                                                                                          |
+    |          | `routing-key`   | String               | The routing key. See this [example](https://www.rabbitmq.com/tutorials/tutorial-five-python.html#:~:text=complex%20topic%20exchange.-,Topic%20exchange,-Messages%20sent%20to){:target=_blank} for more details. |
+    |          | `headers`       | Map<String, Object\> | Message headers                                                                                                                                                                                                 |
+    |          | `properties`    | Map<String, String\> | Other message's [properties](https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/AMQP.BasicProperties.html){:target=_blank}. Actually only content_type property is handled         |
+    |    *     | `payload`       | String               | Message content                                                                                                                                                                                                 |
 
 === "Outputs"
 
@@ -91,9 +92,9 @@ Use this action to consume messages from a queue.
 !!! warning "Parallel consume"
     * Only **one** queue consumer can be started at a given time.
     * To start a queue consumer, Chutney:
-        * check if an other consumer was started:
+        * check if another consumer was started:
             * if true, it re check the queue availability every `500 ms` without exceeding `timeout` duration. At every iteration, the remaining timeout is reduced by `500 ms`. 
-            * else, it mark the queue as locked and start the current consumer.
+            * else, it marks the queue as locked and start the current consumer.
         * consume messages without exceeding the remaining timeout ( = timeout - n * 500ms) or the `nb-messages`.
         * stop consumer and unlock the queue.
     
@@ -102,13 +103,14 @@ Use this action to consume messages from a queue.
 
 === "Inputs"
 
-    | Required | Name          | Type        | Default    | Description                         |
-    |:--------:|:--------------|:------------|:-----------|:------------------------------------|
-    |    *     | `queue-name`  | string      |            | Queue name.                         |
-    |          | `nb-messages` | integer     |   1        | How many messages to be consumed. Throw error if got messages number is less than nb-messages.   |
-    |          | `selector`    | string      |            |                                     |
-    |          | `timeout`     | [duration](/documentation/actions/other.md/#duration-type) | `"10 sec"` |   In how many time a consume connection must be established and messages must be read     |
-    |          | `ack`         | boolean     |    true    | [Basic.ack](https://www.rabbitmq.com/confirms.html#acknowledgement-modes){:target=_blank} acknowledgements mode is used if true.    |
+    | Required | Name          | Type                                                                       | Default    | Description                                                                                                                      |
+    |:--------:|:--------------|:---------------------------------------------------------------------------|:-----------|:---------------------------------------------------------------------------------------------------------------------------------|
+    |    *     | `target`      | string                                                                     |            | The AMQP service name to use                                                                                                     |
+    |    *     | `queue-name`  | string                                                                     |            | Queue name                                                                                                                       |
+    |          | `nb-messages` | integer                                                                    | 1          | How many messages to be consumed. Throw error if got messages number is less than nb-messages                                    |
+    |          | `selector`    | string                                                                     |            |                                                                                                                                  |
+    |          | `timeout`     | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | `"10 sec"` | In how many time a consume connection must be established and messages must be read                                              |
+    |          | `ack`         | boolean                                                                    | true       | [Basic.ack](https://www.rabbitmq.com/confirms.html#acknowledgement-modes){:target=_blank} acknowledgements mode is used if true  |
 
 === "Outputs"
 
@@ -151,17 +153,18 @@ Use this action to have direct access to available messages in a queue.
 
 === "Inputs"
 
-    | Required | Name         | Type   | Description |
-    |:--------:|:-------------|:-------|:-----------:|
-    |    *     | `queue-name` | String | Queue name. |
+    | Required | Name         | Type   |          Description          |
+    |:--------:|:-------------|:-------|:-----------------------------:|
+    |    *     | `target`     | String | The AMQP service name to use  |
+    |    *     | `queue-name` | String |          Queue name           |
 
 === "Outputs"
 
-    |      Name | Type                                   | Description      |
-    |----------:|:---------------------------------------|:-----------------|
-    | `message` | String                                 | [response](https://rabbitmq.github.io/rabbitmq-java-client/api/4.x.x/com/rabbitmq/client/GetResponse.html){:target=_blank} as Map  |
-    | `body`    | String                                 | response body |
-    | `headers` | String                                 | response headers |
+    |      Name | Type   | Description                                                                                                                       |
+    |----------:|:-------|:----------------------------------------------------------------------------------------------------------------------------------|
+    | `message` | String | [response](https://rabbitmq.github.io/rabbitmq-java-client/api/4.x.x/com/rabbitmq/client/GetResponse.html){:target=_blank} as Map |
+    |    `body` | String | response body                                                                                                                     |
+    | `headers` | String | response headers                                                                                                                  |
 
 
 
@@ -188,7 +191,8 @@ For example, it can be used at the beginning of your scenario to ensure that use
 
     | Required | Name          | Type          |Description |
     |:--------:|:--------------|:--------------|:-----------|
-    |     *    | `queue-names` | List<String\> |  to be burged queues names          |
+    |     *    | `target` | String | The AMQP service name to use          |
+    |     *    | `queue-names` | List<String\> |  queues names to be purged          |
 
 === "Output"
      No output
@@ -214,11 +218,12 @@ Use this action to create a temporary queue and bind it to an existing exchange 
 
 === "Inputs"
 
-    | Required | Name            | Type   |   Default    |   Description    |
-    |:--------:|:----------------|:-------|:------------:|:-----------------|
-    |    *     | `exchange-name` | String |              |  Exchange name   |
-    |          | `routing-key`   | String | "queue-name" |  The routing key to use for the binding. See this [example](https://www.rabbitmq.com/tutorials/tutorial-five-python.html#:~:text=complex%20topic%20exchange.-,Topic%20exchange,-Messages%20sent%20to){:target=_blank} for more details.  |
-    |    *     | `queue-name`    | String |              |  Queue name      |
+    | Required | Name            | Type   |   Default    | Description                                                                                                                                                                                                                            |
+    |:--------:|:----------------|:-------|:------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    |    *     | `target`        | String |              | The AMQP service name to use                                                                                                                                                                                                           |
+    |    *     | `exchange-name` | String |              | Exchange name                                                                                                                                                                                                                          |
+    |          | `routing-key`   | String | "queue-name" | The routing key to use for the binding. See this [example](https://www.rabbitmq.com/tutorials/tutorial-five-python.html#:~:text=complex%20topic%20exchange.-,Topic%20exchange,-Messages%20sent%20to){:target=_blank} for more details. |
+    |    *     | `queue-name`    | String |              | Queue name                                                                                                                                                                                                                             |
 
 === "Outputs"
 
@@ -249,23 +254,24 @@ Use this action to delete a binding between exchange and queue.
 
 === "Inputs"
 
-    | Required | Name            | Type   |   Description    |
-    |:--------:|:----------------|:-------|:-----------------|
-    |    *     | `queue-name`    | String |  Queue name      |
-    |          | `exchange-name` | String |  Exchange name   |
-    |          | `routing-key`   | String |  The routing key used for the binding.  |
+    | Required | Name            | Type   | Description                           |
+    |:--------:|:----------------|:-------|:--------------------------------------|
+    |    *     | `target`        | String | The AMQP service name to use          |
+    |    *     | `queue-name`    | String | Queue name                            |
+    |          | `exchange-name` | String | Exchange name                         |
+    |          | `routing-key`   | String | The routing key used for the binding. |
 
 ### Example
 
 === "Kotlin"
-``` kotlin
-AmqpUnbindQueueAction(
-target = "RABBITMQ_TARGET",
-queueName = "my.queue",
-exchangeName = "my.exchange",
-routingKey = "children.*"
-)
-```
+    ``` kotlin
+    AmqpUnbindQueueAction(
+    target = "RABBITMQ_TARGET",
+    queueName = "my.queue",
+    exchangeName = "my.exchange",
+    routingKey = "children.*"
+    )
+    ```
 
 # Delete queue
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/amqp/AmqpDeleteQueueAction.java){:target="_blank"}"
@@ -273,9 +279,10 @@ routingKey = "children.*"
 Use this action to delete an existing queue without regard for whether it is in use or has messages on it.
 === "Inputs"
 
-    | Required | Name       | Type   | Description |
-    |:--------:|:-----------|:-------|:------------|
-    |    *     | queue-name | String | Queue name  |
+    | Required | Name         | Type   | Description                  |
+    |:--------:|:-------------|:-------|:-----------------------------|
+    |    *     | `target`     | String | The AMQP service name to use |
+    |    *     | `queue-name` | String | Queue name                   |
 
 === "Outputs"
     No output

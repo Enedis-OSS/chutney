@@ -60,19 +60,19 @@
 
 === "Inputs"
 
-    | Required | Name      | Type                                                             | Default   |
-    |:--------:|:----------|:-----------------------------------------------------------------|:---------:|
-    |    *     | `target`  | String                                                           |           |
-    |    *     | `uri`     | String                                                           |           |
-    |          | `headers` | Map<String, String\>                                             |           |
-    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms" |
+    | Required | Name      | Type                                                                       |  Default  |
+    |:--------:|:----------|:---------------------------------------------------------------------------|:---------:|
+    |    *     | `target`  | String                                                                     |           |
+    |    *     | `uri`     | String                                                                     |           |
+    |          | `headers` | Map<String, String\>                                                       |           |
+    |          | `timeout` | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | "2000 ms" |
 
 === "Outputs"
 
     |      Name | Type                                                                                                                                        |
-    |:---------:|:--------------------------------------------------------------------------------------------------------------------------------------------|
+    |----------:|:--------------------------------------------------------------------------------------------------------------------------------------------|
     |  `status` | int                                                                                                                                         |
-    |  `body`   | String                                                                                                                                      |
+    |    `body` | String                                                                                                                                      |
     | `headers` | [HttpHeaders](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpHeaders.html){:target="_blank"} |
 
 ### Example
@@ -94,13 +94,13 @@
 
 === "Inputs"
 
-    | Required | Name      | Type                                                             |  Default   |
-    |:--------:|:----------|:-----------------------------------------------------------------|:----------:|
-    |    *     | `target`  | String                                                           |            |
-    |    *     | `uri`     | String                                                           |            |
-    |          | `body`    | String                                                           | `{}`       |
-    |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
+    | Required | Name      | Type                                                                       |  Default  |
+    |:--------:|:----------|:---------------------------------------------------------------------------|:---------:|
+    |    *     | `target`  | String                                                                     |           |
+    |    *     | `uri`     | String                                                                     |           |
+    |          | `body`    | String                                                                     |   `{}`    |
+    |          | `headers` | Map<String, String\>                                                       |           |
+    |          | `timeout` | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | "2000 ms" |
 
 === "Outputs"
 
@@ -129,13 +129,13 @@
 
 === "Inputs"
 
-    | Required | Name      | Type                                                             |  Default   |
-    |:--------:|:----------|:-----------------------------------------------------------------|:----------:|
-    |    *     | `target`  | String                                                           |            |
-    |    *     | `uri`     | String                                                           |            |
-    |          | `body`    | String                                                           | `{}`       |
-    |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
+    | Required | Name      | Type                                                                       |  Default  |
+    |:--------:|:----------|:---------------------------------------------------------------------------|:---------:|
+    |    *     | `target`  | String                                                                     |           |
+    |    *     | `uri`     | String                                                                     |           |
+    |          | `body`    | String                                                                     |   `{}`    |
+    |          | `headers` | Map<String, String\>                                                       |           |
+    |          | `timeout` | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | "2000 ms" |
 
 === "Outputs"
 
@@ -164,12 +164,12 @@
 
 === "Inputs"
 
-    | Required | Name      | Type                                                             |  Default   |
-    |:--------:|:----------|:-----------------------------------------------------------------|:----------:|
-    |    *     | `target`  | String                                                           |            |
-    |    *     | `uri`     | String                                                           |            |
-    |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
+    | Required | Name      | Type                                                                       |  Default  |
+    |:--------:|:----------|:---------------------------------------------------------------------------|:---------:|
+    |    *     | `target`  | String                                                                     |           |
+    |    *     | `uri`     | String                                                                     |           |
+    |          | `headers` | Map<String, String\>                                                       |           |
+    |          | `timeout` | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | "2000 ms" |
 
 === "Outputs"
 
@@ -198,13 +198,13 @@
 
 === "Inputs"
 
-    | Required | Name      | Type                                                             |  Default   |
-    |:--------:|:----------|:-----------------------------------------------------------------|:----------:|
-    |    *     | `target`  | String                                                           |            |
-    |    *     | `uri`     | String                                                           |            |
-    |          | `body`    | String                                                           | `{}`       |
-    |          | `headers` | Map<String, String\>                                             |            |
-    |          | `timeout` | [Duration](/documentation/actions/other.md/#duration-type) (String) | "2000 ms"  |
+    | Required | Name      | Type                                                                       |  Default  |
+    |:--------:|:----------|:---------------------------------------------------------------------------|:---------:|
+    |    *     | `target`  | String                                                                     |           |
+    |    *     | `uri`     | String                                                                     |           |
+    |          | `body`    | String                                                                     |   `{}`    |
+    |          | `headers` | Map<String, String\>                                                       |           |
+    |          | `timeout` | [Duration](/documentation/actions/introduction.md/#duration-type) (String) | "2000 ms" |
 
 === "Outputs"
 

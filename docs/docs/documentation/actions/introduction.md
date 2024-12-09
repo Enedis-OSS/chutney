@@ -26,8 +26,10 @@ All actions are structured the same way with **inputs**, **outputs**, **validati
 # Inputs
 
 Inputs are the minimum information needed to run the action.  
-For example, if you want to perform an HTTP GET request, you should give, at least, the targeted service and an URI.  
+For example, if you want to perform an HTTP GET request, you should give, at least, the targeted service and a URI.  
 Obviously, you should be familiar with the technology behind each action you use, and we stick to the proper vocabulary (i.e. _body_ for HTTP, _payload_ for Kafka etc.)
+
+In order to use some existing context variables as inputs, you need to use an [expression](#expressions) and Chutney [functions](/documentation/functions/introduction.md), so we recommend you to read about them for further details.
 
 !!! note
     
@@ -37,7 +39,25 @@ Obviously, you should be familiar with the technology behind each action you use
     Please, refer to actions' configuration for further details.
 
     * All actions must have a [Logger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/injectable/Logger.java){:target=_blank} class as input. At runtime a [DelagateLogger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/engine/src/main/java/com/chutneytesting/engine/domain/execution/engine/parameterResolver/DelegateLogger.java){:target=_blank} is automatically injected by the execution engine.  
-    This logger contains action's logs which be present in the execution report.
+     This logger contains action's logs which be present in the execution report.
+
+??? info "Special inputs types"
+    
+    * **Duration Type** <a name="duration-type"></a>
+    
+        Sometimes, Action input is a String of type Duration.  
+        Expected format is `<positive number> <unit>`.  
+        `unit` values are :
+        
+        * "nanos", "ns"
+        * "micros", "µs"
+        * "millis", "ms"
+        * "seconds", "s", "sec"
+        * "minutes", "m", "min"
+        * "hours", "h", "hour", "hours", "hour(s)"
+        * "days", "d", "day", "days", "day(s)"
+        
+        **Examples** : "5 min", "300 sec", "1 day"
 
 # Outputs
 
@@ -45,7 +65,7 @@ Outputs contain the data collected after performing an action, and only if it su
 These data are set in the execution context and can be accessed and used later in another action.
 
 Each action provide a set of default outputs. But they are generic and may contain much more information than what you actually need.  
-In order to process them, you need to use an [expression](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#expressions) and Chutney [functions](/documentation/functions/introduction.md), so we recommend you to read about them for further details.
+In order to process them, you need to use an [expression](#expressions) and Chutney [functions](/documentation/functions/introduction.md), so we recommend you to read about them for further details.
 
 !!! note
     The execution context holds outputs in a key/value map, where the key is a string and the value is typed.
@@ -95,7 +115,7 @@ After executing this action, the execution context will contain the following ou
 Your relevant data can be accessed from another SpEL using `#bestMovies` and since it is a List you can call methods on it, like so : `${#bestMovies.get(0)}`  
 `#body`, `#status` and `#headers` are also available but are very likely to be overridden by a following step while you have full control over the use of the `#bestMovies` key.
 
-# Validation
+# Validations
 
 Validations are a list of checks you want to perform in order to validate a step.
 By default, a step will _fail_ when an error occurs, but we cannot verify the semantic of the result.  
@@ -104,7 +124,7 @@ Asserting a step depends on your feature and requirements.
 For example, if an HTTP GET request returns a status code 500, the step is _technically_ complete and succeed.  
 But, you may want to fail the step if the status is different from 200.
 
-Each validation has a name and evaluates to a boolean, using [expressions](/common/coming_soon.md) and [functions](/common/coming_soon.md). 
+Each validation has a name and evaluates to a boolean, using [expressions](#expressions) and [functions](/documentation/functions/introduction.md). 
 
 === "Kotlin"
 
@@ -190,3 +210,8 @@ Step("Insert data in a table") { // (1)
 1. This is a wrapper step
 2. We declare our final action **first** !
 3. We declare our real action after
+
+# Expressions
+
+Chutney expressions come from [Spring EL](https://docs.spring.io/spring-framework/reference/core/expressions.html){:target="_blank"}.  
+The Chutney execution context is the evaluation context of **inputs**, **outputs** and **validations** expressions.
