@@ -230,16 +230,17 @@ public class KafkaBasicConsumeAction implements Action {
         var result = new HashMap<String, Object>();
         Stream<Header> distinctHeaders = Stream.of(record.headers().toArray()).distinct();
         distinctHeaders.forEach(header -> {
-            if (result.containsKey(header.key())) {
-                Object v = result.get(header.key());
-                if (v instanceof String) {
-                    var list_value = new ArrayList<>();
-                    list_value.add(v);
-                    result.put(header.key(), list_value);
+            String headerKey = header.key();
+            if (result.containsKey(headerKey)) {
+                Object headerValue = result.get(headerKey);
+                if (headerValue instanceof String) {
+                    var headerValueAsList = new ArrayList<>();
+                    headerValueAsList.add(headerValue);
+                    result.put(headerKey, headerValueAsList);
                 }
-                ((Collection<String>) result.get(header.key())).add(new String(header.value(), UTF_8));
+                ((Collection<String>) result.get(headerKey)).add(new String(header.value(), UTF_8));
             } else {
-                result.put(header.key(), new String(header.value(), UTF_8));
+                result.put(headerKey, new String(header.value(), UTF_8));
             }
         });
         return result;
