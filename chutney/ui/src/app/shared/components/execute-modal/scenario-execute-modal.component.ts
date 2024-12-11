@@ -60,8 +60,8 @@ export class ScenarioExecuteModalComponent implements OnInit {
         const createDatasetLabel = this.translateService.instant('dataset.actions.createDataset');
         this.createDataset = new Dataset(createDatasetLabel, "", [], new Date(), [], [])
         this.datasetService.findAll().subscribe((res: Array<Dataset>) => {
-                this.datasets = [...res, this.createDataset];
-                this.filteredDatasets = [...res, this.createDataset];
+                this.datasets = [this.createDataset, ...res];
+                this.filteredDatasets = [this.createDataset, ...res];
         });
 
         this.datasetForm = this.formBuilder.group({
