@@ -8,8 +8,8 @@
 package com.chutneytesting.migration.domain;
 
 import com.chutneytesting.execution.infra.storage.ScenarioExecutionReportJpaRepository;
+import com.chutneytesting.execution.infra.storage.index.ExecutionReportIndexRepository;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
-import com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository;
 import com.chutneytesting.migration.infra.ExecutionReportRepository;
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import com.chutneytesting.scenario.infra.raw.ScenarioJpaRepository;
@@ -25,18 +25,20 @@ import org.springframework.stereotype.Component;
 public class ExecutionReportMigrator implements DataMigrator {
 
     private final ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository;
-    private final ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository;
-    private final ScenarioJpaRepository scenarioJpaRepository;
+    private final ExecutionReportIndexRepository executionReportIndexRepository;
     private final ExecutionReportRepository executionReportRepository;
+    private final ScenarioJpaRepository scenarioJpaRepository;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionReportMigrator.class);
     private List<String> activatedScenariosIds;
 
-    public ExecutionReportMigrator(ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository,
-                                   ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository,
-                                   ScenarioJpaRepository scenarioJpaRepository, ExecutionReportRepository executionReportRepository) {
+    public ExecutionReportMigrator(ExecutionReportRepository executionReportRepository,
+                                   ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository,
+                                   ExecutionReportIndexRepository executionReportIndexRepository,
+                                   ScenarioJpaRepository scenarioJpaRepository) {
         this.scenarioExecutionReportJpaRepository = scenarioExecutionReportJpaRepository;
         this.scenarioJpaRepository = scenarioJpaRepository;
-        this.scenarioExecutionReportIndexRepository = scenarioExecutionReportIndexRepository;
+        this.executionReportIndexRepository = executionReportIndexRepository;
         this.executionReportRepository = executionReportRepository;
     }
 
@@ -72,11 +74,11 @@ public class ExecutionReportMigrator implements DataMigrator {
     }
 
     private void index(List<ScenarioExecutionReportEntity> reportsInDb) {
-        scenarioExecutionReportIndexRepository.saveAll(reportsInDb);
+        executionReportIndexRepository.saveAll(reportsInDb);
     }
 
     private boolean isMigrationDone() {
-        int indexedReports = scenarioExecutionReportIndexRepository.count();
+        int indexedReports = executionReportIndexRepository.count();
         return indexedReports > 0;
     }
 }

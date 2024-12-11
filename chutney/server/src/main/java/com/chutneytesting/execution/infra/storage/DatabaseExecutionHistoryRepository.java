@@ -16,7 +16,7 @@ import com.chutneytesting.campaign.infra.CampaignJpaRepository;
 import com.chutneytesting.campaign.infra.jpa.CampaignExecutionEntity;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionEntity;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
-import com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository;
+import com.chutneytesting.execution.infra.storage.index.ExecutionReportIndexRepository;
 import com.chutneytesting.server.core.domain.dataset.DataSet;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory.DetachedExecution;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory.Execution;
@@ -52,7 +52,7 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
     private final CampaignJpaRepository campaignJpaRepository;
     private final CampaignExecutionJpaRepository campaignExecutionJpaRepository;
     private final TestCaseRepository testCaseRepository;
-    private final ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository;
+    private final ExecutionReportIndexRepository executionReportIndexRepository;
     private final ObjectMapper objectMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseExecutionHistoryRepository.class);
 
@@ -62,14 +62,14 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
         ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository,
         CampaignJpaRepository campaignJpaRepository, TestCaseRepository testCaseRepository,
         CampaignExecutionJpaRepository campaignExecutionJpaRepository,
-        ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository,
+        ExecutionReportIndexRepository executionReportIndexRepository,
         @Qualifier("reportObjectMapper") ObjectMapper objectMapper) {
         this.scenarioExecutionsJpaRepository = scenarioExecutionsJpaRepository;
         this.scenarioExecutionReportJpaRepository = scenarioExecutionReportJpaRepository;
         this.campaignJpaRepository = campaignJpaRepository;
         this.testCaseRepository = testCaseRepository;
         this.campaignExecutionJpaRepository = campaignExecutionJpaRepository;
-        this.scenarioExecutionReportIndexRepository = scenarioExecutionReportIndexRepository;
+        this.executionReportIndexRepository = executionReportIndexRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -152,7 +152,7 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
 
     @Override
     public List<ExecutionSummary> getExecutionReportMatchKeyword(String keyword) {
-        List<Long> matchedReportsIds = scenarioExecutionReportIndexRepository.idsByKeywordInReport(keyword);
+        List<Long> matchedReportsIds = executionReportIndexRepository.idsByKeywordInReport(keyword);
         return scenarioExecutionsJpaRepository
             .getExecutionReportByIds(matchedReportsIds)
             .stream()

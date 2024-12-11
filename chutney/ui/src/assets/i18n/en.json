@@ -431,6 +431,18 @@
         },
         "customLabel": "Custom"
     },
+    "search-bar": {
+        "groups": {
+            "scenario": "Scenario",
+            "campaign": "Campaign",
+            "dataset": "Dataset"
+        },
+        "item": {
+            "description": "Description",
+            "tags": "Tags",
+            "content": "Content"
+        }
+    },
     "global": {
         "status": {
             "success": "OK",

@@ -26,14 +26,14 @@
     display: flex;
     align-items: center;
     align-content: center;
-    flex: 1;
+    justify-content: space-between;
     height: $app-header-height;
     transition: all .2s;
+      width: 100%;
 
     .app-header-right {
       align-items: center;
       display: flex;
-      margin-left: auto;
       padding: 0 $layout-spacer-x 0 0;
     }
 
@@ -43,6 +43,11 @@
       align-items: center;
       display: flex;
     }
+    .app-header-middle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
   }
 }
 
@@ -50,5 +55,9 @@
   font-size: x-large;
   cursor: pointer;
   color: var(--bs-white);
+}
+
+mark {
+    background-color: lightsteelblue !important;
 }
 

@@ -8,9 +8,9 @@
 package com.chutneytesting.execution.infra.aop;
 
 import com.chutneytesting.execution.infra.storage.DatabaseExecutionJpaRepository;
+import com.chutneytesting.execution.infra.storage.index.ExecutionReportIndexRepository;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionEntity;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
-import com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository;
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import java.util.List;
 import java.util.Set;
@@ -21,11 +21,11 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class ScenarioExecutionReportIndexingAspect {
-    private final ScenarioExecutionReportIndexRepository reportIndexRepository;
+public class ExecutionReportIndexingAspect {
+    private final ExecutionReportIndexRepository reportIndexRepository;
     private final DatabaseExecutionJpaRepository scenarioExecutionRepository;
 
-    public ScenarioExecutionReportIndexingAspect(ScenarioExecutionReportIndexRepository reportIndexRepository, DatabaseExecutionJpaRepository scenarioExecutionRepository) {
+    public ExecutionReportIndexingAspect(ExecutionReportIndexRepository reportIndexRepository, DatabaseExecutionJpaRepository scenarioExecutionRepository) {
         this.reportIndexRepository = reportIndexRepository;
         this.scenarioExecutionRepository = scenarioExecutionRepository;
     }

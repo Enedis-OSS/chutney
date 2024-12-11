@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '@model';
 import { LoginService } from '@core/services';
@@ -17,7 +17,7 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
     templateUrl: './chutney-main-header.component.html',
     styleUrls: ['./chutney-main-header.component.scss']
 })
-export class ChutneyMainHeaderComponent implements OnInit {
+export class ChutneyMainHeaderComponent{
 
     public user$: Observable<User>;
 
@@ -37,9 +37,6 @@ export class ChutneyMainHeaderComponent implements OnInit {
 
     toggleSidebar() {
         this.layoutOptions.toggleSidebar = !this.layoutOptions.toggleSidebar;
-    }
-
-    ngOnInit(): void {
     }
 
     logout() {

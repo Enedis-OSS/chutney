@@ -5,13 +5,14 @@
  *
  */
 
-package com.chutneytesting.index.infra;
+package com.chutneytesting.index.infra.lucene.config;
 
 import static com.chutneytesting.tools.file.FileUtils.initFolder;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -21,16 +22,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OnDiskIndexConfig implements  IndexConfig{
+public class OnDiskIndexConfig implements IndexConfig {
     private final IndexWriter indexWriter;
     private final Directory indexDirectory;
+    private final StandardAnalyzer analyzer;
 
     public OnDiskIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String indexDir) {
         try {
             Path path = Paths.get(indexDir);
             initFolder(path);
             this.indexDirectory = FSDirectory.open(path);
-            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+            analyzer = new StandardAnalyzer();
+            IndexWriterConfig config = new IndexWriterConfig(analyzer);
             this.indexWriter = new IndexWriter(indexDirectory, config);
             this.indexWriter.commit();
         } catch (IOException e) {
@@ -46,5 +49,10 @@ public class OnDiskIndexConfig implements  IndexConfig{
     @Override
     public IndexWriter indexWriter() {
         return indexWriter;
+    }
+
+    @Override
+    public Analyzer analyzer() {
+        return analyzer;
     }
 }

@@ -1,0 +1,45 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<input [(ngModel)]="keyword"
+       [typeahead]="search()"
+       [typeaheadAsync]="true"
+       typeaheadGroupField="what"
+       (typeaheadOnSelect)="onSelectSearchHit($event)"
+       [typeaheadItemTemplate]="hitItemTemplate"
+       [placeholder]="'global.actions.search' | translate"
+       [typeaheadScrollable]="true"
+       [adaptivePosition]="true"
+       [typeaheadOptionsInScrollableView]="10"
+       [typeaheadMinLength]="2"
+       [typeaheadWaitMs]="500"
+       class="form-control search-bar">
+
+<ng-template #hitItemTemplate let-model="item">
+    <div class="text-capitalize">
+        <span class="hit-title" [innerHTML]="model.title"></span>
+        <br>
+        @if (model.description) {
+            <span class="ms-2 small">
+               <strong> {{ 'search-bar.item.description' | translate }}: </strong><span [innerHTML]="model.description"></span>
+            </span>
+        }
+        @if (model.tags?.length) {
+            <div class="d-flex flex-row ms-2 small">
+                <strong>{{ 'search-bar.item.tags' | translate }}:</strong>
+                @for (tag of model.tags; track $index) {
+                    <span class="chutney-tag chutney-tag-selected text-uppercase" [innerHTML]="tag"> </span>
+                }
+            </div>
+        }
+        @if (model.content) {
+            <span class="ms-2 small">
+                <strong>{{ 'search-bar.item.content' | translate }}: </strong> <span [innerHTML]="model.content"></span>
+            </span>
+        }
+    </div>
+</ng-template>

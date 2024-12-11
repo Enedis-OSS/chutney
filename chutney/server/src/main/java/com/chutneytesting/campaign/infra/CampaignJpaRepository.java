@@ -9,12 +9,12 @@ package com.chutneytesting.campaign.infra;
 
 import com.chutneytesting.campaign.infra.jpa.CampaignEntity;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
-public interface CampaignJpaRepository extends CrudRepository<CampaignEntity, Long>, JpaSpecificationExecutor<CampaignEntity> {
+public interface CampaignJpaRepository extends JpaRepository<CampaignEntity, Long>, JpaSpecificationExecutor<CampaignEntity> {
 
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO CAMPAIGN (ID, TITLE, DESCRIPTION) VALUES (:id, :title, :description)")

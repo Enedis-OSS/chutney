@@ -143,6 +143,8 @@ public class CampaignEntity implements Serializable {
         return version;
     }
 
+    public String tags() { return tags;}
+
     private void initCampaignScenarios() {
         if (this.campaignScenarios == null) {
             this.campaignScenarios = new ArrayList<>();

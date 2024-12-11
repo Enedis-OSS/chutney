@@ -13,24 +13,37 @@ import { authGuard, canDeactivateGuard } from '@core/guards';
 import { Authorization } from '@model';
 
 export const DatasetRoute: Routes = [
-    {
-        path: '',
-        component: DatasetListComponent,
-        canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.DATASET_READ,Authorization.DATASET_WRITE ] }
-    },
-    {
-        path: ':id/edition',
-        component: DatasetEditionComponent,
-        canDeactivate: [canDeactivateGuard],
-        canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.DATASET_WRITE ] }
-    },
-    {
-        path: 'edition',
-        component: DatasetEditionComponent,
-        canDeactivate: [canDeactivateGuard],
-        canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.DATASET_WRITE ] }
-    }
-];
+        {
+            path: '',
+            component: DatasetListComponent,
+            canActivate: [authGuard],
+            data: {
+                'authorizations': [Authorization.DATASET_READ, Authorization.DATASET_WRITE]
+            }
+        },
+        {
+            path: 'edition',
+            component: DatasetEditionComponent,
+            canDeactivate: [canDeactivateGuard],
+            canActivate: [authGuard],
+            data: {
+                'authorizations': [Authorization.DATASET_WRITE]
+            }
+        },
+        {
+            path: ':id',
+            redirectTo: ':id/edition',
+            pathMatch: 'full' // Ensures the redirect happens only for the exact `/id` path
+        },
+        {
+            path: ':id/edition',
+            component: DatasetEditionComponent,
+            canDeactivate: [canDeactivateGuard],
+            canActivate: [authGuard],
+            data: {
+                'authorizations': [Authorization.DATASET_WRITE]
+            }
+        }
+    ]
+
+;

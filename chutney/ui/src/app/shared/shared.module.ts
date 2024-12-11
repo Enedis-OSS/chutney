@@ -44,7 +44,7 @@ import { StateService } from './state/state.service';
 import { ChutneyEditorComponent } from '@shared/components/chutney-editor/chutney-editor.component';
 import { HjsonParserService } from '@shared/hjson-parser/hjson-parser.service';
 
-import { NgbModule, NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChutneyMainHeaderComponent } from '@shared/components/layout/header/chutney-main-header.component';
 import { ChutneyLeftMenuComponent } from '@shared/components/layout/left-menu/chutney-left-menu.component';
 import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
@@ -52,8 +52,10 @@ import { DistinctPipe } from './pipes/distinct.pipe';
 import { ScenarioExecuteModalComponent } from './components/execute-modal/scenario-execute-modal.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { FormsDataGridComponent } from "@shared/components/dataset/forms-data-grid/forms-data-grid.component";
-import { FormsKeyValueComponent } from "@shared/components/dataset/forms-key-value/forms-key-value.component";
+import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
+import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { SearchBarComponent } from '@shared/components/search-bar/search-bar.component';
 
 @NgModule({
     imports: [
@@ -68,6 +70,7 @@ import { FormsKeyValueComponent } from "@shared/components/dataset/forms-key-val
         NgbDropdownModule,
         DropdownModule,
         FloatLabelModule,
+        TypeaheadModule.forRoot(),
     ],
     declarations: [
         ComponentSearchPipe,
@@ -99,7 +102,8 @@ import { FormsKeyValueComponent } from "@shared/components/dataset/forms-key-val
         DistinctPipe,
         ScenarioExecuteModalComponent,
         FormsDataGridComponent,
-        FormsKeyValueComponent
+        FormsKeyValueComponent,
+        SearchBarComponent
     ],
     exports: [
         ComponentSearchPipe,
