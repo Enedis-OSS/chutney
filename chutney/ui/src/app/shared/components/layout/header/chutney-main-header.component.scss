@@ -15,3 +15,16 @@
 .pointer {
     cursor: pointer;
 }
+
+.search-bar {
+    width: 20rem;
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+:host ::ng-deep typeahead-container {
+    .dropdown-header {
+        text-transform: capitalize;
+        font-weight: bold;
+    }
+}

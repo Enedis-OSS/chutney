@@ -11,14 +11,16 @@ import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import jakarta.persistence.criteria.Expression;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface ScenarioJpaRepository extends CrudRepository<ScenarioEntity, Long>, JpaSpecificationExecutor<ScenarioEntity> {
+public interface ScenarioJpaRepository extends JpaRepository<ScenarioEntity, Long>, JpaSpecificationExecutor<ScenarioEntity> {
 
     @Query("SELECT s.version FROM SCENARIO s WHERE s.id = :id")
     Optional<Integer> lastVersion(@Param("id") Long id);
@@ -26,6 +28,7 @@ public interface ScenarioJpaRepository extends CrudRepository<ScenarioEntity, Lo
     Optional<ScenarioEntity> findByIdAndActivated(Long id, Boolean activated);
 
     List<ScenarioEntity> findByActivated(Boolean activated);
+    Slice<ScenarioEntity> findByActivated(Boolean activated, Pageable pageable);
 
     @Query("""
         SELECT new com.chutneytesting.scenario.infra.jpa.ScenarioEntity(s.id, s.title, s.description, s.tags, s.creationDate, s.activated, s.userId, s.updateDate, s.version, s.defaultDataset)

@@ -6,11 +6,13 @@
  */
 
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { User } from '@model';
 import { LoginService } from '@core/services';
 import { ThemeService } from '@core/theme/theme.service';
 import { LayoutOptions } from '@core/layout/layout-options.service';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
+import { SearchService } from '@core/services/search.service';
 
 @Component({
     selector: 'chutney-chutney-main-header',
@@ -20,10 +22,12 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
 export class ChutneyMainHeaderComponent implements OnInit {
 
     public user$: Observable<User>;
+    keyword: string;
 
     constructor(private loginService: LoginService,
                 private themeService: ThemeService,
-                public layoutOptions: LayoutOptions) {
+                public layoutOptions: LayoutOptions,
+                private searchService: SearchService) {
         this.user$ = this.loginService.getUser();
     }
 
@@ -56,5 +60,20 @@ export class ChutneyMainHeaderComponent implements OnInit {
 
     isDark(): boolean {
         return !this.isLight()
+    }
+
+    isSearching(event: boolean) {
+
+    }
+
+    search(): Observable<any> {
+        if (!this.keyword) {
+            return EMPTY;
+        }
+        return this.searchService.search(this.keyword);
+    }
+
+    onSelectSearchHit(hit: TypeaheadMatch<any>) {
+
     }
 }

@@ -6,71 +6,116 @@
   -->
 
 <div class="app-header bg-primary">
-  <div class="app-header__content">
-    <div class="app-header-left">
-      <div class="close-sidebar-btn" (click)="toggleSidebar()">
-        <i class="fa fa-bars"></i>
-      </div>
-    </div>
-    <div class="app-header-right">
-      <div class="nav">
-        <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.documentation' | translate}}">
-          <a class="nav-link" href="https://www.chutney-testing.com/" target="_blank" rel="noopener noreferrer">
-            <i class="fa fa-book"></i>
-          </a>
+    <div class="app-header__content">
+        <div class="app-header-left">
+            <div class="close-sidebar-btn" (click)="toggleSidebar()">
+                <i class="fa fa-bars"></i>
+            </div>
         </div>
-        @if (false) {
-          <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.feedback' | translate}}">
+        <div class="app-header-right">
+            <div class="nav">
+                <div class="nav-item search-bar">
+                    <div>
+                        <input [(ngModel)]="keyword"
+                               [typeahead]="search()"
+                               [typeaheadAsync]="true"
+                               typeaheadGroupField="what"
+                               (typeaheadLoading)="isSearching($event)"
+                               (typeaheadOnSelect)="onSelectSearchHit($event)"
+                               [typeaheadItemTemplate]="hitItemTemplate"
+                               [placeholder]="'global.actions.search' | translate"
+                               [typeaheadScrollable]="true"
+                               [adaptivePosition]="true"
+                               [typeaheadOptionsInScrollableView]="10"
+                               [typeaheadMinLength]="2"
+                               [typeaheadWaitMs]="500"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.documentation' | translate}}">
+                    <a class="nav-link" href="https://www.chutney-testing.com/" target="_blank"
+                       rel="noopener noreferrer">
+                        <i class="fa fa-book"></i>
+                    </a>
+                </div>
+                @if (false) {
+                    <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.feedback' | translate}}">
             <span class="nav-link cursor-pointer">
               <i class="fa fa-lightbulb"></i>
             </span>
-          </div>
-        }
-        @if (false) {
-          <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.notif' | translate}}">
+                    </div>
+                }
+                @if (false) {
+                    <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.notif' | translate}}">
             <span class="nav-link">
               <i class="fa fa-bell"></i>
             </span>
-          </div>
-        }
-        @if (isLight()) {
-          <div class="nav-item" (click)="switchTheme()"
-            placement="bottom" ngbTooltip="{{'menu.principal.darkMode' | translate}}">
+                    </div>
+                }
+                @if (isLight()) {
+                    <div class="nav-item" (click)="switchTheme()"
+                         placement="bottom" ngbTooltip="{{'menu.principal.darkMode' | translate}}">
             <span class="nav-link">
               <i class="fa fa-moon"></i>
             </span>
-          </div>
-        }
-        @if (isDark()) {
-          <div class="nav-item" (click)="switchTheme()"
-            placement="bottom" ngbTooltip="{{'menu.principal.lightMode' | translate}}">
+                    </div>
+                }
+                @if (isDark()) {
+                    <div class="nav-item" (click)="switchTheme()"
+                         placement="bottom" ngbTooltip="{{'menu.principal.lightMode' | translate}}">
             <span class="nav-link">
               <i class="fa fa-sun"></i>
             </span>
-          </div>
-        }
-        @if ((user$ | async); as user) {
-          @if (user?.id) {
-            <div class="nav-item dropdown"  ngbTooltip="{{'menu.principal.profile' | translate}}">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="fa fa-regular fa-user" placement="bottom"></i>
-              </a>
-              <ul class="dropdown-menu cursor-pointer">
-                <li><span class="dropdown-item fw-bold">{{user?.id}}</span></li>
-                <li><hr class="dropdown-divider"></li>
-                <li (click)="logout()">
-                  <div class="dropdown-item d-flex justify-content-between">
-                    <div>{{'menu.principal.signOut' | translate}}</div>
-                    <div class="align-self-center">
-                      <i class="fa fa-sign-out text-end" placement="bottom"></i>
                     </div>
-                  </div>
-                </li>
-              </ul>
+                }
+                @if ((user$ | async); as user) {
+                    @if (user?.id) {
+                        <div class="nav-item dropdown" ngbTooltip="{{'menu.principal.profile' | translate}}">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fa fa-regular fa-user" placement="bottom"></i>
+                            </a>
+                            <ul class="dropdown-menu cursor-pointer">
+                                <li><span class="dropdown-item fw-bold">{{ user?.id }}</span></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li (click)="logout()">
+                                    <div class="dropdown-item d-flex justify-content-between">
+                                        <div>{{ 'menu.principal.signOut' | translate }}</div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-sign-out text-end" placement="bottom"></i>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                }
             </div>
-          }
-        }
-      </div>
+        </div>
     </div>
-  </div>
 </div>
+<ng-template #hitItemTemplate let-model="item">
+    <div class="text-capitalize">
+        <span class="hit-title" [innerHTML]="model.title"></span>
+        <br>
+        @if (model.description) {
+            <span class="ms-2 small">
+                {{ 'search-bar.item.description' | translate }}: <span [innerHTML]="model.description"></span>
+            </span>
+        }
+        @if (model.tags?.length) {
+            <div class="d-flex flex-row ms-2 small">
+                {{ 'search-bar.item.tags' | translate }}:
+                @for (tag of model.tags; track $index) {
+                    <span class="chutney-tag chutney-tag-selected text-uppercase" [innerHTML]="tag"> </span>
+                }
+            </div>
+        }
+        @if (model.content) {
+            <span class="ms-2 small">
+                {{ 'search-bar.item.content' | translate }}: <span [innerHTML]="model.content"></span>
+            </span>
+        }
+    </div>
+</ng-template>
