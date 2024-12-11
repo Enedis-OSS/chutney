@@ -35,9 +35,9 @@ An assertion is a special case of action in Chutney :
 This action takes a list of assertions evaluated to boolean using [expressions](/documentation/actions/introduction.md/#expressions) and validates they are all true.
 === "Inputs"
 
-    | Required | Name            | Type        |     Default     |
-    |:--------:|:----------------|:------------|:----------------|
-    |    *     | `asserts`       | List of     |                 |
+    | Required | Name      | Type                                  | Default |
+    |:--------:|:----------|:--------------------------------------|:--------|
+    |    *     | `asserts` | List of  List<Map<String, Boolean\>\> |         |
 
 === "Outputs"
     No outputs
@@ -60,10 +60,10 @@ Asserts that JSON nodes have expected values.
 
 === "Inputs"
 
-    | Required | Name            | Type                |     Default     | Description                                                                                                                                                                                                                                         |
-    |:--------:|:----------------|:--------------------|:----------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    |    *     | `document`      | String              |                 | json's string representation                                                                                                                                                                                                                        |
-    |    *     | `expected`      | Map<String, Object> |                 | Keys contain [json paths](https://github.com/json-path/JsonPath){:target="_blank"} used to extract json node's data. <br/> Values contain expected nodes values or [assertions functions](#assertions-functions). |
+    | Required | Name       | Type                 | Default | Description                                                                                                                                                                                                       |
+    |:--------:|:-----------|:---------------------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    |    *     | `document` | String               |         | json's string representation                                                                                                                                                                                      |
+    |    *     | `expected` | Map<String, Object\> |         | Keys contain [json paths](https://github.com/json-path/JsonPath){:target="_blank"} used to extract json node's data. <br/> Values contain expected nodes values or [assertions functions](#assertions-functions). |
 
 === "Outputs"
     No outputs
@@ -93,10 +93,10 @@ Asserts that XML nodes have expected values.
 
 === "Inputs"
 
-    | Required | Name            | Type        |     Default     | Description                                                                                                                                                                                                                                            |
-    |:--------:|:----------------|:------------|:----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    |    *     | `document`      | String      |                 | xml's string representation                                                                                                                                                                                                                            |
-    |    *     | `expected`      | Map         |                 | keys contain [xml paths](https://www.w3schools.com/xml/xml_xpath.asp){:target="_blank"} used to extract xml node's data.<br/> Values contain expected nodes values or [assertions functions](#assertions-functions). |
+    | Required | Name       | Type                 | Default | Description                                                                                                                                                                                                          |
+    |:--------:|:-----------|:---------------------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    |    *     | `document` | String               |         | xml's string representation                                                                                                                                                                                          |
+    |    *     | `expected` | Map<String, Object\> |         | keys contain [xml paths](https://www.w3schools.com/xml/xml_xpath.asp){:target="_blank"} used to extract xml node's data.<br/> Values contain expected nodes values or [assertions functions](#assertions-functions). |
 
 === "Outputs"
     No outputs
@@ -335,12 +335,12 @@ Compares two JSON inputs (the whole content or only some nodes) using a comparis
 
 === "Inputs"
 
-    | Required | Name            | Type        |     Default      |    Description                                                                              |
-    |:--------:|:----------------|:------------|:-----------------|:--------------------------------------------------------------------------------------------|
-    |    *     | `document1`     | String      |                  | first json                                                                                  |
-    |    *     | `document2`     | String      |                  | second json                                                                                 |
-    |    *     | `comparingPaths`| Map         | Map.of("$", "$") | to be compared nodes [json paths](https://github.com/json-path/JsonPath){:target="_blank"}  |
-    |    *     | `mode`          | String      |  STRICT          | comparison mode                                                                             |
+    | Required | Name             | Type                 | Default          | Description                                                                                |
+    |:--------:|:-----------------|:---------------------|:-----------------|:-------------------------------------------------------------------------------------------|
+    |    *     | `document1`      | String               |                  | first json                                                                                 |
+    |    *     | `document2`      | String               |                  | second json                                                                                |
+    |    *     | `comparingPaths` | Map<String, String\> | Map.of("$", "$") | to be compared nodes [json paths](https://github.com/json-path/JsonPath){:target="_blank"} |
+    |    *     | `mode`           | String               | STRICT           | comparison mode                                                                            |
 
 === "Outputs"
     No outputs

@@ -114,11 +114,11 @@ Use this action to consume messages from a queue.
 
 === "Outputs"
 
-    |       Name | Type   | Description      |
-    |-----------:|:-------|:-----------------|
-    | `body`     | String | response as Map  |
-    | `payloads` | String | response paylods |
-    | `headers`  | String | response headers |
+    |       Name | Type                        | Description                                                |
+    |-----------:|:----------------------------|:-----------------------------------------------------------|
+    |     `body` | List<Map<String, Object\>\> | responses. Each map contains a `payload` and `header` keys |
+    | `payloads` | List<Object\>               | response payloads. Each one is a Map or String             |
+    |  `headers` | List<String\>               | response headers. Each one is a Map                        |
 
 ### Example
 
@@ -189,10 +189,10 @@ For example, it can be used at the beginning of your scenario to ensure that use
 
 === "Inputs"
 
-    | Required | Name          | Type          |Description |
-    |:--------:|:--------------|:--------------|:-----------|
-    |     *    | `target` | String | The AMQP service name to use          |
-    |     *    | `queue-names` | List<String\> |  queues names to be purged          |
+    | Required | Name          | Type          | Description                  |
+    |:--------:|:--------------|:--------------|:-----------------------------|
+    |    *     | `target`      | String        | The AMQP service name to use |
+    |    *     | `queue-names` | List<String\> | queues names to be purged    |
 
 === "Output"
      No output

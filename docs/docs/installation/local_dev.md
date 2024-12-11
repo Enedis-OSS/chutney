@@ -14,14 +14,21 @@ and allow functional and business analyst to review and be involved in testing t
 
 That's why we provide a server and web UI to help us do all these things.
 
+<!-- Wait for project template
 You can find all code and configuration below in this [example project](https://github.com/Enedis-OSS/chutney-project-template){:target="_blank"}
+-->
 
 # Start a server
-
+<!-- Wait for project template
 !!! note "Docker"
 
     1. Checkout this [example project](https://github.com/Enedis-OSS/chutney-project-template)
     2. Start Chutney locally with `docker compose up&` ([Docker compose documentation](https://docs.docker.com/compose/)).
+-->
+
+!!! note "Docker"
+
+    1. Start Chutney locally with `docker -p 8443:8443 -d run ghcr.io/chutney-testing/chutney/chutney-server` ([Docker run documentation](https://docs.docker.com/reference/cli/docker/container/run/)).
 
 !!! note "Java"
 
