@@ -200,7 +200,7 @@ public class KafkaBasicConsumeActionTest {
     }
 
     @Test
-    public void should_consume_simple_text_message_with_multiple_values_header() {
+    public void should_consume_simple_text_message_with_multiple_values_for_the_same_header() {
         // Given
         ImmutableList<Header> headers = ImmutableList.of(
             new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
@@ -385,10 +385,10 @@ public class KafkaBasicConsumeActionTest {
         ImmutableList<Header> headers = ImmutableList.of(
             new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
             new RecordHeader("header", "123".getBytes()),
-            new RecordHeader("multi-values-header", "value 1".getBytes()),
-            new RecordHeader("multi-values-header", "value 2".getBytes())
+            new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
+            new RecordHeader("key-with-multiple-values", "value 2".getBytes())
         );
-        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123' && $.multi-values-header contains 'value 1')]", null, null);
+        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123' && $.key-with-multiple-values contains 'value 1')]", null, null);
         String textMessageToSelect = "first text message";
         String xmlMessageToSelect = "<root>first xml message</root>";
         String jsonMessageToSelect = "first json message";
