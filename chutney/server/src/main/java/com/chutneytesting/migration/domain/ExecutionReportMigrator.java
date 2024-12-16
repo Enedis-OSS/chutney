@@ -11,6 +11,8 @@ import com.chutneytesting.execution.infra.storage.ScenarioExecutionReportJpaRepo
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
 import com.chutneytesting.index.infra.ScenarioExecutionReportIndexRepository;
 import com.chutneytesting.migration.infra.ExecutionReportRepository;
+import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
+import com.chutneytesting.scenario.infra.raw.ScenarioJpaRepository;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +26,18 @@ public class ExecutionReportMigrator implements DataMigrator {
 
     private final ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository;
     private final ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository;
+    private final ScenarioJpaRepository scenarioJpaRepository;
     private final ExecutionReportRepository executionReportRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionReportMigrator.class);
+    private List<String> activatedScenariosIds;
 
-    public ExecutionReportMigrator(ExecutionReportRepository executionReportRepository,
-                                   ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository, ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository) {
+    public ExecutionReportMigrator(ScenarioExecutionReportJpaRepository scenarioExecutionReportJpaRepository,
+                                   ScenarioExecutionReportIndexRepository scenarioExecutionReportIndexRepository,
+                                   ScenarioJpaRepository scenarioJpaRepository, ExecutionReportRepository executionReportRepository) {
         this.scenarioExecutionReportJpaRepository = scenarioExecutionReportJpaRepository;
-        this.executionReportRepository = executionReportRepository;
+        this.scenarioJpaRepository = scenarioJpaRepository;
         this.scenarioExecutionReportIndexRepository = scenarioExecutionReportIndexRepository;
+        this.executionReportRepository = executionReportRepository;
     }
 
     @Override
@@ -41,14 +47,17 @@ public class ExecutionReportMigrator implements DataMigrator {
             return;
         }
         LOGGER.info("Start indexing and in-db compression...");
+        List<ScenarioEntity> activeScenarios = scenarioJpaRepository.findByActivated(true);
+        activatedScenariosIds = activeScenarios.stream().map(scenarioEntity -> scenarioEntity.getId().toString()).toList();
         PageRequest firstPage = PageRequest.of(0, 10);
         int count = 0;
         migrate(firstPage, count);
+        activatedScenariosIds = null;
     }
 
     private void migrate(Pageable pageable, int previousCount) {
         LOGGER.debug("Indexing and compressing reports in page n° {}", pageable.getPageNumber());
-        Slice<ScenarioExecutionReportEntity> slice = scenarioExecutionReportJpaRepository.findAll(pageable);
+        Slice<ScenarioExecutionReportEntity> slice = scenarioExecutionReportJpaRepository.findByScenarioExecutionScenarioIdIn(activatedScenariosIds, pageable);
         List<ScenarioExecutionReportEntity> reports = slice.getContent();
 
         executionReportRepository.compressAndSaveInDb(reports);
