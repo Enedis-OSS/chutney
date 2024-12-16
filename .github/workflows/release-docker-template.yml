@@ -43,8 +43,8 @@ jobs:
           context: ${{ github.workspace }}
           file: ${{ github.workspace }}/chutney/.docker/server/Dockerfile
           tags: |
-            ghcr.io/chutney-testing/chutney/chutney-server:latest
-            ghcr.io/chutney-testing/chutney/chutney-server:${{ inputs.version }}
+            ghcr.io/enedis-oss/chutney/chutney-server:latest
+            ghcr.io/enedis-oss/chutney/chutney-server:${{ inputs.version }}
           push: true
           build-args: |
             JAR_PATH=artifacts/chutney/packaging/local-dev/target
@@ -55,8 +55,8 @@ jobs:
           context: ${{ github.workspace }}
           file: ${{ github.workspace }}/chutney/.docker/ui/Dockerfile
           tags: |
-            ghcr.io/chutney-testing/chutney/chutney-ui:latest
-            ghcr.io/chutney-testing/chutney/chutney-ui:${{ inputs.version }}
+            ghcr.io/enedis-oss/chutney/chutney-ui:latest
+            ghcr.io/enedis-oss/chutney/chutney-ui:${{ inputs.version }}
           push: true
           build-args: |
             WEBSITE=artifacts/chutney/ui/dist
@@ -68,8 +68,8 @@ jobs:
           context: ${{ github.workspace }}
           file: ${{ github.workspace }}/example/.docker/demo/Dockerfile
           tags: |
-            ghcr.io/chutney-testing/chutney/chutney-demo:latest
-            ghcr.io/chutney-testing/chutney/chutney-demo:${{ inputs.version }}
+            ghcr.io/enedis-oss/chutney/chutney-demo:latest
+            ghcr.io/enedis-oss/chutney/chutney-demo:${{ inputs.version }}
           push: true
           build-args: |
             CONF=example/.docker/demo
