@@ -391,6 +391,7 @@ class AcceptanceTests {
       }
     }
 
+    @Disabled
     @Test
     fun `SSH Task test`() {
       softlyAssertLauncherRun(

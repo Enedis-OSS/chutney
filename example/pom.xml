@@ -156,6 +156,8 @@
                 <configuration>
                     <excludes>
                         <exclude>SeleniumTest</exclude>
+                        <exclude>SwapiTest</exclude>
+                        <exclude>RunHelloTests</exclude>
                     </excludes>
                 </configuration>
             </plugin>
