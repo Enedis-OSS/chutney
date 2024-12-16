@@ -6,6 +6,26 @@
   -->
 
 # Changelog
+## [3.0.0.1](https://github.com/chutney-testing/chutney/tree/3.0.0.1)
+## What's Changed
+### 🐛 Fixed bugs:
+* Does not display button if user does not have the right for scenario exec by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/30
+* Should use default dataset if no dataset in scheduling campaing by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/31
+* Fix tab opening after campaign execution replay by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/19
+* Kafka multiple values header by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/35
+* Prevent title page modification when editing a target by @k-sauvee in https://github.com/Enedis-OSS/chutney/pull/39
+* Fix jiraId wording in campaign edition interface by @k-sauvee in https://github.com/Enedis-OSS/chutney/pull/38
+* Index execution for only activated scenarios by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/40
+
+### 🔧 Technical enhancements:
+* Sql action can read blob type by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/14
+* Fix dsl javadoc generation by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/16
+* Execution modal - Add dataset as first in the list by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/36
+* Compress and index in background by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/32
+### 📖 Documentation:
+* Doc rework : Overview + Getting started rework by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/18
+* Doc rework : Docker and Actions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/33
+* Doc rework : Readme + clean for enedis repo by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/13
 
 ## [3.0.0](https://github.com/chutney-testing/chutney/tree/3.0.0)
 ### 🚀 Implemented enhancements:

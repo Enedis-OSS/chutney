@@ -14,7 +14,7 @@
     <parent>
         <artifactId>chutney-parent</artifactId>
         <groupId>com.chutneytesting</groupId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.0.0.1</version>
     </parent>
 
     <artifactId>server-core</artifactId>
