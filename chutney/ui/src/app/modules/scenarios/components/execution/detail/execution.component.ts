@@ -100,15 +100,14 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
         private renderer: Renderer2,
         private offcanvasService: NgbOffcanvas,
         private elementRef: ElementRef,
-        private datasetUtils: DatasetUtils,
-        private translateService: TranslateService) {
+        private datasetUtils: DatasetUtils) {
     }
 
     ngOnInit() {
         if (this.scenario) {
             this.loadScenarioExecution(this.execution.executionId);
         } else {
-            this.scenarioExecutionReport = JSON.parse(this.execution.report);
+            this.scenarioExecutionReport = ScenarioExecutionReport.cleanReport(JSON.parse(this.execution.report));
             this.afterReportUpdate();
         }
     }
@@ -170,7 +169,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
                     if (scenarioExecutionReport?.report?.status === ExecutionStatus.RUNNING) {
                         this.observeScenarioExecution(executionId);
                     } else {
-                        this.scenarioExecutionReport = scenarioExecutionReport;
+                        this.scenarioExecutionReport = ScenarioExecutionReport.cleanReport(scenarioExecutionReport);
                         if(scenarioExecutionReport?.report) {
                             this.afterReportUpdate();
                         }
@@ -283,7 +282,8 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
                 )
             )
             .subscribe({
-                next: (scenarioExecutionReport: ScenarioExecutionReport) => {
+                next: (ser: ScenarioExecutionReport) => {
+                    var scenarioExecutionReport = ScenarioExecutionReport.cleanReport(ser);
                     executionStatus = ExecutionStatus[scenarioExecutionReport.report.status];
                     executionError = this.getExecutionError(scenarioExecutionReport);
                     if (this.scenarioExecutionReport) {
