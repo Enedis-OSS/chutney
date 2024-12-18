@@ -181,9 +181,9 @@ class ChutneyScenarioExecutionContext(
 
     private fun convertExecuteException(t: Throwable, scenarioDescriptor: ChutneyScenarioDescriptor): Throwable {
         return when (t) {
-            is UnresolvedEnvironmentException -> UnresolvedScenarioEnvironmentException(t.message + " Please, specify a name or declare only one environment.")
-            is NoEnvironmentFoundException -> UnresolvedScenarioEnvironmentException(t.message + " Please, declare one.")
-            is EnvironmentNotFoundException -> UnresolvedScenarioEnvironmentException("Environment [${scenarioDescriptor.environmentName}] not found. ${t.message}")
+            is UnresolvedEnvironmentException -> UnresolvedScenarioEnvironmentException(t)
+            is NoEnvironmentFoundException -> UnresolvedScenarioEnvironmentException(t)
+            is EnvironmentNotFoundException -> UnresolvedScenarioEnvironmentException(t, scenarioDescriptor.environmentName)
             else -> AssertionError(t)
         }
     }

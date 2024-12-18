@@ -24,8 +24,13 @@ class StepExecutionFailedException(step: Step) :
         }"
     )
 
-class UnresolvedScenarioEnvironmentException(message: String?) :
-    NoStackTraceAssertionError(message ?: "Cannot resolve environment")
+class UnresolvedScenarioEnvironmentException(
+    throwable: Throwable,
+    environmentName: String? = null
+) : NoStackTraceAssertionError(
+    environmentName?.let { "${throwable.message}: Environment [$it] not found." }
+        ?: "${throwable.message}: Please, specify a name or declare only one environment."
+)
 
 fun Step.findSubStepPath(toBeFound: Step): List<Step> {
     if (this == toBeFound) {
