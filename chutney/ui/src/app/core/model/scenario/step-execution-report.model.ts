@@ -21,4 +21,14 @@ export class StepExecutionReport {
         public stepOutputs: Map<string, Object>,
         public name?: string,
         ) {}
+
+    static cleanReport(stepReport: StepExecutionReport): StepExecutionReport {
+        if (stepReport?.steps) {
+            if (stepReport?.strategy === 'for' && stepReport.steps.length == 1) {
+                return StepExecutionReport.cleanReport(stepReport.steps[0]);
+            }
+            stepReport.steps = stepReport.steps.map(substep => StepExecutionReport.cleanReport(substep));
+        }
+        return stepReport;
+    }
 }

@@ -23,4 +23,9 @@ export class ScenarioExecutionReport {
         public contextVariables?: Map<string, Object>,
         public dataset?: ExecutionDataset
     ) { }
+
+    static cleanReport(scenarioReport: ScenarioExecutionReport): ScenarioExecutionReport {
+        scenarioReport.report = StepExecutionReport.cleanReport(scenarioReport.report);
+        return scenarioReport;
+    }
 }
