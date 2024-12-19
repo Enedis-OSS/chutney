@@ -61,6 +61,7 @@ nav:
           - String: documentation/functions/string.md
           - Wiremock: documentation/functions/wiremock.md
           - SOAP: documentation/functions/soap.md
+          - Math: documentation/functions/math.md
 #      - Strategies:
 #          - documentation/strategies/introduction.md
 #          - Default: documentation/strategies/default.md

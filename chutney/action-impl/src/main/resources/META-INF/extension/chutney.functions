@@ -10,3 +10,4 @@ com.chutneytesting.action.micrometer.MicrometerFunctions
 com.chutneytesting.action.function.NetworkFunctions
 com.chutneytesting.action.function.ClasspathFunctions
 com.chutneytesting.action.function.EscapeFunctions
+com.chutneytesting.action.function.MathFunctions
