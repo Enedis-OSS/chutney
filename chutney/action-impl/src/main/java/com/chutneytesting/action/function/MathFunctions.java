@@ -8,45 +8,129 @@
 package com.chutneytesting.action.function;
 
 import com.chutneytesting.action.spi.SpelFunction;
+import java.util.Arrays;
 
 public class MathFunctions {
 
-    @SpelFunction
-    public static Number abs(Number a) {
-        String numberType = a.getClass().getSimpleName();
+    private static final Maths instance = new Maths();
 
-        return switch (numberType) {
-            case "Double" -> Math.abs(a.doubleValue());
-            case "Float" -> Math.abs(a.floatValue());
-            case "Integer" -> Math.abs(a.intValue());
-            case "Long" -> Math.abs(a.longValue());
-            default -> throw new IllegalArgumentException("Unexpected type: " + numberType);
-        };
+    @SpelFunction
+    public static Double min(Number... a) {
+        return Arrays.stream(a).mapToDouble(Number::doubleValue).min().orElseThrow();
     }
 
     @SpelFunction
-    public static Number min(Number a, Number b) {
-        String numberType = a.getClass().getSimpleName();
-
-        return switch (numberType) {
-            case "Double" -> Math.min(a.doubleValue(), b.doubleValue());
-            case "Float" -> Math.min(a.floatValue(), b.floatValue());
-            case "Integer" -> Math.min(a.intValue(), b.intValue());
-            case "Long" -> Math.min(a.longValue(), b.longValue());
-            default -> throw new IllegalArgumentException("Unexpected type: " + numberType);
-        };
+    public static Double max(Number... a) {
+        return Arrays.stream(a).mapToDouble(Number::doubleValue).max().orElseThrow();
     }
 
     @SpelFunction
-    public static Number max(Number a, Number b) {
-        String numberType = a.getClass().getSimpleName();
+    public static Maths math() {
+        return instance;
+    }
 
-        return switch (numberType) {
-            case "Double" -> Math.max(a.doubleValue(), b.doubleValue());
-            case "Float" -> Math.max(a.floatValue(), b.floatValue());
-            case "Integer" -> Math.max(a.intValue(), b.intValue());
-            case "Long" -> Math.max(a.longValue(), b.longValue());
-            default -> throw new IllegalArgumentException("Unexpected type: " + numberType);
-        };
+    public static class Maths {
+        private Maths() {
+        }
+
+        public Double abs(Number a) {
+            return Math.abs(a.doubleValue());
+        }
+
+        public Double min(Number a, Number b) {
+            return Math.min(a.doubleValue(), b.doubleValue());
+        }
+
+        public Double max(Number a, Number b) {
+            return Math.max(a.doubleValue(), b.doubleValue());
+        }
+
+        public Double pow(Number a, Number b) {
+            return Math.pow(a.doubleValue(), b.doubleValue());
+        }
+
+        public Double log(Number a) {
+            return Math.log(a.doubleValue());
+        }
+
+        public Double exp(Number a) {
+            return Math.exp(a.doubleValue());
+        }
+
+        public Double cbrt(Number a) {
+            return Math.cbrt(a.doubleValue());
+        }
+
+        public Double sqrt(Number a) {
+            return Math.sqrt(a.doubleValue());
+        }
+
+        public Double floor(Number a) {
+            return Math.floor(a.doubleValue());
+        }
+
+        public Double ceil(Number a) {
+            return Math.ceil(a.doubleValue());
+        }
+
+        public Long round(Number a) {
+            return Math.round(a.doubleValue());
+        }
+
+        public Double signum(Number a) {
+            return Math.signum(a.doubleValue());
+        }
+
+        public Double cos(Number a) {
+            return Math.cos(a.doubleValue());
+        }
+
+        public Double acos(Number a) {
+            return Math.acos(a.doubleValue());
+        }
+
+        public Double cosh(Number a) {
+            return Math.cosh(a.doubleValue());
+        }
+
+        public Double sin(Number a) {
+            return Math.sin(a.doubleValue());
+        }
+
+        public Double asin(Number a) {
+            return Math.asin(a.doubleValue());
+        }
+
+        public Double sinh(Number a) {
+            return Math.sinh(a.doubleValue());
+        }
+
+        public Double tan(Number a) {
+            return Math.tan(a.doubleValue());
+        }
+
+        public Double atan(Number a) {
+            return Math.atan(a.doubleValue());
+        }
+
+        public Double tanh(Number a) {
+            return Math.tanh(a.doubleValue());
+        }
+
+        public Double rand() {
+            return Math.random();
+        }
+
+        public Double scalb(Number a, Number b) {
+            return Math.scalb(a.doubleValue(), b.intValue());
+        }
+
+        public Double e() {
+            return Math.E;
+        }
+
+        public Double pi() {
+            return Math.PI;
+        }
     }
 }
