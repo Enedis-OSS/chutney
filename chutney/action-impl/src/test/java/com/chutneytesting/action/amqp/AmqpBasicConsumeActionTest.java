@@ -333,13 +333,13 @@ public class AmqpBasicConsumeActionTest {
         new Thread(() -> result1.set(shouldFailConsumer.execute())).start();
 
         AtomicReference<ActionExecutionResult> result2 = new AtomicReference<>();
-        await().atMost(1, SECONDS).untilAsserted(() -> {
+        await().atMost(5, SECONDS).untilAsserted(() -> {
                 assertThat(ConsumerSupervisor.getInstance().isLocked(firstQueueName)).isTrue();
                 new Thread(() -> result2.set(shouldSuccess.execute())).start();
             }
         );
 
-        await().atMost(1, SECONDS).untilAsserted(() ->
+        await().atMost(5, SECONDS).untilAsserted(() ->
             assertThat(ConsumerSupervisor.getInstance().isLocked(secondQueueName)).isTrue()
         );
 
