@@ -10,7 +10,7 @@ import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@ang
 import { LoginService } from '@core/services';
 
 
-export const authGuard: CanActivateFn = async (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
     const loginService = inject(LoginService);
     const requestURL = state.url !== undefined ? state.url : '';
     return loginService.isAuthorized(requestURL, route)

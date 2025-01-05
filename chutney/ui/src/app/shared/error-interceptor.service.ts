@@ -48,9 +48,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                                 return EMPTY
                             } else {
                                 const requestURL = this.router.url !== undefined ? this.router.url : '';
-                                return from(this.loginService.initLogin(requestURL)).pipe(
-                                    switchMap(() => EMPTY)
-                                );
+                                this.loginService.initLogin(requestURL)
+                                return EMPTY
                             }
                         }
                     }

@@ -7,11 +7,14 @@
 
 package com.chutneytesting.security.infra.sso;
 
+import com.chutneytesting.security.infra.jwt.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -23,9 +26,12 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER = "Bearer ";
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public OAuth2TokenAuthenticationFilter(AuthenticationManager authenticationManager){
+    public OAuth2TokenAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -40,12 +46,9 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
             try {
                 Authentication authentication = authenticationManager.authenticate(authRequest);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                request.getSession(true);
-            } catch (AuthenticationException ex) {
-                SecurityContextHolder.clearContext();
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                return;
-            }
+                Map<String, Object> claims = objectMapper.convertValue(authentication.getPrincipal(), Map.class);
+                response.addHeader("X-Custom-Token", jwtUtil.generateToken(authentication.getName(), claims));
+            } catch (AuthenticationException ignored) {}
         }
         filterChain.doFilter(request, response);
     }

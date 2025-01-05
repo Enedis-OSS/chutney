@@ -5,11 +5,11 @@
  *
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { BehaviorSubject, firstValueFrom, Observable, timeout } from 'rxjs';
-import { catchError, delay, filter, first, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
 import { Authorization, User } from '@model';
@@ -21,7 +21,7 @@ import { AlertService } from '@shared';
 @Injectable({
     providedIn: 'root'
 })
-export class LoginService {
+export class LoginService implements OnInit {
 
     private url = '/api/v1/user';
     private loginUrl = this.url + '/login';
@@ -37,27 +37,47 @@ export class LoginService {
     ) {
     }
 
-    async isAuthorized(requestURL: string, route: ActivatedRouteSnapshot) {
+    ngOnInit() {
+        //const token = localStorage.getItem('jwt');
+        //if (token) {
+        //    const { sub, iat, exp, ...user} = this.decodeToken(token);
+        //    this.setUser(user as User)
+        //}
+    }
+
+    isAuthorized(requestURL: string, route: ActivatedRouteSnapshot) {
         const unauthorizedMessage = this.translateService.instant('login.unauthorized')
-        if (!this.isAuthenticated()) {
-            if (this.oauth2Token) {
-                await this.initLoginWithToken(requestURL)
-            } else {
-                await firstValueFrom(this.ssoService.tokenLoaded$.pipe(
-                    timeout(1000),
-                    filter(tokenLoaded => tokenLoaded === true),
-                    first(),
-                    catchError(async error => this.initLogin(requestURL))));
-                if (this.oauth2Token) {
-                    await this.initLoginWithToken(requestURL)
-                } else {
-                    await this.initLogin(requestURL);
-                    return false;
-                }
+        const token = this.getToken();
+        const payload = this.decodeToken(token);
+        if (payload) {
+            const {sub, iat, exp, ...user} = payload
+            if (!user || user == this.NO_USER) {
+                this.initLogin(requestURL)
+                return false
             }
+            this.user$.next(user as User)
+        } else if (this.ssoService.accessTokenValid) {
+            return this.currentUser().pipe(
+                tap(user => this.setUser(user)),
+                map(user => {
+                    const authorizations: Array<Authorization> = route.data['authorizations'] || [];
+                    if (this.hasAuthorization(authorizations, this.user$.getValue())) {
+                        return true;
+                    } else {
+                        this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
+                        this.navigateAfterLogin();
+                        return false;
+                    }
+                })
+            );
+        } else {
+            this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
+            this.initLogin(requestURL)
+            return false
         }
+
         const authorizations: Array<Authorization> = route.data['authorizations'] || [];
-        if (this.hasAuthorization(authorizations)) {
+        if (this.hasAuthorization(authorizations, this.user$.getValue())) {
             return true;
         } else {
             this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
@@ -66,32 +86,16 @@ export class LoginService {
         }
     }
 
-    private async initLoginWithToken(requestURL: string) {
-        await firstValueFrom(this.initLoginObservable(requestURL, {
-            Authorization: 'Bearer ' + this.oauth2Token,
-        }));
+    public getToken() {
+        return localStorage.getItem('jwt') || this.ssoService.accessToken;
     }
 
-    async initLogin(url?: string, headers: HttpHeaders | {
-        [header: string]: string | string[];
-    } = {}) {
-        await firstValueFrom(this.initLoginObservable(url, headers))
-    }
-
-    initLoginObservable(url?: string, headers?: HttpHeaders | {
+    initLogin(url?: string, headers?: HttpHeaders | {
         [header: string]: string | string[];
     }) {
-        return this.currentUser(true, headers).pipe(
-            tap(user => this.setUser(user)),
-            tap(_ => this.navigateAfterLogin(url)),
-            catchError(error => {
-                const nextUrl = this.nullifyLoginUrl(url);
-                const queryParams: Object = isNullOrBlankString(nextUrl) ? {} : {queryParams: {url: nextUrl}};
-                this.router.navigate(['login'], queryParams);
-                this.alertService.error("Unauthorized, you've been disconnected", {timeOut: 0, extendedTimeOut: 0, closeButton: true});
-                return error
-            })
-        );
+        const nextUrl = this.nullifyLoginUrl(url);
+        const queryParams: Object = isNullOrBlankString(nextUrl) ? {} : {queryParams: {url: nextUrl}};
+        this.router.navigate(['login'], queryParams);
     }
 
     get oauth2Token(): string {
@@ -105,19 +109,15 @@ export class LoginService {
             );
         }
 
-        const body = new URLSearchParams();
-        body.set('username', username);
-        body.set('password', password);
-
-        const options = {
-            headers: new HttpHeaders()
-                .set('Content-Type', 'application/x-www-form-urlencoded')
-                .set('no-intercept-error', '')
-        };
-
-        return this.http.post<User>(environment.backend + this.loginUrl, body.toString(), options)
+        return this.http.post<{ token: string }>(environment.backend + this.loginUrl, {username, password})
             .pipe(
-                tap(user => this.setUser(user))
+                map(response => {
+                    localStorage.setItem('jwt', response.token)
+                    const {sub, iat, exp, ...user} = this.decodeToken(response.token);
+                    this.setUser(user as User)
+                    return user as User
+
+                })
             );
     }
 
@@ -132,15 +132,27 @@ export class LoginService {
     }
 
     logout() {
-        this.http.post(environment.backend + this.url + '/logout', null).pipe(
-            tap(() => this.setUser(this.NO_USER)),
-            tap(() => this.ssoService.logout()),
-            delay(500)
-        ).subscribe(
-            () => {
+        if (this.ssoService.idToken) {
+            this.http.post(environment.backend + this.url + '/logout', null).pipe(
+                tap(() => {
+                    this.setUser(this.NO_USER)
+                    localStorage.removeItem('jwt')
+                    this.ssoService.logout()
+                })).subscribe(() => {
                 this.router.navigateByUrl('/login');
-            }
-        );
+            })
+        } else {
+            this.http.post(environment.backend + this.url + '/logout', null).pipe(
+                tap(() => {
+                    localStorage.removeItem('jwt')
+                    this.setUser(this.NO_USER)
+                }))
+                .subscribe(
+                    () => {
+                        this.router.navigateByUrl('/login');
+                    }
+                )
+        }
     }
 
     getUser(): Observable<User> {
@@ -191,4 +203,42 @@ export class LoginService {
     private nullifyLoginUrl(url: string): string {
         return url && url !== '/login' ? url : null;
     }
+
+
+    private decodeToken(token: string): JwtTokenPayload {
+        if (!token) {
+            return null;
+        }
+        const payload = token.split('.')[1];
+        try {
+            const user = JSON.parse(atob(payload));
+            console.log(user)
+            return user
+        } catch (error) {
+            console.error('Error while decoding token', error);
+            return null;
+        }
+    }
+
+    private isTokenExpired(token: string): boolean {
+        const decodedToken = this.decodeToken(token);
+        if (!decodedToken || !decodedToken.exp) {
+            return true;
+        }
+        const expirationDate = new Date(0);
+        expirationDate.setUTCSeconds(decodedToken.exp);
+        return expirationDate < new Date();
+    }
+}
+
+interface JwtTokenPayload {
+    id: string,
+    name: string,
+    firstname: string,
+    lastname: string,
+    mail: string,
+    authorizations: string[],
+    sub: string,
+    iat: number,
+    exp: number,
 }
