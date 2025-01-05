@@ -17,14 +17,6 @@ server:
     key-password: ENC(KBtL7IdLlchJCZimeeSolv5AxCPXrMjQ4G30/ZLbCV+tHlgqkyCbOf/S2qz0p4SqTdXiVtXskF2z/fM6R0VETwsQHLQFS8KIDVvoF1sdgJKzjFQZtZdI4DR2O+ah/wsQ0Xyyu+fbD1oPjUwVMt4JSBQxUGJajAOiXWMrAPdVhP3xy12aEl7EIGVAVGUgzXiIV/yyAb3V1h4hc1T0+OPlQCI8bEDdimSnaGBeLimnyVliKL5WHkv9q6MVkNssVGwU0CK7cKbGJ4WTrXJegFV3Byn9eGvXqL9xZCu0hjt9ypNlMPrmEawjNQhgmAdOVYXCjmzk5vt7H6g9MUMJRhRUiA==)
     trust-store: 'classpath:security/https/truststore.jks'
     trust-store-password: ENC(dlRt/8qMm5xalAzC4WtYcuuyNhN0TjtxSIRsmJpytK44wSvHNyCPu1Wi14OIa6RS31wtlMaMe5qw7pjPZHXlblAQ0iMRYNA9IfpVJ71JGvdQQx9KS7khdphOzUQJVr1LXr2t/qJ0U6UXZDmOeNtemS65LFWzRZgwiOp4+rHT0S+MmxDJzLQtfkqmB7q7C2i9Im+BwjmVTBBSu/U6F8qwWPj3tJmHb8ONRaQDfMLwxWpEk0kNqVOxhxQiyYE9vVfzAoP10dBxAuJ7aL7yETz3h1WETze22rFB/2ozQLTRWPYcwSP9Xah/p/AAw94M9o0b0xlGfhQhemvk2rfEUbr65w==)
-  servlet:
-    session:
-      timeout: 240m
-      cookie:
-        http-only: true
-        secure: true
-        same-site: lax
-      tracking-modes: cookie
 
 management:
   endpoints:
@@ -55,6 +47,7 @@ spring:
       - ldap
       - mem-auth
       - db-sqlite
+      - sso-auth
 
 chutney:
   configuration-folder: .chutney/conf

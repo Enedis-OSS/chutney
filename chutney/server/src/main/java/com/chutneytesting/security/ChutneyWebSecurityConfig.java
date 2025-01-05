@@ -13,9 +13,9 @@ import com.chutneytesting.security.api.UserController;
 import com.chutneytesting.security.api.UserDto;
 import com.chutneytesting.security.domain.AuthenticationService;
 import com.chutneytesting.security.domain.Authorizations;
-import com.chutneytesting.security.infra.handlers.Http401FailureHandler;
 import com.chutneytesting.security.infra.handlers.HttpEmptyLogoutSuccessHandler;
-import com.chutneytesting.security.infra.handlers.HttpLoginSuccessHandler;
+import com.chutneytesting.security.infra.jwt.JwtAuthenticationFilter;
+import com.chutneytesting.security.infra.jwt.JwtUtil;
 import com.chutneytesting.security.infra.sso.OAuth2SsoUserService;
 import com.chutneytesting.security.infra.sso.OAuth2TokenAuthenticationFilter;
 import com.chutneytesting.security.infra.sso.OAuth2TokenAuthenticationProvider;
@@ -38,18 +38,24 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ChannelSecurityConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.client.RestOperations;
@@ -73,14 +79,29 @@ public class ChutneyWebSecurityConfig {
     private Boolean sslEnabled;
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil();
+    }
+
+    @Bean
     public AuthenticationService authenticationService(Authorizations authorizations) {
         return new AuthenticationService(authorizations);
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationService authenticationService, @Nullable ClientRegistrationRepository clientRegistrationRepository, @Nullable RestOperations restOperations) throws Exception {
-        configureSso(http, authenticationService, clientRegistrationRepository, restOperations);
-        configureBaseHttpSecurity(http);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationService authenticationService, JwtAuthenticationFilter jwtAuthenticationFilter, @Nullable ClientRegistrationRepository clientRegistrationRepository, @Nullable RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
+        configureSso(http, authenticationService, clientRegistrationRepository, restOperations, jwtUtil);
+        configureBaseHttpSecurity(http, jwtUtil);
         UserDto anonymous = anonymous();
         http.anonymous(anonymousConfigurer -> anonymousConfigurer
                 .principal(anonymous)
@@ -96,19 +117,17 @@ public class ChutneyWebSecurityConfig {
                     .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
                     .anyRequest().permitAll();
             })
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
-    protected void configureBaseHttpSecurity(final HttpSecurity http) throws Exception {
+    protected void configureBaseHttpSecurity(final HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             .requiresChannel(this.requireChannel(sslEnabled))
-            .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer
-                .loginProcessingUrl(LOGIN_URL)
-                .successHandler(new HttpLoginSuccessHandler())
-                .failureHandler(new Http401FailureHandler()))
             .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
                 .logoutUrl(LOGOUT_URL)
                 .logoutSuccessHandler(new HttpEmptyLogoutSuccessHandler()));
@@ -130,16 +149,15 @@ public class ChutneyWebSecurityConfig {
         }
     }
 
-    private void configureSso(final HttpSecurity http, AuthenticationService authenticationService, ClientRegistrationRepository clientRegistrationRepository, RestOperations restOperations) throws Exception {
+    private void configureSso(final HttpSecurity http, AuthenticationService authenticationService, ClientRegistrationRepository clientRegistrationRepository, RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
         if (clientRegistrationRepository != null) {
             OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new OAuth2SsoUserService(authenticationService, restOperations);
             OAuth2TokenAuthenticationProvider oAuth2TokenAuthenticationProvider = new OAuth2TokenAuthenticationProvider(oAuth2UserService, clientRegistrationRepository.findByRegistrationId("sso-provider"));
             AuthenticationManager authenticationManager = new ProviderManager(Collections.singletonList(oAuth2TokenAuthenticationProvider));
-            OAuth2TokenAuthenticationFilter tokenFilter = new OAuth2TokenAuthenticationFilter(authenticationManager);
+            OAuth2TokenAuthenticationFilter tokenFilter = new OAuth2TokenAuthenticationFilter(authenticationManager, jwtUtil);
             http
                 .authenticationProvider(oAuth2TokenAuthenticationProvider)
-                .addFilterBefore(tokenFilter, BasicAuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+                .addFilterBefore(tokenFilter, BasicAuthenticationFilter.class);
         }
     }
 
