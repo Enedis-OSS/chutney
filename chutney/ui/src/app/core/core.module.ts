@@ -16,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ParentComponent } from './components/parent/parent.component';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { OAuth2ContentTypeInterceptor } from '@core/services/oauth2-content-type-interceptor.service';
+import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,9 @@ import { OAuth2ContentTypeInterceptor } from '@core/services/oauth2-content-type
     ],
     providers: [
         {provide: DROPDOWN_SETTINGS, useClass: DropdownSettings},
-        {provide: HTTP_INTERCEPTORS, useClass: OAuth2ContentTypeInterceptor, multi: true }
+        {provide: HTTP_INTERCEPTORS, useClass: OAuth2ContentTypeInterceptor, multi: true },
+        {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     ]
 
 })
