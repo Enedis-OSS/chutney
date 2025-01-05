@@ -10,49 +10,76 @@ import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '@env/environment';
 import { BehaviorSubject, map, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 interface SsoAuthConfig {
-  issuer: string,
-  clientId: string,
-  clientSecret: string,
-  responseType: string,
-  scope: string,
-  redirectBaseUrl: string,
-  ssoProviderName: string,
-  ssoProviderImageUrl: string,
-  headers: { [name: string]: string | string[]; },
-  additionalQueryParams: { [name: string]: string | string[]; }
-  oidc: boolean
+    issuer: string,
+    clientId: string,
+    clientSecret: string,
+    responseType: string,
+    scope: string,
+    redirectBaseUrl: string,
+    ssoProviderName: string,
+    ssoProviderImageUrl: string,
+    headers: { [name: string]: string | string[]; },
+    additionalQueryParams: { [name: string]: string | string[]; }
+    oidc: boolean
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SsoService {
 
-  private resourceUrl = '/api/v1/sso/config';
-
-  private ssoConfig: SsoAuthConfig
-
-  private tokenLoadedSubject = new BehaviorSubject<boolean>(false);
-  public tokenLoaded$ = this.tokenLoadedSubject.asObservable();
-  private enableSso = false
+    private resourceUrl = '/api/v1/sso/config';
+    private ssoConfig: SsoAuthConfig
+    private enableSso = false
 
 
-  constructor(private oauthService: OAuthService, private http: HttpClient) {
-      this.oauthService.events
-          .pipe(filter(e => e.type === 'token_received'))
-          .subscribe(() => {
-              this.tokenLoadedSubject.next(true);
-          });
-  }
+    constructor(private oauthService: OAuthService, private http: HttpClient) {
+        //this.fetchSsoConfig()
+    }
 
-  fetchSsoConfig(): void {
-    this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
-        map(ssoConfig => {
-          this.ssoConfig = ssoConfig
-          return {
+    fetchSsoConfig(): void {
+        const ssoConfigLocalStorage = localStorage.getItem('ssoConfig')
+        if (!ssoConfigLocalStorage) {
+            console.log("TOTOTOTOTOOTOTTDVNSVSDNVDOSBJN")
+            this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
+                map(ssoConfig => {
+                    this.ssoConfig = ssoConfig
+                    localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig))
+                    return this.getAuthConfigFromSsoAuthConfig(ssoConfig)
+                }),
+                tap(ssoConfig => this.oauthService.configure(ssoConfig)),
+                tap(_ => this.oauthService.setupAutomaticSilentRefresh()),
+                tap(_ => this.oauthService.loadDiscoveryDocumentAndTryLogin()),
+                tap(_ => this.enableSso = true)
+            ).subscribe()
+        } else {
+            this.enableSso = true
+            this.ssoConfig = JSON.parse(ssoConfigLocalStorage) as SsoAuthConfig
+            const ssoAuthConfig  = this.getAuthConfigFromSsoAuthConfig(this.ssoConfig)
+            this.oauthService.configure(ssoAuthConfig);
+            this.oauthService.setupAutomaticSilentRefresh();
+            this.oauthService.loadDiscoveryDocumentAndTryLogin();
+
+        }
+    }
+
+    login() {
+        this.oauthService.initCodeFlow();
+    }
+
+    logout() {
+        if (this.idToken) {
+            this.oauthService.logOut({
+                'id_token_hint': this.idToken
+            });
+        }
+    }
+
+    private getAuthConfigFromSsoAuthConfig(ssoConfig: SsoAuthConfig) {
+        return {
             issuer: ssoConfig.issuer,
             clientId: ssoConfig.clientId,
             responseType: ssoConfig.responseType,
@@ -67,53 +94,39 @@ export class SsoService {
             customQueryParams: ssoConfig.additionalQueryParams,
             useIdTokenHintForSilentRefresh: true,
             redirectUriAsPostLogoutRedirectUriFallback: true,
-          } as AuthConfig
-        }),
-        tap(ssoConfig => this.oauthService.configure(ssoConfig)),
-          switchMap(() => this.oauthService.loadDiscoveryDocumentAndTryLogin()),
-          tap(res => this.enableSso = res),
-          filter(() => this.oauthService.hasValidAccessToken() ),
-          tap(() =>  this.tokenLoadedSubject.next(true) )
-    ).subscribe()
-  }
+            requireHttps: false
+        } as AuthConfig
+    }
 
-  login() {
-      this.oauthService.initCodeFlow();
-  }
+    getSsoProviderName() {
+        return this.ssoConfig?.ssoProviderName
+    }
 
-  logout() {
-      if (this.idToken) {
-          this.oauthService.logOut({
-              'id_token_hint': this.idToken
-          });
-      }
-  }
+    getSsoProviderImageUrl() {
+        return this.ssoConfig?.ssoProviderImageUrl
+    }
 
-  getSsoProviderName() {
-    return this.ssoConfig?.ssoProviderName
-  }
+    get accessToken(): string {
+        return this.oauthService.getAccessToken();
+    }
 
-  getSsoProviderImageUrl() {
-      return this.ssoConfig?.ssoProviderImageUrl
-  }
+    get accessTokenValid(): boolean {
+        return this.oauthService.hasValidAccessToken();
+    }
 
-  get accessToken(): string {
-      return this.oauthService.getAccessToken();
-  }
+    get idToken(): string {
+        return this.oauthService.getIdToken();
+    }
 
-  get idToken(): string {
-      return this.oauthService.getIdToken();
-  }
+    get tokenEndpoint(): string {
+        return this.oauthService.tokenEndpoint;
+    }
 
-  get tokenEndpoint(): string {
-      return this.oauthService.tokenEndpoint;
-  }
+    get headers() {
+        return this.ssoConfig?.headers
+    }
 
-  get headers() {
-      return this.ssoConfig?.headers
-  }
-
-  get getEnableSso() {
-      return this.enableSso
-  }
+    get getEnableSso() {
+        return this.enableSso
+    }
 }
