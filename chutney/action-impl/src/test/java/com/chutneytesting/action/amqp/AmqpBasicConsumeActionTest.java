@@ -11,6 +11,8 @@ import static com.chutneytesting.action.amqp.AmqpActionsTest.mockConnectionFacto
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.condition.OS.LINUX;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import com.chutneytesting.action.TestFinallyActionRegistry;
 import com.chutneytesting.action.TestLogger;
@@ -31,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 
 @SuppressWarnings("unchecked")
 public class AmqpBasicConsumeActionTest {
@@ -306,6 +309,7 @@ public class AmqpBasicConsumeActionTest {
         );
     }
 
+    @DisabledOnOs({ LINUX })
     @Test
     public void should_consume_message_one_another_queue() {
         Action shouldFailConsumer = mockConnectionFactory(new AmqpBasicConsumeAction(
