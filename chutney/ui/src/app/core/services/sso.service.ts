@@ -8,9 +8,9 @@
 import { HttpClient } from '@angular/common/http';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '@env/environment';
-import { BehaviorSubject, map, tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { filter } from 'rxjs/operators';
+
 
 interface SsoAuthConfig {
     issuer: string,
@@ -36,14 +36,11 @@ export class SsoService {
     private enableSso = false
 
 
-    constructor(private oauthService: OAuthService, private http: HttpClient) {
-        //this.fetchSsoConfig()
-    }
+    constructor(private oauthService: OAuthService, private http: HttpClient) {}
 
     fetchSsoConfig(): void {
         const ssoConfigLocalStorage = localStorage.getItem('ssoConfig')
         if (!ssoConfigLocalStorage) {
-            console.log("TOTOTOTOTOOTOTTDVNSVSDNVDOSBJN")
             this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
                 map(ssoConfig => {
                     this.ssoConfig = ssoConfig
@@ -51,7 +48,7 @@ export class SsoService {
                     return this.getAuthConfigFromSsoAuthConfig(ssoConfig)
                 }),
                 tap(ssoConfig => this.oauthService.configure(ssoConfig)),
-                tap(_ => this.oauthService.setupAutomaticSilentRefresh()),
+                tap(_ => this.oauthService.stopAutomaticRefresh()),
                 tap(_ => this.oauthService.loadDiscoveryDocumentAndTryLogin()),
                 tap(_ => this.enableSso = true)
             ).subscribe()
@@ -60,7 +57,7 @@ export class SsoService {
             this.ssoConfig = JSON.parse(ssoConfigLocalStorage) as SsoAuthConfig
             const ssoAuthConfig  = this.getAuthConfigFromSsoAuthConfig(this.ssoConfig)
             this.oauthService.configure(ssoAuthConfig);
-            this.oauthService.setupAutomaticSilentRefresh();
+            this.oauthService.stopAutomaticRefresh();
             this.oauthService.loadDiscoveryDocumentAndTryLogin();
 
         }
@@ -92,7 +89,7 @@ export class SsoService {
             sessionChecksEnabled: true,
             logoutUrl: ssoConfig.redirectBaseUrl + '/',
             customQueryParams: ssoConfig.additionalQueryParams,
-            useIdTokenHintForSilentRefresh: true,
+            useSilentRefresh: false,
             redirectUriAsPostLogoutRedirectUriFallback: true,
             requireHttps: false
         } as AuthConfig

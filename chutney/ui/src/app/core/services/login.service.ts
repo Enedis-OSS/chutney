@@ -5,7 +5,7 @@
  *
  */
 
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -21,7 +21,7 @@ import { AlertService } from '@shared';
 @Injectable({
     providedIn: 'root'
 })
-export class LoginService implements OnInit {
+export class LoginService {
 
     private url = '/api/v1/user';
     private loginUrl = this.url + '/login';
@@ -37,24 +37,25 @@ export class LoginService implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        //const token = localStorage.getItem('jwt');
-        //if (token) {
-        //    const { sub, iat, exp, ...user} = this.decodeToken(token);
-        //    this.setUser(user as User)
-        //}
-    }
-
     isAuthorized(requestURL: string, route: ActivatedRouteSnapshot) {
         const unauthorizedMessage = this.translateService.instant('login.unauthorized')
+        const sessionExpiredMessage = this.translateService.instant('login.expired')
         const token = this.getToken();
         const payload = this.decodeToken(token);
+        let authenticated = false
         if (payload) {
             const {sub, iat, exp, ...user} = payload
-            if (!user || user == this.NO_USER) {
+            if ((user == this.NO_USER || this.isTokenExpired(token)) && !this.ssoService.accessToken) {
+                localStorage.removeItem('jwt')
+                this.alertService.error(sessionExpiredMessage, {
+                    timeOut: 0,
+                    extendedTimeOut: 0,
+                    closeButton: true
+                });
                 this.initLogin(requestURL)
                 return false
             }
+            authenticated = true
             this.user$.next(user as User)
         } else if (this.ssoService.accessTokenValid) {
             return this.currentUser().pipe(
@@ -62,26 +63,31 @@ export class LoginService implements OnInit {
                 map(user => {
                     const authorizations: Array<Authorization> = route.data['authorizations'] || [];
                     if (this.hasAuthorization(authorizations, this.user$.getValue())) {
+                        this.navigateAfterLogin(requestURL);
                         return true;
                     } else {
-                        this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
+                        this.alertService.error(unauthorizedMessage, {
+                            timeOut: 0,
+                            extendedTimeOut: 0,
+                            closeButton: true
+                        });
                         this.navigateAfterLogin();
                         return false;
                     }
                 })
             );
-        } else {
-            this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
-            this.initLogin(requestURL)
-            return false
         }
-
-        const authorizations: Array<Authorization> = route.data['authorizations'] || [];
-        if (this.hasAuthorization(authorizations, this.user$.getValue())) {
-            return true;
-        } else {
+        if (authenticated) {
+            const authorizations: Array<Authorization> = route.data['authorizations'] || [];
+            if (this.hasAuthorization(authorizations, this.user$.getValue())) {
+                return true;
+            }
             this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
             this.navigateAfterLogin();
+            return false
+        } else {
+            this.setUser(this.NO_USER)
+            this.initLogin(requestURL);
             return false;
         }
     }
@@ -96,10 +102,6 @@ export class LoginService implements OnInit {
         const nextUrl = this.nullifyLoginUrl(url);
         const queryParams: Object = isNullOrBlankString(nextUrl) ? {} : {queryParams: {url: nextUrl}};
         this.router.navigate(['login'], queryParams);
-    }
-
-    get oauth2Token(): string {
-        return this.ssoService.accessToken
     }
 
     login(username: string, password: string): Observable<User> {
@@ -132,27 +134,13 @@ export class LoginService implements OnInit {
     }
 
     logout() {
-        if (this.ssoService.idToken) {
-            this.http.post(environment.backend + this.url + '/logout', null).pipe(
-                tap(() => {
-                    this.setUser(this.NO_USER)
-                    localStorage.removeItem('jwt')
-                    this.ssoService.logout()
-                })).subscribe(() => {
-                this.router.navigateByUrl('/login');
-            })
-        } else {
-            this.http.post(environment.backend + this.url + '/logout', null).pipe(
-                tap(() => {
-                    localStorage.removeItem('jwt')
-                    this.setUser(this.NO_USER)
-                }))
-                .subscribe(
-                    () => {
-                        this.router.navigateByUrl('/login');
-                    }
-                )
+        localStorage.removeItem('jwt')
+        this.setUser(this.NO_USER)
+        if (this.ssoService.accessToken) {
+            this.ssoService.logout()
         }
+        this.router.navigateByUrl('/login');
+
     }
 
     getUser(): Observable<User> {
