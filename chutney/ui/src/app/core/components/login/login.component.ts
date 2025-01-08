@@ -71,7 +71,6 @@ export class LoginComponent implements OnDestroy, OnInit {
     this.loginService.login(this.username, this.password)
       .subscribe(
         (user) => {
-            console.log("COCA")
           this.loginService.navigateAfterLogin(this.forwardUrl);
           this.alertService.removeAll();
         },

@@ -13,7 +13,6 @@ import com.chutneytesting.security.api.UserController;
 import com.chutneytesting.security.api.UserDto;
 import com.chutneytesting.security.domain.AuthenticationService;
 import com.chutneytesting.security.domain.Authorizations;
-import com.chutneytesting.security.infra.handlers.HttpEmptyLogoutSuccessHandler;
 import com.chutneytesting.security.infra.jwt.JwtAuthenticationFilter;
 import com.chutneytesting.security.infra.jwt.JwtUtil;
 import com.chutneytesting.security.infra.sso.OAuth2SsoUserService;
@@ -101,7 +100,7 @@ public class ChutneyWebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationService authenticationService, JwtAuthenticationFilter jwtAuthenticationFilter, @Nullable ClientRegistrationRepository clientRegistrationRepository, @Nullable RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
         configureSso(http, authenticationService, clientRegistrationRepository, restOperations, jwtUtil);
-        configureBaseHttpSecurity(http, jwtUtil);
+        configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
         http.anonymous(anonymousConfigurer -> anonymousConfigurer
                 .principal(anonymous)
@@ -122,15 +121,12 @@ public class ChutneyWebSecurityConfig {
         return http.build();
     }
 
-    protected void configureBaseHttpSecurity(final HttpSecurity http, JwtUtil jwtUtil) throws Exception {
+    protected void configureBaseHttpSecurity(final HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-            .requiresChannel(this.requireChannel(sslEnabled))
-            .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
-                .logoutUrl(LOGOUT_URL)
-                .logoutSuccessHandler(new HttpEmptyLogoutSuccessHandler()));
+            .requiresChannel(this.requireChannel(sslEnabled));
     }
 
     protected UserDto anonymous() {
