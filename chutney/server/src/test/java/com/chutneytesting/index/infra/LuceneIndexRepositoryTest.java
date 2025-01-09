@@ -11,6 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.chutneytesting.index.infra.lucene.config.IndexConfig;
+import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.lucene.config.OnDiskIndexConfig;
 import com.chutneytesting.tools.file.FileUtils;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,9 +32,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class IndexRepositoryTest {
+class LuceneIndexRepositoryTest {
 
-    private IndexRepository indexRepository;
+    private LuceneIndexRepository luceneIndexRepository;
     private IndexConfig indexConfig;
     private Path tmpDir;
 
@@ -39,7 +42,7 @@ class IndexRepositoryTest {
     public void setUp() throws IOException {
         this.tmpDir = Files.createTempDirectory("index");
         indexConfig = new OnDiskIndexConfig(tmpDir.toString());
-        indexRepository = new IndexRepository(indexConfig);
+        luceneIndexRepository = new LuceneIndexRepository(indexConfig);
     }
 
     @AfterEach
@@ -55,7 +58,7 @@ class IndexRepositoryTest {
         doc.add(new StringField("title", "Indexed Document", Field.Store.YES));
 
         // When
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         // Then
         assertTrue(DirectoryReader.indexExists(indexConfig.directory()), "Index should exist after document is indexed.");
@@ -68,17 +71,17 @@ class IndexRepositoryTest {
         Document doc = new Document();
         doc.add(new StringField("id", "1", Field.Store.YES));
         doc.add(new StringField("title", "Searchable Document", Field.Store.YES));
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         doc = new Document();
         doc.add(new StringField("id", "2", Field.Store.YES));
         doc.add(new StringField("title", "other title", Field.Store.YES));
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         Query query = new TermQuery(new Term("title", "Searchable Document"));
 
         // When
-        List<Document> results = indexRepository.search(query, 10, Sort.RELEVANCE);
+        List<Document> results = luceneIndexRepository.search(query, 10, Sort.RELEVANCE);
 
         // Then
         assertThat(results).hasSize(1);
@@ -91,24 +94,24 @@ class IndexRepositoryTest {
         Document doc = new Document();
         doc.add(new StringField("id", "1", Field.Store.YES));
         doc.add(new StringField("title", "Document to be deleted", Field.Store.YES));
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         doc = new Document();
         doc.add(new StringField("id", "2", Field.Store.YES));
         doc.add(new StringField("title", "other title", Field.Store.YES));
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         Query query = new TermQuery(new Term("title", "Document to be deleted"));
 
         // When
-        indexRepository.delete(query);
+        luceneIndexRepository.delete(query);
 
         // Then
-        List<Document> resultsAfterDelete = indexRepository.search(query, 10, Sort.RELEVANCE);
+        List<Document> resultsAfterDelete = luceneIndexRepository.search(query, 10, Sort.RELEVANCE);
         assertEquals(0, resultsAfterDelete.size());
 
         query = new TermQuery(new Term("title", "other title"));
-        List<Document> results = indexRepository.search(query, 10, Sort.RELEVANCE);
+        List<Document> results = luceneIndexRepository.search(query, 10, Sort.RELEVANCE);
         assertThat(results).hasSize(1);
         assertThat(results.get(0).getField("id").stringValue()).isEqualTo("2");
     }
@@ -119,19 +122,19 @@ class IndexRepositoryTest {
         Document doc = new Document();
         doc.add(new StringField("id", "1", Field.Store.YES));
         doc.add(new StringField("title", "Document to be deleted", Field.Store.YES));
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         doc = new Document();
         doc.add(new StringField("id", "2", Field.Store.YES));
         doc.add(new StringField("title", "other title", Field.Store.YES));
-        indexRepository.index(doc);
+        luceneIndexRepository.index(doc);
 
         // When
-        indexRepository.deleteAll();
+        luceneIndexRepository.deleteAll();
 
         // Then
         Query query = new WildcardQuery(new Term("title", "*"));
-        List<Document> resultsAfterDeleteAll = indexRepository.search(query, 10, Sort.RELEVANCE);
+        List<Document> resultsAfterDeleteAll = luceneIndexRepository.search(query, 10, Sort.RELEVANCE);
         assertEquals(0, resultsAfterDeleteAll.size());
 
     }

@@ -1,0 +1,20 @@
+/*!
+ * SPDX-FileCopyrightText: 2017-2024 Enedis
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+
+.search-bar {
+    width: 30rem;
+}
+
+:host ::ng-deep typeahead-container {
+    .dropdown-header {
+        text-transform: capitalize;
+        font-weight: bold;
+    }
+    .dropdown-item {
+        box-shadow: 0 1px 2px -2px gray;
+    }
+}
