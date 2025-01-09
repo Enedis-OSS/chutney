@@ -45,7 +45,7 @@ export class LoginService {
         let authenticated = false
         if (payload) {
             const {sub, iat, exp, ...user} = payload
-            if ((user == this.NO_USER || this.isTokenExpired(token)) && !this.ssoService.accessToken) {
+            if ((user == this.NO_USER || this.isTokenExpired(token)) && !this.ssoService.idToken) {
                 localStorage.removeItem('jwt')
                 this.alertService.error(sessionExpiredMessage, {
                     timeOut: 0,
@@ -57,7 +57,7 @@ export class LoginService {
             }
             authenticated = true
             this.user$.next(user as User)
-        } else if (this.ssoService.accessTokenValid) {
+        } else if (this.ssoService.idTokenValid) {
             return this.currentUser().pipe(
                 tap(user => this.setUser(user)),
                 map(user => {
@@ -93,7 +93,7 @@ export class LoginService {
     }
 
     public getToken() {
-        return localStorage.getItem('jwt') || this.ssoService.accessToken;
+        return localStorage.getItem('jwt') || this.ssoService.idToken;
     }
 
     initLogin(url?: string, headers?: HttpHeaders | {
@@ -136,7 +136,7 @@ export class LoginService {
     logout() {
         localStorage.removeItem('jwt')
         this.setUser(this.NO_USER)
-        if (this.ssoService.accessToken) {
+        if (this.ssoService.idToken) {
             this.ssoService.logout()
         }
         this.router.navigateByUrl('/login');

@@ -111,6 +111,10 @@ export class SsoService {
         return this.oauthService.hasValidAccessToken();
     }
 
+    get idTokenValid(): boolean {
+        return this.oauthService.hasValidIdToken();
+    }
+
     get idToken(): string {
         return this.oauthService.getIdToken();
     }
