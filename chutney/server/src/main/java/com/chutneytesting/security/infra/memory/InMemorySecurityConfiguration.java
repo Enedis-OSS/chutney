@@ -32,4 +32,13 @@ public class InMemorySecurityConfiguration {
     public InMemoryUserDetailsService inMemoryUserDetailsService(InMemoryUsersProperties users, AuthenticationService authenticationService) {
         return new InMemoryUserDetailsService(users, authenticationService);
     }
+
+    @Autowired
+    protected void configure(
+        final AuthenticationManagerBuilder auth,
+        final UserDetailsService userDetailsService) throws Exception {
+
+        auth
+            .userDetailsService(userDetailsService);
+    }
 }
