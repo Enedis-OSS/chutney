@@ -13,10 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -37,7 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 String username = jwtUtil.extractUsername(token);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    var userDetails = userDetailsServices.stream().map(service -> service.loadUserByUsername(username)).findFirst();
+                    var userDetails = userDetailsServices.stream().map(service -> {
+                        try {
+                            return service.loadUserByUsername(username);
+                        } catch (Exception ignored) {
+                            return null;
+                        }
+                    }).filter(Objects::nonNull).findFirst();
                     if (userDetails.isPresent() && jwtUtil.validateToken(token, userDetails.get())) {
                         var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.get().getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authToken);

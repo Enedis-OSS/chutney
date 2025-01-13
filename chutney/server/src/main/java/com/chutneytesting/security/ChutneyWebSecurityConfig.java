@@ -13,6 +13,7 @@ import com.chutneytesting.security.api.UserController;
 import com.chutneytesting.security.api.UserDto;
 import com.chutneytesting.security.domain.AuthenticationService;
 import com.chutneytesting.security.domain.Authorizations;
+import com.chutneytesting.security.infra.jwt.CustomDaoAuthenticationProvider;
 import com.chutneytesting.security.infra.jwt.JwtAuthenticationFilter;
 import com.chutneytesting.security.infra.jwt.JwtUtil;
 import com.chutneytesting.security.infra.sso.OAuth2SsoUserService;
@@ -26,6 +27,7 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,7 +38,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -93,8 +98,18 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(List<UserDetailsService> userDetailsServices, PasswordEncoder passwordEncoder) {
+        List<AuthenticationProvider> authenticationProviders = userDetailsServices.stream()
+            .map(service -> createDaoAuthenticationProvider(service, passwordEncoder))
+            .collect(Collectors.toList());
+        return new ProviderManager(authenticationProviders);
+    }
+
+    private DaoAuthenticationProvider createDaoAuthenticationProvider(UserDetailsService service, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new CustomDaoAuthenticationProvider();
+        provider.setUserDetailsService(service);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
     }
 
     @Bean
