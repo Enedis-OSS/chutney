@@ -28,7 +28,7 @@ You can find all code and configuration below in this [example project](https://
 
 !!! note "Docker"
 
-    1. Start Chutney locally with `docker -p 8443:8443 -d run ghcr.io/chutney-testing/chutney/chutney-server` ([Docker run documentation](https://docs.docker.com/reference/cli/docker/container/run/)).
+    1. Start Chutney locally with `docker -p 8443:8443 -d run ghcr.io/enedis-oss/chutney/chutney-server` ([Docker run documentation](https://docs.docker.com/reference/cli/docker/container/run/)).
 
 !!! note "Java"
 

@@ -1,7 +1,7 @@
 #SPDX-FileCopyrightText: 2017-2024 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
-FROM ghcr.io/chutney-testing/chutney/chutney-server
+FROM ghcr.io/enedis-oss/chutney/chutney-server
 
 LABEL org.opencontainers.image.source https://github.com/Enedis-OSS/chutney
 

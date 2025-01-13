@@ -10,12 +10,12 @@ From project root folder, run:
 
 **server**
 ```shell
-docker build --tag ghcr.io/chutney-testing/chutney/chutney-server:latest . -f ./.docker/server/Dockerfile
+docker build --tag ghcr.io/enedis-oss/chutney/chutney-server:latest . -f ./.docker/server/Dockerfile
 ```
 
 **ui**
 ```shell
-docker build --tag ghcr.io/chutney-testing/chutney/chutney-ui:latest . -f ./.docker/ui/Dockerfile
+docker build --tag ghcr.io/enedis-oss/chutney/chutney-ui:latest . -f ./.docker/ui/Dockerfile
 ```
 
 ### Push docker image to github registry
@@ -27,8 +27,8 @@ To push manually :
 //login
 docker login ghcr.io -u ${your_username} --password ${your_personal_github_token}
 // push
-docker push ghcr.io/chutney-testing/chutney/chutney-server:latest
-docker push ghcr.io/chutney-testing/chutney/chutney-ui:latest
+docker push ghcr.io/enedis-oss/chutney/chutney-server:latest
+docker push ghcr.io/enedis-oss/chutney/chutney-ui:latest
 ```
 
 ### Run ui and server containers using docker compose

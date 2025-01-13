@@ -38,7 +38,7 @@ docker compose -f ./.docker/dev-docker-compose-demo.yml rm
 
 From project root folder, run:
 ```shell
-docker build --tag ghcr.io/chutney-testing/chutney/chutney-demo:latest . -f ./.docker/demo/Dockerfile
+docker build --tag ghcr.io/enedis-oss/chutney/chutney-demo:latest . -f ./.docker/demo/Dockerfile
 ```
 
 ## Push docker image to GitHub registry
@@ -50,5 +50,5 @@ To push manually :
 //login
 docker login ghcr.io -u ${your_username} --password ${your_personal_github_token}
 // push
-docker push ghcr.io/chutney-testing/chutney/chutney-demo:latest
+docker push ghcr.io/enedis-oss/chutney/chutney-demo:latest
 ```

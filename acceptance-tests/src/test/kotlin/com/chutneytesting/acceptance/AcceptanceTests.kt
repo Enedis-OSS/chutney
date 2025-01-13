@@ -57,7 +57,7 @@ class AcceptanceTests {
         it.withName("chutney_network")
       }
       .build()
-    chutneyServer = GenericContainer<Nothing>("ghcr.io/chutney-testing/chutney/chutney-server").apply {
+    chutneyServer = GenericContainer<Nothing>("ghcr.io/enedis-oss/chutney/chutney-server").apply {
       waitingFor(Wait.forLogMessage(".*Started ServerBootstrap.*", 1))
       withStartupTimeout(Duration.ofSeconds(80))
       withExposedPorts(8443)
