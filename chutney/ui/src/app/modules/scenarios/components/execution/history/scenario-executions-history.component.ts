@@ -280,7 +280,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
                     this.error = error.error;
                     return throwError(() => error);
                 })
-            )   
+            )
     }
 
     ngOnDestroy(): void {
@@ -290,6 +290,10 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
 
     getActiveTab() {
         return this.activeTab === this.LAST_ID ? this.executions[0]?.executionId?.toString() : this.activeTab;
+    }
+
+    replayButton(executionId: number) {
+        this.replay(executionId).subscribe();
     }
 
     replay(executionId: number): Observable<any> {

@@ -29,7 +29,7 @@
           <chutney-scenario-executions [executions]="executions" [scenario]="scenario"
             [(filters)]="executionsFilters"
           (onExecutionSelect)="openReport($event)"
-          (onReplay)="replay($event)"
+          (onReplay)="replayButton($event)"
           (onDelete)="deleteExecution($event)"></chutney-scenario-executions>
         </ng-template>
       </li>
