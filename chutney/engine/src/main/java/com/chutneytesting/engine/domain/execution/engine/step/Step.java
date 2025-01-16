@@ -19,6 +19,7 @@ import com.chutneytesting.engine.domain.execution.RxBus;
 import com.chutneytesting.engine.domain.execution.ScenarioExecution;
 import com.chutneytesting.engine.domain.execution.StepDefinition;
 import com.chutneytesting.engine.domain.execution.engine.StepExecutor;
+import com.chutneytesting.engine.domain.execution.engine.evaluation.EvaluationException;
 import com.chutneytesting.engine.domain.execution.engine.evaluation.StepDataEvaluator;
 import com.chutneytesting.engine.domain.execution.engine.scenario.ScenarioContext;
 import com.chutneytesting.engine.domain.execution.event.BeginStepExecutionEvent;
@@ -106,6 +107,8 @@ public class Step {
                     this.stepContext = stepContextExecuted.copy();
                 })
                 .ifFailed(this::failure);
+        } catch (EvaluationException e) {
+            failure(e);
         } catch (RuntimeException e) {
             failure(e);
             LOGGER.warn("Intercepted exception!", e);

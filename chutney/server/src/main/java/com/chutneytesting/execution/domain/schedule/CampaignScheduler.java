@@ -80,7 +80,6 @@ public class CampaignScheduler {
     synchronized private Stream<Pair<List<CampaignExecutionRequest>, String>> scheduledCampaignsToExecute() {
         try {
             List<PeriodicScheduledCampaign> all = scheduledCampaignRepository.getAll();
-            LOGGER.info(all.toString());
             return all.stream()
                 .filter(sc -> sc.nextExecutionDate != null)
                 .filter(sc -> sc.nextExecutionDate.isBefore(LocalDateTime.now(clock)))

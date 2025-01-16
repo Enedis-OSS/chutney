@@ -43,7 +43,7 @@ public class StepDataEvaluator {
         this.spelFunctions = spelFunctions;
     }
 
-    public Map<String, Object> evaluateNamedDataWithContextVariables(final Map<String, Object> data, final Map<String, Object> contextVariables) throws EvaluationException {
+    public Map<String, Object> evaluateNamedDataWithContextVariables(final Map<String, Object> data, final Map<String, Object> contextVariables) {
         Map<String, Object> evaluatedNamedData = new LinkedHashMap<>();
 
         StandardEvaluationContext evaluationContext = buildEvaluationContext(contextVariables);
@@ -58,19 +58,19 @@ public class StepDataEvaluator {
         return evaluatedNamedData;
     }
 
-    public Object evaluate(final Object o, final Map<String, Object> contextVariables) throws EvaluationException {
+    public Object evaluate(final Object o, final Map<String, Object> contextVariables) {
         return evaluate(o, contextVariables, false);
     }
 
-    public String evaluateString(final String s, final Map<String, Object> contextVariables) throws EvaluationException {
+    public String evaluateString(final String s, final Map<String, Object> contextVariables) {
         return (String) this.evaluate(s, contextVariables);
     }
 
-    public String silentEvaluateString(final String s, final Map<String, Object> contextVariables) throws EvaluationException {
+    public String silentEvaluateString(final String s, final Map<String, Object> contextVariables) {
         return (String) this.evaluate(s, contextVariables, true);
     }
 
-    public Target evaluateTarget(final Target target, final Map<String, Object> contextVariables) throws EvaluationException {
+    public Target evaluateTarget(final Target target, final Map<String, Object> contextVariables) {
         TargetImpl.TargetBuilder builder = TargetImpl.builder();
 
         StandardEvaluationContext evaluationContext = buildEvaluationContext(contextVariables);
@@ -81,7 +81,7 @@ public class StepDataEvaluator {
         return builder.build();
     }
 
-    private Object evaluate(final Object o, final Map<String, Object> contextVariables, boolean silentResolve) throws EvaluationException {
+    private Object evaluate(final Object o, final Map<String, Object> contextVariables, boolean silentResolve) {
         StandardEvaluationContext evaluationContext = buildEvaluationContext(contextVariables);
         return evaluateObject(o, evaluationContext, silentResolve);
     }
@@ -98,12 +98,12 @@ public class StepDataEvaluator {
         return evaluationContext;
     }
 
-    private Object evaluateObject(final Object object, final EvaluationContext evaluationContext) throws EvaluationException {
+    private Object evaluateObject(final Object object, final EvaluationContext evaluationContext) {
         return evaluateObject(object, evaluationContext, false);
     }
 
     @SuppressWarnings("unchecked")
-    private Object evaluateObject(final Object object, final EvaluationContext evaluationContext, boolean silentResolve) throws EvaluationException {
+    private Object evaluateObject(final Object object, final EvaluationContext evaluationContext, boolean silentResolve) {
         Object inputEvaluatedValue;
         if (object instanceof String stringValue) {
             if (hasOnlyOneSpel(stringValue)) {
@@ -142,7 +142,7 @@ public class StepDataEvaluator {
         return inputEvaluatedValue;
     }
 
-    private Object evaluate(ExpressionParser parser, final EvaluationContext evaluationContext, String expressionAsString) throws EvaluationException {
+    private Object evaluate(ExpressionParser parser, final EvaluationContext evaluationContext, String expressionAsString) {
         final Expression expression = parseExpression(parser, expressionAsString);
 
         try {

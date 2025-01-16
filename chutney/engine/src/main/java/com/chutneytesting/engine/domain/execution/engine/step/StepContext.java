@@ -30,7 +30,7 @@ class StepContext {
         this(new ScenarioContextImpl(), new LinkedHashMap<>(), new LinkedHashMap<>());
     }
 
-    StepContext(ScenarioContext scenarioContext, Map<String, Object> localContext, Map<String, Object> evaluatedInputs) throws EvaluationException {
+    StepContext(ScenarioContext scenarioContext, Map<String, Object> localContext, Map<String, Object> evaluatedInputs) {
         this(scenarioContext, localContext, evaluatedInputs, new LinkedHashMap<>());
     }
 
