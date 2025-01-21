@@ -132,10 +132,10 @@ public class DatasetIndexRepository implements IndexRepository<DataSet> {
     private Hit highlight(Document doc, String keyword) {
         String highlightedId = luceneIndexRepository.highlight(likeQuery(ID, keyword), ID, doc.get(ID), false);
         String highlightedTitle = luceneIndexRepository.highlight(likeQuery(NAME, keyword), NAME, doc.get(NAME), false);
-        String highlightedDescription = luceneIndexRepository.highlight(likeQuery(DESCRIPTION, keyword), DESCRIPTION, doc.get(DESCRIPTION), true);
-        String highlightedContent = luceneIndexRepository.highlight(likeQuery(CONTENT, keyword), CONTENT, doc.get(CONTENT), true);
+        String highlightedDescription = luceneIndexRepository.highlight(likeQuery(DESCRIPTION, keyword), DESCRIPTION, doc.get(DESCRIPTION), false);
+        String highlightedContent = luceneIndexRepository.highlight(likeQuery(CONTENT, keyword), CONTENT, doc.get(CONTENT), false);
         List<String> highlightedTags = TagListMapper.tagsStringToList(doc.get(TAGS)).stream()
-            .map(tag -> luceneIndexRepository.highlight(likeQuery(TAGS, keyword), TAGS, tag, true))
+            .map(tag -> luceneIndexRepository.highlight(likeQuery(TAGS, keyword), TAGS, tag, false))
             .filter(StringUtils::isNotBlank)
             .toList();
 

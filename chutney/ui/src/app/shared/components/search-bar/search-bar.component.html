@@ -5,41 +5,65 @@
   ~
   -->
 
-<input [(ngModel)]="keyword"
-       [typeahead]="search()"
-       [typeaheadAsync]="true"
-       typeaheadGroupField="what"
-       (typeaheadOnSelect)="onSelectSearchHit($event)"
-       [typeaheadItemTemplate]="hitItemTemplate"
-       [placeholder]="'global.actions.search' | translate"
-       [typeaheadScrollable]="true"
-       [adaptivePosition]="true"
-       [typeaheadOptionsInScrollableView]="10"
-       [typeaheadMinLength]="2"
-       [typeaheadWaitMs]="500"
-       class="form-control search-bar">
+<!-- Compact input to open search -->
+<div class="search-compact" (click)="expandSearch()">
+  <i class="fas fa-search search-icon"></i>
+  <input type="text" placeholder="Search or jump to..." class="compact-input" readonly />
+  <span class="shortcut">
+    <i class="fas fa-keyboard"></i>{{ isMacOS ? '⌘' : 'Ctrl' }}+k
+  </span>
+</div>
 
-<ng-template #hitItemTemplate let-model="item">
-    <div class="text-capitalize">
-        <span class="hit-title" [innerHTML]="model.title"></span>
-        <br>
-        @if (model.description) {
-            <span class="ms-2 small">
-               <strong> {{ 'search-bar.item.description' | translate }}: </strong><span [innerHTML]="model.description"></span>
+<!-- Overlay -->
+<div class="search-overlay" *ngIf="isSearchExpanded" (click)="closeSearch()"></div>
+
+<!-- Expanded search bar -->
+<div class="search-bar" *ngIf="isSearchExpanded">
+  <i class="fas fa-search search-icon"></i>
+  <input #searchInput [(ngModel)]="keyword" (input)="onSearch()" placeholder="Search..." class="search-input" />
+</div>
+
+<div class="search-dropdown" *ngIf="isSearchExpanded">
+  @if (searchResults.length > 0) {
+  <div *ngFor="let category of categorizedResults | keyvalue" class="search-category">
+    <div style="font-weight:bold;  position: sticky; top:0;z-index: 100000;background-color: #2d2d2d;padding-top: 20px;padding-bottom: 11px;"><strong >{{ category.key | uppercase }}</strong></div>
+    <table class="search-results-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="fixed-width-20"></th>
+          <th class="fixed-width-1"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of category.value" class="search-item">
+          <td [innerHTML]="item.title"></td>
+          <td>
+            <span *ngFor="let tag of item.tags" class="tag"
+              [ngStyle]="{ 'background-color': getTagColor(sanitizeMarkTags(tag)) }">
+              {{ sanitizeMarkTags(tag) }}
             </span>
-        }
-        @if (model.tags?.length) {
-            <div class="d-flex flex-row ms-2 small">
-                <strong>{{ 'search-bar.item.tags' | translate }}:</strong>
-                @for (tag of model.tags; track $index) {
-                    <span class="chutney-tag chutney-tag-selected text-uppercase" [innerHTML]="tag"> </span>
-                }
+          </td>
+          <!-- Tooltip -->
+          <td class="info-column">
+            <div class="tooltip-container">
+              <i class="fas fa-info-circle info-icon"></i>
+              <div class="tooltip-content">
+                <ul>
+                  <li *ngFor="let match of getSearchResults(item)">
+                    <div style="text-align: center;">{{ match.attribute }}</div>
+                    <span [innerHTML]="match.snippet"></span>
+                    <hr style="margin:1 0 0 0;" />
+                  </li>
+                </ul>
+              </div>
             </div>
-        }
-        @if (model.content) {
-            <span class="ms-2 small">
-                <strong>{{ 'search-bar.item.content' | translate }}: </strong> <span [innerHTML]="model.content"></span>
-            </span>
-        }
-    </div>
-</ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  } @else {
+    <div class="search-category">No results found</div>
+  }
+</div>

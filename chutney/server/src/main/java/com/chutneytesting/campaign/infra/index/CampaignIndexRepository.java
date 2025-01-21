@@ -113,7 +113,7 @@ public class CampaignIndexRepository implements IndexRepository<CampaignEntity> 
         String highlightedTitle = luceneIndexRepository.highlight(likeQuery(TITLE, keyword), TITLE, doc.get(TITLE), false);
         String highlightedDescription = luceneIndexRepository.highlight(likeQuery(DESCRIPTION, keyword), DESCRIPTION, doc.get(DESCRIPTION), false);
         List<String> highlightedTags = TagListMapper.tagsStringToList(doc.get(TAGS)).stream()
-            .map(tag -> luceneIndexRepository.highlight(likeQuery(TAGS, keyword), TAGS, tag, true))
+            .map(tag -> luceneIndexRepository.highlight(likeQuery(TAGS, keyword), TAGS, tag, false))
             .filter(StringUtils::isNotBlank)
             .toList();
 
