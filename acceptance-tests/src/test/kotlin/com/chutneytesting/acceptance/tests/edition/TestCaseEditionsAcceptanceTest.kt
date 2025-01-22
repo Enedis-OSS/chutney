@@ -27,7 +27,7 @@ val `Request testcase edition` = Scenario(title = "Request testcase edition") {
     HttpPostAction(
         target = "CHUTNEY_LOCAL_NO_USER",
         uri = "/api/v1/editions/testcases/${"testcaseId".spEL}",
-        body = null,
+        body = "{}",
         headers = mapOf(
             "Authorization" to "Basic ${'$'}{T(java.util.Base64).getEncoder().encodeToString((\"paloma:paloma\").getBytes())}"
         ),
@@ -38,7 +38,7 @@ val `Request testcase edition` = Scenario(title = "Request testcase edition") {
     HttpPostAction(
         target = "CHUTNEY_LOCAL_NO_USER",
         uri = "/api/v1/editions/testcases/${"testcaseId".spEL}",
-        body = null,
+        body = "{}",
         headers = jsonHeader() + mapOf(
             "Authorization" to "Basic ${'$'}{T(java.util.Base64).getEncoder().encodeToString((\"robert:robert\").getBytes())}"
         ),
@@ -98,7 +98,7 @@ val `Request for a second time testcase edition` = Scenario(title = "Request for
     HttpPostAction(
         target = "CHUTNEY_LOCAL_NO_USER",
         uri = "/api/v1/editions/testcases/${"testcaseId".spEL}",
-        body = null,
+        body = "{}",
         headers = mapOf(
             "Authorization" to "Basic ${'$'}{T(java.util.Base64).getEncoder().encodeToString((\"paloma:paloma\").getBytes())}"
         ),
@@ -110,7 +110,7 @@ val `Request for a second time testcase edition` = Scenario(title = "Request for
     HttpPostAction(
         target = "CHUTNEY_LOCAL_NO_USER",
         uri = "/api/v1/editions/testcases/${"testcaseId".spEL}",
-        body = null,
+        body = "{}",
         headers = mapOf(
             "Authorization" to "Basic ${'$'}{T(java.util.Base64).getEncoder().encodeToString((\"paloma:paloma\").getBytes())}"
         ),
@@ -142,7 +142,7 @@ val `End testcase edition` = Scenario(title = "End testcase edition") {
     HttpPostAction(
         target = "CHUTNEY_LOCAL_NO_USER",
         uri = "/api/v1/editions/testcases/${"testcaseId".spEL}",
-        body = null,
+        body = "{}",
         headers = mapOf(
             "Authorization" to "Basic ${'$'}{T(java.util.Base64).getEncoder().encodeToString((\"paloma:paloma\").getBytes())}"
         ),
@@ -187,7 +187,7 @@ val `Edition time to live` = Scenario(title = "Edition time to live") {
     HttpPostAction(
         target = "CHUTNEY_LOCAL_NO_USER",
         uri = "/api/v1/editions/testcases/${"testcaseId".spEL}",
-        body = null,
+        body = "{}",
         headers = mapOf(
             "Authorization" to "Basic ${'$'}{T(java.util.Base64).getEncoder().encodeToString((\"paloma:paloma\").getBytes())}"
         ),

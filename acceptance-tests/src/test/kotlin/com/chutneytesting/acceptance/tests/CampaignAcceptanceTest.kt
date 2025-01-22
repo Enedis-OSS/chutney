@@ -19,7 +19,7 @@ val executeCampaignById = Scenario(title = "Execute campaign by id") {
       target = "CHUTNEY_LOCAL",
       uri = "/api/ui/campaign/execution/v1/byID/${"campaignId".spEL}",
       headers = jsonHeader(),
-      body = null,
+      body = "{}",
       validations = mapOf(statusValidation(200)),
       outputs = mapOf("report" to "#body".elEval())
     )
@@ -101,7 +101,7 @@ val unknownCampaignById = Scenario(title = "Execution by id of an unknown campai
       target = "CHUTNEY_LOCAL",
       uri = "/api/ui/campaign/execution/v1/byID/${"campaignId".spEL}",
       headers = jsonHeader(),
-      body = null,
+      body = "{}",
       validations = mapOf(
         statusValidation(404)
       ),

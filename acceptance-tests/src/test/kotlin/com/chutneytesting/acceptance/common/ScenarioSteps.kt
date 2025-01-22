@@ -83,7 +83,7 @@ fun ChutneyStepBuilder.executeScenario(scenarioId: String, environment: String) 
     target = "CHUTNEY_LOCAL",
     uri = "/api/ui/scenario/execution/v1/$scenarioId/$environment",
     timeout = "25 s",
-    body = null,
+    body = "{}",
     validations = mapOf(statusValidation(200)),
     outputs = mapOf(
       "report" to "body".spEL()

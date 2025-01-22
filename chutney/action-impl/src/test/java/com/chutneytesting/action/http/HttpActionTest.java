@@ -14,6 +14,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.patch;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -32,6 +33,7 @@ import com.chutneytesting.action.spi.injectable.Logger;
 import com.chutneytesting.action.spi.injectable.Target;
 import com.chutneytesting.tools.SocketUtils;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import java.net.URI;
@@ -182,15 +184,11 @@ public class HttpActionTest {
     }
 
     @Test
-    public void should_replace_by_empty_object_when_body_is_null() {
-
+    public void should_allow_to_send_null_body() {
         // given
         String uri = "/some/thing";
-        String expectedBody = "{}";
 
-        stubFor(post(urlEqualTo(uri)).willReturn(aResponse()
-            .withBody(expectedBody))
-        );
+        stubFor(post(urlEqualTo(uri)).willReturn(aResponse()));
 
         Logger logger = mock(Logger.class);
         Target targetMock = mockTarget("http://127.0.0.1:" + wireMockServer.port());
@@ -201,8 +199,8 @@ public class HttpActionTest {
 
         // then
         assertThat(executionResult.status).isEqualTo(ActionExecutionResult.Status.Success);
-        assertThat((String) executionResult.outputs.get("body")).isEqualTo(expectedBody);
-
+        WireMock.verify(postRequestedFor(urlEqualTo(uri))
+            .withRequestBody(WireMock.absent()));
     }
 
     @Test
