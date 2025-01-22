@@ -8,7 +8,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
@@ -27,6 +27,8 @@ export class LoginService {
     private loginUrl = this.url + '/login';
     private NO_USER = new User('');
     private user$: BehaviorSubject<User> = new BehaviorSubject(this.NO_USER);
+    private unauthorizedMessage: string
+    private sessionExpiredMessage: string
 
     constructor(
         private http: HttpClient,
@@ -35,19 +37,31 @@ export class LoginService {
         private translateService: TranslateService,
         private alertService: AlertService
     ) {
+        this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
+        this.sessionExpiredMessage = this.translateService.instant('login.expired')
     }
 
-    isAuthorized(requestURL: string, route: ActivatedRouteSnapshot) {
-        const unauthorizedMessage = this.translateService.instant('login.unauthorized')
-        const sessionExpiredMessage = this.translateService.instant('login.expired')
+    isAuthorized(requestURL: string, route: ActivatedRouteSnapshot): Observable<boolean> {
         const token = this.getToken();
+        if (token) {
+            return of(this.isAuthorizedJwt(token, requestURL, route))
+        } else if (this.ssoService.accessTokenValid) {
+            return this.isAuthorizedSso(requestURL, route)
+        } else {
+            this.setUser(this.NO_USER)
+            this.initLogin(requestURL);
+            return of(false);
+        }
+    }
+
+    private isAuthorizedJwt(token: string, requestURL: string, route: ActivatedRouteSnapshot) {
+        console.log("JWT")
         const payload = this.decodeToken(token);
-        let authenticated = false
         if (payload) {
             const {sub, iat, exp, ...user} = payload
             if ((user == this.NO_USER || this.isTokenExpired(token)) && !this.ssoService.accessToken) {
                 localStorage.removeItem('jwt')
-                this.alertService.error(sessionExpiredMessage, {
+                this.alertService.error(this.sessionExpiredMessage, {
                     timeOut: 0,
                     extendedTimeOut: 0,
                     closeButton: true
@@ -55,45 +69,41 @@ export class LoginService {
                 this.initLogin(requestURL)
                 return false
             }
-            authenticated = true
             this.user$.next(user as User)
-        } else if (this.ssoService.accessTokenValid) {
-            return this.currentUser().pipe(
-                tap(user => this.setUser(user)),
-                map(user => {
-                    const authorizations: Array<Authorization> = route.data['authorizations'] || [];
-                    if (this.hasAuthorization(authorizations, this.user$.getValue())) {
-                        this.navigateAfterLogin(requestURL);
-                        return true;
-                    } else {
-                        this.alertService.error(unauthorizedMessage, {
-                            timeOut: 0,
-                            extendedTimeOut: 0,
-                            closeButton: true
-                        });
-                        this.navigateAfterLogin();
-                        return false;
-                    }
-                })
-            );
-        }
-        if (authenticated) {
             const authorizations: Array<Authorization> = route.data['authorizations'] || [];
             if (this.hasAuthorization(authorizations, this.user$.getValue())) {
+                console.log("OKOKOKO")
                 return true;
             }
-            this.alertService.error(unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
+            this.alertService.error(this.unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
             this.navigateAfterLogin();
-            return false
-        } else {
-            this.setUser(this.NO_USER)
-            this.initLogin(requestURL);
-            return false;
         }
+        return false
+    }
+
+    private isAuthorizedSso(requestURL: string, route: ActivatedRouteSnapshot): Observable<boolean> {
+        return this.currentUser().pipe(
+            tap(user => this.setUser(user)),
+            map(user => {
+                const authorizations: Array<Authorization> = route.data['authorizations'] || [];
+                if (this.hasAuthorization(authorizations, this.user$.getValue())) {
+                    this.navigateAfterLogin(requestURL);
+                    return true;
+                } else {
+                    this.alertService.error(this.unauthorizedMessage, {
+                        timeOut: 0,
+                        extendedTimeOut: 0,
+                        closeButton: true
+                    });
+                    this.navigateAfterLogin();
+                    return false;
+                }
+            })
+        );
     }
 
     public getToken() {
-        return localStorage.getItem('jwt') || this.ssoService.accessToken;
+        return localStorage.getItem('jwt');
     }
 
     initLogin(url?: string, headers?: HttpHeaders | {

@@ -5,7 +5,7 @@
  *
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,18 +20,23 @@ import { AlertService } from '@shared';
   })
 export class ErrorInterceptor implements HttpInterceptor {
 
+    private loginService: LoginService
     private sessionExpiredMessage: string = '';
 
     constructor(
         private router: Router,
-        private loginService: LoginService,
         private alertService: AlertService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private injector: Injector
+
     ) {
         this.initTranslation();
     }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+      if (!this.loginService) {
+          this.loginService = this.injector.get(LoginService);
+      }
     if (request.headers.get('no-intercept-error') === '') {
         const newHeaders = request.headers.delete('no-intercept-error')
         const newRequest = request.clone({ headers: newHeaders });
