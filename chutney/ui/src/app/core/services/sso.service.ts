@@ -64,7 +64,14 @@ export class SsoService {
     }
 
     login() {
-        this.oauthService.initCodeFlow();
+        this.oauthService.loadDiscoveryDocument().then((doc) => {
+            this.oauthService.tryLoginCodeFlow({preventClearHashAfterLogin: true}).catch(err => {
+                console.error(err);
+            }).then(() => {
+                this.oauthService.initImplicitFlow()
+            });
+        });
+        //this.oauthService.initCodeFlow();
     }
 
     logout() {
@@ -91,7 +98,8 @@ export class SsoService {
             customQueryParams: ssoConfig.additionalQueryParams,
             useSilentRefresh: false,
             redirectUriAsPostLogoutRedirectUriFallback: true,
-            requireHttps: false
+            requireHttps: false,
+            showDebugInformation: true,
         } as AuthConfig
     }
 

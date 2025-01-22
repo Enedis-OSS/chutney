@@ -7,15 +7,20 @@
 
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { SsoService } from '@core/services/sso.service';
 
 @Injectable()
 export class OAuth2ContentTypeInterceptor implements HttpInterceptor {
 
-    constructor(private ssoService: SsoService) {}
+    private ssoService: SsoService
+
+    constructor(private injector: Injector) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (!this.ssoService) {
+            this.ssoService = this.injector.get(SsoService);
+        }
         const isTokenEndpoint = this.ssoService.headers && req.url.startsWith(this.ssoService.tokenEndpoint);
         if (isTokenEndpoint) {
             const modifiedReq = req.clone({
