@@ -16,101 +16,106 @@ import { ChutneyLeftMenuComponent } from '@shared/components/layout/left-menu/ch
 import { featuresGuard } from '@core/guards/features.guard';
 import { authGuard } from '@core/guards';
 import { featuresResolver } from '@core/feature/features.resolver';
+import { HomeComponent } from './home.component';
+import { ProtectedComponent } from './protected.component';
+import { AuthGuard } from './auth.guard';
 
 export const appRoutes: Routes = [
-    {path: 'login', component: LoginComponent},
-    {path: 'login/:action', component: LoginComponent},
-    {
-        path: '', component: ParentComponent,
-        canActivate: [authGuard],
-        resolve: {'features': () => featuresResolver},
-        children: [
-            {path: '', component: ChutneyMainHeaderComponent, outlet: 'header'},
-            {path: '', component: ChutneyLeftMenuComponent, outlet: 'left-side-bar'},
-            {path: '', redirectTo: '/scenario', pathMatch: 'full'},
-            {
-                path: 'scenario',
-                loadChildren: () => import('./modules/scenarios/scenario.module').then(m => m.ScenarioModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.SCENARIO_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_EXECUTE]}
-            },
-            {
-                path: 'campaign',
-                loadChildren: () => import('./modules/campaign/campaign.module').then(m => m.CampaignModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.CAMPAIGN_READ, Authorization.CAMPAIGN_WRITE, Authorization.CAMPAIGN_EXECUTE]}
-            },
-            {
-                path: 'variable',
-                loadChildren: () => import('./modules/global-variable/global-variable.module').then(m => m.GlobalVariableModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.GLOBAL_VAR_READ, Authorization.GLOBAL_VAR_WRITE]}
-            },
-            {
-                path: 'dataset',
-                loadChildren: () => import('./modules/dataset/dataset.module').then(m => m.DatasetModule),
-                canActivate: [authGuard, featuresGuard], // add requiredAuthorizations
-                data: {
-                    'authorizations': [Authorization.DATASET_READ, Authorization.DATASET_WRITE]
-                }
-            },
-            {
-                path: 'configurationAgent',
-                loadChildren: () => import('./modules/agent-network/agent-network.module').then(m => m.AgentNetworkModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'plugins',
-                loadChildren: () => import('./modules/plugins/plugin-configuration.module').then(m => m.PluginConfigurationModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'databaseAdmin',
-                loadChildren: () => import('./modules/database-admin/database-admin.module').then(m => m.DatabaseAdminModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'targets',
-                loadChildren: () => import('./modules/target/target.module').then(m => m.TargetModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'environments',
-                loadChildren: () => import('./modules/environment/environment.module').then(m => m.EnvironmentModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'environmentsVariables',
-                loadChildren: () => import('./modules/environment-variable/environment-variable.module').then(m => m.EnvironmentVariableModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'backups',
-                loadChildren: () => import('./modules/backups/backups.module').then(m => m.BackupsModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'roles',
-                loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'metrics',
-                loadChildren: () => import('./modules/metrics/metrics.module').then(m => m.MetricsModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            }
-        ]
-    },
-    {path: '**', redirectTo: ''}
+    { path: '', component: HomeComponent },
+    { path: 'protected', component: ProtectedComponent, canActivate: [AuthGuard] },
+    //{path: 'login', component: LoginComponent},
+    //{path: 'login/:action', component: LoginComponent},
+    //{
+    //    path: '', component: ParentComponent,
+    //    canActivate: [authGuard],
+    //    resolve: {'features': () => featuresResolver},
+    //    children: [
+    //        {path: '', component: ChutneyMainHeaderComponent, outlet: 'header'},
+    //        {path: '', component: ChutneyLeftMenuComponent, outlet: 'left-side-bar'},
+    //        {path: '', redirectTo: '/scenario', pathMatch: 'full'},
+    //        {
+    //            path: 'scenario',
+    //            loadChildren: () => import('./modules/scenarios/scenario.module').then(m => m.ScenarioModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.SCENARIO_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_EXECUTE]}
+    //        },
+    //        {
+    //            path: 'campaign',
+    //            loadChildren: () => import('./modules/campaign/campaign.module').then(m => m.CampaignModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.CAMPAIGN_READ, Authorization.CAMPAIGN_WRITE, Authorization.CAMPAIGN_EXECUTE]}
+    //        },
+    //        {
+    //            path: 'variable',
+    //            loadChildren: () => import('./modules/global-variable/global-variable.module').then(m => m.GlobalVariableModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.GLOBAL_VAR_READ, Authorization.GLOBAL_VAR_WRITE]}
+    //        },
+    //        {
+    //            path: 'dataset',
+    //            loadChildren: () => import('./modules/dataset/dataset.module').then(m => m.DatasetModule),
+    //            canActivate: [authGuard, featuresGuard], // add requiredAuthorizations
+    //            data: {
+    //                'authorizations': [Authorization.DATASET_READ, Authorization.DATASET_WRITE]
+    //            }
+    //        },
+    //        {
+    //            path: 'configurationAgent',
+    //            loadChildren: () => import('./modules/agent-network/agent-network.module').then(m => m.AgentNetworkModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'plugins',
+    //            loadChildren: () => import('./modules/plugins/plugin-configuration.module').then(m => m.PluginConfigurationModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'databaseAdmin',
+    //            loadChildren: () => import('./modules/database-admin/database-admin.module').then(m => m.DatabaseAdminModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'targets',
+    //            loadChildren: () => import('./modules/target/target.module').then(m => m.TargetModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'environments',
+    //            loadChildren: () => import('./modules/environment/environment.module').then(m => m.EnvironmentModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'environmentsVariables',
+    //            loadChildren: () => import('./modules/environment-variable/environment-variable.module').then(m => m.EnvironmentVariableModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'backups',
+    //            loadChildren: () => import('./modules/backups/backups.module').then(m => m.BackupsModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'roles',
+    //            loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+    //        },
+    //        {
+    //            path: 'metrics',
+    //            loadChildren: () => import('./modules/metrics/metrics.module').then(m => m.MetricsModule),
+    //            canActivate: [authGuard],
+    //            data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+    //        }
+    //    ]
+    //},
+    //{path: '**', redirectTo: ''}
 
 ];
 

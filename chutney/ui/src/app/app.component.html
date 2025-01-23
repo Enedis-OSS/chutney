@@ -5,4 +5,13 @@
   ~
   -->
 
-<router-outlet/>
+<div *ngIf="authService.isLoggedIn; else loginTemplate">
+    <h2>Bienvenue, {{ authService.userProfile?.name }}</h2>
+    <button (click)="logout()">Se déconnecter</button>
+</div>
+
+<ng-template #loginTemplate>
+    <h2>Vous n'êtes pas connecté</h2>
+    <button (click)="login()">Se connecter</button>
+</ng-template>
+

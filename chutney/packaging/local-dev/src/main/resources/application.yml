@@ -45,6 +45,7 @@ spring:
     active:
       - undertow-https-redirect
       - ldap
+      - ldap-auth
       - mem-auth
       - db-sqlite
       - sso-auth

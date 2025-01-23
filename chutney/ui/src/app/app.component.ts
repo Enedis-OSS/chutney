@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import * as moment from 'moment';
+import { AuthService } from './auth.service';
 
 @Component({
     selector: 'chutney-main',
@@ -18,21 +19,29 @@ import * as moment from 'moment';
 })
 export class AppComponent {
 
+    constructor(public authService: AuthService) {}
 
-    constructor(private translate: TranslateService) {
-        // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang('en');
-        // // the lang to use, if the lang isn't available, it will use the current loader to get them
-        // // take only language designator, i.e. forget about region
-        let lang = navigator.language.substring(0, 2) || translate.getDefaultLang();
-        translate.use(lang);
-        registerLocaleData(localeFr);
-        this.updateMomentLocal(lang);
+    login() {
+        this.authService.login();
     }
 
-    private updateMomentLocal(lang: string) {
-        moment.updateLocale(lang, chutneyMomentCalendar[lang]);
+    logout() {
+        this.authService.logout();
     }
+    //constructor(private translate: TranslateService) {
+    //    // this language will be used as a fallback when a translation isn't found in the current language
+    //    translate.setDefaultLang('en');
+    //    // // the lang to use, if the lang isn't available, it will use the current loader to get them
+    //    // // take only language designator, i.e. forget about region
+    //    let lang = navigator.language.substring(0, 2) || translate.getDefaultLang();
+    //    translate.use(lang);
+    //    registerLocaleData(localeFr);
+    //    this.updateMomentLocal(lang);
+    //}
+//
+    //private updateMomentLocal(lang: string) {
+    //    moment.updateLocale(lang, chutneyMomentCalendar[lang]);
+    //}
 }
 
 const chutneyMomentCalendar = {

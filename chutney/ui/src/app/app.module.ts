@@ -37,41 +37,43 @@ import { SsoService } from "@core/services/sso.service";
   imports: [
     // Core
     BrowserModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    AppRoutingModule,
-    CoreModule,
-    // External libs
-    FormsModule,
-    HttpClientModule,
-    DragulaModule.forRoot(),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      },
-      missingTranslationHandler: { provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler }
-    }),
-    ToastrModule.forRoot({
-      timeOut: 10000,
-      positionClass: 'toast-top-full-width',
-      preventDuplicates: true,
-    }),
-    ModalModule.forRoot(),
-    NgbModule,
-    // Internal common
-    SharedModule,
-    OAuthModule.forRoot()
+      HttpClientModule,
+      OAuthModule.forRoot(),
+    //BrowserAnimationsModule,
+    //CommonModule,
+    //AppRoutingModule,
+    //CoreModule,
+    //// External libs
+    //FormsModule,
+    //HttpClientModule,
+    //DragulaModule.forRoot(),
+    //TranslateModule.forRoot({
+    //  loader: {
+    //    provide: TranslateLoader,
+    //    useFactory: HttpLoaderFactory,
+    //    deps: [HttpClient]
+    //  },
+    //  missingTranslationHandler: { provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler }
+    //}),
+    //ToastrModule.forRoot({
+    //  timeOut: 10000,
+    //  positionClass: 'toast-top-full-width',
+    //  preventDuplicates: true,
+    //}),
+    //ModalModule.forRoot(),
+    //NgbModule,
+    //// Internal common
+    //SharedModule,
+    //OAuthModule.forRoot()
   ],
-  providers: [BsModalService,
-      {
-          provide: APP_INITIALIZER,
-          useFactory: themeInitializer,
-          deps: [ThemeService],
-          multi: true
-      }
-  ],
+  //providers: [BsModalService,
+  //    {
+  //        provide: APP_INITIALIZER,
+  //        useFactory: themeInitializer,
+  //        deps: [ThemeService],
+  //        multi: true
+  //    }
+  //],
   bootstrap: [AppComponent]
 })
 export class ChutneyAppModule {
