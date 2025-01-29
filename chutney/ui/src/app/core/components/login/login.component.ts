@@ -82,7 +82,7 @@ export class LoginComponent implements OnDestroy, OnInit {
   }
 
   connectSso() {
-    this.ssoService.login()
+    this.ssoService.login(this.forwardUrl)
   }
 
   getSsoProviderName() {

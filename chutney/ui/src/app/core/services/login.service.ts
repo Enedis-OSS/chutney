@@ -7,7 +7,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
@@ -81,7 +81,6 @@ export class LoginService {
 
     private isAuthorizedSso(requestURL: string, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         return this.ssoService.canActivateProtectedRoutes$.pipe(
-            tap(x => console.log('You tried to go to ' + state.url + ' and this guard said ' + x)),
             switchMap(x => this.currentUser().pipe(
                 tap(user => this.setUser(user)),
                 map(user => {
@@ -210,7 +209,6 @@ export class LoginService {
         const payload = token.split('.')[1];
         try {
             const user = JSON.parse(atob(payload));
-            console.log(user)
             return user
         } catch (error) {
             console.error('Error while decoding token', error);
