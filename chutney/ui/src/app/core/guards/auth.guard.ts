@@ -13,5 +13,5 @@ import { LoginService } from '@core/services';
 export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
     const loginService = inject(LoginService);
     const requestURL = state.url !== undefined ? state.url : '';
-    return loginService.isAuthorized(requestURL, route)
+    return loginService.isAuthorized(requestURL, route, state)
 }
