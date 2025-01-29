@@ -5,7 +5,7 @@
  *
  */
 
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,8 @@ import { ParentComponent } from './components/parent/parent.component';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { OAuth2ContentTypeInterceptor } from '@core/services/oauth2-content-type-interceptor.service';
 import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.interceptor';
+import { authAppInitializerFactory } from '@core/services/auth.app.initializer.factory';
+import { SsoService } from '@core/services/sso.service';
 
 @NgModule({
     declarations: [
@@ -32,6 +34,7 @@ import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.intercept
         TranslateModule
     ],
     providers: [
+        {provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [SsoService], multi: true},
         {provide: DROPDOWN_SETTINGS, useClass: DropdownSettings},
         {provide: HTTP_INTERCEPTORS, useClass: OAuth2ContentTypeInterceptor, multi: true },
         {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
