@@ -54,6 +54,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                             } else {
                                 const requestURL = this.router.url !== undefined ? this.router.url : '';
                                 this.loginService.initLogin(requestURL)
+                                this.alertService.error("TOTOOTOTO", { timeOut: 0, extendedTimeOut: 0, closeButton: true });
                                 return EMPTY
                             }
                         }
