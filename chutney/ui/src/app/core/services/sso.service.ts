@@ -6,7 +6,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { AuthConfig, OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '@env/environment';
 import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -87,9 +87,8 @@ export class SsoService {
     }
 
     public runInitialLoginSequence(): Promise<void> {
-        return firstValueFrom(this.fetchSsoConfig()).then(config => {
-            this.oauthService.configure(config)
-        })
+        return firstValueFrom(this.fetchSsoConfig())
+            .then(config => this.oauthService.configure(config))
             .then(() => this.oauthService.loadDiscoveryDocument())
             .then(() => this.oauthService.tryLogin())
             .then(() => {
@@ -121,7 +120,7 @@ export class SsoService {
                     if (stateUrl.startsWith('/') === false) {
                         stateUrl = decodeURIComponent(stateUrl);
                     }
-                    const redirectUrl = stateUrl && stateUrl.includes("/login") ? '/' : stateUrl
+                    const redirectUrl = stateUrl && stateUrl.includes('/login') ? '/' : stateUrl
                     this.router.navigateByUrl(redirectUrl);
                 }
             })
