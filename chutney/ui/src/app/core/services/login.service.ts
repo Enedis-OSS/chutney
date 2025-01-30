@@ -120,7 +120,11 @@ export class LoginService {
             );
         }
 
-        return this.http.post<{ token: string }>(environment.backend + this.loginUrl, {username, password})
+        const options = {
+            headers: new HttpHeaders().set('no-intercept-error', '')
+        };
+
+        return this.http.post<{ token: string }>(environment.backend + this.loginUrl, {username, password}, options)
             .pipe(
                 map(response => {
                     localStorage.setItem('jwt', response.token)
@@ -145,7 +149,7 @@ export class LoginService {
     logout() {
         localStorage.removeItem('jwt')
         this.setUser(this.NO_USER)
-        if (this.ssoService.accessToken) {
+        if (this.ssoService.accessTokenValid) {
             this.ssoService.logout()
         }
         this.router.navigateByUrl('/login');
@@ -160,6 +164,12 @@ export class LoginService {
         const user: User = this.user$.getValue();
         return this.NO_USER !== user;
     }
+
+    isAuthenticatedSso(): boolean {
+        return this.ssoService.accessTokenValid
+    }
+
+
 
     hasAuthorization(authorization: Array<Authorization> | Authorization = [], u: User = null): boolean {
         const user: User = u || this.user$.getValue();
