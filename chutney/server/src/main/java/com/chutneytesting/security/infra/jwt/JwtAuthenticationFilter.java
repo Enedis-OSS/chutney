@@ -44,10 +44,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             return null;
                         }
                     }).filter(Objects::nonNull).findFirst();
-                    if (userDetails.isPresent() && jwtUtil.validateToken(token, userDetails.get())) {
-                        var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.get().getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    }
+                    String finalToken = token;
+                    userDetails.ifPresent(user -> {
+                        if (jwtUtil.validateToken(finalToken, user)) {
+                            var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                            SecurityContextHolder.getContext().setAuthentication(authToken);
+                        }
+                    });
                 }
             } catch (Exception ignored) {
             }
