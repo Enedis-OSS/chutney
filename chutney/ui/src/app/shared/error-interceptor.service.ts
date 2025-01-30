@@ -22,6 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     private loginService: LoginService
     private sessionExpiredMessage: string = '';
+    private unauthorizedMessage: string = '';
 
     constructor(
         private router: Router,
@@ -47,14 +48,14 @@ export class ErrorInterceptor implements HttpInterceptor {
                 (err: any) => {
                     if (err instanceof HttpErrorResponse) {
                         if (err.status === 401 || err.status === 403) {
-                            if (this.loginService.isAuthenticated()) {
+                            if (this.loginService.isAuthenticated() || this.loginService.isAuthenticatedSso) {
                                 this.loginService.logout();
                                 this.alertService.error(this.sessionExpiredMessage, { timeOut: 0, extendedTimeOut: 0, closeButton: true });
                                 return EMPTY
                             } else {
                                 const requestURL = this.router.url !== undefined ? this.router.url : '';
                                 this.loginService.initLogin(requestURL)
-                                this.alertService.error("TOTOOTOTO", { timeOut: 0, extendedTimeOut: 0, closeButton: true });
+                                this.alertService.error(this.unauthorizedMessage, { timeOut: 0, extendedTimeOut: 0, closeButton: true });
                                 return EMPTY
                             }
                         }
@@ -76,6 +77,9 @@ export class ErrorInterceptor implements HttpInterceptor {
   private getTranslation() {
     this.translateService.get('login.expired').subscribe((res: string) => {
         this.sessionExpiredMessage = res;
+    });
+    this.translateService.get('login.unauthorized').subscribe((res: string) => {
+        this.unauthorizedMessage = res;
     });
   }
 }

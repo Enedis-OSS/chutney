@@ -20,12 +20,13 @@ import io.jsonwebtoken.Jwts;
 
 
 public class JwtUtil {
-    private final String SECRET_KEY = "localsecretazertyuiopazertyuiopzdefzerfgzrhrhrthrtege"; // TODO
-    private final int TOKEN_VALIDITY = 1000 * 60 * 60 * 4; // 4 hours
 
+    private final String SECRET_KEY;
+    private final int TOKEN_VALIDITY;
 
-    public String generateToken(String username) {
-        return generateToken(username, new HashMap<>());
+    public JwtUtil(JwtUtilPropertyConfiguration jwtUtilPropertyConfiguration) {
+        this.SECRET_KEY = jwtUtilPropertyConfiguration.getSecretKey();
+        this.TOKEN_VALIDITY = jwtUtilPropertyConfiguration.getTokenValidityInHours();
     }
 
     public String generateToken(String username, Map<String, Object> claims) {

@@ -46,8 +46,14 @@ spring:
       - undertow-https-redirect
       - ldap
       - mem-auth
+      - ldap-auth
       - db-sqlite
       - sso-auth
+
+auth:
+  jwt:
+    secretKey: localsecretazertyuiopazertyuiopsssefzerfgzrhrhrthrtege
+    tokenValidityInHours: 4
 
 chutney:
   configuration-folder: .chutney/conf
