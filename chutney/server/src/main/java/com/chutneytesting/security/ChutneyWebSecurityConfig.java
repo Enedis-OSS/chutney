@@ -16,6 +16,7 @@ import com.chutneytesting.security.domain.Authorizations;
 import com.chutneytesting.security.infra.jwt.CustomDaoAuthenticationProvider;
 import com.chutneytesting.security.infra.jwt.JwtAuthenticationFilter;
 import com.chutneytesting.security.infra.jwt.JwtUtil;
+import com.chutneytesting.security.infra.jwt.JwtUtilPropertyConfiguration;
 import com.chutneytesting.security.infra.sso.OAuth2SsoUserService;
 import com.chutneytesting.security.infra.sso.OAuth2TokenAuthenticationFilter;
 import com.chutneytesting.security.infra.sso.OAuth2TokenAuthenticationProvider;
@@ -40,10 +41,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -88,8 +87,8 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public JwtUtil jwtUtil() {
-        return new JwtUtil();
+    public JwtUtil jwtUtil(JwtUtilPropertyConfiguration jwtUtilPropertyConfiguration) {
+        return new JwtUtil(jwtUtilPropertyConfiguration);
     }
 
     @Bean
