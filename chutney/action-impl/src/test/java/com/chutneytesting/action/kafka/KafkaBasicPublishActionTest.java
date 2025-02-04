@@ -10,7 +10,7 @@ package com.chutneytesting.action.kafka;
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.shuffle;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -24,7 +24,8 @@ import com.chutneytesting.action.http.HttpsServerStartActionTest;
 import com.chutneytesting.action.spi.Action;
 import com.chutneytesting.action.spi.ActionExecutionResult;
 import com.chutneytesting.action.spi.injectable.Target;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,6 @@ import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.assertj.core.api.SoftAssertions;
@@ -56,14 +56,22 @@ public class KafkaBasicPublishActionTest {
     private static final String TOPIC = "topic";
     private static final String PAYLOAD = "payload";
     private static final String GROUP = "mygroup";
-    private static final String KEYSTORE_JKS = HttpsServerStartActionTest.class.getResource("/security/server.jks").getPath();
-    private final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true,  TOPIC);
+    private static final String KEYSTORE_JKS;
+    private final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true, TOPIC);
 
     private TestLogger logger;
 
+    static {
+        try {
+            KEYSTORE_JKS = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource("/security/server.jks")).toURI()).toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @BeforeEach
     public void before() {
-      logger = new TestLogger();
+        logger = new TestLogger();
     }
 
     private Target getKafkaTarget() {
@@ -77,11 +85,13 @@ public class KafkaBasicPublishActionTest {
     void should_set_inputs_default_values() {
         KafkaBasicPublishAction defaultAction = new KafkaBasicPublishAction(null, null, null, null, null, null, null);
         assertThat(defaultAction)
+            .hasFieldOrPropertyWithValue("target", null)
             .hasFieldOrPropertyWithValue("topic", null)
             .hasFieldOrPropertyWithValue("headers", emptyMap())
             .hasFieldOrPropertyWithValue("payload", null)
+            .hasFieldOrPropertyWithValue("producerKafkaConfig", emptyMap())
             .hasFieldOrPropertyWithValue("key", null)
-            .hasFieldOrPropertyWithValue("properties", emptyMap())
+            .hasFieldOrPropertyWithValue("logger", null)
         ;
     }
 
@@ -90,51 +100,20 @@ public class KafkaBasicPublishActionTest {
         KafkaBasicPublishAction defaultAction = new KafkaBasicPublishAction(null, null, null, null, null, null, null);
         List<String> errors = defaultAction.validateInputs();
 
-        assertThat(errors.size()).isEqualTo(8);
+        assertThat(errors.size()).isEqualTo(7);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(errors.get(0)).isEqualTo("No topic provided (String)");
         softly.assertThat(errors.get(1)).isEqualTo("topic should not be blank");
 
-        softly.assertThat(errors.get(2)).isEqualTo("No payload provided (String)");
-        softly.assertThat(errors.get(3)).isEqualTo("payload should not be blank");
+        softly.assertThat(errors.get(2)).isEqualTo("No payload provided");
 
-        softly.assertThat(errors.get(4)).isEqualTo("No target provided");
-        softly.assertThat(errors.get(5)).isEqualTo("[Target name is blank] not applied because of exception java.lang.NullPointerException(null)");
-        softly.assertThat(errors.get(6)).isEqualTo("[Target url is not valid: null target] not applied because of exception java.lang.NullPointerException(null)");
-        softly.assertThat(errors.get(7)).isEqualTo("[Target url has an undefined host: null target] not applied because of exception java.lang.NullPointerException(null)");
+        softly.assertThat(errors.get(3)).isEqualTo("No target provided");
+        softly.assertThat(errors.get(4)).isEqualTo("[Target name is blank] not applied because of exception java.lang.NullPointerException(null)");
+        softly.assertThat(errors.get(5)).isEqualTo("[Target url is not valid: null target] not applied because of exception java.lang.NullPointerException(null)");
+        softly.assertThat(errors.get(6)).isEqualTo("[Target url has an undefined host: null target] not applied because of exception java.lang.NullPointerException(null)");
 
         softly.assertAll();
-    }
-
-    @Test
-    void should_merge_kafka_producer_target_properties_with_input_properties() {
-        List<String> producerConfigKeys = new ArrayList<>(ProducerConfig.configNames());
-        shuffle(producerConfigKeys);
-        String targetProperty = producerConfigKeys.get(0);
-        String propertyToOverride = producerConfigKeys.get(1);
-        String inputProperty = producerConfigKeys.get(2);
-
-        Target target = TestTarget.TestTargetBuilder.builder()
-            .withProperty(targetProperty, "a value")
-            .withProperty(propertyToOverride, "a target value")
-            .build();
-
-        Map<String, String> properties = Map.of(
-            inputProperty, "a VALUE",
-            propertyToOverride, "a property value"
-        );
-
-        Map<String, String> expectedConfig = Map.of(
-            targetProperty, "a value",
-            inputProperty, "a VALUE",
-            propertyToOverride, "a property value"
-        );
-
-        KafkaBasicPublishAction defaultAction = new KafkaBasicPublishAction(target, null, null, null, properties, null, null);
-        assertThat(defaultAction)
-            .hasFieldOrPropertyWithValue("properties", expectedConfig)
-        ;
     }
 
     @Test
@@ -144,7 +123,7 @@ public class KafkaBasicPublishActionTest {
         Action action = new KafkaBasicPublishAction(getKafkaTarget(), TOPIC, null, PAYLOAD, null, null, logger);
         //mocks
         ChutneyKafkaProducerFactory producerFactoryMock = mock(ChutneyKafkaProducerFactory.class);
-        KafkaTemplate<String, String> kafkaTemplateMock = mock(KafkaTemplate.class);
+        KafkaTemplate kafkaTemplateMock = mock(KafkaTemplate.class);
         when(producerFactoryMock.create(any(), any())).thenReturn(kafkaTemplateMock);
 
         CompletableFuture<SendResult<String, String>> listenableFutureMock = mock(CompletableFuture.class);
@@ -169,7 +148,7 @@ public class KafkaBasicPublishActionTest {
         Action action = new KafkaBasicPublishAction(getKafkaTarget(), TOPIC, null, PAYLOAD, null, null, logger);
         //mocks
         ChutneyKafkaProducerFactory producerFactoryMock = mock(ChutneyKafkaProducerFactory.class);
-        KafkaTemplate<String, String> kafkaTemplateMock = mock(KafkaTemplate.class);
+        KafkaTemplate kafkaTemplateMock = mock(KafkaTemplate.class);
         when(producerFactoryMock.create(any(), any())).thenReturn(kafkaTemplateMock);
 
         CompletableFuture<SendResult<String, String>> listenableFutureMock = mock(CompletableFuture.class);
@@ -188,98 +167,93 @@ public class KafkaBasicPublishActionTest {
 
     @Test
     public void should_produce_message_to_broker_without_truststore() {
-      embeddedKafkaBroker.afterPropertiesSet();
-      Consumer<Integer, String> consumer = configureConsumer();
+        embeddedKafkaBroker.afterPropertiesSet();
+        try (Consumer<Integer, String> consumer = configureConsumer()) {
 
-      Target target = TestTarget.TestTargetBuilder.builder()
-          .withTargetId("kafka")
-          .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
-          .build();
+            Target target = TestTarget.TestTargetBuilder.builder()
+                .withTargetId("kafka")
+                .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
+                .build();
 
-      Map<String, String> props = new HashMap<>();
-      props.put("group.id", GROUP);
-      props.put("auto.commit.interval.ms", "10");
-      props.put("session.timeout.ms", "60000");
-      props.put("auto.offset.reset", "earliest");
+            Map<String, String> props = new HashMap<>();
+            props.put("group.id", GROUP);
+            props.put("auto.commit.interval.ms", "10");
+            props.put("session.timeout.ms", "60000");
+            props.put("auto.offset.reset", "earliest");
 
-      Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, null, logger);
+            Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, null, logger);
 
-      ActionExecutionResult actionExecutionResult = sut.execute();
+            ActionExecutionResult actionExecutionResult = sut.execute();
 
-      assertThat(actionExecutionResult.status).isEqualTo(Success);
+            assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-      ConsumerRecord<Integer, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, TOPIC);
-      assertThat(singleRecord.value()).isEqualTo("my-test-value");
-
-      consumer.close();
+            ConsumerRecord<Integer, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, TOPIC);
+            assertThat(singleRecord.value()).isEqualTo("my-test-value");
+        }
     }
 
     @Test
     public void producer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_truststore_configured() {
-      embeddedKafkaBroker.afterPropertiesSet();
-      Consumer<Integer, String> consumer = configureConsumer();
-
-      Target target = TestTarget.TestTargetBuilder.builder()
-          .withTargetId("kafka")
-          .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
-          .withProperty("trustStore", KEYSTORE_JKS)
-          .withProperty("trustStorePassword", "server")
-          .withProperty("security.protocol", "SSL")
-          .build();
-
-      Map<String, String> props = new HashMap<>();
-      props.put("group.id", GROUP);
-      props.put("auto.commit.interval.ms", "10");
-      props.put("session.timeout.ms", "3000");
-      props.put("auto.offset.reset", "earliest");
-
-      Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, null, logger);
-
-      ActionExecutionResult actionExecutionResult = sut.execute();
-
-      assertThat(actionExecutionResult.status).isEqualTo(Failure);
-
-      consumer.close();
-    }
-
-    @Test
-    public void should_produce_message_to_broker_with_explicit_key() throws Exception {
         embeddedKafkaBroker.afterPropertiesSet();
-        Consumer<Integer, String> consumer = configureConsumer();
 
         Target target = TestTarget.TestTargetBuilder.builder()
             .withTargetId("kafka")
             .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
+            .withProperty("trustStore", KEYSTORE_JKS)
+            .withProperty("trustStorePassword", "server")
+            .withProperty("security.protocol", "SSL")
             .build();
 
         Map<String, String> props = new HashMap<>();
         props.put("group.id", GROUP);
         props.put("auto.commit.interval.ms", "10");
-        props.put("session.timeout.ms", "60000");
-        props.put("auto.offset.reset", "earliest");
+        props.put("session.timeout.ms", "3000");
+        props.put("max.block.ms", "500");
 
-        Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, "my-key", logger);
+        Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, null, logger);
 
         ActionExecutionResult actionExecutionResult = sut.execute();
 
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+        assertThat(actionExecutionResult.status).isEqualTo(Failure);
+    }
 
-        ConsumerRecord<Integer, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, TOPIC);
-        assertThat(singleRecord.value()).isEqualTo("my-test-value");
-        assertThat(String.valueOf(singleRecord.key())).isEqualTo("my-key");
+    @Test
+    public void should_produce_message_to_broker_with_explicit_key() {
+        embeddedKafkaBroker.afterPropertiesSet();
+        try (Consumer<Integer, String> consumer = configureConsumer()) {
 
-        consumer.close();
+            Target target = TestTarget.TestTargetBuilder.builder()
+                .withTargetId("kafka")
+                .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
+                .build();
+
+            Map<String, String> props = new HashMap<>();
+            props.put("group.id", GROUP);
+            props.put("auto.commit.interval.ms", "10");
+            props.put("session.timeout.ms", "60000");
+            props.put("auto.offset.reset", "earliest");
+
+            Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, "my-key", logger);
+
+            ActionExecutionResult actionExecutionResult = sut.execute();
+
+            assertThat(actionExecutionResult.status).isEqualTo(Success);
+
+            ConsumerRecord<Integer, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, TOPIC);
+            assertThat(singleRecord.value()).isEqualTo("my-test-value");
+            assertThat(String.valueOf(singleRecord.key())).isEqualTo("my-key");
+        }
     }
 
     private Consumer<Integer, String> configureConsumer() {
-      Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-      consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-      consumerProps.put("bootstrap.servers", embeddedKafkaBroker.getBrokersAsString());
-      consumerProps.put("key.deserializer", StringDeserializer.class.getName());
+        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        consumerProps.put("bootstrap.servers", embeddedKafkaBroker.getBrokersAsString());
+        consumerProps.put("key.deserializer", StringDeserializer.class.getName());
 
         Consumer<Integer, String> consumer = new DefaultKafkaConsumerFactory<Integer, String>(consumerProps)
-          .createConsumer();
-      consumer.subscribe(Collections.singleton(TOPIC));
-      return consumer;
+            .createConsumer();
+        consumer.subscribe(Collections.singleton(TOPIC));
+        return consumer;
     }
 }

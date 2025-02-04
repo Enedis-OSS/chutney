@@ -10,6 +10,7 @@ package com.chutneytesting.action.kafka;
 import static com.chutneytesting.action.spi.validation.ActionValidatorsUtils.notBlankStringValidation;
 import static com.chutneytesting.action.spi.validation.ActionValidatorsUtils.targetValidation;
 import static com.chutneytesting.action.spi.validation.Validator.getErrorsFrom;
+import static com.chutneytesting.action.spi.validation.Validator.of;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -23,9 +24,8 @@ import com.chutneytesting.action.spi.injectable.Target;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.commons.exec.util.MapUtils;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -38,26 +38,24 @@ public class KafkaBasicPublishAction implements Action {
     private final Target target;
     private final String topic;
     private final Map<String, String> headers;
-    private final String payload;
-    private final Map<String, String> properties;
+    private final Object payload;
+    private final Map<String, String> producerKafkaConfig;
     private final String key;
     private final Logger logger;
 
     public KafkaBasicPublishAction(Target target,
-                                 @Input("topic") String topic,
-                                 @Input("headers") Map<String, String> headers,
-                                 @Input("payload") String payload,
-                                 @Input("properties") Map<String, String> properties,
-                                 @Input("key") String key,
-                                 Logger logger) {
+                                   @Input("topic") String topic,
+                                   @Input("headers") Map<String, String> headers,
+                                   @Input("payload") Object payload,
+                                   @Input("properties") Map<String, String> producerKafkaConfig,
+                                   @Input("key") String key,
+                                   Logger logger) {
         this.target = target;
         this.topic = topic;
         this.headers = headers != null ? headers : emptyMap();
         this.payload = payload;
         this.key = key;
-        this.properties = ofNullable(
-            MapUtils.merge(extractProducerConfig(target), properties)
-        ).orElse(new HashMap<>());
+        this.producerKafkaConfig = ofNullable(producerKafkaConfig).orElse(emptyMap());
         this.logger = logger;
     }
 
@@ -65,7 +63,7 @@ public class KafkaBasicPublishAction implements Action {
     public List<String> validateInputs() {
         return getErrorsFrom(
             notBlankStringValidation(topic, "topic"),
-            notBlankStringValidation(payload, "payload"),
+            of(payload).validate(Objects::nonNull, "No payload provided"),
             targetValidation(target)
         );
     }
@@ -78,10 +76,10 @@ public class KafkaBasicPublishAction implements Action {
                 .collect(Collectors.toList());
 
             logger.info("sending message to topic=" + topic);
-            ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(topic, null, key, payload, recordHeaders);
+            ProducerRecord<String, ?> producerRecord = new ProducerRecord<>(topic, null, key, payload, recordHeaders);
 
-            KafkaTemplate<String, String> kafkaTemplate = producerFactory.create(target, properties);
-            kafkaTemplate.send(producerRecord).get(5, SECONDS);
+            KafkaTemplate<String, ?> kafkaTemplate = producerFactory.create(target, producerKafkaConfig);
+            kafkaTemplate.send((ProducerRecord) producerRecord).get(5, SECONDS);
 
             logger.info("Published Kafka Message on topic " + topic + (key != null ? " with key " + key : ""));
             return ActionExecutionResult.ok(toOutputs(headers, payload));
@@ -97,7 +95,7 @@ public class KafkaBasicPublishAction implements Action {
         }
     }
 
-    private Map<String, Object> toOutputs(Map<String, String> headers, String payload) {
+    private Map<String, Object> toOutputs(Map<String, String> headers, Object payload) {
         Map<String, Object> results = new HashMap<>();
         results.put("payload", payload);
         results.put("headers", headers.entrySet().stream()
@@ -106,16 +104,4 @@ public class KafkaBasicPublishAction implements Action {
         );
         return results;
     }
-
-    private Map<String, String> extractProducerConfig(Target target) {
-        if (target != null) {
-            Map<String, String> config = new HashMap<>();
-            ProducerConfig.configDef().configKeys().keySet().forEach(ck ->
-                target.property(ck).ifPresent(cv -> config.put(ck, cv))
-            );
-            return config;
-        }
-        return emptyMap();
-    }
-
 }
