@@ -6,7 +6,7 @@
  */
 
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User } from '@model';
 import { LoginService } from '@core/services';
 import { ThemeService } from '@core/theme/theme.service';

@@ -118,7 +118,10 @@ public class ChutneyWebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManager authenticationManager, AuthenticationService authenticationService, JwtAuthenticationFilter jwtAuthenticationFilter, @Nullable ClientRegistrationRepository clientRegistrationRepository, @Nullable RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
-        configureSso(http, authenticationService, clientRegistrationRepository, restOperations, jwtUtil);
+        boolean enableSso = clientRegistrationRepository != null;
+        if (enableSso) {
+            configureSso(http, authenticationService, clientRegistrationRepository, restOperations, jwtUtil);
+        }
         configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
         http.anonymous(anonymousConfigurer -> anonymousConfigurer
@@ -137,7 +140,7 @@ public class ChutneyWebSecurityConfig {
             })
             .httpBasic(Customizer.withDefaults())
             .addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, enableSso ? OAuth2TokenAuthenticationFilter.class : UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -166,15 +169,13 @@ public class ChutneyWebSecurityConfig {
     }
 
     private void configureSso(final HttpSecurity http, AuthenticationService authenticationService, ClientRegistrationRepository clientRegistrationRepository, RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
-        if (clientRegistrationRepository != null) {
-            OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new OAuth2SsoUserService(authenticationService, restOperations);
-            OAuth2TokenAuthenticationProvider oAuth2TokenAuthenticationProvider = new OAuth2TokenAuthenticationProvider(oAuth2UserService, clientRegistrationRepository.findByRegistrationId("sso-provider"));
-            AuthenticationManager authenticationManager = new ProviderManager(Collections.singletonList(oAuth2TokenAuthenticationProvider));
-            OAuth2TokenAuthenticationFilter tokenFilter = new OAuth2TokenAuthenticationFilter(authenticationManager, jwtUtil);
-            http
-                .authenticationProvider(oAuth2TokenAuthenticationProvider)
-                .addFilterBefore(tokenFilter, BasicAuthenticationFilter.class);
-        }
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new OAuth2SsoUserService(authenticationService, restOperations);
+        OAuth2TokenAuthenticationProvider oAuth2TokenAuthenticationProvider = new OAuth2TokenAuthenticationProvider(oAuth2UserService, clientRegistrationRepository.findByRegistrationId("sso-provider"));
+        AuthenticationManager authenticationManager = new ProviderManager(Collections.singletonList(oAuth2TokenAuthenticationProvider));
+        OAuth2TokenAuthenticationFilter tokenFilter = new OAuth2TokenAuthenticationFilter(authenticationManager, jwtUtil);
+        http
+            .authenticationProvider(oAuth2TokenAuthenticationProvider)
+            .addFilterBefore(tokenFilter, BasicAuthenticationFilter.class);
     }
 
     @Configuration

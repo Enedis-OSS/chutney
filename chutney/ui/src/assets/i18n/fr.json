@@ -418,7 +418,6 @@
         "sso": {
             "userNotFound": "Utilisateur inconnu, contacter votre administrateur"
         }
-
     },
     "alert": {
         "success": "Succès",

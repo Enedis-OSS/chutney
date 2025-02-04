@@ -45,7 +45,7 @@ describe('ScenariosComponent', () => {
         TestBed.resetTestingModule();
         const eventsSubject = new Subject<any>();
         const scenarioService = jasmine.createSpyObj('ScenarioService', ['findScenarios', 'search']);
-        const oAuthService = jasmine.createSpyObj('OAuthService', ['loadDiscoveryDocumentAndTryLogin', 'configure', 'initCodeFlow', 'logOut', 'getAccessToken'], {events: eventsSubject.asObservable()});
+        const oAuthService = jasmine.createSpyObj('OAuthService', ['loadDiscoveryDocumentAndTryLogin', 'hasValidAccessToken', 'setupAutomaticSilentRefresh', 'configure', 'initCodeFlow', 'logOut', 'getAccessToken'], {events: eventsSubject.asObservable()});
         const alertService = jasmine.createSpyObj('AlertService', ['error']);
         const jiraPluginService = jasmine.createSpyObj('JiraPluginService', ['findScenarios', 'findCampaigns']);
         const jiraPluginConfigurationService = jasmine.createSpyObj('JiraPluginConfigurationService', ['getUrl']);
