@@ -151,9 +151,10 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
     }
 
     private KafkaBasicConsumeAction getKafkaBasicConsumeAction(Target target, Map<String, String> props, boolean resetOffset) {
-        return new KafkaBasicConsumeAction(target, uniqueTopic, GROUP, props, 1, null, null, TEXT_PLAIN_VALUE, "10 s", null, resetOffset, logger);
+        return new KafkaBasicConsumeAction(target, uniqueTopic, GROUP, props, 1, null, null, TEXT_PLAIN_VALUE, "3 s", null, resetOffset, logger);
     }
 
+    @SuppressWarnings("unchecked")
     private List<Map<String, Object>> assertActionOutputsSize(ActionExecutionResult actionExecutionResult, int size) {
         assertThat(actionExecutionResult.outputs).hasSize(4);
 

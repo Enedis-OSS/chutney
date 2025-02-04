@@ -19,8 +19,8 @@ import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.shuffle;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -39,7 +39,6 @@ import com.chutneytesting.action.spi.ActionExecutionResult;
 import com.chutneytesting.action.spi.injectable.Target;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -62,6 +61,7 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MimeType;
 
+@SuppressWarnings("unchecked")
 public class KafkaBasicConsumeActionTest {
 
     private static final String TOPIC = "topic";
@@ -88,6 +88,7 @@ public class KafkaBasicConsumeActionTest {
     void should_set_inputs_default_values() {
         KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(null, null, null, null, null, null, null, null, null, null, null, null);
         assertThat(defaultAction)
+            .hasFieldOrPropertyWithValue("target", null)
             .hasFieldOrPropertyWithValue("topic", null)
             .hasFieldOrPropertyWithValue("group", null)
             .hasFieldOrPropertyWithValue("properties", emptyMap())
@@ -97,6 +98,8 @@ public class KafkaBasicConsumeActionTest {
             .hasFieldOrPropertyWithValue("contentType", MimeType.valueOf("application/json"))
             .hasFieldOrPropertyWithValue("timeout", "60 sec")
             .hasFieldOrPropertyWithValue("ackMode", "BATCH")
+            .hasFieldOrPropertyWithValue("resetOffset", false)
+            .hasFieldOrPropertyWithValue("logger", null)
         ;
     }
 
@@ -142,36 +145,6 @@ public class KafkaBasicConsumeActionTest {
 
         assertThat(errors.size()).isEqualTo(1);
         assertThat(errors.get(0)).startsWith("ackMode is not a valid value");
-    }
-
-    @Test
-    void should_merge_kafka_consumer_target_properties_with_input_properties() {
-        List<String> consumerConfigKeys = new ArrayList<>(ConsumerConfig.configNames());
-        shuffle(consumerConfigKeys);
-        String targetProperty = consumerConfigKeys.get(0);
-        String propertyToOverride = consumerConfigKeys.get(1);
-        String inputProperty = consumerConfigKeys.get(2);
-
-        Target target = TestTarget.TestTargetBuilder.builder()
-            .withProperty(targetProperty, "a value")
-            .withProperty(propertyToOverride, "a target value")
-            .build();
-
-        Map<String, String> properties = Map.of(
-            inputProperty, "a VALUE",
-            propertyToOverride, "a property value"
-        );
-
-        Map<String, String> expectedConfig = Map.of(
-            targetProperty, "a value",
-            inputProperty, "a VALUE",
-            propertyToOverride, "a property value"
-        );
-
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(target, null, null, properties, null, null, null, null, null, null, null, null);
-        assertThat(defaultAction)
-            .hasFieldOrPropertyWithValue("properties", expectedConfig)
-        ;
     }
 
     @Test
@@ -533,31 +506,32 @@ public class KafkaBasicConsumeActionTest {
 
 
     // todo mock kafka consumer
-    private MessageListener<String, String> overrideActionMessageListenerContainer(Action action) {
+    private MessageListener overrideActionMessageListenerContainer(Action action) {
         ConsumerFactory<String, String> cf = mock(ConsumerFactory.class, RETURNS_DEEP_STUBS);
         Consumer<String, String> consumer = mock(Consumer.class);
         given(cf.createConsumer(any(), any(), any(), any())).willReturn(consumer);
         when(cf.getConfigurationProperties().get(eq(ConsumerConfig.GROUP_ID_CONFIG))).thenReturn(GROUP);
 
-        KafkaConsumerFactoryFactory kafkaConsumerFactoryFactory = mock(KafkaConsumerFactoryFactory.class);
-        when(kafkaConsumerFactoryFactory.create(any(), any(), any())).thenReturn(cf);
-        ReflectionTestUtils.setField(action, "kafkaConsumerFactoryFactory", kafkaConsumerFactoryFactory);
+        KafkaConsumerFactory kafkaConsumerFactory = mock(KafkaConsumerFactory.class);
+        ReflectionTestUtils.setField(action, "kafkaConsumerFactory", kafkaConsumerFactory);
 
         ContainerProperties containerProperties = new ContainerProperties(TOPIC);
         containerProperties.setGroupId(GROUP);
         containerProperties.setMessageListener(requireNonNull(ReflectionTestUtils.invokeMethod(action, "createMessageListener")));
-        ConcurrentMessageListenerContainer<String, String> messageListenerContainer = new ConcurrentMessageListenerContainer<>(cf, containerProperties);
+        var messageListenerContainer = new ConcurrentMessageListenerContainer<>(cf, containerProperties);
 
-        return (MessageListener<String, String>) messageListenerContainer.getContainerProperties().getMessageListener();
+        when(kafkaConsumerFactory.create(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(messageListenerContainer);
+
+        return (MessageListener) messageListenerContainer.getContainerProperties().getMessageListener();
     }
 
     private ConsumerRecord<String, String> buildRecord(long offset, String key, String payload) {
         List<Header> headersList = ImmutableList.of(new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()), new RecordHeader("header1", "value1".getBytes()));
-        return new ConsumerRecord<>(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0L, 0, 0, key, payload, new RecordHeaders(headersList));
+        return new ConsumerRecord<>(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0, 0, key, payload, new RecordHeaders(headersList), empty());
     }
 
     private ConsumerRecord<String, String> buildRecord(long offset, String key, String payload, List<Header> headersList) {
-        return new ConsumerRecord<>(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0L, 0, 0, key, payload, new RecordHeaders(headersList));
+        return new ConsumerRecord<>(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0, 0, key, payload, new RecordHeaders(headersList), empty());
     }
 
     private KafkaBasicConsumeAction givenKafkaConsumeAction(String selector, String mimeType, String timeout) {
@@ -568,6 +542,7 @@ public class KafkaBasicConsumeActionTest {
         return new KafkaBasicConsumeAction(TARGET_STUB, TOPIC, GROUP, emptyMap(), expectedMessageNb, selector, headerSelector, mimeType, timeout, null, null, logger);
     }
 
+    @SafeVarargs
     private void givenActionReceiveMessages(Action action, ConsumerRecord<String, String>... messages) {
         MessageListener<String, String> listener = overrideActionMessageListenerContainer(action);
         stream(messages).forEach(listener::onMessage);
@@ -576,10 +551,10 @@ public class KafkaBasicConsumeActionTest {
     private List<Map<String, Object>> assertActionOutputsSize(ActionExecutionResult actionExecutionResult, int size) {
         assertThat(actionExecutionResult.outputs).hasSize(4);
 
-        final List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
-        final List<Map<String, Object>> payloads = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS);
-        final List<Map<String, Object>> headers = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_HEADERS);
-        final List<Map<String, Object>> keys = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_KEYS);
+        final var body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
+        final var payloads = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS);
+        final var headers = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_HEADERS);
+        final var keys = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_KEYS);
         assertThat(body).hasSize(size);
         assertThat(payloads).hasSize(size);
         assertThat(headers).hasSize(size);
