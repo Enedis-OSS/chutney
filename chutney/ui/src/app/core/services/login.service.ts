@@ -9,14 +9,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
 import { Authorization, User } from '@model';
 import { contains, intersection, isNullOrBlankString } from '@shared/tools';
 import { SsoService } from '@core/services/sso.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from '@shared';
 
 @Injectable({
     providedIn: 'root'
@@ -29,15 +28,17 @@ export class LoginService {
     private user$: BehaviorSubject<User> = new BehaviorSubject(this.NO_USER);
     private unauthorizedMessage: string
     private sessionExpiredMessage: string
+    private _ssoUserNotFoundMessage: string
+    private _connectionErrorMessage: string | null = null;
 
     constructor(
         private http: HttpClient,
         private router: Router,
         private ssoService: SsoService,
         private translateService: TranslateService,
-        private alertService: AlertService
     ) {
         this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
+        this._ssoUserNotFoundMessage = this.translateService.instant('login.sso.userNotFound')
         this.sessionExpiredMessage = this.translateService.instant('login.expired')
     }
 
@@ -60,11 +61,7 @@ export class LoginService {
             const {sub, iat, exp, ...user} = payload
             if ((user == this.NO_USER || this.isTokenExpired(token)) && !this.ssoService.accessToken) {
                 localStorage.removeItem('jwt')
-                this.alertService.error(this.sessionExpiredMessage, {
-                    timeOut: 0,
-                    extendedTimeOut: 0,
-                    closeButton: true
-                });
+                this._connectionErrorMessage = this.sessionExpiredMessage
                 this.initLogin(requestURL)
                 return false
             }
@@ -73,7 +70,7 @@ export class LoginService {
             if (this.hasAuthorization(authorizations, this.user$.getValue())) {
                 return true;
             }
-            this.alertService.error(this.unauthorizedMessage, {timeOut: 0, extendedTimeOut: 0, closeButton: true});
+            this._connectionErrorMessage = this.unauthorizedMessage
             this.navigateAfterLogin();
         }
         return false
@@ -82,6 +79,10 @@ export class LoginService {
     private isAuthorizedSso(requestURL: string, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         return this.ssoService.canActivateProtectedRoutes$.pipe(
             switchMap(x => this.currentUser().pipe(
+                catchError(error => {
+                    this.connectionErrorMessage = this._ssoUserNotFoundMessage
+                    throw error
+                }),
                 tap(user => this.setUser(user)),
                 map(user => {
                     const authorizations: Array<Authorization> = route.data['authorizations'] || [];
@@ -89,11 +90,7 @@ export class LoginService {
                         this.navigateAfterLogin(requestURL);
                         return true;
                     } else {
-                        this.alertService.error(this.unauthorizedMessage, {
-                            timeOut: 0,
-                            extendedTimeOut: 0,
-                            closeButton: true
-                        });
+                        this._connectionErrorMessage = this.unauthorizedMessage
                         this.navigateAfterLogin();
                         return false;
                     }
@@ -146,13 +143,14 @@ export class LoginService {
         }
     }
 
-    logout() {
+    logout(onlyJwt = false) {
         localStorage.removeItem('jwt')
         this.setUser(this.NO_USER)
-        if (this.ssoService.accessTokenValid) {
+        if (!onlyJwt && this.ssoService.accessTokenValid) {
             this.ssoService.logout()
+        } else {
+            this.router.navigateByUrl('/login');
         }
-        this.router.navigateByUrl('/login');
 
     }
 
@@ -234,6 +232,18 @@ export class LoginService {
         const expirationDate = new Date(0);
         expirationDate.setUTCSeconds(decodedToken.exp);
         return expirationDate < new Date();
+    }
+
+    get ssoUserNotFoundMessage(): string {
+        return this._ssoUserNotFoundMessage;
+    }
+
+    get connectionErrorMessage(): string | null {
+        return this._connectionErrorMessage;
+    }
+
+    set connectionErrorMessage(value: string | null) {
+        this._connectionErrorMessage = value;
     }
 }
 

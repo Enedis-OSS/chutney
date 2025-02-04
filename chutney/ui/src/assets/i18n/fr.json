@@ -414,7 +414,11 @@
         "unauthorized": "Vous n'êtes pas autorisé à accéder à cette vue. Contacter votre administrateur.",
         "expired": "Session expirée. Reconnectez-vous.",
         "username": "Utilisateur",
-        "password": "Mot de passe"
+        "password": "Mot de passe",
+        "sso": {
+            "userNotFound": "Utilisateur inconnu, contacter votre administrateur"
+        }
+
     },
     "alert": {
         "success": "Succès",

@@ -414,7 +414,10 @@
         "unauthorized": "You are not authorized to access this view. Contact your administrator.",
         "expired": "Session expired. Sign in again.",
         "username": "Username",
-        "password": "Password"
+        "password": "Password",
+        "sso": {
+            "userNotFound": "User not found, please contact your admin"
+        }
     },
     "alert": {
         "success": "Success",

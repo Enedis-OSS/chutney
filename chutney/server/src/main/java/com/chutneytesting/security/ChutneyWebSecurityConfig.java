@@ -117,7 +117,7 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationService authenticationService, JwtAuthenticationFilter jwtAuthenticationFilter, @Nullable ClientRegistrationRepository clientRegistrationRepository, @Nullable RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManager authenticationManager, AuthenticationService authenticationService, JwtAuthenticationFilter jwtAuthenticationFilter, @Nullable ClientRegistrationRepository clientRegistrationRepository, @Nullable RestOperations restOperations, JwtUtil jwtUtil) throws Exception {
         configureSso(http, authenticationService, clientRegistrationRepository, restOperations, jwtUtil);
         configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
@@ -135,8 +135,9 @@ public class ChutneyWebSecurityConfig {
                     .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
                     .anyRequest().permitAll();
             })
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .httpBasic(Customizer.withDefaults());
+            .httpBasic(Customizer.withDefaults())
+            .addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
