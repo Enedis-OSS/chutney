@@ -30,7 +30,7 @@ describe('DatasetListComponent', () => {
 
   const eventsSubject = new Subject<any>();
   const dataSetService = jasmine.createSpyObj('DataSetService', ['findAll']);
-  const oAuthService = jasmine.createSpyObj('OAuthService', ['loadDiscoveryDocumentAndTryLogin', 'configure', 'initCodeFlow', 'logOut', 'getAccessToken'], {events: eventsSubject.asObservable()});
+  const oAuthService = jasmine.createSpyObj('OAuthService', ['loadDiscoveryDocumentAndTryLogin', 'setupAutomaticSilentRefresh', 'hasValidAccessToken', 'configure', 'initCodeFlow', 'logOut', 'getAccessToken'], {events: eventsSubject.asObservable()});
   const alertService = jasmine.createSpyObj('AlertService', ['error']);
   dataSetService.findAll.and.returnValue(of([]));
    beforeEach(waitForAsync(() => {

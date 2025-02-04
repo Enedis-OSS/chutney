@@ -40,6 +40,7 @@ export class LoginService {
         this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
         this._ssoUserNotFoundMessage = this.translateService.instant('login.sso.userNotFound')
         this.sessionExpiredMessage = this.translateService.instant('login.expired')
+        console.log(this._ssoUserNotFoundMessage)
     }
 
     isAuthorized(requestURL: string, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
