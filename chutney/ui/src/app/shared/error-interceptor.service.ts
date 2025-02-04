@@ -49,8 +49,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                     if (err instanceof HttpErrorResponse) {
                         if (err.status === 401 || err.status === 403) {
                             if (this.loginService.isAuthenticated() || this.loginService.isAuthenticatedSso) {
-                                this.loginService.logout();
-                                this.alertService.error(this.sessionExpiredMessage, { timeOut: 0, extendedTimeOut: 0, closeButton: true });
+                                this.loginService.logout(true);
+                                if (this.loginService.isAuthenticatedSso()) {
+                                    this.loginService.connectionErrorMessage = this.loginService.ssoUserNotFoundMessage;
+                                } else {
+                                    this.loginService.connectionErrorMessage = this.sessionExpiredMessage;
+                                }
                                 return EMPTY
                             } else {
                                 const requestURL = this.router.url !== undefined ? this.router.url : '';
