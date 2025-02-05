@@ -56,7 +56,7 @@ import org.springframework.web.context.WebApplicationContext;
 @TestPropertySource(properties = "spring.config.location=classpath:blackbox/")
 public class SecuredControllerSpringBootIntegrationTest {
 
-    @MockBean
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @MockBean
@@ -228,6 +228,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/v1/info/build/version", null, null, OK},
             {GET, "/api/v1/info/appname", null, null, OK},
             {GET, "/api/v2/features", "AUTHENTICATED", null, OK},
+            {GET, "/api/v1/sso/config", null, null, OK},
         };
     }
 
@@ -235,8 +236,8 @@ public class SecuredControllerSpringBootIntegrationTest {
     @MethodSource({"securedEndPointList", "unsecuredEndPointList"})
     public void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
         UserDto user = new UserDto();
-        user.setName("userName");
-        user.setId("userName");
+        user.setName("admin");
+        user.setId("admin");
         MockHttpServletRequestBuilder request = request(httpMethod, url)
             .secure(true)
             .contentType(MediaType.APPLICATION_JSON);
@@ -251,8 +252,6 @@ public class SecuredControllerSpringBootIntegrationTest {
             user.grantAuthority(right);
         });
 
-        when(userDetailsService.loadUserByUsername(user.getId())).thenReturn(user);
-
         mvc.perform(request)
             .andExpect(status().is(status.value()));
     }
@@ -261,8 +260,8 @@ public class SecuredControllerSpringBootIntegrationTest {
     @MethodSource({"uploadEndpoints"})
     public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
         UserDto user = new UserDto();
-        user.setName("userName");
-        user.setId("userName");
+        user.setName("admin");
+        user.setId("admin");
         ofNullable(authority).ifPresent(right -> {
             if (!"AUTHENTICATED".equals(authority)) {
                 user.grantAuthority(right);
@@ -278,8 +277,6 @@ public class SecuredControllerSpringBootIntegrationTest {
         if (token != null) {
             request.header("Authorization", "Bearer " + token);
         }
-
-        when(userDetailsService.loadUserByUsername(user.getId())).thenReturn(user);
 
         mvc.perform(request)
             .andExpect(status().is(expectedStatus.value()));
