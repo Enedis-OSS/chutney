@@ -46,9 +46,7 @@ spring:
       - undertow-https-redirect
       - ldap
       - mem-auth
-      - ldap-auth
       - db-sqlite
-      - sso-auth
 
 auth:
   jwt:

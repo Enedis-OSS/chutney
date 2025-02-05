@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
 @Profile("mem-auth")
@@ -31,9 +30,14 @@ public class InMemorySecurityConfiguration {
         return new InMemoryUserDetailsService(users, authenticationService);
     }
 
-    @Autowired
-    protected void configure(
-        final AuthenticationManagerBuilder auth, final UserDetailsService userDetailsService) throws Exception {
-        auth.userDetailsService(userDetailsService);
+    @Configuration
+    @Profile("mem-auth")
+    static class InMemoryConfiguration {
+
+        @Autowired
+        protected void configure(
+            final AuthenticationManagerBuilder auth, final InMemoryUserDetailsService userDetailsService) throws Exception {
+            auth.userDetailsService(userDetailsService);
+        }
     }
 }
