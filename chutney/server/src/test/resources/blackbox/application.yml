@@ -35,6 +35,10 @@ spring:
       - undertow-https-redirect
       - mem-auth
       - db-h2
+auth:
+  jwt:
+    secretKey: localsecretazertyuiopazertyuiopsssefzerfgzrhrhrthrtege
+    tokenValidityInHours: 4
 
 chutney:
   configuration-folder: target/.chutney/conf

@@ -8,6 +8,7 @@
 package blackbox;
 
 import static java.util.Optional.ofNullable;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -17,15 +18,16 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.chutneytesting.ServerConfiguration;
 import com.chutneytesting.security.api.UserDto;
+import com.chutneytesting.security.infra.jwt.JwtUtil;
 import com.chutneytesting.tools.file.FileUtils;
 import java.io.File;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,10 +36,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -50,8 +56,20 @@ import org.springframework.web.context.WebApplicationContext;
 @TestPropertySource(properties = "spring.config.location=classpath:blackbox/")
 public class SecuredControllerSpringBootIntegrationTest {
 
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
+
+    @MockBean
+    private AuthenticationManager authenticationManager;
+
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private MockMvc mvc;
 
@@ -114,7 +132,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/ui/campaign/v1/scenario/scenarioId", "SCENARIO_READ", null, OK},
             {GET, "/api/ui/campaign/v1/scheduling", "CAMPAIGN_READ", null, OK},
             {POST, "/api/ui/campaign/v1/scheduling", "CAMPAIGN_WRITE",
-                 """
+                """
                 {"id":1,"schedulingDate":[2024,10,12,14,30,45],"frequency":"Daily","environment":"PROD","campaignsId":[1],"campaignsTitle":["title"],"datasetsId":["datasetId"]}
                 """, OK},
             {DELETE, "/api/ui/campaign/v1/scheduling/123", "CAMPAIGN_WRITE", null, OK},
@@ -204,12 +222,12 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     private static Object[] unsecuredEndPointList() {
         return new Object[][]{
-            {GET, "/api/v1/user", null, null, OK},
-            {POST, "/api/v1/user", null, "{}", OK},
-            {GET, "/api/v1/ui/plugins/linkifier/", null, null, OK},
+            {GET, "/api/v1/user", "AUTHENTICATED", null, OK},
+            {POST, "/api/v1/user", "AUTHENTICATED", "{}", OK},
+            {GET, "/api/v1/ui/plugins/linkifier/", "AUTHENTICATED", null, OK},
             {GET, "/api/v1/info/build/version", null, null, OK},
             {GET, "/api/v1/info/appname", null, null, OK},
-            {GET, "/api/v2/features", null, null, OK},
+            {GET, "/api/v2/features", "AUTHENTICATED", null, OK},
         };
     }
 
@@ -218,14 +236,23 @@ public class SecuredControllerSpringBootIntegrationTest {
     public void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
         UserDto user = new UserDto();
         user.setName("userName");
-        ofNullable(authority).ifPresent(user::grantAuthority);
+        user.setId("userName");
         MockHttpServletRequestBuilder request = request(httpMethod, url)
             .secure(true)
-            .with(user(user))
             .contentType(MediaType.APPLICATION_JSON);
         if (content != null) {
             request.content(content);
         }
+        ofNullable(authority).ifPresent(right -> {
+            String token = jwtUtil.generateToken(user.getId(), Map.of("user", user));
+            if (token != null) {
+                request.header("Authorization", "Bearer " + token);
+            }
+            user.grantAuthority(right);
+        });
+
+        when(userDetailsService.loadUserByUsername(user.getId())).thenReturn(user);
+
         mvc.perform(request)
             .andExpect(status().is(status.value()));
     }
@@ -235,13 +262,25 @@ public class SecuredControllerSpringBootIntegrationTest {
     public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
         UserDto user = new UserDto();
         user.setName("userName");
-        ofNullable(authority).ifPresent(user::grantAuthority);
+        user.setId("userName");
+        ofNullable(authority).ifPresent(right -> {
+            if (!"AUTHENTICATED".equals(authority)) {
+                user.grantAuthority(right);
+            }
+        });
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .multipart(url)
             .file(new MockMultipartFile("file", "myFile.json", "text/json", content.getBytes()))
             .contentType(MediaType.MULTIPART_FORM_DATA)
-            .secure(true)
-            .with(user(user));
+            .secure(true);
+
+        String token = authority != null ? jwtUtil.generateToken(user.getId(), Map.of("user", user)) : null;
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        when(userDetailsService.loadUserByUsername(user.getId())).thenReturn(user);
+
         mvc.perform(request)
             .andExpect(status().is(expectedStatus.value()));
     }
