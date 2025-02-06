@@ -41,12 +41,12 @@ class KafkaConsumerFactoryTest {
 
     @Nested
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-    @DisplayName("set kafka client bootstrap.servers configuration")
+    @DisplayName("Set kafka client bootstrap.servers configuration")
     class BootstrapServersConfig {
 
         @Test
         @Order(1)
-        @DisplayName("from configuration")
+        @DisplayName("from configuration overriding target")
         void use_configuration_for_bootstrap_servers_kafka_client_configuration() {
             Target target = targetWithoutProperties
                 .withProperty(BOOTSTRAP_SERVERS_CONFIG, "target.host:1236")
@@ -122,7 +122,7 @@ class KafkaConsumerFactoryTest {
     void filter_and_merge_kafka_consumer_configuration_properties_from_target_and_input() {
         List<String> consumerConfigKeys = new ArrayList<>(ConsumerConfig.configNames());
         shuffle(consumerConfigKeys);
-        consumerConfigKeys.remove(AUTO_COMMIT_INTERVAL_MS_CONFIG);
+        consumerConfigKeys.remove(AUTO_COMMIT_INTERVAL_MS_CONFIG); // Could be used and must be a long
         String targetProperty = consumerConfigKeys.get(0);
         String propertyToOverride = consumerConfigKeys.get(1);
         String inputProperty = consumerConfigKeys.get(2);

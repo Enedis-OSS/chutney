@@ -50,6 +50,8 @@ import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.record.TimestampType;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -85,7 +87,7 @@ public class KafkaBasicConsumeActionTest {
     }
 
     @Test
-    void should_set_inputs_default_values() {
+    void set_inputs_default_values() {
         KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(null, null, null, null, null, null, null, null, null, null, null, null);
         assertThat(defaultAction)
             .hasFieldOrPropertyWithValue("target", null)
@@ -103,405 +105,431 @@ public class KafkaBasicConsumeActionTest {
         ;
     }
 
-    @Test
-    void should_validate_all_mandatory_inputs() {
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(null, null, null, null, null, null, null, null, null, null, null, null);
-        List<String> errors = defaultAction.validateInputs();
+    @Nested
+    @DisplayName("Validate inputs")
+    class ValidateInputs {
+        @Test
+        void validate_all_mandatory_inputs() {
+            KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(null, null, null, null, null, null, null, null, null, null, null, null);
+            List<String> errors = defaultAction.validateInputs();
 
-        assertThat(errors.size()).isEqualTo(8);
-        SoftAssertions softly = new SoftAssertions();
+            assertThat(errors.size()).isEqualTo(8);
+            SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(errors.get(0)).isEqualTo("No topic provided (String)");
-        softly.assertThat(errors.get(1)).isEqualTo("topic should not be blank");
+            softly.assertThat(errors.get(0)).isEqualTo("No topic provided (String)");
+            softly.assertThat(errors.get(1)).isEqualTo("topic should not be blank");
 
-        softly.assertThat(errors.get(2)).isEqualTo("No group provided (String)");
-        softly.assertThat(errors.get(3)).isEqualTo("group should not be blank");
+            softly.assertThat(errors.get(2)).isEqualTo("No group provided (String)");
+            softly.assertThat(errors.get(3)).isEqualTo("group should not be blank");
 
-        softly.assertThat(errors.get(4)).isEqualTo("No target provided");
-        softly.assertThat(errors.get(5)).isEqualTo("[Target name is blank] not applied because of exception java.lang.NullPointerException(null)");
-        softly.assertThat(errors.get(6)).isEqualTo("[Target url is not valid: null target] not applied because of exception java.lang.NullPointerException(null)");
-        softly.assertThat(errors.get(7)).isEqualTo("[Target url has an undefined host: null target] not applied because of exception java.lang.NullPointerException(null)");
+            softly.assertThat(errors.get(4)).isEqualTo("No target provided");
+            softly.assertThat(errors.get(5)).isEqualTo("[Target name is blank] not applied because of exception java.lang.NullPointerException(null)");
+            softly.assertThat(errors.get(6)).isEqualTo("[Target url is not valid: null target] not applied because of exception java.lang.NullPointerException(null)");
+            softly.assertThat(errors.get(7)).isEqualTo("[Target url has an undefined host: null target] not applied because of exception java.lang.NullPointerException(null)");
 
-        softly.assertAll();
+            softly.assertAll();
+        }
+
+        @Test
+        void validate_timeout_input() {
+            String badTimeout = "twenty seconds";
+            KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, badTimeout, null, null, null);
+
+            List<String> errors = defaultAction.validateInputs();
+
+            assertThat(errors.size()).isEqualTo(1);
+            assertThat(errors.get(0)).startsWith("[timeout is not parsable]");
+        }
+
+        @Test
+        void validate_ackMode_input() {
+            String badTackMode = "UNKNOWN_ACKMODE";
+            KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, null, badTackMode, null, null);
+
+            List<String> errors = defaultAction.validateInputs();
+
+            assertThat(errors.size()).isEqualTo(1);
+            assertThat(errors.get(0)).startsWith("ackMode is not a valid value");
+        }
     }
 
-    @Test
-    void should_validate_timeout_input() {
-        String badTimeout = "twenty seconds";
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, badTimeout, null, null, null);
+    @Nested
+    @DisplayName("Check for no messages")
+    class NoMessages {
 
-        List<String> errors = defaultAction.validateInputs();
+        @Test
+        void not_find_any_message() {
+            // Given
+            Action sut = givenKafkaConsumeAction(0, null, null, TEXT_PLAIN_VALUE, "3 sec");
 
-        assertThat(errors.size()).isEqualTo(1);
-        assertThat(errors.get(0)).startsWith("[timeout is not parsable]");
-    }
+            // When
+            ActionExecutionResult actionExecutionResult = sut.execute();
 
-    @Test
-    void should_validate_ackMode_input() {
-        String badTackMode = "UNKNOWN_ACKMODE";
-        KafkaBasicConsumeAction defaultAction = new KafkaBasicConsumeAction(TARGET_STUB, "topic", "group", null, null, null, null, null, null, badTackMode, null, null);
+            // Then
+            assertThat(actionExecutionResult.status).isEqualTo(Success);
+            assertActionOutputsSize(actionExecutionResult, 0);
+            assertThat(logger.errors).isEmpty();
+        }
 
-        List<String> errors = defaultAction.validateInputs();
-
-        assertThat(errors.size()).isEqualTo(1);
-        assertThat(errors.get(0)).startsWith("ackMode is not a valid value");
-    }
-
-    @Test
-    public void should_consume_simple_text_message() {
-        // Given
-        Action sut = givenKafkaConsumeAction(null, TEXT_PLAIN_VALUE, null);
-        givenActionReceiveMessages(sut,
-            buildRecord(FIRST_OFFSET, "KEY", "test message")
-        );
-
-        // When
-        ActionExecutionResult actionExecutionResult = sut.execute();
-
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
-
-        final Map<String, Object> message = body.get(0);
-        final String payload1 = (String) message.get(OUTPUT_BODY_PAYLOAD_KEY);
-        assertThat(payload1).isEqualTo("test message");
-        final Map<String, Object> headers = (Map<String, Object>) message.get(OUTPUT_BODY_HEADERS_KEY);
-        assertThat(headers.get("X-Custom-HeaderKey")).isEqualTo("X-Custom-HeaderValue");
-        assertThat(headers).containsAllEntriesOf(ImmutableMap.of("X-Custom-HeaderKey", "X-Custom-HeaderValue", "header1", "value1"));
-
-        assertThat(logger.errors).isEmpty();
-    }
-
-    @Test
-    public void should_consume_simple_text_message_with_multiple_values_for_the_same_header() {
-        // Given
-        ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
-            new RecordHeader("key-with-multiple-values", "value 2".getBytes())
-        );
-        Action sut = givenKafkaConsumeAction(null, TEXT_PLAIN_VALUE, null);
-        givenActionReceiveMessages(sut,
-            buildRecord(FIRST_OFFSET, "KEY", "test message", headers)
-        );
-
-        // When
-        ActionExecutionResult actionExecutionResult = sut.execute();
-
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        var result_headers = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY_HEADERS_KEY);
-        assertThat(result_headers).hasSize(1);
-        assertThat(result_headers.get(0))
-            .containsExactly(
-                Map.entry("key-with-multiple-values", asList("value 1", "value 2"))
+        @Test
+        void not_find_any_message_failed() {
+            // Given
+            Action sut = givenKafkaConsumeAction(0, null, null, TEXT_PLAIN_VALUE, "3 sec");
+            givenActionReceiveMessages(sut,
+                buildRecord(FIRST_OFFSET, "KEY", "test message")
             );
+
+            // When
+            ActionExecutionResult actionExecutionResult = sut.execute();
+
+            // Then
+            assertThat(actionExecutionResult.status).isEqualTo(Failure);
+            assertThat(logger.errors).isNotEmpty();
+        }
     }
 
-    @Test
-    public void should_not_find_any_message() {
-        // Given
-        Action sut = givenKafkaConsumeAction(0, null, null, TEXT_PLAIN_VALUE, "3 sec");
+    @Nested
+    @DisplayName("Consume messages")
+    class ConsumeMessage {
 
-        // When
-        ActionExecutionResult actionExecutionResult = sut.execute();
+        @Nested
+        @DisplayName("Simple text, json or xml")
+        class Simple {
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        assertActionOutputsSize(actionExecutionResult, 0);
-        assertThat(logger.errors).isEmpty();
-    }
+            @Test
+            void consume_simple_text_message() {
+                // Given
+                Action sut = givenKafkaConsumeAction(null, TEXT_PLAIN_VALUE, null);
+                givenActionReceiveMessages(sut,
+                    buildRecord(FIRST_OFFSET, "KEY", "test message")
+                );
 
-    @Test
-    public void should_not_find_any_message_failed() {
-        // Given
-        Action sut = givenKafkaConsumeAction(0, null, null, TEXT_PLAIN_VALUE, "3 sec");
-        givenActionReceiveMessages(sut,
-            buildRecord(FIRST_OFFSET, "KEY", "test message")
-        );
+                // When
+                ActionExecutionResult actionExecutionResult = sut.execute();
 
-        // When
-        ActionExecutionResult actionExecutionResult = sut.execute();
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
+                List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Failure);
-        assertThat(logger.errors).isNotEmpty();
-    }
+                final Map<String, Object> message = body.get(0);
+                final String payload1 = (String) message.get(OUTPUT_BODY_PAYLOAD_KEY);
+                assertThat(payload1).isEqualTo("test message");
+                final Map<String, Object> headers = (Map<String, Object>) message.get(OUTPUT_BODY_HEADERS_KEY);
+                assertThat(headers.get("X-Custom-HeaderKey")).isEqualTo("X-Custom-HeaderValue");
+                assertThat(headers).containsAllEntriesOf(ImmutableMap.of("X-Custom-HeaderKey", "X-Custom-HeaderValue", "header1", "value1"));
 
-    @Test
-    public void should_return_exactly_nb_message_asked() {
-        // Given
-        Action sut = givenKafkaConsumeAction(1, null, null, TEXT_PLAIN_VALUE, "3 sec");
-        givenActionReceiveMessages(sut,
-            buildRecord(FIRST_OFFSET, "KEY", "test message"),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", "test message2")
-        );
+                assertThat(logger.errors).isEmpty();
+            }
 
-        // When
-        ActionExecutionResult actionExecutionResult = sut.execute();
+            @Test
+            void consume_simple_text_message_with_multiple_values_for_the_same_header() {
+                // Given
+                ImmutableList<Header> headers = ImmutableList.of(
+                    new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
+                    new RecordHeader("key-with-multiple-values", "value 2".getBytes())
+                );
+                Action sut = givenKafkaConsumeAction(null, TEXT_PLAIN_VALUE, null);
+                givenActionReceiveMessages(sut,
+                    buildRecord(FIRST_OFFSET, "KEY", "test message", headers)
+                );
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        assertActionOutputsSize(actionExecutionResult, 1);
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = sut.execute();
 
-    @ParameterizedTest
-    @ValueSource(strings = APPLICATION_JSON_VALUE)
-    @NullSource
-    public void should_consume_json_message_as_map(String mimeType) {
-        // Given
-        Action action = givenKafkaConsumeAction(null, mimeType, null);
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY", "{\"value\": \"test message\", \"id\": \"1111\" }")
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
+                var result_headers = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY_HEADERS_KEY);
+                assertThat(result_headers).hasSize(1);
+                assertThat(result_headers.get(0))
+                    .containsExactly(
+                        Map.entry("key-with-multiple-values", asList("value 1", "value 2"))
+                    );
+            }
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+            @ParameterizedTest
+            @ValueSource(strings = APPLICATION_JSON_VALUE)
+            @NullSource
+            void consume_json_message_as_map(String mimeType) {
+                // Given
+                Action action = givenKafkaConsumeAction(null, mimeType, null);
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY", "{\"value\": \"test message\", \"id\": \"1111\" }")
+                );
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-        final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
-        assertThat(payload.get("value")).isEqualTo("test message");
-        assertThat(payload.get("id")).isEqualTo("1111");
-    }
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-    @Test
-    public void should_consume_xml_message_as_string() {
-        // Given
-        Action action = givenKafkaConsumeAction(null, APPLICATION_XML_VALUE, null);
-        String xmlPayload = "<root><first>first content</first><second attr=\"second attr\">second content</second></root>";
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY", xmlPayload)
-        );
+                final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                assertThat(payload.get("value")).isEqualTo("test message");
+                assertThat(payload.get("id")).isEqualTo("1111");
+            }
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+            @Test
+            void consume_xml_message_as_string() {
+                // Given
+                Action action = givenKafkaConsumeAction(null, APPLICATION_XML_VALUE, null);
+                String xmlPayload = "<root><first>first content</first><second attr=\"second attr\">second content</second></root>";
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY", xmlPayload)
+                );
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-        final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
-        assertThat(payload).isEqualTo(xmlPayload);
-    }
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-    @Test
-    public void should_select_json_message_whose_payload_or_headers_match_given_payload_jsonpath_selector() {
-        // Given
-        Action action = givenKafkaConsumeAction("$..[?($.headers.header1=='value1' && $.payload.id==\"1122\")]", APPLICATION_JSON_VALUE, null);
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message1\", \"id\": \"1111\" }"),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", "{\"value\": \"test message2\", \"id\": \"1122\" }"),
-            buildRecord(FIRST_OFFSET + 2, "KEY3", "{\"value\": \"test message3\", \"id\": \"1133\" }")
-        );
+                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                assertThat(payload).isEqualTo(xmlPayload);
+            }
+        }
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+        @Nested
+        @DisplayName("By header JSON Path selection or payload selection given mime type")
+        class Selection {
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+            @Test
+            void select_json_message_whose_payload_or_headers_match_given_payload_jsonpath_selector() {
+                // Given
+                Action action = givenKafkaConsumeAction("$..[?($.headers.header1=='value1' && $.payload.id==\"1122\")]", APPLICATION_JSON_VALUE, null);
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message1\", \"id\": \"1111\" }"),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", "{\"value\": \"test message2\", \"id\": \"1122\" }"),
+                    buildRecord(FIRST_OFFSET + 2, "KEY3", "{\"value\": \"test message3\", \"id\": \"1133\" }")
+                );
 
-        List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
-        assertThat(body).hasSize(1);
-        final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
-        assertThat(payload.get("id")).isEqualTo("1122");
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_select_xml_message_whose_payload_match_given_payload_xpath_selector() {
-        // Given
-        Action action = givenKafkaConsumeAction("/root/second[@attr='1122']", APPLICATION_XML_VALUE, null);
-        String payloadToSelect = "<root><first>first content</first><second attr=\"1122\">second content</second></root>";
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", "<root><first>first content</first><second attr=\"1111\">second content</second></root>"),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", payloadToSelect),
-            buildRecord(FIRST_OFFSET + 2, "KEY3", "<root><first>first content</first><second attr=\"1133\">second content</second></root>")
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+                List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
+                assertThat(body).hasSize(1);
+                final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                assertThat(payload.get("id")).isEqualTo("1122");
+            }
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+            @Test
+            void select_xml_message_whose_payload_match_given_payload_xpath_selector() {
+                // Given
+                Action action = givenKafkaConsumeAction("/root/second[@attr='1122']", APPLICATION_XML_VALUE, null);
+                String payloadToSelect = "<root><first>first content</first><second attr=\"1122\">second content</second></root>";
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", "<root><first>first content</first><second attr=\"1111\">second content</second></root>"),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", payloadToSelect),
+                    buildRecord(FIRST_OFFSET + 2, "KEY3", "<root><first>first content</first><second attr=\"1133\">second content</second></root>")
+                );
 
-        List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
-        assertThat(body).hasSize(1);
-        final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
-        assertThat(payload).isEqualTo(payloadToSelect);
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_select_text_message_whose_payload_contains_given_payload_selector() {
-        // Given
-        Action action = givenKafkaConsumeAction("selector", TEXT_PLAIN_VALUE, null);
-        String payloadToSelect = "second text selector message";
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", "first text message"),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", payloadToSelect),
-            buildRecord(FIRST_OFFSET + 2, "KEY3", "third text message")
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+                List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
+                assertThat(body).hasSize(1);
+                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                assertThat(payload).isEqualTo(payloadToSelect);
+            }
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+            @Test
+            void select_text_message_whose_payload_contains_given_payload_selector() {
+                // Given
+                Action action = givenKafkaConsumeAction("selector", TEXT_PLAIN_VALUE, null);
+                String payloadToSelect = "second text selector message";
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", "first text message"),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", payloadToSelect),
+                    buildRecord(FIRST_OFFSET + 2, "KEY3", "third text message")
+                );
 
-        List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
-        assertThat(body).hasSize(1);
-        final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
-        assertThat(payload).isEqualTo(payloadToSelect);
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_select_message_whose_headers_match_given_payload_jsonpath_selector() {
-        // Given
-        ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
-            new RecordHeader("header", "123".getBytes()),
-            new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
-            new RecordHeader("key-with-multiple-values", "value 2".getBytes())
-        );
-        Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123' && $.key-with-multiple-values contains 'value 1')]", null, null);
-        String textMessageToSelect = "first text message";
-        String xmlMessageToSelect = "<root>first xml message</root>";
-        String jsonMessageToSelect = "first json message";
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", textMessageToSelect, headers),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", "second text message"),
-            buildRecord(FIRST_OFFSET + 2, "KEY3", xmlMessageToSelect, headers),
-            buildRecord(FIRST_OFFSET + 3, "KEY4", "<root>second xml message</root>"),
-            buildRecord(FIRST_OFFSET + 4, "KEY5", "{\"value\": \"" + jsonMessageToSelect + "\", \"id\": \"1\" }", headers),
-            buildRecord(FIRST_OFFSET + 5, "KEY6", "{\"value\": \"second json message\", \"id\": \"1\" }")
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+                List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
+                assertThat(body).hasSize(1);
+                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                assertThat(payload).isEqualTo(payloadToSelect);
+            }
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 3);
+            @Test
+            void select_message_whose_headers_match_given_payload_jsonpath_selector() {
+                // Given
+                ImmutableList<Header> headers = ImmutableList.of(
+                    new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
+                    new RecordHeader("header", "123".getBytes()),
+                    new RecordHeader("key-with-multiple-values", "value 1".getBytes()),
+                    new RecordHeader("key-with-multiple-values", "value 2".getBytes())
+                );
+                Action action = givenKafkaConsumeAction(3, null, "$..[?($.header=='123' && $.key-with-multiple-values contains 'value 1')]", null, null);
+                String textMessageToSelect = "first text message";
+                String xmlMessageToSelect = "<root>first xml message</root>";
+                String jsonMessageToSelect = "first json message";
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", textMessageToSelect, headers),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", "second text message"),
+                    buildRecord(FIRST_OFFSET + 2, "KEY3", xmlMessageToSelect, headers),
+                    buildRecord(FIRST_OFFSET + 3, "KEY4", "<root>second xml message</root>"),
+                    buildRecord(FIRST_OFFSET + 4, "KEY5", "{\"value\": \"" + jsonMessageToSelect + "\", \"id\": \"1\" }", headers),
+                    buildRecord(FIRST_OFFSET + 5, "KEY6", "{\"value\": \"second json message\", \"id\": \"1\" }")
+                );
 
-        final String payload = (String) body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY);
-        assertThat(payload).isEqualTo(textMessageToSelect);
-        final String xmlPayload = (String) body.get(1).get(OUTPUT_BODY_PAYLOAD_KEY);
-        assertThat(xmlPayload).isEqualTo(xmlMessageToSelect);
-        final Map<String, String> jsonPayload = (Map<String, String>) body.get(2).get(OUTPUT_BODY_PAYLOAD_KEY);
-        assertThat(jsonPayload.get("value")).isEqualTo(jsonMessageToSelect);
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_consume_message_with_duplicated_header_pair_key_value() {
-        // Given
-        ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("header", "123".getBytes()),
-            new RecordHeader("header", "123".getBytes())
-        );
-        Action action = givenKafkaConsumeAction(1, null, "$..[?($.header=='123')]", null, null);
-        String textMessageToSelect = "first text message";
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", textMessageToSelect, headers),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", "second text message")
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
+                List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 3);
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+                final String payload = (String) body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY);
+                assertThat(payload).isEqualTo(textMessageToSelect);
+                final String xmlPayload = (String) body.get(1).get(OUTPUT_BODY_PAYLOAD_KEY);
+                assertThat(xmlPayload).isEqualTo(xmlMessageToSelect);
+                final Map<String, String> jsonPayload = (Map<String, String>) body.get(2).get(OUTPUT_BODY_PAYLOAD_KEY);
+                assertThat(jsonPayload.get("value")).isEqualTo(jsonMessageToSelect);
+            }
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
+            @Test
+            void consume_message_with_duplicated_header_pair_key_value() {
+                // Given
+                ImmutableList<Header> headers = ImmutableList.of(
+                    new RecordHeader("header", "123".getBytes()),
+                    new RecordHeader("header", "123".getBytes())
+                );
+                Action action = givenKafkaConsumeAction(1, null, "$..[?($.header=='123')]", null, null);
+                String textMessageToSelect = "first text message";
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", textMessageToSelect, headers),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", "second text message")
+                );
 
-        final String payload = (String) body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY);
-        assertThat(payload).isEqualTo(textMessageToSelect);
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_not_filter_by_given_mime_type_when_no_selector() {
-        // Given
-        ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
-            new RecordHeader("Content-Type", APPLICATION_JSON_VALUE.getBytes())
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
+                List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
 
-        Action action = givenKafkaConsumeAction(2, null, null, APPLICATION_XML_VALUE, null);
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message\", \"id\": \"1\" }", headers),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", "<root>second test message</root>", ImmutableList.of(
-                new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes())
-            ))
-        );
+                final String payload = (String) body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY);
+                assertThat(payload).isEqualTo(textMessageToSelect);
+            }
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+            @Test
+            void not_filter_by_given_mime_type_when_no_selector() {
+                // Given
+                ImmutableList<Header> headers = ImmutableList.of(
+                    new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
+                    new RecordHeader("Content-Type", APPLICATION_JSON_VALUE.getBytes())
+                );
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 2);
+                Action action = givenKafkaConsumeAction(2, null, null, APPLICATION_XML_VALUE, null);
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message\", \"id\": \"1\" }", headers),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", "<root>second test message</root>", ImmutableList.of(
+                        new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes())
+                    ))
+                );
 
-        assertThat(body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo(Map.of("id", "1", "value", "test message"));
-        assertThat(body.get(1).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_filter_by_given_mime_type_when_selector_is_defined() {
-        // Given
-        ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
-            new RecordHeader("Content-Type", APPLICATION_JSON_VALUE.getBytes())
-        );
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
+                List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 2);
 
-        Action action = givenKafkaConsumeAction("//root", APPLICATION_XML_VALUE, null);
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message\", \"id\": \"1\" }", headers),
-            buildRecord(FIRST_OFFSET + 1, "KEY2", "<root>second test message</root>", ImmutableList.of(
-                new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes())
-            ))
-        );
+                assertThat(body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo(Map.of("id", "1", "value", "test message"));
+                assertThat(body.get(1).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
+            }
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+            @Test
+            void filter_by_given_mime_type_when_selector_is_defined() {
+                // Given
+                ImmutableList<Header> headers = ImmutableList.of(
+                    new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()),
+                    new RecordHeader("Content-Type", APPLICATION_JSON_VALUE.getBytes())
+                );
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
-        List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
+                Action action = givenKafkaConsumeAction("//root", APPLICATION_XML_VALUE, null);
+                givenActionReceiveMessages(action,
+                    buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message\", \"id\": \"1\" }", headers),
+                    buildRecord(FIRST_OFFSET + 1, "KEY2", "<root>second test message</root>", ImmutableList.of(
+                        new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes())
+                    ))
+                );
 
-        assertThat(body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
-    }
+                // When
+                ActionExecutionResult actionExecutionResult = action.execute();
 
-    @Test
-    public void should_respect_given_timeout() {
-        // Given
-        Action action = givenKafkaConsumeAction(null, null, "3 sec");
-        overrideActionMessageListenerContainer(action);
+                // Then
+                assertThat(actionExecutionResult.status).isEqualTo(Success);
+                List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+                assertThat(body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
+            }
+        }
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Failure);
-        assertThat(logger.errors).isNotEmpty();
-    }
+        @Test
+        @DisplayName("By number")
+        void return_exactly_nb_message_asked() {
+            // Given
+            Action sut = givenKafkaConsumeAction(1, null, null, TEXT_PLAIN_VALUE, "3 sec");
+            givenActionReceiveMessages(sut,
+                buildRecord(FIRST_OFFSET, "KEY", "test message"),
+                buildRecord(FIRST_OFFSET + 1, "KEY2", "test message2")
+            );
 
-    @ParameterizedTest
-    @ValueSource(strings = {"bad content type", APPLICATION_JSON_VALUE, "\"" + APPLICATION_JSON_VALUE + "\""})
-    public void should_consume_as_json_with_bad_content_type_in_received_message(String contentType) {
-        ImmutableList<Header> headers = ImmutableList.of(
-            new RecordHeader("Content-type", contentType.getBytes())
-        );
-        // Given
-        Action action = givenKafkaConsumeAction(null, null, null);
-        givenActionReceiveMessages(action,
-            buildRecord(FIRST_OFFSET, "KEY", "{\"value\": \"test message\", \"id\": \"1111\" }", headers)
-        );
+            // When
+            ActionExecutionResult actionExecutionResult = sut.execute();
 
-        // When
-        ActionExecutionResult actionExecutionResult = action.execute();
+            // Then
+            assertThat(actionExecutionResult.status).isEqualTo(Success);
+            assertActionOutputsSize(actionExecutionResult, 1);
+        }
 
-        // Then
-        assertThat(actionExecutionResult.status).isEqualTo(Success);
+        @Test
+        @DisplayName("With timeout")
+        void respect_given_timeout() {
+            // Given
+            Action action = givenKafkaConsumeAction(null, null, "3 sec");
+            overrideActionMessageListenerContainer(action);
 
-        final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
-        assertThat(payload.get("value")).isEqualTo("test message");
-        assertThat(payload.get("id")).isEqualTo("1111");
+            // When
+            ActionExecutionResult actionExecutionResult = action.execute();
+
+            // Then
+            assertThat(actionExecutionResult.status).isEqualTo(Failure);
+            assertThat(logger.errors).isNotEmpty();
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"bad content type", APPLICATION_JSON_VALUE, "\"" + APPLICATION_JSON_VALUE + "\""})
+        void consume_as_json_with_bad_content_type_in_received_message(String contentType) {
+            ImmutableList<Header> headers = ImmutableList.of(
+                new RecordHeader("Content-type", contentType.getBytes())
+            );
+            // Given
+            Action action = givenKafkaConsumeAction(null, null, null);
+            givenActionReceiveMessages(action,
+                buildRecord(FIRST_OFFSET, "KEY", "{\"value\": \"test message\", \"id\": \"1111\" }", headers)
+            );
+
+            // When
+            ActionExecutionResult actionExecutionResult = action.execute();
+
+            // Then
+            assertThat(actionExecutionResult.status).isEqualTo(Success);
+
+            final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+            assertThat(payload.get("value")).isEqualTo("test message");
+            assertThat(payload.get("id")).isEqualTo("1111");
+        }
     }
 
 

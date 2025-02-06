@@ -13,10 +13,9 @@ import static org.apache.kafka.clients.admin.AdminClientConfig.BOOTSTRAP_SERVERS
 
 import com.chutneytesting.action.spi.injectable.Target;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 final class KafkaClientFactoryHelper {
 
@@ -26,14 +25,11 @@ final class KafkaClientFactoryHelper {
             .orElseGet(() -> target.uri().toString());
     }
 
-    static Map<String, String> buildFilteredMapFrom(
-        Object checkNullObject,
-        Set<String> set, BiConsumer<String, Map<String, String>> consumer
-    ) {
-        if (checkNullObject != null) {
-            Map<String, String> result = new HashMap<>();
-            set.forEach(k -> consumer.accept(k, result));
-            return result;
+    static Map<String, String> filterMapFrom(Set<String> keySet, Map<String, String> mapToFilter) {
+        if (mapToFilter != null) {
+            return mapToFilter.entrySet().stream()
+                .filter(e -> keySet.contains(e.getKey()))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
         }
         return emptyMap();
     }

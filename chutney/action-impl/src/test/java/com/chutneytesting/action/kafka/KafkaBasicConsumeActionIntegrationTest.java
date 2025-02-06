@@ -41,6 +41,8 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 
 public abstract class KafkaBasicConsumeActionIntegrationTest {
@@ -89,12 +91,17 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
         assertThat(body.get(0).get("payload")).isEqualTo("my-test-value");
     }
 
-    @Test
-    public void consumer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_truststore_configured() throws URISyntaxException {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        /security/truststore.jks,truststore
+        /security/truststore_empty_pass.jks,'k'
+        /security/truststore_empty_pass.jks,null
+        """)
+    public void consumer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
         // given
-        String keystore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource("/security/server.jks")).toURI()).toAbsolutePath().toString();
-        Target target = targetBuilder.withProperty("trustStore", keystore_jks)
-            .withProperty("trustStorePassword", "server")
+        String truststore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource(truststorePath)).toURI()).toAbsolutePath().toString();
+        Target target = targetBuilder.withProperty("trustStore", truststore_jks)
+            .withProperty("trustStorePassword", truststorePass)
             .withProperty("security.protocol", "SSL")
             .build();
 

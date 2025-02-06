@@ -41,6 +41,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentMatchers;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -56,18 +58,9 @@ public class KafkaBasicPublishActionTest {
     private static final String TOPIC = "topic";
     private static final String PAYLOAD = "payload";
     private static final String GROUP = "mygroup";
-    private static final String KEYSTORE_JKS;
     private final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true, TOPIC);
 
     private TestLogger logger;
-
-    static {
-        try {
-            KEYSTORE_JKS = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource("/security/server.jks")).toURI()).toString();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @BeforeEach
     public void before() {
@@ -192,15 +185,21 @@ public class KafkaBasicPublishActionTest {
         }
     }
 
-    @Test
-    public void producer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_truststore_configured() {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        /security/truststore.jks,truststore
+        /security/truststore_empty_pass.jks,'k'
+        /security/truststore_empty_pass.jks,null
+        """)
+    public void producer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
         embeddedKafkaBroker.afterPropertiesSet();
 
+        String truststore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource(truststorePath)).toURI()).toAbsolutePath().toString();
         Target target = TestTarget.TestTargetBuilder.builder()
             .withTargetId("kafka")
             .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
-            .withProperty("trustStore", KEYSTORE_JKS)
-            .withProperty("trustStorePassword", "server")
+            .withProperty("trustStore", truststore_jks)
+            .withProperty("trustStorePassword", truststorePass)
             .withProperty("security.protocol", "SSL")
             .build();
 

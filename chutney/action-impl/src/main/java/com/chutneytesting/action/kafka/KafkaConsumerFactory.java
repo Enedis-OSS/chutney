@@ -7,7 +7,7 @@
 
 package com.chutneytesting.action.kafka;
 
-import static com.chutneytesting.action.kafka.KafkaClientFactoryHelper.buildFilteredMapFrom;
+import static com.chutneytesting.action.kafka.KafkaClientFactoryHelper.filterMapFrom;
 import static com.chutneytesting.action.kafka.KafkaClientFactoryHelper.resolveBootStrapServerConfig;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
@@ -63,7 +63,9 @@ public class KafkaConsumerFactory {
         // Override SSL truststore config from target
         target.trustStore().ifPresent(trustStore -> {
             consumerConfig.put(SSL_TRUSTSTORE_LOCATION_CONFIG, trustStore);
-            consumerConfig.put(SSL_TRUSTSTORE_PASSWORD_CONFIG, target.trustStorePassword().orElseThrow(IllegalArgumentException::new));
+            target.trustStorePassword().ifPresent(trustStorePassword ->
+                consumerConfig.put(SSL_TRUSTSTORE_PASSWORD_CONFIG, trustStorePassword)
+            );
         });
 
         var kafkaConsumerFactory = new DefaultKafkaConsumerFactory<>(consumerConfig);
@@ -88,14 +90,8 @@ public class KafkaConsumerFactory {
     private static Map<String, String> filterAndMergeProperties(Target target, Map<String, String> config) {
         Set<String> consumerConfigKeys = ConsumerConfig.configDef().configKeys().keySet();
         return MapUtils.merge(
-            buildFilteredMapFrom(target, consumerConfigKeys, (k, r) -> {
-                target.property(k).ifPresent(cv -> r.put(k, cv));
-            }),
-            buildFilteredMapFrom(config, consumerConfigKeys, (k, r) -> {
-                if (config.containsKey(k)) {
-                    r.put(k, config.get(k));
-                }
-            })
+            filterMapFrom(consumerConfigKeys, target.prefixedProperties("")),
+            filterMapFrom(consumerConfigKeys, config)
         );
     }
 }
