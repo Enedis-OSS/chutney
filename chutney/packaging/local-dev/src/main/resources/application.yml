@@ -44,7 +44,6 @@ spring:
   profiles:
     active:
       - undertow-https-redirect
-      - ldap
       - mem-auth
       - db-sqlite
 
