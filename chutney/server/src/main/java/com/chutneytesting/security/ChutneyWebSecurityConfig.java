@@ -13,6 +13,7 @@ import com.chutneytesting.security.api.UserController;
 import com.chutneytesting.security.api.UserDto;
 import com.chutneytesting.security.domain.AuthenticationService;
 import com.chutneytesting.security.domain.Authorizations;
+import com.chutneytesting.security.infra.CompositeUserDetailService;
 import com.chutneytesting.security.infra.jwt.CustomDaoAuthenticationProvider;
 import com.chutneytesting.security.infra.jwt.JwtAuthenticationFilter;
 import com.chutneytesting.security.infra.jwt.JwtUtil;
@@ -28,7 +29,7 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -97,11 +98,15 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(List<UserDetailsService> userDetailsServices, PasswordEncoder passwordEncoder) {
-        List<AuthenticationProvider> authenticationProviders = userDetailsServices.stream()
-            .map(service -> createDaoAuthenticationProvider(service, passwordEncoder))
-            .collect(Collectors.toList());
-        return new ProviderManager(authenticationProviders);
+    public AuthenticationManager authenticationManager4(@Qualifier("compositeUserDetailsService") UserDetailsService compositeUserDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationProvider authenticationProvider = createDaoAuthenticationProvider(compositeUserDetailsService, passwordEncoder);
+        return new ProviderManager(List.of(authenticationProvider));
+    }
+
+    @Bean("compositeUserDetailsService")
+    public UserDetailsService compositeUserDetailsService(
+        List<UserDetailsService> userDetailsServices) {
+        return new CompositeUserDetailService(userDetailsServices);
     }
 
     private DaoAuthenticationProvider createDaoAuthenticationProvider(UserDetailsService service, PasswordEncoder passwordEncoder) {
