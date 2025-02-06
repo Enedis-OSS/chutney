@@ -63,7 +63,8 @@ public class SftpActionTest {
             "client_rsa.key",
             "client_ecdsa.key",
             "server.jks",
-            "truststore.jks"
+            "truststore.jks",
+            "truststore_empty_pass.jks"
         );
 
         SftpListDirAction action = new SftpListDirAction(target, new TestLogger(), directory, "1 m");
