@@ -7,7 +7,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
@@ -37,10 +37,11 @@ export class LoginService {
         private ssoService: SsoService,
         private translateService: TranslateService,
     ) {
-        this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
-        this._ssoUserNotFoundMessage = this.translateService.instant('login.sso.userNotFound')
-        this.sessionExpiredMessage = this.translateService.instant('login.expired')
-        console.log(this._ssoUserNotFoundMessage)
+        this.translateService.onLangChange.subscribe(() => {
+            this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
+            this._ssoUserNotFoundMessage = this.translateService.instant('login.sso.userNotFound')
+            this.sessionExpiredMessage = this.translateService.instant('login.expired')
+        });
     }
 
     isAuthorized(requestURL: string, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
