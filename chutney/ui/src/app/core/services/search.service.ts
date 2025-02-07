@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Hit } from '@core/model/search/hit.model';
 import { environment } from '@env/environment';
-import { catchError, debounceTime, distinctUntilChanged, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

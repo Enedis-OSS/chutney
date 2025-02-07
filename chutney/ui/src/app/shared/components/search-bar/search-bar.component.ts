@@ -7,7 +7,6 @@
 
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { EMPTY, Subject } from 'rxjs';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Hit } from '@core/model/search/hit.model';
 import { SearchService } from '@core/services/search.service';
 import { Router } from '@angular/router';
@@ -27,8 +26,10 @@ export class SearchBarComponent {
 
     private searchSubject = new Subject<string>();
 
-    constructor(private searchService: SearchService,
-        private router: Router) {
+    constructor(
+        private searchService: SearchService,
+        private router: Router
+    ) {
         this.isMacOS = navigator.platform.toUpperCase().includes('MAC');
         this.setupSearch();
     }
@@ -50,10 +51,9 @@ export class SearchBarComponent {
     }
 
     onSearch() {
-        this.searchSubject.next(this.keyword); // Déclenche la recherche avec le mot-clé actuel
+        this.searchSubject.next(this.keyword);
     }
 
-    // Méthode pour regrouper les résultats par catégorie (what)
     get categorizedResults() {
         return this.searchResults.reduce((acc: { [key: string]: Hit[] }, hit: Hit) => {
             if (!acc[hit.what]) {
@@ -64,10 +64,27 @@ export class SearchBarComponent {
         }, {});
     }
 
-    onSelectSearchHit(hit: TypeaheadMatch<Hit>) {
-        this.keyword = null;
-        this.router.navigate([hit.item.what, hit.item.id]);
+    navigateToDetail(event: MouseEvent, item: any) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
+            const baseHref = document.getElementsByTagName('base')[0].href; 
+            const urlTree = this.router.createUrlTree([item.what, this.sanitizeMark(item.id)]);
+            const serializedUrl = this.router.serializeUrl(urlTree);
+
+            // To add manually #...
+            const fullUrl = `${baseHref}#${serializedUrl}`;
+            window.open(fullUrl, '_blank');
+        } else {
+            this.router.navigate([item.what, this.sanitizeMark(item.id)]);
+        }
+
+        if (!(event.ctrlKey || event.metaKey || event.button === 1)) {
+            setTimeout(() => {
+                this.isSearchExpanded = false;
+            }, 200);
+        }
     }
+
+
 
     @ViewChild('searchInput') searchInput!: ElementRef;
     expandSearch() {
@@ -95,6 +112,8 @@ export class SearchBarComponent {
     }
 
     getTagColor(tag: string): string {
+        tag = this.sanitizeMark(tag);
+
         // Generate a hash value from the tag
         const hash = [...tag].reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
@@ -105,7 +124,7 @@ export class SearchBarComponent {
         return `hsl(${hue}, 50%, 60%)`;
     }
 
-    sanitizeMarkTags(input: string): string {
+    sanitizeMark(input: string): string {
         return input.replace(/<\/?mark>/g, '');
     }
 

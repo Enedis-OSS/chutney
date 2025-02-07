@@ -126,6 +126,9 @@
 
 }
 
+.search-item {
+  cursor: pointer;
+}
 .search-item:hover {
   background-color: #3c3c3c;
 }
@@ -195,7 +198,7 @@
   transform: translateY(-30%);
   background: #1f1f1f;
   color: white;
-  padding: 10px;
+  padding: 4px;
   border-radius: 5px;
   font-size: 14px;
   white-space: nowrap;
@@ -211,10 +214,19 @@
 }
 
 .tooltip-content li {
-  margin-bottom: 5px;
+  margin: 1px;
+  padding: 0;
+}
+
+.tooltip-content li:nth-child(n+2) {
+  padding-top: 8px;
 }
 
 .tooltip-container:hover .tooltip-content {
   display: block;
 }
 
+.no-result {
+  padding-top: 20px;
+  padding-bottom: 11px;
+}

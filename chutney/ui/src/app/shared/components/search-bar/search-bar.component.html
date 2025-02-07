@@ -20,43 +20,51 @@
 <!-- Expanded search bar -->
 <div class="search-bar" *ngIf="isSearchExpanded">
   <i class="fas fa-search search-icon"></i>
-  <input #searchInput [(ngModel)]="keyword" (input)="onSearch()" placeholder="Search..." class="search-input" />
+  <input #searchInput [(ngModel)]="keyword" (input)="onSearch()" placeholder="Search..." class="search-input" style="width:100%" />
 </div>
 
 <div class="search-dropdown" *ngIf="isSearchExpanded">
   @if (searchResults.length > 0) {
   <div *ngFor="let category of categorizedResults | keyvalue" class="search-category">
-    <div style="font-weight:bold;  position: sticky; top:0;z-index: 100000;background-color: #2d2d2d;padding-top: 20px;padding-bottom: 11px;"><strong >{{ category.key | uppercase }}</strong></div>
+    <div
+      style="font-weight:bold;  position: sticky; top:0;z-index: 100000;background-color: #2d2d2d;padding-top: 20px;padding-bottom: 11px;">
+      <strong class="mb-0 fs-6 fw-bold">{{ category.key | uppercase }}</strong></div>
     <table class="search-results-table">
       <thead>
         <tr>
+          <th class="fixed-width-1"></th>
           <th></th>
           <th class="fixed-width-20"></th>
           <th class="fixed-width-1"></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of category.value" class="search-item">
+        <tr *ngFor="let item of category.value" class="search-item" (mousedown)="navigateToDetail($event, item)">
+          @if(category.key !== "dataset") {
+            <td [innerHTML]="item.id"></td>
+          } @else {
+            <td></td>
+          }
           <td [innerHTML]="item.title"></td>
           <td>
-            <span *ngFor="let tag of item.tags" class="tag"
-              [ngStyle]="{ 'background-color': getTagColor(sanitizeMarkTags(tag)) }">
-              {{ sanitizeMarkTags(tag) }}
+            <span *ngFor="let tag of item.tags" class="tag" [ngStyle]="{ 'background-color': getTagColor(tag) }"
+              [innerHTML]="tag">
             </span>
           </td>
           <!-- Tooltip -->
           <td class="info-column">
-            <div class="tooltip-container">
-              <i class="fas fa-info-circle info-icon"></i>
-              <div class="tooltip-content">
-                <ul>
-                  <li *ngFor="let match of getSearchResults(item)">
-                    <div style="text-align: center;">{{ match.attribute }}</div>
-                    <span [innerHTML]="match.snippet"></span>
-                    <hr style="margin:1 0 0 0;" />
-                  </li>
-                </ul>
-              </div>
+            <div class="tooltip-container" *ngIf="getSearchResults(item) as matches">
+              @if(matches.length > 0){
+                <i class="fas fa-info-circle info-icon"></i>
+                <div class="tooltip-content border border-info">
+                  <ul>
+                    <li *ngFor="let match of matches">
+                      <div class="fw-bold text-center">{{ match.attribute }}</div>
+                      <span [innerHTML]="match.snippet"></span>
+                    </li>
+                  </ul>
+                </div>
+              }
             </div>
           </td>
         </tr>
@@ -64,6 +72,6 @@
     </table>
   </div>
   } @else {
-    <div class="search-category">No results found</div>
+  <div class="search-category fs-6 fw-bold no-result">No results found</div>
   }
 </div>
