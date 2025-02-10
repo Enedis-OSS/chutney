@@ -23,8 +23,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.BytesRef;
@@ -89,9 +87,7 @@ public class ExecutionReportIndexRepository {
             .add(whatQuery, BooleanClause.Occur.MUST)
             .build();
 
-        Sort sort = new Sort(SortField.FIELD_SCORE, new SortField(ID, SortField.Type.STRING, true));
-
-        return luceneIndexRepository.search(query, 100, sort)
+        return luceneIndexRepository.search(query, 100)
             .stream()
             .map(doc -> new Hit(doc.get(ID),
                 null,

@@ -16,6 +16,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.TieredMergePolicy;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,8 @@ public class OnDiskIndexConfig implements IndexConfig {
             this.indexDirectory = FSDirectory.open(path);
             analyzer = new StandardAnalyzer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
+            config.setRAMBufferSizeMB(64); // Default 16
+            config.setMergePolicy(new TieredMergePolicy());
             this.indexWriter = new IndexWriter(indexDirectory, config);
             this.indexWriter.commit();
         } catch (IOException e) {

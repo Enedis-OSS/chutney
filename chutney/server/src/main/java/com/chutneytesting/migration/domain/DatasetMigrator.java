@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  */
-
 package com.chutneytesting.migration.domain;
 
 import com.chutneytesting.dataset.infra.FileDatasetRepository;
 import com.chutneytesting.dataset.infra.index.DatasetIndexRepository;
 import com.chutneytesting.server.core.domain.dataset.DataSet;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DatasetMigrator implements DataMigrator {
@@ -27,7 +27,6 @@ public class DatasetMigrator implements DataMigrator {
         this.datasetIndexRepository = datasetIndexRepository;
     }
 
-
     @Override
     public void migrate() {
         if (isMigrationDone()) {
@@ -40,8 +39,8 @@ public class DatasetMigrator implements DataMigrator {
         LOGGER.info("{} dataset(s) successfully indexed", dataSets.size());
     }
 
-    private void index(List<DataSet> campaigns) {
-        datasetIndexRepository.saveAll(campaigns);
+    private void index(List<DataSet> dataSets) {
+        datasetIndexRepository.saveAll(dataSets);
     }
 
     private boolean isMigrationDone() {

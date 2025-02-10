@@ -66,13 +66,13 @@ public class LuceneIndexRepository {
         }
     }
 
-    public List<Document> search(Query query, int limit, Sort sort) {
+    public List<Document> search(Query query, int limit) {
         List<Document> result = new ArrayList<>();
         try (DirectoryReader reader = DirectoryReader.open(indexDirectory)) {
             IndexSearcher searcher = new IndexSearcher(reader);
-            ScoreDoc[] hits = searcher.search(query, limit, sort).scoreDocs;
+            ScoreDoc[] hits = searcher.search(query, limit).scoreDocs;
             StoredFields storedFields = searcher.storedFields();
-            for (ScoreDoc hit : hits){
+            for (ScoreDoc hit : hits) {
                 result.add(storedFields.document(hit.doc));
             }
         } catch (IOException ignored) {
@@ -84,7 +84,7 @@ public class LuceneIndexRepository {
         int count = 0;
         try (DirectoryReader reader = DirectoryReader.open(indexDirectory)) {
             IndexSearcher searcher = new IndexSearcher(reader);
-            count  = searcher.count(query);
+            count = searcher.count(query);
 
         } catch (IOException e) {
             throw new RuntimeException("Couldn't count elements in index", e);
@@ -110,7 +110,11 @@ public class LuceneIndexRepository {
         }
     }
 
+
     public String highlight(Query query, String field, String value, boolean strict) {
+        if (value == null) {
+            return null;
+        }
         QueryScorer scorer = new QueryScorer(query);
         Formatter formatter = new SimpleHTMLFormatter("<mark>", "</mark>");
         Highlighter highlighter = new Highlighter(formatter, scorer);
