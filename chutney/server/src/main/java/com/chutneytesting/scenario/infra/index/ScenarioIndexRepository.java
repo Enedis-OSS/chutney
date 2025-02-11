@@ -8,7 +8,7 @@
 package com.chutneytesting.scenario.infra.index;
 
 import com.chutneytesting.index.domain.AbstractIndexRepository;
-import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;

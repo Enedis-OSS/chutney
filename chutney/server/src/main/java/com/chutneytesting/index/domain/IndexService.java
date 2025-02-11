@@ -11,7 +11,6 @@ import com.chutneytesting.index.api.dto.Hit;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +20,6 @@ public class IndexService {
     public IndexService(List<IndexRepository<?>> indexRepositories) {
         this.indexRepositories = indexRepositories;
     }
-
 
     public List<Hit> search(String query) {
         List<CompletableFuture<List<Hit>>> futures = indexRepositories.stream()
@@ -42,5 +40,3 @@ public class IndexService {
             .join();
     }
 }
-
-

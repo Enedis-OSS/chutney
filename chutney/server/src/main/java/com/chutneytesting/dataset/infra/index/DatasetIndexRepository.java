@@ -8,7 +8,7 @@
 package com.chutneytesting.dataset.infra.index;
 
 import com.chutneytesting.index.domain.AbstractIndexRepository;
-import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import com.chutneytesting.scenario.infra.raw.TagListMapper;
 import com.chutneytesting.server.core.domain.dataset.DataSet;
 import com.fasterxml.jackson.core.JsonProcessingException;

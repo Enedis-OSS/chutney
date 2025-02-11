@@ -11,7 +11,7 @@ import static org.apache.lucene.document.Field.Store;
 
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
 import com.chutneytesting.index.api.dto.Hit;
-import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

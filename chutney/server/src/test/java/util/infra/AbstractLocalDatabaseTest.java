@@ -14,7 +14,7 @@ import com.chutneytesting.campaign.infra.jpa.CampaignScenarioEntity;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionEntity;
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import com.chutneytesting.scenario.infra.raw.TagListMapper;
-import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import com.chutneytesting.server.core.domain.execution.report.ServerReportStatus;
 import com.chutneytesting.server.core.domain.scenario.campaign.Campaign;
 import jakarta.persistence.EntityManager;

@@ -5,7 +5,7 @@
  *
  */
 
-package com.chutneytesting.index.infra.lucene.config;
+package com.chutneytesting.index.infra.config;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;

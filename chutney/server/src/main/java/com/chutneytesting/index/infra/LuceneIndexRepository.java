@@ -5,9 +5,9 @@
  *
  */
 
-package com.chutneytesting.index.infra.lucene;
+package com.chutneytesting.index.infra;
 
-import com.chutneytesting.index.infra.lucene.config.IndexConfig;
+import com.chutneytesting.index.infra.config.IndexConfig;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -19,10 +19,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.StoredFields;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
@@ -41,7 +45,6 @@ public class LuceneIndexRepository {
     private final Analyzer analyzer;
     private static final Logger LOGGER = LoggerFactory.getLogger(LuceneIndexRepository.class);
 
-
     public LuceneIndexRepository(IndexConfig config) {
         this.indexDirectory = config.directory();
         this.indexWriter = config.indexWriter();
@@ -53,7 +56,7 @@ public class LuceneIndexRepository {
             this.indexWriter.addDocument(document);
             this.indexWriter.commit();
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't index data", e);
+            LOGGER.error("Couldn't index data", e);
         }
     }
 
@@ -62,7 +65,7 @@ public class LuceneIndexRepository {
             this.indexWriter.updateDocuments(query, List.of(document));
             this.indexWriter.commit();
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't index data", e);
+            LOGGER.error("Couldn't index data", e);
         }
     }
 
@@ -81,15 +84,14 @@ public class LuceneIndexRepository {
     }
 
     public int count(Query query) {
-        int count = 0;
         try (DirectoryReader reader = DirectoryReader.open(indexDirectory)) {
             IndexSearcher searcher = new IndexSearcher(reader);
-            count = searcher.count(query);
+            return searcher.count(query);
 
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't count elements in index", e);
+            LOGGER.error("Couldn't count elements in index", e);
+            return 0;
         }
-        return count;
     }
 
     public void delete(Query query) {
@@ -97,7 +99,7 @@ public class LuceneIndexRepository {
             indexWriter.deleteDocuments(query);
             indexWriter.commit();
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't delete index using query " + query, e);
+            LOGGER.error("Couldn't delete index using query " + query, e);
         }
     }
 
@@ -106,31 +108,44 @@ public class LuceneIndexRepository {
             indexWriter.deleteAll();
             indexWriter.commit();
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't delete all indexes", e);
+            LOGGER.error("Couldn't delete all indexes", e);
         }
     }
 
-
-    public String highlight(Query query, String field, String value, boolean strict) {
-        if (value == null) {
+    public String highlight(List<String> keywords, String field, String value, boolean strict) {
+        if (StringUtils.isBlank(value)) {
             return null;
         }
-        QueryScorer scorer = new QueryScorer(query);
-        Formatter formatter = new SimpleHTMLFormatter("<mark>", "</mark>");
-        Highlighter highlighter = new Highlighter(formatter, scorer);
-        return highlight(highlighter, field, value, strict);
+
+        Query query = createCombinedWildcardQuery(keywords, field);
+        Highlighter highlighter = createHighlighter(query);
+        return processHighlight(highlighter, field, value, strict);
     }
 
-    private String highlight(Highlighter highlighter, String fieldName, String text, boolean strict) {
-        if (StringUtils.isBlank(text)) {
-            return text;
+    private Query createCombinedWildcardQuery(List<String> keywords, String field) {
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        for (String keyword : keywords) {
+            builder.add(new WildcardQuery(new Term(field, "*" + QueryParser.escape(keyword) + "*")), BooleanClause.Occur.SHOULD);
         }
+        return builder.build();
+    }
+
+    private Highlighter createHighlighter(Query query) {
+        QueryScorer scorer = new QueryScorer(query);
+        SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<mark>", "</mark>");
+        return new Highlighter(formatter, scorer);
+    }
+
+    private String processHighlight(Highlighter highlighter, String fieldName, String text, boolean strict) {
         try (TokenStream tokenStream = analyzer.tokenStream(fieldName, new StringReader(text))) {
             String highlightedText = highlighter.getBestFragment(tokenStream, text);
-            return highlightedText != null ? highlightedText : strict ? null : text;
+            return highlightedText != null ? highlightedText : (strict ? null : text);
         } catch (IOException | InvalidTokenOffsetsException e) {
             LOGGER.warn("Unable to highlight {} field: {}", fieldName, e);
             return text;
+        } catch (RuntimeException e) {
+            LOGGER.error("processHighlight error",e);
+            return "";
         }
     }
 }

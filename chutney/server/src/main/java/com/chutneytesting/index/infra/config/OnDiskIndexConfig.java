@@ -5,15 +5,15 @@
  *
  */
 
-package com.chutneytesting.index.infra.lucene.config;
+package com.chutneytesting.index.infra.config;
 
 import static com.chutneytesting.tools.file.FileUtils.initFolder;
 
+import com.chutneytesting.index.infra.CustemChutneyAnalyzer;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.TieredMergePolicy;
@@ -26,14 +26,14 @@ import org.springframework.stereotype.Component;
 public class OnDiskIndexConfig implements IndexConfig {
     private final IndexWriter indexWriter;
     private final Directory indexDirectory;
-    private final StandardAnalyzer analyzer;
+    private final Analyzer analyzer;
 
     public OnDiskIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String indexDir) {
         try {
             Path path = Paths.get(indexDir);
             initFolder(path);
             this.indexDirectory = FSDirectory.open(path);
-            analyzer = new StandardAnalyzer();
+            analyzer = new CustemChutneyAnalyzer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setRAMBufferSizeMB(64); // Default 16
             config.setMergePolicy(new TieredMergePolicy());

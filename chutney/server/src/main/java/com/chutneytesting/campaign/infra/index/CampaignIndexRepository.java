@@ -9,7 +9,7 @@ package com.chutneytesting.campaign.infra.index;
 
 import com.chutneytesting.campaign.infra.jpa.CampaignEntity;
 import com.chutneytesting.index.domain.AbstractIndexRepository;
-import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;

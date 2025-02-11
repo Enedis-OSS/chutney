@@ -11,14 +11,16 @@ import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
 import com.chutneytesting.index.api.dto.Hit;
-import com.chutneytesting.index.infra.lucene.LuceneIndexRepository;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import com.chutneytesting.scenario.infra.raw.TagListMapper;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
@@ -66,7 +68,7 @@ public abstract class AbstractIndexRepository<T> implements IndexRepository<T> {
     public List<Hit> search(String keyword) {
         Query whatQuery = new TermQuery(new Term(WHAT, whatValue));
 
-        String[] keywords = QueryParser.escape(keyword).toLowerCase().split("\\s+");
+        String[] keywords = keyword.toLowerCase().split("\\s+");
 
         BooleanQuery.Builder propertiesQueryBuilder = new BooleanQuery.Builder();
 
@@ -89,11 +91,11 @@ public abstract class AbstractIndexRepository<T> implements IndexRepository<T> {
             .add(propertiesQuery, MUST)
             .build();
 
-        List<Document> hits = luceneIndexRepository.search(query, 100);
+        List<Document> documents = luceneIndexRepository.search(query, 100);
 
-        return hits
+        return documents
             .stream()
-            .map(doc -> highlight(doc, keyword))
+            .map(doc -> highlight(doc, Arrays.asList(keywords)))
             .toList();
     }
 
@@ -115,13 +117,14 @@ public abstract class AbstractIndexRepository<T> implements IndexRepository<T> {
             .build();
     }
 
-    public Hit highlight(Document doc, String keywords) {
-        String highlightedId = luceneIndexRepository.highlight(createCombinedQuery(ID, keywords), ID, doc.get(ID), false);
-        String highlightedTitle = luceneIndexRepository.highlight(createCombinedQuery(TITLE, keywords), TITLE, doc.get(TITLE), false);
-        String highlightedDescription = luceneIndexRepository.highlight(createCombinedQuery(DESCRIPTION, keywords), DESCRIPTION, doc.get(DESCRIPTION), false);
-        String highlightedContent = luceneIndexRepository.highlight(createCombinedQuery(CONTENT, keywords), CONTENT, doc.get(CONTENT), false);
+    public Hit highlight(Document doc, List<String> keywords) {
+
+        String highlightedId = luceneIndexRepository.highlight(keywords, ID, doc.get(ID), false);
+        String highlightedTitle = luceneIndexRepository.highlight(keywords, TITLE, doc.get(TITLE), false);
+        String highlightedDescription = luceneIndexRepository.highlight(keywords, DESCRIPTION, doc.get(DESCRIPTION), false);
+        String highlightedContent = luceneIndexRepository.highlight(keywords, CONTENT, doc.get(CONTENT), false);
         List<String> highlightedTags = TagListMapper.tagsStringToList(doc.get(TAGS)).stream()
-            .map(tag -> luceneIndexRepository.highlight(createCombinedQuery(TAGS, keywords), TAGS, tag, false))
+            .map(tag -> luceneIndexRepository.highlight(keywords, TAGS, tag, false))
             .filter(StringUtils::isNotBlank)
             .collect(Collectors.toList());
 
@@ -133,16 +136,5 @@ public abstract class AbstractIndexRepository<T> implements IndexRepository<T> {
             highlightedTags,
             whatValue
         );
-    }
-
-    public Query createCombinedQuery(String field, String keywords) {
-        String[] keywordArray = keywords.split("\\s+");
-
-        BooleanQuery.Builder combinedQueryBuilder = new BooleanQuery.Builder();
-        for (String keyword : keywordArray) {
-            combinedQueryBuilder.add(likeQuery(field, keyword), MUST);
-        }
-
-        return combinedQueryBuilder.build();
     }
 }
