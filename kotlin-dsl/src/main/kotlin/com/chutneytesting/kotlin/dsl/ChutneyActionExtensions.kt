@@ -1183,6 +1183,39 @@ fun ChutneyStepBuilder.SeleniumChromeDriverInitAction(
 }
 
 /**
+ * Start a local or remote selenium driver instance with Edge Driver
+ * -------
+ * Outputs:
+ * - webDriver : instance of webdriver (org.openqa.selenium.WebDriver)
+ * -------
+ * Finally action registered : SeleniumQuitAction
+ */
+fun ChutneyStepBuilder.SeleniumEdgeDriverInitAction(
+    hub: String? = null,
+    headless: Boolean? = null,
+    driverPath: String? = null,
+    browserPath: String? = null,
+    edgeOptions: List<String>? = null,
+    outputs: Map<String, Any> = mapOf(),
+    validations: Map<String, Any> = mapOf(),
+    strategy: Strategy? = null
+) {
+    implementation = ChutneyStepImpl(
+        type = "selenium-edge-driver-init",
+        inputs = listOf(
+            "hub" to hub,
+            "headless" to headless,
+            "driverPath" to driverPath,
+            "browserPath" to browserPath,
+            "edgeOptions" to edgeOptions
+        ).notEmptyToMap(),
+        outputs = outputs,
+        validations = validations
+    )
+    if (strategy != null) this.strategy = strategy
+}
+
+/**
  * Start a local or remote selenium driver instance with Firefox Driver
  * -------
  * Outputs:
@@ -1555,6 +1588,26 @@ fun ChutneyStepBuilder.SeleniumSetBrowserSizeAction(
             "web-driver" to webDriver,
             "width" to width,
             "height" to height
+        ).notEmptyToMap(),
+        outputs = outputs,
+        validations = validations
+    )
+    if (strategy != null) this.strategy = strategy
+}
+
+/**
+ * Selenium quit
+ */
+fun ChutneyStepBuilder.SeleniumQuitAction(
+    webDriver: String = defaultWebDriverSpel,
+    outputs: Map<String, Any> = mapOf(),
+    validations: Map<String, Any> = mapOf(),
+    strategy: Strategy? = null
+) {
+    implementation = ChutneyStepImpl(
+        type = "selenium-quit",
+        inputs = listOf(
+            "web-driver" to webDriver,
         ).notEmptyToMap(),
         outputs = outputs,
         validations = validations

@@ -56,6 +56,7 @@ com.chutneytesting.action.jms.JmsBrokerStopAction
 com.chutneytesting.action.sql.SqlAction
 
 com.chutneytesting.action.selenium.driver.SeleniumChromeDriverInitAction
+com.chutneytesting.action.selenium.driver.SeleniumEdgeDriverInitAction
 com.chutneytesting.action.selenium.driver.SeleniumFirefoxDriverInitAction
 com.chutneytesting.action.selenium.driver.SeleniumGenericDriverInitAction
 

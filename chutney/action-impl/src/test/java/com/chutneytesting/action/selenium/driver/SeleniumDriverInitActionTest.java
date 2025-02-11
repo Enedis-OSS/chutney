@@ -36,6 +36,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -49,24 +50,32 @@ public class SeleniumDriverInitActionTest {
 
         SeleniumFirefoxDriverInitAction localFirefoxAction = spy(new SeleniumFirefoxDriverInitAction(finallyActionRegistry, logger, "", false, "driverPath", "browserPath", null, null));
         SeleniumChromeDriverInitAction localChromeAction = spy(new SeleniumChromeDriverInitAction(finallyActionRegistry, logger, "", false, "driverPath", "browserPath", null));
+        SeleniumEdgeDriverInitAction localEdgeAction = spy(new SeleniumEdgeDriverInitAction(finallyActionRegistry, logger, "", false, "driverPath", "browserPath", null));
 
         WebDriver firefoxDriver = mock(FirefoxDriver.class);
         WebDriver chromeDriver = mock(ChromeDriver.class);
+        WebDriver edgeDriver = mock(EdgeDriver.class);
 
         doReturn(firefoxDriver)
             .when(localFirefoxAction).localWebDriver(any());
         doReturn(chromeDriver)
             .when(localChromeAction).localWebDriver(any());
+        doReturn(edgeDriver).when(localEdgeAction).localWebDriver(any());
+
 
         SeleniumFirefoxDriverInitAction remoteFirefoxAction = spy(new SeleniumFirefoxDriverInitAction(finallyActionRegistry, logger, "http://hub:99", false, "", "", null, null));
         SeleniumChromeDriverInitAction remoteChromeAction = spy(new SeleniumChromeDriverInitAction(finallyActionRegistry, logger, "http://hub:99", false, "", "", null));
+        SeleniumEdgeDriverInitAction remoteEdgeAction = spy(new SeleniumEdgeDriverInitAction(finallyActionRegistry, logger, "http://hub:99", false, "", "", null));
 
         RemoteWebDriver firefoxRemoteWebDriver = mock(RemoteWebDriver.class);
         RemoteWebDriver chromeRemoteWebDriver = mock(RemoteWebDriver.class);
+        RemoteWebDriver edgeRemoteWebDriver = mock(RemoteWebDriver.class);
         doReturn(firefoxRemoteWebDriver)
             .when(remoteFirefoxAction).createWebDriver(any());
         doReturn(chromeRemoteWebDriver)
             .when(remoteChromeAction).createWebDriver(any());
+        doReturn(edgeRemoteWebDriver)
+            .when(remoteEdgeAction).createWebDriver(any());
 
         String firefoxJsonConfiguration ="{\"acceptInsecureCerts\":true,\"browserName\":\"firefox\",\"moz:debuggerAddress\":true,\"moz:firefoxOptions\":{\"args\":[\"-headless\"],\"binary\":\"browserPath\",\"log\":{\"level\":\"debug\"}}}";
         SeleniumGenericDriverInitAction firefoxGenericSeleniumAction = spy(new SeleniumGenericDriverInitAction(finallyActionRegistry, logger, "http://hub:99", firefoxJsonConfiguration));
@@ -78,8 +87,10 @@ public class SeleniumDriverInitActionTest {
         return Stream.of(
             of(localFirefoxAction, firefoxDriver, finallyActionRegistry),
             of(localChromeAction, chromeDriver, finallyActionRegistry),
+            of(localEdgeAction, edgeDriver, finallyActionRegistry),
             of(remoteFirefoxAction, firefoxRemoteWebDriver, finallyActionRegistry),
             of(remoteChromeAction, chromeRemoteWebDriver, finallyActionRegistry),
+            of(remoteEdgeAction, edgeRemoteWebDriver, finallyActionRegistry),
             of(firefoxGenericSeleniumAction, genericFirefoxRemoteWebDriver, finallyActionRegistry)
         );
     }
@@ -114,20 +125,28 @@ public class SeleniumDriverInitActionTest {
 
     public static Stream<Arguments> parametersForshould_retun_error_when_wrong_input() {
         Action everyInputEmpty = new SeleniumFirefoxDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "", "", null, null);
-        Action driverPathOKBrowserPathEmpty = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "driverPath", "", null);
-        Action driverPathEmptyBrowserPathOK = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "", "browserPath", null);
+        Action chromeDriverPathOKBrowserPathEmpty = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "driverPath", "", null);
+        Action chromeDriverPathEmptyBrowserPathOK = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "", "browserPath", null);
+        Action edgeDriverPathOKBrowserPathEmpty = new SeleniumEdgeDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "driverPath", "", null);
+        Action edgeDriverPathEmptyBrowserPathOK = new SeleniumEdgeDriverInitAction(mock(FinallyActionRegistry.class), null, "", false, "", "browserPath", null);
 
         Action everyInputNull = new SeleniumFirefoxDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, null, null, null, null);
-        Action driverPathOKBrowserPathNull = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, "driverPath", null, null);
-        Action driverPathNullBrowserPathOK = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, null, "", null);
+        Action chromeDriverPathOKBrowserPathNull = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, "driverPath", null, null);
+        Action chromeDriverPathNullBrowserPathOK = new SeleniumChromeDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, null, "", null);
+        Action edgeDriverPathOKBrowserPathNull = new SeleniumEdgeDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, "driverPath", null, null);
+        Action edgeDriverPathNullBrowserPathOK = new SeleniumEdgeDriverInitAction(mock(FinallyActionRegistry.class), null, null, false, null, "", null);
 
         return Stream.of(
             of(everyInputEmpty),
-            of(driverPathOKBrowserPathEmpty),
-            of(driverPathEmptyBrowserPathOK),
+            of(chromeDriverPathOKBrowserPathEmpty),
+            of(chromeDriverPathEmptyBrowserPathOK),
+            of(edgeDriverPathOKBrowserPathEmpty),
+            of(edgeDriverPathEmptyBrowserPathOK),
             of(everyInputNull),
-            of(driverPathOKBrowserPathNull),
-            of(driverPathNullBrowserPathOK)
+            of(chromeDriverPathOKBrowserPathNull),
+            of(chromeDriverPathNullBrowserPathOK),
+            of(edgeDriverPathOKBrowserPathNull),
+            of(edgeDriverPathNullBrowserPathOK)
         );
     }
 

@@ -14,11 +14,13 @@ import static org.mockito.Mockito.spy;
 import com.chutneytesting.action.TestFinallyActionRegistry;
 import com.chutneytesting.action.TestLogger;
 import com.chutneytesting.action.selenium.driver.SeleniumChromeDriverInitAction;
+import com.chutneytesting.action.selenium.driver.SeleniumEdgeDriverInitAction;
 import com.chutneytesting.action.selenium.driver.SeleniumFirefoxDriverInitAction;
 import com.chutneytesting.action.spi.ActionExecutionResult;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.Network;
@@ -72,4 +74,24 @@ class SeleniumTest {
         }
     }
 
+    @Test
+    public void selenium_edge_remote_driver_integration_test() {
+        final BrowserWebDriverContainer edgeWebDriverContainer = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
+            .withCapabilities(new EdgeOptions())
+            .withNetwork(network);
+        try (edgeWebDriverContainer) {
+            edgeWebDriverContainer.start();
+
+            TestLogger logger = new TestLogger();
+            TestFinallyActionRegistry finallyActionRegistry = spy(new TestFinallyActionRegistry());
+            String url = edgeWebDriverContainer.getSeleniumAddress().toString();
+
+            SeleniumEdgeDriverInitAction remoteEdgeAction = new SeleniumEdgeDriverInitAction(finallyActionRegistry, logger, url, true, null, null, null);
+            ActionExecutionResult edgeActionResult = remoteEdgeAction.execute();
+            assertThat(edgeActionResult.status).isEqualTo(Success);
+
+            SeleniumQuitAction quitAction = new SeleniumQuitAction(logger, (WebDriver) edgeActionResult.outputs.get("webDriver"));
+            quitAction.execute();
+        }
+    }
 }
