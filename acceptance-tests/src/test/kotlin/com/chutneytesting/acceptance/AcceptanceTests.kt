@@ -227,11 +227,6 @@ class AcceptanceTests {
   }
 
   @Test
-  fun `Replace scenario parameters with data set or global var values`() {
-    Launcher().run(`Execute gwt scenario with global vars`, environment)
-  }
-
-  @Test
   fun `Engine actions exposition`() {
     listOf(
       Pair("debug", "[[{\"name\": \"filters\",\"type\": \"java.util.List\"}]]"),

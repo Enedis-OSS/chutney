@@ -132,12 +132,6 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/v1/editions/testcases/testcaseId", "SCENARIO_READ", null, OK},
             {POST, "/api/v1/editions/testcases/testcaseId", "SCENARIO_WRITE", "{}", NOT_FOUND},
             {DELETE, "/api/v1/editions/testcases/testcaseId", "SCENARIO_WRITE", null, OK},
-
-            {GET, "/api/ui/globalvar/v1", "GLOBAL_VAR_READ", null, OK},
-            {POST, "/api/ui/globalvar/v1/secupost", "GLOBAL_VAR_WRITE", "{\"message\":\"{}\"}", OK},
-            {DELETE, "/api/ui/globalvar/v1/secudelete", "GLOBAL_VAR_WRITE", null, NOT_FOUND},
-            {GET, "/api/ui/globalvar/v1/secuget", "GLOBAL_VAR_READ", null, NOT_FOUND},
-
             {GET, "/api/ui/jira/v1/scenario", "SCENARIO_READ", null, OK},
             {GET, "/api/ui/jira/v1/scenario", "CAMPAIGN_WRITE", null, OK},
             {GET, "/api/ui/jira/v1/campaign", "CAMPAIGN_READ", null, OK},

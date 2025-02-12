@@ -19,9 +19,6 @@ public enum Authorization {
 
     ENVIRONMENT_ACCESS,
 
-    GLOBAL_VAR_READ,
-    GLOBAL_VAR_WRITE,
-
     DATASET_READ,
     DATASET_WRITE,
 

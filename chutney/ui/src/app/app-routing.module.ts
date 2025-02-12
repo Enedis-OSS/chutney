@@ -41,12 +41,6 @@ export const appRoutes: Routes = [
                 data: {'authorizations': [Authorization.CAMPAIGN_READ, Authorization.CAMPAIGN_WRITE, Authorization.CAMPAIGN_EXECUTE]}
             },
             {
-                path: 'variable',
-                loadChildren: () => import('./modules/global-variable/global-variable.module').then(m => m.GlobalVariableModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.GLOBAL_VAR_READ, Authorization.GLOBAL_VAR_WRITE]}
-            },
-            {
                 path: 'dataset',
                 loadChildren: () => import('./modules/dataset/dataset.module').then(m => m.DatasetModule),
                 canActivate: [authGuard, featuresGuard], // add requiredAuthorizations

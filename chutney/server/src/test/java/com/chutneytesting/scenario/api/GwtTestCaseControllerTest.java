@@ -161,22 +161,4 @@ public class GwtTestCaseControllerTest {
 
         assertThat(actual.getValue().scenario).isEqualTo(expected.scenario);
     }
-
-    @Test
-    public void save_should_return_uri_of_the_scenario_when_it_has_a_data_set() throws Exception {
-        URL resource = this.getClass().getResource("/raw_scenarios/testcase_for_global_vars.v2.1.json");
-        String exampleWithDataSet = new String(Files.readAllBytes(Paths.get(resource.toURI())));
-
-        AtomicReference<String> bodyHolder = new AtomicReference<>();
-
-        // Save a scenario
-        mockMvc.perform(post("/api/scenario/v2")
-            .contentType(APPLICATION_JSON)
-            .content(exampleWithDataSet))
-            .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
-            .andExpect(status().isOk());
-
-        ArgumentCaptor<GwtTestCase> testCase = ArgumentCaptor.forClass(GwtTestCase.class);
-        verify(testCaseRepository).save(testCase.capture());
-    }
 }

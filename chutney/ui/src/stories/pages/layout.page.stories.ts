@@ -126,7 +126,6 @@ export const UserAccess: Story = {
                 intersection(
                   [
                     Authorization.CAMPAIGN_READ,
-                    Authorization.GLOBAL_VAR_READ,
                     Authorization.SCENARIO_READ,
                   ],
                   [...authorization],

@@ -25,7 +25,6 @@ import com.chutneytesting.server.core.domain.execution.FailedExecutionAttempt;
 import com.chutneytesting.server.core.domain.execution.ScenarioConversionException;
 import com.chutneytesting.server.core.domain.execution.ScenarioNotRunningException;
 import com.chutneytesting.server.core.domain.execution.report.ReportNotFoundException;
-import com.chutneytesting.server.core.domain.globalvar.GlobalVarNotFoundException;
 import com.chutneytesting.server.core.domain.instrument.ChutneyMetrics;
 import com.chutneytesting.server.core.domain.scenario.AlreadyExistingScenarioException;
 import com.chutneytesting.server.core.domain.scenario.ScenarioNotFoundException;
@@ -85,7 +84,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         CurrentUserNotFoundException.class,
         DataSetNotFoundException.class,
         EnvironmentNotFoundException.class,
-        GlobalVarNotFoundException.class,
         ReportNotFoundException.class,
         ScenarioNotFoundException.class,
         ScenarioNotRunningException.class,

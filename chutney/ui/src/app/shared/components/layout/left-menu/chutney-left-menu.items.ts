@@ -25,12 +25,6 @@ export const allMenuItems: MenuItem [] = [
                 authorizations: [Authorization.CAMPAIGN_READ, Authorization.CAMPAIGN_WRITE,Authorization.CAMPAIGN_EXECUTE]
             },
             {
-                label: 'menu.principal.variable',
-                link: '/variable',
-                iconClass: 'fa fa-list-ul',
-                authorizations: [Authorization.GLOBAL_VAR_READ,Authorization.GLOBAL_VAR_WRITE]
-            },
-            {
                 label: 'menu.principal.dataset',
                 link: '/dataset',
                 iconClass: 'fa fa-table',

@@ -19,7 +19,6 @@ import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
 import com.chutneytesting.scenario.domain.gwt.Strategy;
 import com.chutneytesting.scenario.domain.raw.RawTestCase;
 import com.chutneytesting.server.core.domain.execution.ExecutionRequest;
-import com.chutneytesting.server.core.domain.globalvar.GlobalvarRepository;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadataImpl;
 import java.time.Instant;
 import java.util.HashMap;
@@ -27,15 +26,11 @@ import java.util.Map;
 import org.apache.groovy.util.Maps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class DataSetPreProcessorTest {
 
-    private GlobalvarRepository globalvarRepository;
-
     @BeforeEach
     public void setUp() {
-        globalvarRepository = Mockito.mock(GlobalvarRepository.class);
         Map<String, String> map = new HashMap<>();
         map.put("key.1", "value1");
         map.put("key.2", "value2");
@@ -45,13 +40,12 @@ public class DataSetPreProcessorTest {
         map.put("description", "newDesc");
         map.put("type", "StrategyType");
         map.put("aParam", "a value");
-        Mockito.when(globalvarRepository.getFlatMap()).thenReturn(map);
     }
 
     @Test
     public void should_replace_raw_scenario_parameters_with_global_data_set_values() {
         // Given
-        RawDataSetPreProcessor dataSetPreProcessor = new RawDataSetPreProcessor(globalvarRepository);
+        RawDataSetPreProcessor dataSetPreProcessor = new RawDataSetPreProcessor();
         RawTestCase fakeTestCase = RawTestCase.builder()
             .withScenario("a blabla step with **aKey** and **anotherKey** and **key.1**")
             .build();
@@ -96,7 +90,7 @@ public class DataSetPreProcessorTest {
                         GwtStep.builder().withDescription("then 3.1 step")
                             .withImplementation(new GwtStepImplementation("**anotherKey**", "", null, null, null, null)).build()).build())).build()).build();
 
-        GwtDataSetPreProcessor dataSetPreProcessor = new GwtDataSetPreProcessor(new GwtScenarioMapper(), globalvarRepository);
+        GwtDataSetPreProcessor dataSetPreProcessor = new GwtDataSetPreProcessor(new GwtScenarioMapper());
 
         // When
         GwtTestCase actual = dataSetPreProcessor.apply(
