@@ -16,6 +16,8 @@ import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_KEY
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_PAYLOADS;
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
+import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.ContentType.APPLICATION_OCTET_STREAM;
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
@@ -37,9 +39,13 @@ import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -70,22 +76,19 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
     }
 
     @Test
-    public void should_consume_message_from_broker_without_truststore() {
-
-        // given
+    void consume_message_from_broker() {
+        // Given
         producer.send(new ProducerRecord<>(uniqueTopic, 123, "my-test-value"));
 
         Map<String, String> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, OffsetResetStrategy.EARLIEST.name().toLowerCase());
 
+        // When
         Action consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
-
-
-        // when
         ActionExecutionResult actionExecutionResult = consumeAction.execute();
 
-        // then
+        // Then
         assertThat(actionExecutionResult.status).isEqualTo(Success);
         List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
         assertThat(body.get(0).get("payload")).isEqualTo("my-test-value");
@@ -97,8 +100,8 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
         /security/truststore_empty_pass.jks,'k'
         /security/truststore_empty_pass.jks,null
         """)
-    public void consumer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
-        // given
+    void consumer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
+        // Given
         String truststore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource(truststorePath)).toURI()).toAbsolutePath().toString();
         Target target = targetBuilder.withProperty("trustStore", truststore_jks)
             .withProperty("trustStorePassword", truststorePass)
@@ -108,40 +111,37 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
         Map<String, String> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP);
 
+        // When
         Action consumeAction = getKafkaBasicConsumeAction(target, props, false);
-
-        // when
         ActionExecutionResult actionExecutionResult = consumeAction.execute();
 
-        // then
+        // Then
         assertThat(actionExecutionResult.status).isEqualTo(Failure);
-
     }
 
     @Test
-    public void should_reset_offset_to_the_beginning() {
-        // given
+    void reset_offset_to_the_beginning() {
+        // Given
+        producer.send(new ProducerRecord<>(uniqueTopic, 123, "1"));
+
         Map<String, String> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, OffsetResetStrategy.EARLIEST.name().toLowerCase());
 
+        // When
         Action consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
-
-        producer.send(new ProducerRecord<>(uniqueTopic, 123, "1"));
-
-
         ActionExecutionResult actionExecutionResult = consumeAction.execute();
         assertThat(actionExecutionResult.status).isEqualTo(Success);
         List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
         assertThat(body.get(0).get("payload")).isEqualTo("1");
 
-        // second time
+        // Second time
         consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
         actionExecutionResult = consumeAction.execute();
 
         assertThat(actionExecutionResult.status).isEqualTo(Failure);
 
-        // third time with reset
+        // Third time with reset
         Action consumeActionWithReset = getKafkaBasicConsumeAction(targetBuilder.build(), props, true);
         actionExecutionResult = consumeActionWithReset.execute();
 
@@ -149,12 +149,47 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
         body = assertActionOutputsSize(actionExecutionResult, 1);
         assertThat(body.get(0).get("payload")).isEqualTo("1");
 
-        // third time without reset
+        // Third time without reset
         consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
         actionExecutionResult = consumeAction.execute();
 
         assertThat(actionExecutionResult.status).isEqualTo(Failure);
+    }
 
+    @Nested
+    @DisplayName("Consume after chutney publish action")
+    class PublishThenConsume {
+        @Test
+        public void publish_and_consume_message_as_byte_array() {
+            // Given
+            TestTarget kafkaTarget = targetBuilder
+                .withProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName())
+                .withProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getCanonicalName())
+                .withProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP)
+                .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, OffsetResetStrategy.EARLIEST.name().toLowerCase())
+                .build();
+
+            byte[] payload = "Hello from France !!".getBytes();
+            var publishAction = new KafkaBasicPublishAction(
+                kafkaTarget, uniqueTopic, null, payload, null, null, logger
+            );
+            var publishResult = publishAction.execute();
+            assertThat(publishResult.status).isEqualTo(Success);
+
+            // When
+            var consumeAction = new KafkaBasicConsumeAction(
+                kafkaTarget, uniqueTopic, GROUP, emptyMap(), 1, null, null, APPLICATION_OCTET_STREAM.getMimeType(), "3 s", null, false, logger
+            );
+            var actionExecutionResult = consumeAction.execute();
+
+            // Then
+            assertThat(actionExecutionResult.status).isEqualTo(Success);
+            List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
+            assertThat(body.get(0).get("payload")).isInstanceOf(byte[].class);
+            assertThat(actionExecutionResult.outputs.get("payloads")).asList().first()
+                .isInstanceOf(byte[].class)
+                .isEqualTo(payload);
+        }
     }
 
     private KafkaBasicConsumeAction getKafkaBasicConsumeAction(Target target, Map<String, String> props, boolean resetOffset) {
