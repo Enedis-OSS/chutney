@@ -10,7 +10,6 @@ package com.chutneytesting.execution.infra.execution;
 import static com.chutneytesting.environment.api.target.dto.NoTargetDto.NO_TARGET_DTO;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -31,28 +30,22 @@ import com.chutneytesting.environment.api.variable.dto.EnvironmentVariableDto;
 import com.chutneytesting.scenario.domain.gwt.GwtStep;
 import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
 import com.chutneytesting.scenario.domain.gwt.Strategy;
-import com.chutneytesting.scenario.domain.raw.RawTestCase;
 import com.chutneytesting.server.core.domain.execution.ExecutionRequest;
 import com.chutneytesting.server.core.domain.execution.ScenarioConversionException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.hjson.JsonValue;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultExecutionRequestMapper implements ExecutionRequestMapper {
 
-    private final ObjectMapper objectMapper;
     private final TargetApi targetApi;
     private final EnvironmentApi environmentApi;
     private final CurrentNetworkDescription currentNetworkDescription;
 
-    public DefaultExecutionRequestMapper(ObjectMapper objectMapper, EmbeddedTargetApi targetApi, EmbeddedEnvironmentApi environmentApi, CurrentNetworkDescription currentNetworkDescription) {
-        this.objectMapper = objectMapper; // TODO - Choose explicitly which mapper to use
+    public DefaultExecutionRequestMapper(EmbeddedTargetApi targetApi, EmbeddedEnvironmentApi environmentApi, CurrentNetworkDescription currentNetworkDescription) {
         this.targetApi = targetApi;
         this.environmentApi = environmentApi;
         this.currentNetworkDescription = currentNetworkDescription;
@@ -72,46 +65,12 @@ public class DefaultExecutionRequestMapper implements ExecutionRequestMapper {
     }
 
     private StepDefinitionRequestDto convertToStepDef(ExecutionRequest executionRequest) { // TODO - shameless green - might be refactored later
-        if (executionRequest.testCase instanceof RawTestCase) {
-            return convertRaw(executionRequest);
-        }
-
         if (executionRequest.testCase instanceof GwtTestCase) {
             return convertGwt(executionRequest);
         }
 
         throw new ScenarioConversionException(executionRequest.testCase.metadata().id(),
             "Cannot create an executable StepDefinition from a " + executionRequest.testCase.getClass().getCanonicalName());
-    }
-
-    private StepDefinitionRequestDto convertRaw(ExecutionRequest executionRequest) {
-        RawTestCase rawTestCase = (RawTestCase) executionRequest.testCase;
-        try {
-            ScenarioContent scenarioContent = objectMapper.readValue(JsonValue.readHjson(rawTestCase.scenario).toString(), ScenarioContent.class);
-            return getStepDefinitionRequestFromStepDef(scenarioContent.scenario, executionRequest.environment);
-        } catch (IOException e) {
-            throw new ScenarioConversionException(rawTestCase.metadata().id(), e);
-        }
-    }
-
-    private StepDefinitionRequestDto getStepDefinitionRequestFromStepDef(UnmarshalledStepDefinition definition, String env) {
-        final ExecutionRequestDto.StepStrategyDefinitionRequestDto retryStrategy = ofNullable(definition.strategy)
-            .map(s -> new ExecutionRequestDto.StepStrategyDefinitionRequestDto(s.type, s.parameters))
-            .orElse(null);
-
-        List<StepDefinitionRequestDto> steps = definition.steps.stream()
-            .map(d -> getStepDefinitionRequestFromStepDef(d, env))
-            .collect(toList());
-
-        return new StepDefinitionRequestDto(
-            definition.name,
-            toExecutionTargetDto(getTargetForExecution(env, definition.target), env),
-            retryStrategy,
-            definition.type,
-            definition.inputs,
-            steps,
-            definition.outputs,
-            definition.validations);
     }
 
     private StepDefinitionRequestDto convertGwt(ExecutionRequest executionRequest) {

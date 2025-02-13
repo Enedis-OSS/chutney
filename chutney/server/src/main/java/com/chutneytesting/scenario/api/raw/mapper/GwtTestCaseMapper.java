@@ -10,7 +10,6 @@ package com.chutneytesting.scenario.api.raw.mapper;
 import com.chutneytesting.scenario.api.raw.dto.GwtTestCaseDto;
 import com.chutneytesting.scenario.api.raw.dto.ImmutableGwtTestCaseDto;
 import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
-import com.chutneytesting.scenario.domain.raw.RawTestCase;
 import com.chutneytesting.server.core.domain.scenario.TestCase;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadataImpl;
 import java.util.Collections;
@@ -41,11 +40,6 @@ public class GwtTestCaseMapper {
         if (testCase instanceof GwtTestCase) {
             return fromGwt((GwtTestCase) testCase);
         }
-
-        if (testCase instanceof RawTestCase) {
-            return fromGwt(RawTestCaseMapper.fromRaw((RawTestCase) testCase));
-        }
-
         throw new IllegalStateException("Bad format. " +
             "Test Case [" + testCase.metadata().id() + "] is not a GwtTestCase but a " + testCase.getClass().getSimpleName());
     }
