@@ -17,7 +17,6 @@ import com.chutneytesting.scenario.domain.gwt.GwtStep;
 import com.chutneytesting.scenario.domain.gwt.GwtStepImplementation;
 import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
 import com.chutneytesting.scenario.domain.gwt.Strategy;
-import com.chutneytesting.scenario.domain.raw.RawTestCase;
 import com.chutneytesting.server.core.domain.execution.ExecutionRequest;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadataImpl;
 import java.time.Instant;
@@ -40,24 +39,6 @@ public class DataSetPreProcessorTest {
         map.put("description", "newDesc");
         map.put("type", "StrategyType");
         map.put("aParam", "a value");
-    }
-
-    @Test
-    public void should_replace_raw_scenario_parameters_with_global_data_set_values() {
-        // Given
-        RawDataSetPreProcessor dataSetPreProcessor = new RawDataSetPreProcessor();
-        RawTestCase fakeTestCase = RawTestCase.builder()
-            .withScenario("a blabla step with **aKey** and **anotherKey** and **key.1**")
-            .build();
-
-        // When
-        RawTestCase actual = dataSetPreProcessor.apply(
-            new ExecutionRequest(fakeTestCase, null, "")
-        );
-
-        // Then
-        String expectedContent = "a blabla step with a value and another value and value1";
-        assertThat(actual.scenario).isEqualToIgnoringCase(expectedContent);
     }
 
     @Test
