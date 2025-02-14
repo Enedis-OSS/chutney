@@ -56,7 +56,7 @@ public class AssertAction implements Action {
                     .stream()
                     .map(assertion -> checkAssertion(assertion, stepDefinitionInputs.get(index))))
             .flatMap(Function.identity())
-            .allMatch(valid -> valid);
+            .reduce(true, (a, b) -> a && b);
         return allAssertionAreValid ? ActionExecutionResult.ok() : ActionExecutionResult.ko();
     }
 

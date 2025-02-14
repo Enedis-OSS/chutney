@@ -11,16 +11,17 @@ import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.chutneytesting.action.TestLogger;
 import com.chutneytesting.action.spi.ActionExecutionResult;
 import com.chutneytesting.action.spi.injectable.Logger;
 import com.chutneytesting.action.spi.injectable.StepDefinitionSpi;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -56,11 +57,34 @@ public class AssertActionTest {
         assertThat(result.status).isEqualTo(expected);
         String logMessage = assertionDef + " is " + StringUtils.capitalize(value.toString());
         if (value) {
-            verify(logger, times(1)).info(logMessage);
+            verify(logger).info(logMessage);
         } else {
-            verify(logger, times(1)).error(logMessage);
+            verify(logger).error(logMessage);
         }
+    }
 
+    @Test
+    void soft_assertions() {
+        // Given
+        TestLogger logger = new TestLogger();
+        List<Map<String, Boolean>> evaluatedAssertions = List.of(
+            Map.of("assert-true", false),
+            Map.of("assert-true", false)
+        );
+        List<Map<String, String>> assertionsDef = List.of(
+            Map.of("assert-true", "some expression"),
+            Map.of("assert-true", "some expression")
+        );
+        StepDefinitionSpi stepDefinition = mock(StepDefinitionSpi.class);
+        when(stepDefinition.inputs()).thenReturn(Map.of("asserts", assertionsDef));
+
+        // When
+        AssertAction assertAction = new AssertAction(logger, evaluatedAssertions, stepDefinition);
+        ActionExecutionResult result = assertAction.execute();
+
+        // Then
+        assertThat(result.status).isEqualTo(Failure);
+        assertThat(logger.info).isEmpty();
+        assertThat(logger.errors).hasSize(2);
     }
 }
-
