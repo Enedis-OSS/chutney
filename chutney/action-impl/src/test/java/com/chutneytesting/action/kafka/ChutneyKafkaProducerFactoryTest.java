@@ -11,6 +11,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.shuffle;
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.TRANSACTIONAL_ID_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.common.config.SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG;
 import static org.apache.kafka.common.config.SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG;
@@ -81,6 +82,9 @@ class ChutneyKafkaProducerFactoryTest {
     void filter_and_merge_kafka_producer_configuration_properties_from_target_and_input() {
         List<String> producerConfigKeys = new ArrayList<>(ProducerConfig.configNames());
         shuffle(producerConfigKeys);
+        List.of(
+            TRANSACTIONAL_ID_CONFIG // Used by Spring DefaultKafkaProducerFactory as transaction id prefix
+        ).forEach(producerConfigKeys::remove);
         String targetProperty = producerConfigKeys.get(0);
         String propertyToOverride = producerConfigKeys.get(1);
         String inputProperty = producerConfigKeys.get(2);

@@ -63,7 +63,7 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MimeType;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class KafkaBasicConsumeActionTest {
 
     private static final String TOPIC = "topic";
@@ -253,7 +253,7 @@ public class KafkaBasicConsumeActionTest {
                 // Given
                 Action action = givenKafkaConsumeAction(null, mimeType, null);
                 givenActionReceiveMessages(action,
-                    buildRecord(FIRST_OFFSET, "KEY", "{\"value\": \"test message\", \"id\": \"1111\" }")
+                    buildRecord(FIRST_OFFSET, 1, "{\"value\": \"test message\", \"id\": \"1111\" }")
                 );
 
                 // When
@@ -273,7 +273,7 @@ public class KafkaBasicConsumeActionTest {
                 Action action = givenKafkaConsumeAction(null, APPLICATION_XML_VALUE, null);
                 String xmlPayload = "<root><first>first content</first><second attr=\"second attr\">second content</second></root>";
                 givenActionReceiveMessages(action,
-                    buildRecord(FIRST_OFFSET, "KEY", xmlPayload)
+                    buildRecord(FIRST_OFFSET, 1, xmlPayload)
                 );
 
                 // When
@@ -342,9 +342,9 @@ public class KafkaBasicConsumeActionTest {
                 Action action = givenKafkaConsumeAction("selector", TEXT_PLAIN_VALUE, null);
                 String payloadToSelect = "second text selector message";
                 givenActionReceiveMessages(action,
-                    buildRecord(FIRST_OFFSET, "KEY1", "first text message"),
-                    buildRecord(FIRST_OFFSET + 1, "KEY2", payloadToSelect),
-                    buildRecord(FIRST_OFFSET + 2, "KEY3", "third text message")
+                    buildRecord(FIRST_OFFSET, 1L, "first text message"),
+                    buildRecord(FIRST_OFFSET + 1, 2L, payloadToSelect),
+                    buildRecord(FIRST_OFFSET + 2, 3L, "third text message")
                 );
 
                 // When
@@ -458,8 +458,8 @@ public class KafkaBasicConsumeActionTest {
 
                 Action action = givenKafkaConsumeAction("//root", APPLICATION_XML_VALUE, null);
                 givenActionReceiveMessages(action,
-                    buildRecord(FIRST_OFFSET, "KEY1", "{\"value\": \"test message\", \"id\": \"1\" }", headers),
-                    buildRecord(FIRST_OFFSET + 1, "KEY2", "<root>second test message</root>", ImmutableList.of(
+                    buildRecord(FIRST_OFFSET, 1, "{\"value\": \"test message\", \"id\": \"1\" }", headers),
+                    buildRecord(FIRST_OFFSET + 1, 2, "<root>second test message</root>", ImmutableList.of(
                         new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes())
                     ))
                 );
@@ -517,7 +517,7 @@ public class KafkaBasicConsumeActionTest {
             // Given
             Action action = givenKafkaConsumeAction(null, null, null);
             givenActionReceiveMessages(action,
-                buildRecord(FIRST_OFFSET, "KEY", "{\"value\": \"test message\", \"id\": \"1111\" }", headers)
+                buildRecord(FIRST_OFFSET, 1, "{\"value\": \"test message\", \"id\": \"1111\" }", headers)
             );
 
             // When
@@ -535,8 +535,8 @@ public class KafkaBasicConsumeActionTest {
 
     // todo mock kafka consumer
     private MessageListener overrideActionMessageListenerContainer(Action action) {
-        ConsumerFactory<String, String> cf = mock(ConsumerFactory.class, RETURNS_DEEP_STUBS);
-        Consumer<String, String> consumer = mock(Consumer.class);
+        ConsumerFactory cf = mock(ConsumerFactory.class, RETURNS_DEEP_STUBS);
+        Consumer consumer = mock(Consumer.class);
         given(cf.createConsumer(any(), any(), any(), any())).willReturn(consumer);
         when(cf.getConfigurationProperties().get(eq(ConsumerConfig.GROUP_ID_CONFIG))).thenReturn(GROUP);
 
@@ -553,13 +553,13 @@ public class KafkaBasicConsumeActionTest {
         return (MessageListener) messageListenerContainer.getContainerProperties().getMessageListener();
     }
 
-    private ConsumerRecord<String, String> buildRecord(long offset, String key, String payload) {
+    private ConsumerRecord buildRecord(long offset, Object key, Object payload) {
         List<Header> headersList = ImmutableList.of(new RecordHeader("X-Custom-HeaderKey", "X-Custom-HeaderValue".getBytes()), new RecordHeader("header1", "value1".getBytes()));
-        return new ConsumerRecord<>(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0, 0, key, payload, new RecordHeaders(headersList), empty());
+        return new ConsumerRecord(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0, 0, key, payload, new RecordHeaders(headersList), empty());
     }
 
-    private ConsumerRecord<String, String> buildRecord(long offset, String key, String payload, List<Header> headersList) {
-        return new ConsumerRecord<>(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0, 0, key, payload, new RecordHeaders(headersList), empty());
+    private ConsumerRecord buildRecord(long offset, Object key, Object payload, List<Header> headersList) {
+        return new ConsumerRecord(TOPIC, PARTITION, offset, TIMESTAMP, TIMESTAMP_TYPE, 0, 0, key, payload, new RecordHeaders(headersList), empty());
     }
 
     private KafkaBasicConsumeAction givenKafkaConsumeAction(String selector, String mimeType, String timeout) {
@@ -570,9 +570,8 @@ public class KafkaBasicConsumeActionTest {
         return new KafkaBasicConsumeAction(TARGET_STUB, TOPIC, GROUP, emptyMap(), expectedMessageNb, selector, headerSelector, mimeType, timeout, null, null, logger);
     }
 
-    @SafeVarargs
-    private void givenActionReceiveMessages(Action action, ConsumerRecord<String, String>... messages) {
-        MessageListener<String, String> listener = overrideActionMessageListenerContainer(action);
+    private void givenActionReceiveMessages(Action action, ConsumerRecord... messages) {
+        MessageListener listener = overrideActionMessageListenerContainer(action);
         stream(messages).forEach(listener::onMessage);
     }
 

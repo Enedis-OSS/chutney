@@ -11,6 +11,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.shuffle;
 import static org.apache.kafka.clients.admin.AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -119,10 +120,30 @@ class KafkaConsumerFactoryTest {
     }
 
     @Test
+    void override_group_id_configuration_by_action_group_input() {
+        Target target = TestTarget.TestTargetBuilder.builder()
+            .withProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "broker.host")
+            .withProperty(GROUP_ID_CONFIG, "target group")
+            .build();
+
+        Map<String, String> properties = Map.of(GROUP_ID_CONFIG, "property group");
+
+        var sut = new KafkaConsumerFactory();
+        String actionGroup = "action group";
+        var listenerContainer = getListenerContainer(sut, target, properties, actionGroup);
+
+        assertConsumerFactoryConfigs(listenerContainer)
+            .containsEntry(GROUP_ID_CONFIG, actionGroup);
+    }
+
+    @Test
     void filter_and_merge_kafka_consumer_configuration_properties_from_target_and_input() {
         List<String> consumerConfigKeys = new ArrayList<>(ConsumerConfig.configNames());
         shuffle(consumerConfigKeys);
-        consumerConfigKeys.remove(AUTO_COMMIT_INTERVAL_MS_CONFIG); // Could be used and must be a long
+        List.of(
+            AUTO_COMMIT_INTERVAL_MS_CONFIG, // Could be used but must be a long
+            GROUP_ID_CONFIG // Overridden by action group
+        ).forEach(consumerConfigKeys::remove);
         String targetProperty = consumerConfigKeys.get(0);
         String propertyToOverride = consumerConfigKeys.get(1);
         String inputProperty = consumerConfigKeys.get(2);
@@ -157,11 +178,15 @@ class KafkaConsumerFactoryTest {
         ;
     }
 
-    private static MessageListenerContainer getListenerContainer(KafkaConsumerFactory sut, Target target, Map<String, String> config) {
+    private static MessageListenerContainer getListenerContainer(KafkaConsumerFactory sut, Target target, Map<String, String> config, String group) {
         return sut.create(
-            target, "", "", false, "BATCH", record -> {
+            target, "", group, false, "BATCH", record -> {
             }, null, config
         );
+    }
+
+    private static MessageListenerContainer getListenerContainer(KafkaConsumerFactory sut, Target target, Map<String, String> config) {
+        return getListenerContainer(sut, target, config, "");
     }
 
     private static MapAssert<Object, Object> assertConsumerFactoryConfigs(MessageListenerContainer listenerContainer) {

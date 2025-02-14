@@ -170,9 +170,6 @@ public class KafkaBasicPublishActionTest {
 
             Map<String, String> props = new HashMap<>();
             props.put("group.id", GROUP);
-            props.put("auto.commit.interval.ms", "10");
-            props.put("session.timeout.ms", "60000");
-            props.put("auto.offset.reset", "earliest");
 
             Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, null, logger);
 
@@ -205,8 +202,6 @@ public class KafkaBasicPublishActionTest {
 
         Map<String, String> props = new HashMap<>();
         props.put("group.id", GROUP);
-        props.put("auto.commit.interval.ms", "10");
-        props.put("session.timeout.ms", "3000");
         props.put("max.block.ms", "500");
 
         Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, null, logger);
@@ -226,11 +221,7 @@ public class KafkaBasicPublishActionTest {
                 .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
                 .build();
 
-            Map<String, String> props = new HashMap<>();
-            props.put("group.id", GROUP);
-            props.put("auto.commit.interval.ms", "10");
-            props.put("session.timeout.ms", "60000");
-            props.put("auto.offset.reset", "earliest");
+            var props = Map.of("group.id", GROUP);
 
             Action sut = new KafkaBasicPublishAction(target, TOPIC, Map.of(), "my-test-value", props, "my-key", logger);
 

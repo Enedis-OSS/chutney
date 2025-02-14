@@ -157,6 +157,9 @@ public class KafkaBasicConsumeAction implements Action {
     private boolean applySelector(Map<String, Object> message) {
         if (isBlank(selector)) {
             return true;
+        } else if (message.get(OUTPUT_BODY_PAYLOAD_KEY) instanceof byte[]) {
+            logger.info("Received binary message, ignoring payload selection");
+            return true;
         }
 
         if (recordContentType.getSubtype().contains(APPLICATION_JSON.getSubtype())) {
@@ -169,15 +172,20 @@ public class KafkaBasicConsumeAction implements Action {
             }
         } else if (recordContentType.getSubtype().contains(APPLICATION_XML.getSubtype())) {
             try {
-                Object result = XPathFunction.xpath((String) message.get(OUTPUT_BODY_PAYLOAD_KEY), selector);
+                Object result = XPathFunction.xpath(String.valueOf(message.get(OUTPUT_BODY_PAYLOAD_KEY)), selector);
                 return ofNullable(result).isPresent();
             } catch (Exception e) {
                 logger.info("Received a message, however cannot read process it as xml, ignoring payload selection : " + e.getMessage());
                 return true;
             }
         } else {
-            logger.info("Applying selector as text");
-            return ((String) message.get(OUTPUT_BODY_PAYLOAD_KEY)).contains(selector);
+            if (message.get(OUTPUT_BODY_PAYLOAD_KEY) instanceof String) {
+                logger.info("Applying selector as text");
+                return String.valueOf(message.get(OUTPUT_BODY_PAYLOAD_KEY)).contains(selector);
+            } else {
+                logger.info("Received a message, however cannot read process it as text, ignoring payload selection");
+                return true;
+            }
         }
     }
 
@@ -200,18 +208,22 @@ public class KafkaBasicConsumeAction implements Action {
         countDownLatch.countDown();
     }
 
-    private Object extractPayload(ConsumerRecord<String, String> record) {
+    private Object extractPayload(ConsumerRecord<?, ?> record) {
         if (recordContentType.getSubtype().contains(APPLICATION_JSON.getSubtype())) {
-            try {
-                return OBJECT_MAPPER.readValue(record.value(), Map.class);
-            } catch (IOException e) {
-                logger.info("Received a message, however cannot read it as Json fallback as String.");
+            if (record.value() instanceof String) {
+                try {
+                    return OBJECT_MAPPER.readValue((String) record.value(), Map.class);
+                } catch (IOException e) {
+                    logger.info("Received a message, however cannot read it as a Json value");
+                }
+            } else {
+                logger.info("Received a message, however cannot read it as Json because it's not a string");
             }
         }
         return record.value();
     }
 
-    private Map<String, Object> extractMessageFromRecord(ConsumerRecord<String, String> record) {
+    private Map<String, Object> extractMessageFromRecord(ConsumerRecord<?, ?> record) {
         final Map<String, Object> message = new HashMap<>();
         final Map<String, Object> headers = extractHeaders(record);
         checkContentTypeHeader(headers);
@@ -222,7 +234,7 @@ public class KafkaBasicConsumeAction implements Action {
         return message;
     }
 
-    private Map<String, Object> extractHeaders(ConsumerRecord<String, String> record) {
+    private Map<String, Object> extractHeaders(ConsumerRecord<?, ?> record) {
         var result = new HashMap<String, Object>();
         Stream<Header> distinctHeaders = Stream.of(record.headers().toArray()).distinct();
         distinctHeaders.forEach(header -> {
