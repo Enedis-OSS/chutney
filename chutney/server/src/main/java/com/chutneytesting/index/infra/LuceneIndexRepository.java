@@ -54,7 +54,7 @@ public class LuceneIndexRepository {
         try {
             this.indexWriter.addDocument(document);
             this.indexWriter.commit();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Couldn't index data", e);
         }
     }
@@ -63,7 +63,7 @@ public class LuceneIndexRepository {
         try {
             this.indexWriter.updateDocuments(query, List.of(document));
             this.indexWriter.commit();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Couldn't index data", e);
         }
     }
@@ -77,7 +77,7 @@ public class LuceneIndexRepository {
             for (ScoreDoc hit : hits) {
                 result.add(storedFields.document(hit.doc));
             }
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
         }
         return result;
     }
@@ -87,7 +87,7 @@ public class LuceneIndexRepository {
             IndexSearcher searcher = new IndexSearcher(reader);
             return searcher.count(query);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Couldn't count elements in index", e);
             return 0;
         }
@@ -106,7 +106,7 @@ public class LuceneIndexRepository {
         try {
             indexWriter.deleteAll();
             indexWriter.commit();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Couldn't delete all indexes", e);
         }
     }
