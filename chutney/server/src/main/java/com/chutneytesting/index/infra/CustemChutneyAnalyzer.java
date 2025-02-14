@@ -7,6 +7,7 @@
 
 package com.chutneytesting.index.infra;
 
+import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.StopFilter;
@@ -14,8 +15,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 public class CustemChutneyAnalyzer extends Analyzer {
 
@@ -23,6 +22,9 @@ public class CustemChutneyAnalyzer extends Analyzer {
     protected TokenStreamComponents createComponents(String fieldName) {
         Tokenizer source = new WhitespaceTokenizer();
         TokenStream tokenStream = new LowerCaseFilter(source);
+        List<String> stopWords = List.of("#", "-", "+", "~", "*", "/", "\\");
+        CharArraySet stopSet = new CharArraySet(stopWords, true);
+        tokenStream = new StopFilter(tokenStream, stopSet);
         return new TokenStreamComponents(source, tokenStream);
     }
 }
