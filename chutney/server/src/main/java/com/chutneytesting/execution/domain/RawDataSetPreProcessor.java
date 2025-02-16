@@ -25,7 +25,7 @@ public class RawDataSetPreProcessor implements TestCasePreProcessor<RawTestCase>
         RawTestCase testCase = (RawTestCase) executionRequest.testCase;
         return RawTestCase.builder()
             .withMetadata(testCase.metadata)
-            .withScenario(replaceParams(Map.of(), testCase.scenario, StringEscapeUtils::escapeJson))
+            .withScenario(testCase.scenario)
             .build();
     }
 }

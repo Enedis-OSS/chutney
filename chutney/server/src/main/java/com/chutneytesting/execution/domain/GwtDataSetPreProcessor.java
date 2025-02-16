@@ -29,13 +29,7 @@ public class GwtDataSetPreProcessor implements TestCasePreProcessor<GwtTestCase>
         GwtTestCase testCase = (GwtTestCase) executionRequest.testCase;
         return GwtTestCase.builder()
             .withMetadata(testCase.metadata)
-            .withScenario(replaceParams(testCase.scenario))
+            .withScenario(testCase.scenario)
             .build();
     }
-
-    private GwtScenario replaceParams(GwtScenario scenario) {
-        String blob = marshaller.serialize(scenario);
-        return marshaller.deserialize(scenario.title, scenario.description, replaceParams(Map.of(), blob, StringEscapeUtils::escapeJson));
-    }
-
 }

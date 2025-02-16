@@ -22,15 +22,4 @@ public interface TestCasePreProcessor<T extends TestCase> {
         Type type = ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
         return ((Class<?>) type).isAssignableFrom(testCase.getClass());
     }
-
-    default String replaceParams(Map<String, String> dataSet, String concreteString, Function<String, String> escapeValueFunction) {
-        String stringReplaced = concreteString;
-        for (Map.Entry<String, String> entry : dataSet.entrySet()) {
-            String stringToReplace = "**" + entry.getKey() + "**";
-            if (stringReplaced.contains(stringToReplace)) {
-                stringReplaced = stringReplaced.replace(stringToReplace, escapeValueFunction.apply(entry.getValue()));
-            }
-        }
-        return stringReplaced;
-    }
 }
