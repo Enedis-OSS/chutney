@@ -11,7 +11,9 @@ import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure
 import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -185,20 +187,24 @@ public class KafkaBasicPublishActionTest {
     @ParameterizedTest
     @CsvSource(textBlock = """
         /security/truststore.jks,truststore
-        /security/truststore_empty_pass.jks,'k'
-        /security/truststore_empty_pass.jks,null
+        /security/truststore_empty_pass.jks,''
+        /security/truststore_empty_pass.jks,
         """)
     public void producer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
         embeddedKafkaBroker.afterPropertiesSet();
 
         String truststore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource(truststorePath)).toURI()).toAbsolutePath().toString();
-        Target target = TestTarget.TestTargetBuilder.builder()
+        var targetBuilder = TestTarget.TestTargetBuilder.builder()
             .withTargetId("kafka")
             .withUrl("tcp://" + embeddedKafkaBroker.getBrokersAsString())
             .withProperty("trustStore", truststore_jks)
-            .withProperty("trustStorePassword", truststorePass)
-            .withProperty("security.protocol", "SSL")
-            .build();
+            .withProperty("security.protocol", "SSL");
+
+        ofNullable(truststorePass).ifPresent(tp ->
+            targetBuilder.withProperty("trustStorePassword", truststorePass)
+        );
+
+        Target target = targetBuilder.build();
 
         Map<String, String> props = new HashMap<>();
         props.put("group.id", GROUP);
@@ -209,6 +215,7 @@ public class KafkaBasicPublishActionTest {
         ActionExecutionResult actionExecutionResult = sut.execute();
 
         assertThat(actionExecutionResult.status).isEqualTo(Failure);
+        assertThat(logger.errors).hasSize(1).first(STRING).endsWith("Send failed");
     }
 
     @Test

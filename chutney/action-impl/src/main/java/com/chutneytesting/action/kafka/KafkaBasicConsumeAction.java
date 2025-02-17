@@ -179,9 +179,9 @@ public class KafkaBasicConsumeAction implements Action {
                 return true;
             }
         } else {
-            if (message.get(OUTPUT_BODY_PAYLOAD_KEY) instanceof String) {
+            if (message.get(OUTPUT_BODY_PAYLOAD_KEY) instanceof String msgString) {
                 logger.info("Applying selector as text");
-                return String.valueOf(message.get(OUTPUT_BODY_PAYLOAD_KEY)).contains(selector);
+                return msgString.contains(selector);
             } else {
                 logger.info("Received a message, however cannot read process it as text, ignoring payload selection");
                 return true;
@@ -210,9 +210,9 @@ public class KafkaBasicConsumeAction implements Action {
 
     private Object extractPayload(ConsumerRecord<?, ?> record) {
         if (recordContentType.getSubtype().contains(APPLICATION_JSON.getSubtype())) {
-            if (record.value() instanceof String) {
+            if (record.value() instanceof String recordString) {
                 try {
-                    return OBJECT_MAPPER.readValue((String) record.value(), Map.class);
+                    return OBJECT_MAPPER.readValue(recordString, Map.class);
                 } catch (IOException e) {
                     logger.info("Received a message, however cannot read it as a Json value");
                 }
