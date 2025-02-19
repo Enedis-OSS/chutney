@@ -11,21 +11,21 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { DatabaseAdminRoute } from './database-admin.routes';
+import { ReportSearchRoute } from './report-search.routes';
 
 import { MoleculesModule } from '../../molecules/molecules.module';
-import { DatabaseAdminComponent } from './components/database-admin.component';
+import { ReportSearchComponent } from './components/report-search.component';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {
-    DatabaseAdminExecutionReportListComponent
-} from './components/resultReportList/database-admin-report-list.component';
+    ReportSearchExecutionReportListComponent
+} from './components/resultReportList/report-search-report-list.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(DatabaseAdminRoute),
+    RouterModule.forChild(ReportSearchRoute),
     FormsModule,
     TranslateModule,
     MoleculesModule,
@@ -35,8 +35,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     ReactiveFormsModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
-  declarations: [DatabaseAdminComponent, DatabaseAdminExecutionReportListComponent],
+  declarations: [ReportSearchComponent, ReportSearchExecutionReportListComponent],
   providers: [DateFormatPipe]
 })
-export class DatabaseAdminModule {
+export class ReportSearchModule {
 }

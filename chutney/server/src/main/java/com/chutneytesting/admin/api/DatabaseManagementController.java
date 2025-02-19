@@ -9,9 +9,6 @@ package com.chutneytesting.admin.api;
 
 import com.chutneytesting.admin.domain.DBVacuum;
 import com.chutneytesting.admin.domain.DBVacuum.VacuumReport;
-import com.chutneytesting.execution.api.ExecutionSummaryDto;
-import com.chutneytesting.server.core.domain.execution.history.ExecutionHistoryRepository;
-import jakarta.ws.rs.QueryParam;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,21 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 public class DatabaseManagementController {
 
-    private final ExecutionHistoryRepository executionHistoryRepository;
     private final DBVacuum dbVacuum;
 
-    DatabaseManagementController(
-        ExecutionHistoryRepository executionHistoryRepository,
-        DBVacuum dbVacuum
-    ) {
-        this.executionHistoryRepository = executionHistoryRepository;
+    DatabaseManagementController(DBVacuum dbVacuum) {
         this.dbVacuum = dbVacuum;
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN_ACCESS')")
-    @GetMapping(path = "/execution", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ExecutionSummaryDto> getExecutionReportMatchQuery(@QueryParam("query") String query) {
-        return executionHistoryRepository.getExecutionReportMatchKeyword(query).stream().map(ExecutionSummaryDto::toDto).toList();
     }
 
     @PreAuthorize("hasAuthority('ADMIN_ACCESS')")

@@ -6,44 +6,27 @@
  */
 
 import { Component } from '@angular/core';
-
 import { Execution } from '@model';
-import { DatabaseAdminService } from '@core/services';
+import { ReportSearchService } from '@core/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 
 @Component({
     selector: 'chutney-database-admin',
-    templateUrl: './database-admin.component.html'
+    templateUrl: './report-search.component.html'
 })
-export class DatabaseAdminComponent {
+export class ReportSearchComponent {
 
-    activeTabId = 1;
-    // Executions search
     query: string;
     errorMessage: string;
     executions: Execution[];
     private _executionsFilters: Params = {};
-    // Vaccuum
-    private dbSize$ = new BehaviorSubject<number>(0);
-    dbSizeObs$: Observable<number>;
-    vacuumReport: number[];
-    vacuumRunning = false;
 
 
     constructor(
-        private databaseAdminService: DatabaseAdminService,
+        private reportSearchService: ReportSearchService,
         private route: ActivatedRoute,
         private router: Router) {
         this.executions = [];
-        this.vacuumReport = [];
-        this.dbSizeObs$ = this.dbSize$.asObservable().pipe(
-            switchMap(() => databaseAdminService.computeDatabaseSize()
-                .pipe(
-                    map((x) => x)
-                )
-            )
-        );
     }
 
     get executionsFilters(): Params {
@@ -83,7 +66,7 @@ export class DatabaseAdminComponent {
             return;
         }
         this.errorMessage = null;
-        this.databaseAdminService.getExecutionReportMatchQuery(this.query)
+        this.reportSearchService.getExecutionReportMatchQuery(this.query)
             .subscribe({
                 next: (res: Execution[]) => {
                     res?.forEach(e => e.tags.sort());
@@ -97,25 +80,5 @@ export class DatabaseAdminComponent {
 
     updateQuery(text: string) {
         this.query = text;
-    }
-
-    refreshDBSize() {
-        this.dbSize$.next(0);
-    }
-
-    launchVacuum() {
-        this.vacuumRunning = true;
-        this.databaseAdminService.compactDatabase()
-            .subscribe({
-                next: (val: number[]) => {
-                    this.vacuumReport = val;
-                    this.refreshDBSize();
-                },
-                error: (error) => {
-                    this.vacuumRunning = false;
-                    this.errorMessage = ( error.error ? error.error : (error.message ? error.message : error) );
-                },
-                complete: () => this.vacuumRunning = false
-            });
     }
 }

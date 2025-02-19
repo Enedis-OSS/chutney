@@ -1,0 +1,35 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<div>
+    @if (errorMessage) {
+        <div class="alert alert-dismissible alert-danger mt-4">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" (click)="errorMessage = null"></button>
+            {{ errorMessage }}
+        </div>
+    }
+    <div class="row">
+        <div class="col justify-content-center input-group input-group-sm">
+            <div class="w30">
+                <chutney-forms-search-field [id]="'scenario-search'"
+                                            [placeholder]="'scenarios.search.placeholder-search-report' | translate"
+                                            [searchInput]="query"
+                                            (searchInputEvent)="updateQuery($event)"></chutney-forms-search-field>
+            </div>
+            <div class="mx-2">
+                <button class="btn btn-success" (click)="searchQuery()">
+                    <span class="fa fa-play me-2" aria-hidden="true"></span> {{ 'global.actions.execute' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <report-search-report-list [executions]="executions"
+                                   [(filters)]="executionsFilters"
+                                   (onExecutionSelect)="openReport($event)"></report-search-report-list>
+    </div>
+</div>

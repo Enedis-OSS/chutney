@@ -6,11 +6,11 @@
  */
 
 import { Routes } from '@angular/router';
-import { DatabaseAdminComponent } from './components/database-admin.component';
+import { VacuumComponent } from '@modules/vacuum/components/vacuum.component';
 
-export const DatabaseAdminRoute: Routes = [
+export const VacuumRoute: Routes = [
     {
         path: '',
-        component: DatabaseAdminComponent
+        component: VacuumComponent
     }
 ];

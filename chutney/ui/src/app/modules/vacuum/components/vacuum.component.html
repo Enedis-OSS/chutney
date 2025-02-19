@@ -1,0 +1,35 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<div>
+    @if (errorMessage) {
+        <div class="alert alert-dismissible alert-danger mt-4">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" (click)="errorMessage = null"></button>
+            {{ errorMessage }}
+        </div>
+    }
+    <div class="row border-bottom">
+        <div class="col text-center">
+            <span>{{'admin.database.vacuum.size.current' | translate}} <span class="fw-bold">{{ (dbSizeObs$ | async) / (1024 * 1024) }}</span> {{'admin.database.vacuum.size.unit' | translate}}</span>
+            <i class="fa-solid fa-rotate-right ms-2" title="{{'global.actions.refresh' | translate}}" (click)="refreshDBSize()"></i>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col text-center">
+            <button class="btn btn-success" [class.disabled]="vacuumRunning" (click)="launchVacuum()">
+                <span class="fa fa-play me-2" aria-hidden="true"></span> {{'global.actions.execute' | translate}}
+            </button>
+        </div>
+    </div>
+    @if (vacuumReport.length > 0) {
+        <div class="row mt-2">
+            <div class="col text-center">
+                <span>{{'admin.database.vacuum.size.report' | translate}} <span class="fw-bold">{{ vacuumReport[0] / (1024 * 1024) }}</span> {{'admin.database.vacuum.size.unit' | translate}} / <span class="fw-bold">{{ vacuumReport[1] / (1024 * 1024) }}</span> {{'admin.database.vacuum.size.unit' | translate}}</span>
+            </div>
+        </div>
+    }
+</div>
