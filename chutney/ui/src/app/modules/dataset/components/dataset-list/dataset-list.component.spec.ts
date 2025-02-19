@@ -17,15 +17,21 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { DatasetListComponent } from './dataset-list.component';
 import { DataSetService } from '@core/services';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { RouterModule } from '@angular/router';
+import { OAuthService } from "angular-oauth2-oidc";
+import { AlertService } from '@shared';
 
 describe('DatasetListComponent', () => {
 
+
+  const eventsSubject = new Subject<any>();
   const dataSetService = jasmine.createSpyObj('DataSetService', ['findAll']);
+  const oAuthService = jasmine.createSpyObj('OAuthService', ['loadDiscoveryDocumentAndTryLogin', 'setupAutomaticSilentRefresh', 'hasValidAccessToken', 'configure', 'initCodeFlow', 'logOut', 'getAccessToken'], {events: eventsSubject.asObservable()});
+  const alertService = jasmine.createSpyObj('AlertService', ['error']);
   dataSetService.findAll.and.returnValue(of([]));
    beforeEach(waitForAsync(() => {
     TestBed.resetTestingModule();
@@ -48,6 +54,8 @@ describe('DatasetListComponent', () => {
       ],
       providers: [
         { provide: DataSetService, useValue: dataSetService },
+        { provide: AlertService, useValue: alertService },
+        { provide: OAuthService, useValue: oAuthService },
         {provide: DROPDOWN_SETTINGS, useClass: DropdownSettings}
       ]
     }).compileComponents();
