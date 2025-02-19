@@ -14,7 +14,6 @@ import static java.util.Optional.ofNullable;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistoryRepository;
 import com.chutneytesting.server.core.domain.execution.history.ImmutableExecutionHistory;
-import com.chutneytesting.server.core.domain.execution.processor.TestCasePreProcessors;
 import com.chutneytesting.server.core.domain.execution.report.ScenarioExecutionReport;
 import com.chutneytesting.server.core.domain.execution.report.ServerReportStatus;
 import com.chutneytesting.server.core.domain.execution.report.StepExecutionReportCore;
@@ -53,7 +52,6 @@ public class ScenarioExecutionEngineAsync {
     private final ServerTestEngine executionEngine;
     private final ExecutionStateRepository executionStateRepository;
     private final ChutneyMetrics metrics;
-    private final TestCasePreProcessors testCasePreProcessors;
 
     private final Map<Long, Pair<Observable<ScenarioExecutionReport>, Long>> scenarioExecutions = new ConcurrentHashMap<>();
     private long retentionDelaySeconds;
@@ -63,16 +61,14 @@ public class ScenarioExecutionEngineAsync {
                                         ServerTestEngine executionEngine,
                                         ExecutionStateRepository executionStateRepository,
                                         ChutneyMetrics metrics,
-                                        TestCasePreProcessors testCasePreProcessors,
                                         ObjectMapper reportObjectMapper) {
-        this(executionHistoryRepository, executionEngine, executionStateRepository, metrics, testCasePreProcessors, reportObjectMapper, DEFAULT_RETENTION_DELAY_SECONDS, DEFAULT_DEBOUNCE_MILLISECONDS);
+        this(executionHistoryRepository, executionEngine, executionStateRepository, metrics, reportObjectMapper, DEFAULT_RETENTION_DELAY_SECONDS, DEFAULT_DEBOUNCE_MILLISECONDS);
     }
 
     public ScenarioExecutionEngineAsync(ExecutionHistoryRepository executionHistoryRepository,
                                         ServerTestEngine executionEngine,
                                         ExecutionStateRepository executionStateRepository,
                                         ChutneyMetrics metrics,
-                                        TestCasePreProcessors testCasePreProcessors,
                                         ObjectMapper reportObjectMapper,
                                         long retentionDelaySeconds,
                                         long debounceMilliSeconds) {
@@ -80,7 +76,6 @@ public class ScenarioExecutionEngineAsync {
         this.executionEngine = executionEngine;
         this.executionStateRepository = executionStateRepository;
         this.metrics = metrics;
-        this.testCasePreProcessors = testCasePreProcessors;
         this.reportObjectMapper = reportObjectMapper;
         this.retentionDelaySeconds = retentionDelaySeconds;
         this.debounceMilliSeconds = debounceMilliSeconds;
@@ -94,17 +89,16 @@ public class ScenarioExecutionEngineAsync {
      */
     public Long execute(ExecutionRequest executionRequest) {
         // Compile testcase for execution
-        ExecutionRequest executionRequestProcessed = new ExecutionRequest(testCasePreProcessors.apply(executionRequest), executionRequest.environment, executionRequest.userId, executionRequest.dataset, executionRequest.campaignExecution, executionRequest.tags);
         // Initialize execution history
-        ExecutionHistory.Execution storedExecution = storeInitialReport(executionRequestProcessed);
+        ExecutionHistory.Execution storedExecution = storeInitialReport(executionRequest);
         // Campaign execution update
         if(ofNullable(executionRequest.campaignExecution).isPresent()) {
             executionRequest.campaignExecution.updateScenarioExecutionId(storedExecution);
         }
         // Start engine execution
-        Pair<Observable<StepExecutionReportCore>, Long> followResult = callEngineExecution(executionRequestProcessed, storedExecution);
+        Pair<Observable<StepExecutionReportCore>, Long> followResult = callEngineExecution(executionRequest, storedExecution);
         // Build execution observable
-        Observable<ScenarioExecutionReport> executionObservable = buildScenarioExecutionReportObservable(executionRequestProcessed, storedExecution.executionId(), followResult);
+        Observable<ScenarioExecutionReport> executionObservable = buildScenarioExecutionReportObservable(executionRequest, storedExecution.executionId(), followResult);
         // Store execution Observable to permit further subscriptions
         LOGGER.trace("Add replayer for execution {}", storedExecution.executionId());
         scenarioExecutions.put(storedExecution.executionId(), Pair.of(executionObservable, followResult.getRight()));

@@ -36,8 +36,6 @@ import com.chutneytesting.server.core.domain.execution.ScenarioExecutionEngine;
 import com.chutneytesting.server.core.domain.execution.ScenarioExecutionEngineAsync;
 import com.chutneytesting.server.core.domain.execution.ServerTestEngine;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistoryRepository;
-import com.chutneytesting.server.core.domain.execution.processor.TestCasePreProcessor;
-import com.chutneytesting.server.core.domain.execution.processor.TestCasePreProcessors;
 import com.chutneytesting.server.core.domain.execution.state.ExecutionStateRepository;
 import com.chutneytesting.server.core.domain.instrument.ChutneyMetrics;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -48,7 +46,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Clock;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import liquibase.integration.spring.SpringLiquibase;
@@ -132,11 +129,9 @@ public class ServerConfiguration {
 
     @Bean
     ScenarioExecutionEngine scenarioExecutionEngine(ServerTestEngine executionEngine,
-                                                    TestCasePreProcessors testCasePreProcessors,
                                                     ScenarioExecutionEngineAsync executionEngineAsync) {
         return new ScenarioExecutionEngine(
             executionEngine,
-            testCasePreProcessors,
             executionEngineAsync);
     }
 
@@ -145,7 +140,6 @@ public class ServerConfiguration {
                                                               ServerTestEngine executionEngine,
                                                               ExecutionStateRepository executionStateRepository,
                                                               ChutneyMetrics metrics,
-                                                              TestCasePreProcessors testCasePreProcessors,
                                                               @Qualifier("reportObjectMapper") ObjectMapper objectMapper,
                                                               @Value(EXECUTION_ASYNC_PUBLISHER_TTL_SPRING_VALUE) long replayerRetention,
                                                               @Value(EXECUTION_ASYNC_PUBLISHER_DEBOUNCE_SPRING_VALUE) long debounceMilliSeconds) {
@@ -154,15 +148,9 @@ public class ServerConfiguration {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             objectMapper,
             replayerRetention,
             debounceMilliSeconds);
-    }
-
-    @Bean
-    TestCasePreProcessors testCasePreProcessors(List<TestCasePreProcessor> processors) {
-        return new TestCasePreProcessors(processors);
     }
 
     @Bean

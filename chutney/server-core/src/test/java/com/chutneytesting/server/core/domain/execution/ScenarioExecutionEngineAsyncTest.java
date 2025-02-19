@@ -23,7 +23,6 @@ import com.chutneytesting.server.core.domain.dataset.DataSet;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistoryRepository;
 import com.chutneytesting.server.core.domain.execution.history.ImmutableExecutionHistory;
-import com.chutneytesting.server.core.domain.execution.processor.TestCasePreProcessors;
 import com.chutneytesting.server.core.domain.execution.report.ScenarioExecutionReport;
 import com.chutneytesting.server.core.domain.execution.report.ServerReportStatus;
 import com.chutneytesting.server.core.domain.execution.report.StepExecutionReportCore;
@@ -57,7 +56,6 @@ public class ScenarioExecutionEngineAsyncTest {
     private final ServerTestEngine executionEngine = mock(ServerTestEngine.class);
     private final ExecutionStateRepository executionStateRepository = mock(ExecutionStateRepository.class);
     private final ChutneyMetrics metrics = mock(ChutneyMetrics.class);
-    private final TestCasePreProcessors testCasePreProcessors = mock(TestCasePreProcessors.class);
 
     @AfterEach
     public void after() {
@@ -72,7 +70,6 @@ public class ScenarioExecutionEngineAsyncTest {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             om
         );
 
@@ -89,7 +86,6 @@ public class ScenarioExecutionEngineAsyncTest {
         final String scenarioId = testCase.id();
         final long executionId = 3L;
 
-        when(testCasePreProcessors.apply(any())).thenReturn(testCase);
         when(executionEngine.executeAndFollow(any())).thenReturn(Pair.of(Observable.empty(), 0L));
 
         ExecutionHistory.Execution storedExecution = stubHistoryExecution(scenarioId, executionId);
@@ -99,7 +95,6 @@ public class ScenarioExecutionEngineAsyncTest {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             om,
             0,
             0
@@ -112,7 +107,6 @@ public class ScenarioExecutionEngineAsyncTest {
         sut.execute(request);
 
         // Then
-        verify(testCasePreProcessors).apply(request);
         verify(executionEngine).executeAndFollow(any());
         verify(campaignExecution).updateScenarioExecutionId(any());
         ArgumentCaptor<ExecutionHistory.DetachedExecution> argumentCaptor = ArgumentCaptor.forClass(ExecutionHistory.DetachedExecution.class);
@@ -143,7 +137,6 @@ public class ScenarioExecutionEngineAsyncTest {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             om
         );
         sut.setRetentionDelaySeconds(1);
@@ -187,7 +180,6 @@ public class ScenarioExecutionEngineAsyncTest {
         final TestCase testCase = emptyTestCase();
 
         when(executionStateRepository.runningState(scenarioId)).thenReturn(Optional.empty());
-        when(testCasePreProcessors.apply(any())).thenReturn(testCase);
 
         stubHistoryExecution(scenarioId, executionId);
         Triple<Pair<Observable<StepExecutionReportCore>, Long>, List<StepExecutionReportCore>, TestScheduler> engineStub = stubEngineExecution(100);
@@ -199,7 +191,6 @@ public class ScenarioExecutionEngineAsyncTest {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             om,
             10,
             0
@@ -225,7 +216,6 @@ public class ScenarioExecutionEngineAsyncTest {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             om
         );
         TestCase testCase = emptyTestCase();
@@ -249,7 +239,6 @@ public class ScenarioExecutionEngineAsyncTest {
             executionEngine,
             executionStateRepository,
             metrics,
-            testCasePreProcessors,
             om
         );
         TestCase testCase = emptyTestCase();

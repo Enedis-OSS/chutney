@@ -8,7 +8,6 @@
 package com.chutneytesting.server.core.domain.execution;
 
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory;
-import com.chutneytesting.server.core.domain.execution.processor.TestCasePreProcessors;
 import com.chutneytesting.server.core.domain.execution.report.ScenarioExecutionReport;
 import com.chutneytesting.server.core.domain.execution.report.StepExecutionReportCore;
 import com.chutneytesting.server.core.domain.scenario.ScenarioNotFoundException;
@@ -18,16 +17,13 @@ import com.chutneytesting.server.core.domain.scenario.ScenarioNotParsableExcepti
 public class ScenarioExecutionEngine {
 
     private final ServerTestEngine executionEngine;
-    private final TestCasePreProcessors testCasePreProcessors;
     private final ScenarioExecutionEngineAsync executionEngineAsync;
 
 
     public ScenarioExecutionEngine(ServerTestEngine executionEngine,
-                                   TestCasePreProcessors testCasePreProcessors,
                                    ScenarioExecutionEngineAsync executionEngineAsync) {
         this.executionEngineAsync = executionEngineAsync;
         this.executionEngine = executionEngine;
-        this.testCasePreProcessors = testCasePreProcessors;
     }
 
     /**
@@ -41,10 +37,9 @@ public class ScenarioExecutionEngine {
     }
 
     public ScenarioExecutionReport simpleSyncExecution(ExecutionRequest executionRequest) {
-        ExecutionRequest processedExecutionRequest = new ExecutionRequest(testCasePreProcessors.apply(executionRequest), executionRequest.environment, executionRequest.userId, executionRequest.dataset);
 
-        StepExecutionReportCore finalStepReport = executionEngine.execute(processedExecutionRequest);
-        return new ScenarioExecutionReport(0L, processedExecutionRequest.testCase.metadata().title(), executionRequest.environment, executionRequest.userId, executionRequest.tags, executionRequest.dataset, finalStepReport);
+        StepExecutionReportCore finalStepReport = executionEngine.execute(executionRequest);
+        return new ScenarioExecutionReport(0L, executionRequest.testCase.metadata().title(), executionRequest.environment, executionRequest.userId, executionRequest.tags, executionRequest.dataset, finalStepReport);
     }
 
     public ExecutionHistory.Execution saveNotExecutedScenarioExecution(ExecutionRequest executionRequest) {
