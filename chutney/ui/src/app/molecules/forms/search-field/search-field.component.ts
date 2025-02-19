@@ -17,6 +17,7 @@ export class SearchFieldComponent implements OnInit {
     @Input() id: string;
     @Input() placeholder: string;
     @Output() searchInputEvent = new EventEmitter<string>();
+    @Output() enterTriggerEvent = new EventEmitter<void>();
     @Input() searchInput:  string;
 
   constructor() { }
@@ -26,6 +27,10 @@ export class SearchFieldComponent implements OnInit {
 
   fireChangeEvent() {
     this.searchInputEvent.emit(this.searchInput);
+  }
+
+  enterTriggered() {
+    this.enterTriggerEvent.emit()
   }
 
   clearSearchInput() {

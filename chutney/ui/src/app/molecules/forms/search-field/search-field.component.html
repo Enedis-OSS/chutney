@@ -6,7 +6,7 @@
   -->
 
 <div class="search-field-group">
-  <input type="text" id="{{id}}" placeholder="{{placeholder}}"  class="form-control" [(ngModel)]="searchInput"  (ngModelChange)="fireChangeEvent()">
+  <input type="text" id="{{id}}" placeholder="{{placeholder}}"  class="form-control" [(ngModel)]="searchInput" (keydown.enter)="enterTriggered()" (ngModelChange)="fireChangeEvent()">
   @if (searchInput) {
     <span class="d-flex justify-content-center align-items-center clear-button" (click)="clearSearchInput()" >
       <i class="fa-solid fa-xmark"></i>

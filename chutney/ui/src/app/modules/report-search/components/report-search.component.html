@@ -18,7 +18,8 @@
                 <chutney-forms-search-field [id]="'scenario-search'"
                                             [placeholder]="'scenarios.search.placeholder-search-report' | translate"
                                             [searchInput]="query"
-                                            (searchInputEvent)="updateQuery($event)"></chutney-forms-search-field>
+                                            (searchInputEvent)="updateQuery($event)"
+                                            (enterTriggerEvent)="searchQuery()"></chutney-forms-search-field>
             </div>
             <div class="mx-2">
                 <button class="btn btn-success" (click)="searchQuery()">
