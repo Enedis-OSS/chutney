@@ -115,7 +115,8 @@ export class ScenarioService {
     }
 
     search(textFilter: any): Observable<Array<ScenarioIndex>>  {
-        return this.httpClient.get<Array<ScenarioIndex>>(environment.backend + `${this.resourceUrlV2}?textFilter=${textFilter}`)
+        const encodedTextFilter = encodeURIComponent(textFilter);
+        return this.httpClient.get<Array<ScenarioIndex>>(environment.backend + `${this.resourceUrlV2}?textFilter=${encodedTextFilter}`)
             .pipe(map((res: Array<any>) => {
                 return this.mapJsonScenario(res);
             }));
