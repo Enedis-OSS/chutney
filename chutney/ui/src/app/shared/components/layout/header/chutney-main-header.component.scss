@@ -6,7 +6,7 @@
  */
 
 
-.nav-link, {
+.nav-link {
     cursor: pointer;
     border-radius: .25rem;
     color: var(--bs-white);
@@ -14,4 +14,9 @@
 
 .pointer {
     cursor: pointer;
+}
+
+.search-bar-container {
+    margin-left: auto;
+    margin-right: 1rem;
 }
