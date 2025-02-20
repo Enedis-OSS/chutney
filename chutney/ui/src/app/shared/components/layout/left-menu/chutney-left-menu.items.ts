@@ -37,8 +37,8 @@ export const allMenuItems: MenuItem [] = [
                 authorizations: [Authorization.DATASET_READ,Authorization.DATASET_WRITE]
             },
             {
-                label: 'menu.principal.reportSearch',
-                link: '/reportSearch',
+                label: 'menu.principal.executionSearch',
+                link: '/execution/search',
                 iconClass: 'fa fa-clipboard',
                 authorizations: [Authorization.SCENARIO_READ]
             },

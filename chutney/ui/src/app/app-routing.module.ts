@@ -67,8 +67,8 @@ export const appRoutes: Routes = [
                 data: {'authorizations': [Authorization.ADMIN_ACCESS]}
             },
             {
-                path: 'reportSearch',
-                loadChildren: () => import('./modules/report-search/report-search.module').then(m => m.ReportSearchModule),
+                path: 'execution/search',
+                loadChildren: () => import('@modules/execution-search/execution-search.module').then(m => m.ExecutionSearchModule),
                 canActivate: [authGuard],
                 data: {'authorizations': [Authorization.SCENARIO_READ]}
             },

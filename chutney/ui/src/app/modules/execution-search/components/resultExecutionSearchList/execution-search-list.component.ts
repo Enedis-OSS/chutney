@@ -18,11 +18,11 @@ import { debounceTime, map, tap } from 'rxjs/operators';
 import { MultiSelectComponent } from 'ng-multiselect-dropdown';
 
 @Component({
-    selector: 'report-search-report-list',
-    templateUrl: './report-search-report-list.component.html',
-    styleUrls: ['./report-search-report-list.component.scss']
+    selector: 'execution-search-report-list',
+    templateUrl: './execution-search-list.component.html',
+    styleUrls: ['./execution-search-list.component.scss']
 })
-export class ReportSearchExecutionReportListComponent
+export class ExecutionSearchListComponent
     implements OnChanges, OnDestroy
 {
     ExecutionStatus = ExecutionStatus;

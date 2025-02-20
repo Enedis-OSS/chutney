@@ -7,14 +7,14 @@
 
 import { Component } from '@angular/core';
 import { Execution } from '@model';
-import { ReportSearchService } from '@core/services';
+import { ExecutionSearchService } from '@core/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
     selector: 'chutney-database-admin',
-    templateUrl: './report-search.component.html'
+    templateUrl: './execution-search.component.html'
 })
-export class ReportSearchComponent {
+export class ExecutionSearchComponent {
 
     query: string;
     errorMessage: string;
@@ -23,7 +23,7 @@ export class ReportSearchComponent {
 
 
     constructor(
-        private reportSearchService: ReportSearchService,
+        private executionSearchService: ExecutionSearchService,
         private route: ActivatedRoute,
         private router: Router) {
         this.executions = [];
@@ -66,7 +66,7 @@ export class ReportSearchComponent {
             return;
         }
         this.errorMessage = null;
-        this.reportSearchService.getExecutionReportMatchQuery(this.query)
+        this.executionSearchService.getExecutionReportMatchQuery(this.query)
             .subscribe({
                 next: (res: Execution[]) => {
                     res?.forEach(e => e.tags.sort());

@@ -7,7 +7,7 @@
             "environments": "Environnements",
             "workers": "Agents",
             "plugins": "Plugins",
-            "reportSearch": "Recherche rapport",
+            "executionSearch": "Recherche rapport",
             "documentation": "Doc.",
             "component": "Composants",
             "backups": "Sauvegardes",

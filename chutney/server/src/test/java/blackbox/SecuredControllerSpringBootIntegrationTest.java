@@ -95,7 +95,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/v1/backups/id/download", "ADMIN_ACCESS", null, OK},
             {GET, "/api/v1/backups/backupables", "ADMIN_ACCESS", null, OK},
 
-            {GET, "/api/v1/execution/report/search?query=abc", "SCENARIO_READ", null, OK},
+            {GET, "/api/v1/execution/search?query=abc", "SCENARIO_READ", null, OK},
             {POST, "/api/v1/admin/database/compact", "ADMIN_ACCESS", null, NOT_IMPLEMENTED},
             {GET, "/api/v1/admin/database/size", "ADMIN_ACCESS", null, OK},
 

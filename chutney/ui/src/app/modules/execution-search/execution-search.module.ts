@@ -11,21 +11,21 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { ReportSearchRoute } from './report-search.routes';
+import { ExecutionSearchRoute } from './execution-search.routes';
 
 import { MoleculesModule } from '../../molecules/molecules.module';
-import { ReportSearchComponent } from './components/report-search.component';
+import { ExecutionSearchComponent } from './components/execution-search.component';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {
-    ReportSearchExecutionReportListComponent
-} from './components/resultReportList/report-search-report-list.component';
+    ExecutionSearchListComponent
+} from './components/resultExecutionSearchList/execution-search-list.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(ReportSearchRoute),
+    RouterModule.forChild(ExecutionSearchRoute),
     FormsModule,
     TranslateModule,
     MoleculesModule,
@@ -35,8 +35,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     ReactiveFormsModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
-  declarations: [ReportSearchComponent, ReportSearchExecutionReportListComponent],
+  declarations: [ExecutionSearchComponent, ExecutionSearchListComponent],
   providers: [DateFormatPipe]
 })
-export class ReportSearchModule {
+export class ExecutionSearchModule {
 }

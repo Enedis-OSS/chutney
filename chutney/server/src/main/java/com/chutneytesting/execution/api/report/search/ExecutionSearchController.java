@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/execution/report")
+@RequestMapping("/api/v1/execution")
 @CrossOrigin(origins = "*")
-public class ReportSearchController {
+public class ExecutionSearchController {
 
     private final ExecutionHistoryRepository executionHistoryRepository;
 
-    ReportSearchController(
+    ExecutionSearchController(
         ExecutionHistoryRepository executionHistoryRepository
     ) {
         this.executionHistoryRepository = executionHistoryRepository;

@@ -14,9 +14,9 @@ import { Execution } from '@core/model';
 @Injectable({
   providedIn: 'root'
 })
-export class ReportSearchService {
+export class ExecutionSearchService {
 
-  private reportUrl = '/api/v1/execution/report';
+  private reportUrl = '/api/v1/execution';
 
   constructor(private http: HttpClient) { }
 

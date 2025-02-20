@@ -7,7 +7,7 @@
             "environments": "Environments",
             "workers": "Nodes",
             "plugins": "Plugins",
-            "reportSearch": "Search report",
+            "executionSearch": "Search report",
             "documentation": "Doc.",
             "component": "Components",
             "backups": "Backups",
