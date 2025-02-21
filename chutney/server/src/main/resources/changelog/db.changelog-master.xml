@@ -1085,4 +1085,33 @@
             columnName="REPORT"
             newDataType="BLOB"/>
     </changeSet>
+
+    <!--Create indexes -->
+    <changeSet id="add-index-campaign-id-on-campaign-executions" author="ICG">
+        <createIndex indexName="idx_campaign_id_campaign_executions" tableName="CAMPAIGN_EXECUTIONS">
+            <column name="CAMPAIGN_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-index-scenario-id-on-scenario-executions" author="ICG">
+        <createIndex indexName="idx_scenario_id_scenario_executions" tableName="SCENARIO_EXECUTIONS">
+            <column name="SCENARIO_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="add-index-campaign-execution-id-on-scenario-executions" author="ICG">
+        <createIndex indexName="idx_campaign_execution_id_scenario_executions" tableName="SCENARIO_EXECUTIONS">
+            <column name="CAMPAIGN_EXECUTION_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-index-campaign-id-on-campaign-scenarios" author="ICG">
+        <createIndex indexName="idx_campaign_id_campaign_scenarios" tableName="CAMPAIGN_SCENARIOS">
+            <column name="CAMPAIGN_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="add-index-scenario-id-on-campaign-scenarios" author="ICG">
+        <createIndex indexName="idx_scenario_id_campaign_scenarios" tableName="CAMPAIGN_SCENARIOS">
+            <column name="SCENARIO_ID"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
