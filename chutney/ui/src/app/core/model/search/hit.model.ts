@@ -26,7 +26,7 @@ export class Hit {
                 } else {
                     return null;
                 }
-                return {key, valueStr}
+                return { key, valueStr }
             })
             .filter(res => res !== null)
             .filter(res => res.key != 'id' && res.key != 'title' && res.key != 'tags')
@@ -44,7 +44,13 @@ export class Hit {
             })
             .filter(res => res !== null)
     }
+
+
+    static fromJson(json: any): Hit {
+        return new Hit(json.id, json.title, json.description, json.content, json.tags, json.what);
+    }
 }
+
 
 export interface SearchResult {
     attribute: string;

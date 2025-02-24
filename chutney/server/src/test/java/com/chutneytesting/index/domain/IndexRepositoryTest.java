@@ -59,7 +59,6 @@ public class IndexRepositoryTest {
 
         LuceneIndexRepository luceneIndexRepository = new LuceneIndexRepository(indexConfig);
 
-        // Initialisation des repositories
         campaignRepository = new CampaignIndexRepository(luceneIndexRepository);
         scenarioRepository = new ScenarioIndexRepository(luceneIndexRepository);
         datasetRepository = new DatasetIndexRepository(luceneIndexRepository);

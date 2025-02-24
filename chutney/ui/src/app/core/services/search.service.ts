@@ -15,14 +15,15 @@ import { catchError, map, Observable, of } from 'rxjs';
   providedIn: 'root'
 })
 export class SearchService {
-    private searchUri = '/api/search';
+    private readonly searchUri = '/api/search';
 
     constructor(private httpClient: HttpClient) {
     }
 
     search(keyword: string): Observable<Hit[]> {
-        return this.httpClient.get<Hit[]>(environment.backend + `${this.searchUri}?keyword=${keyword}`).pipe(
-          map(data => data.map(hit => new Hit(hit.id, hit.title, hit.description, hit.content, hit.tags, hit.what))), 
+      const encodedKeyword = encodeURIComponent(keyword);
+        return this.httpClient.get<Hit[]>(environment.backend + `${this.searchUri}?keyword=${encodedKeyword}`).pipe(
+          map(data => data.map(Hit.fromJson)),
           catchError(error => {
             console.error('Search API Error:', error);
             return of([]);
