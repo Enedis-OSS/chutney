@@ -127,17 +127,6 @@ public class TestCaseRepositoryAggregator implements TestCaseRepository {
         }
     }
 
-    @Override
-    public List<TestCaseMetadata> search(String textFilter) {
-        return aggregatedRepositories.stream()
-            .parallel()
-            .flatMap(r -> getTestCaseMetadataStream(
-                () -> r.search(textFilter), r.getClass().getSimpleName())
-            )
-            .collect(Collectors.toList());
-    }
-
-
     private Stream<TestCaseMetadata> getTestCaseMetadataStream(Supplier<List<TestCaseMetadata>> sup, String repoName) {
         try {
             return sup.get().stream();

@@ -24,25 +24,7 @@
                                         [searchInput]="textFilter"
                                         (searchInputEvent)="updateTextFilter($event)"></chutney-forms-search-field>
         </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-outline-primary"
-                    (click)="fullTextSearch = !fullTextSearch">
-            <span  class="fa" [ngClass]="{'fa-plus' : !fullTextSearch,
-                              'fa-minus' : fullTextSearch}"></span>
-            </button>
-        </div>
     </div>
-    @if (fullTextSearch) {
-        <div  class="row my-2">
-            <div class="col-2"></div>
-            <div class="col-4">
-                <chutney-forms-search-field [id]="'scenario-search-fulltext'"
-                                            [placeholder]="'scenarios.search.placeholder-fulltext' | translate"
-                                            [searchInput]="fullTextFilter"
-                                            (searchInputEvent)="updateFullTextFilter($event)"></chutney-forms-search-field>
-            </div>
-        </div>
-    }
 </div>
 
 <div class="w-100">

@@ -7,8 +7,6 @@
 
 package com.chutneytesting.scenario.api;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 import com.chutneytesting.execution.api.ExecutionSummaryDto;
 import com.chutneytesting.scenario.api.raw.dto.TestCaseIndexDto;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -52,13 +49,13 @@ public class AggregatedTestCaseController {
 
     @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_WRITE')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TestCaseIndexDto> getTestCases(@RequestParam( name = "textFilter", required = false) String textFilter) {
-        List<TestCaseMetadata> testCases = isNullOrEmpty(textFilter) ? testCaseRepository.findAll() : testCaseRepository.search(textFilter);
+    public List<TestCaseIndexDto> getTestCases() {
+        List<TestCaseMetadata> testCases = testCaseRepository.findAll();
         Map<String, ExecutionSummary> lastExecutions = executionHistoryRepository.getLastExecutions(testCases.stream().map(TestCaseMetadata::id).collect(Collectors.toList()));
 
         return testCases.stream()
             .map((tc) -> {
-                if(lastExecutions.get(tc.id()) != null) {
+                if (lastExecutions.get(tc.id()) != null) {
                     ExecutionSummaryDto execution = ExecutionSummaryDto.toDto(lastExecutions.get(tc.id()));
                     return TestCaseIndexDto.from(tc, execution);
                 } else {

@@ -26,7 +26,5 @@ public interface AggregatedRepository<T extends TestCase> {
 
     Optional<Integer> lastVersion(String testCaseId);
 
-    List<TestCaseMetadata> search(String textFilter);
-
     Optional<TestCase> findExecutableById(String testCaseId);
 }

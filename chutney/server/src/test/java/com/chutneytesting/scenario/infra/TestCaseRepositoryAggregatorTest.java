@@ -116,45 +116,4 @@ public class TestCaseRepositoryAggregatorTest {
         // Then
         assertThat(allScenario).hasSize(2);
     }
-
-    @Test
-    public void should_aggregate_all_repos_scenarios_when_search() {
-        // Given
-        final String filter = "filter";
-        DatabaseTestCaseRepository repo1 = mock(DatabaseTestCaseRepository.class);
-        final AggregatedRepository<? extends TestCase> externalTestCaseRepository = (AggregatedRepository<? extends TestCase>) mock(AggregatedRepository.class);
-
-        when(repo1.search(filter)).thenReturn(asList(mock(TestCaseMetadata.class), mock(TestCaseMetadata.class)));
-        when(externalTestCaseRepository.search(filter)).thenReturn(asList(mock(TestCaseMetadata.class), mock(TestCaseMetadata.class)));
-
-        List<AggregatedRepository<? extends TestCase>> repos = List.of(repo1, externalTestCaseRepository);
-        TestCaseRepositoryAggregator sut = new TestCaseRepositoryAggregator(repos);
-
-        // When
-        final List<TestCaseMetadata> allScenario = sut.search(filter);
-
-        // Then
-        assertThat(allScenario).hasSize(4);
-    }
-
-    @Test
-    public void should_aggregate_all_repos_available_scenarios_when_search_with_one_repo_failed() {
-        // Given
-        String filter = "filter";
-        DatabaseTestCaseRepository repo1 = mock(DatabaseTestCaseRepository.class);
-        final AggregatedRepository<? extends TestCase> externalTestCaseRepository = (AggregatedRepository<? extends TestCase>) mock(AggregatedRepository.class);
-
-        when(repo1.search(filter)).thenThrow(new RuntimeException("Error searching for scenarios !!!"));
-        when(externalTestCaseRepository.search(filter)).thenReturn(asList(mock(TestCaseMetadata.class), mock(TestCaseMetadata.class)));
-
-        List<AggregatedRepository<? extends TestCase>> repos = List.of(repo1, externalTestCaseRepository);
-        TestCaseRepositoryAggregator sut = new TestCaseRepositoryAggregator(repos);
-
-        // When
-        final List<TestCaseMetadata> allScenario = sut.search(filter);
-
-        // Then
-        assertThat(allScenario).hasSize(2);
-    }
-
 }

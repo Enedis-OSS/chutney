@@ -146,45 +146,12 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
         }
     }
 
-    @Override
-    public List<TestCaseMetadata> search(String textFilter) {
-        if (!textFilter.isEmpty()) {
-            List<String> words = getWordsToSearchWithQuotes(escapeSql(textFilter));
-            Specification<ScenarioEntity> scenarioDaoSpecification = buildLikeSpecificationOnContent(words)
-                .and(ScenarioJpaRepository.activatedScenarioSpecification());
-
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<ScenarioEntity> query = builder.createQuery(ScenarioEntity.class);
-            Root<ScenarioEntity> root = query.from(ScenarioEntity.class);
-            query.select(builder.construct(ScenarioEntity.class, root.get("id"), root.get("title"), root.get("description"), root.get("tags"), root.get("creationDate"), root.get("activated"), root.get("userId"), root.get("updateDate"), root.get("version"), root.get("defaultDataset")));
-            query = query.where(scenarioDaoSpecification.toPredicate(root, query, builder));
-
-            return entityManager.createQuery(query).getResultList().stream().map(ScenarioEntity::toTestCaseMetadata).toList();
-        } else {
-            return findAll();
-        }
-    }
-
     private boolean testCaseDoesNotExist(String id) {
         try {
             return Long.parseLong(id) >= 0 && findById(id).isEmpty();
         } catch (NumberFormatException e) {
             throw new ScenarioNotParsableException("Cannot parse id", e);
         }
-    }
-
-    List<String> getWordsToSearchWithQuotes(String input) {
-        List<String> words = new ArrayList<>();
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find()) {
-            String word = matcher.group(1);
-            if (!word.isEmpty()) {
-                words.add(word);
-            }
-        }
-        words.addAll(Arrays.stream(input.replaceAll(pattern.pattern(), "").split("\\s")).filter(value -> !value.isEmpty()).toList());
-        return words;
     }
 
     private void saveScenarioWithExplicitId(GwtTestCase testCase) {
@@ -202,24 +169,6 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
             scenarioEntity.getVersion(),
             scenarioEntity.getDefaultDataset()
         );
-    }
-
-    private static String escapeSql(String str) {
-        if (str == null) {
-            return null;
-        }
-        return str.replace("'", "''");
-    }
-
-    private Specification<ScenarioEntity> buildLikeSpecificationOnContent(List<String> words) {
-        Specification<ScenarioEntity> scenarioDaoSpecification = null;
-        for (String word : words) {
-            Specification<ScenarioEntity> wordSpecification = ScenarioJpaRepository.contentContains(word);
-            scenarioDaoSpecification = ofNullable(scenarioDaoSpecification)
-                .map(s -> s.or(wordSpecification))
-                .orElse(wordSpecification);
-        }
-        return scenarioDaoSpecification;
     }
 
     private boolean checkIdInput(String scenarioId) {

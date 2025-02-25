@@ -114,14 +114,6 @@ export class ScenarioService {
         return this.httpClient.delete(environment.backend + `${this.resourceUrlV2}/${id}`);
     }
 
-    search(textFilter: any): Observable<Array<ScenarioIndex>>  {
-        const encodedTextFilter = encodeURIComponent(textFilter);
-        return this.httpClient.get<Array<ScenarioIndex>>(environment.backend + `${this.resourceUrlV2}?textFilter=${encodedTextFilter}`)
-            .pipe(map((res: Array<any>) => {
-                return this.mapJsonScenario(res);
-            }));
-    }
-
     private mapJsonScenario(res: Array<any>) {
         return res.map(s => new ScenarioIndex(
             s.metadata.id,

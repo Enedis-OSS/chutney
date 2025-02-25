@@ -47,17 +47,6 @@ public interface ScenarioJpaRepository extends JpaRepository<ScenarioEntity, Lon
 
     List<ScenarioEntity> findByActivatedTrueAndDefaultDataset(String defaultDataset);
 
-    static Specification<ScenarioEntity> contentContains(String searchWord) {
-        return (root, query, builder) -> {
-            Expression<String> content = builder.lower(root.get("content"));
-            return builder.like(content, "%" + searchWord.toLowerCase() + "%");
-        };
-    }
-
-    static Specification<ScenarioEntity> activatedScenarioSpecification() {
-        return (root, query, builder) -> builder.equal(root.get("activated"), true);
-    }
-
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO SCENARIO (ID, TITLE, DESCRIPTION, CONTENT, TAGS, CREATION_DATE, ACTIVATED, USER_ID, UPDATE_DATE, VERSION, DEFAULT_DATASET_ID) VALUES (:id, :title, :description, :content, :tags, :creationDate, :activated, :userId, :updateDate, :version, :defaultDataset)")
     void saveWithExplicitId(

@@ -7,8 +7,8 @@
 
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { interval, Observable, Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, mergeMap, takeWhile, tap } from 'rxjs/operators';
+import { interval, Observable, Subscription } from 'rxjs';
+import { catchError, mergeMap, takeWhile, tap } from 'rxjs/operators';
 
 import {
     distinct,
@@ -36,28 +36,24 @@ import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/sc
 })
 export class ScenariosComponent implements OnInit, OnDestroy {
 
-    urlParams: Subscription;
-    reloadSubscription: Subscription;
+    private urlParamsSubscription: Subscription;
+    private reloadSubscription: Subscription;
 
     scenarios: Array<ScenarioIndex> = [];
 
     // Filter
     viewedScenarios: Array<ScenarioIndex> = [];
     textFilter: string;
-    fullTextFilter: string;
     tags = [];
     selectedTags = [];
-    fullTextSearch = false;
     status: ListItem[] = [];
-    selectedStatus= [];
+    selectedStatus = [];
     // Jira
     jiraMap: Map<string, string> = new Map();
     jiraUrl = '';
     // Order
     orderBy = 'lastExecution';
     reverseOrder = false;
-
-    private searchSub$ = new Subject<string>();
 
     Authorization = Authorization;
 
@@ -77,18 +73,16 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.initJiraPlugin();
-        this.onKeywordSearch();
         this.fetchAndUpdateScenario()
             .subscribe(res => {
                 if (this.atLeastOneScenarioIsRunning(res)) {
                     this.subscribeForScenarios()
                 }
             })
-
     }
 
     ngOnDestroy(): void {
-        this.urlParams?.unsubscribe();
+        this.urlParamsSubscription?.unsubscribe();
         this.reloadSubscription?.unsubscribe();
     }
 
@@ -120,17 +114,8 @@ export class ScenariosComponent implements OnInit, OnDestroy {
         this.applyFilters();
     }
 
-    updateFullTextFilter(text: string) {
-        this.fullTextFilter = text;
-        this.applyFilters();
-    }
-
     applyFilters() {
-        if (this.fullTextFilter) {
-            this.searchSub$.next(this.fullTextFilter);
-        } else {
-            this.localFilter(this.scenarios);
-        }
+        this.localFilter(this.scenarios);
     }
 
     onItemSelect() {
@@ -171,15 +156,8 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     showScenarioJiraLinks(scenario: ScenarioIndex) {
         const modalRef = this.modalService.open(ScenarioJiraLinksModalComponent, { size: 'lg' });
-		modalRef.componentInstance.scenario = scenario;
-		modalRef.componentInstance.jiraUrl = this.jiraUrl;
-    }
-
-    private onKeywordSearch() {
-        this.searchSub$.pipe(
-            debounceTime(400),
-            mergeMap(keyword => this.scenarioService.search(keyword))
-        ).subscribe(scenarios => this.localFilter(scenarios));
+        modalRef.componentInstance.scenario = scenario;
+        modalRef.componentInstance.jiraUrl = this.jiraUrl;
     }
 
     private subscribeForScenarios() {
@@ -191,20 +169,19 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     }
 
     private fetchAndUpdateScenario(): Observable<Array<ScenarioIndex>> {
-        return this.getScenarios()
-            .pipe(
-                tap(scenarios => {
-                    if (!this.scenarios.length) {
-                        this.scenarios = scenarios;
-                    } else {
-                        this.updateRunningScenarioStatus(scenarios);
-                    }
-                    this.applyDefaultState();
-                    this.applySavedState();
-                    this.applyUriState();
-                }),
-                catchError(err => [])
-            );
+        return this.getScenarios().pipe(
+            tap(scenarios => {
+                if (!this.scenarios.length) {
+                    this.scenarios = scenarios;
+                } else {
+                    this.updateRunningScenarioStatus(scenarios);
+                }
+                this.applyDefaultState();
+                this.applySavedState();
+                this.applyUriState();
+            }),
+            catchError(() => [])
+        );
     }
 
     private updateRunningScenarioStatus(scenarios: Array<ScenarioIndex>) {
@@ -220,16 +197,16 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     private initFilters() {
         const allTagsInScenario: string[] = this.findAllTags();
-        this.tags = allTagsInScenario.map(tag => this.toSelectOption(tag,tag));
+        this.tags = allTagsInScenario.map(tag => this.toSelectOption(tag, tag));
         this.status = [...new Set(this.scenarios.map(scenario => scenario.status))].map(status => this.toSelectOption(status, this.translateService.instant(ExecutionStatus.toString(status))));
     }
 
     private toSelectOption(id: string, label: string = id) {
-        return {id: id, text: label };
+        return { id: id, text: label };
     }
 
     private getScenarios(): Observable<Array<ScenarioIndex>> {
-        return this.fullTextFilter ? this.scenarioService.search(this.fullTextFilter) : this.scenarioService.findScenarios();
+        return this.scenarioService.findScenarios();
     }
 
     private applyDefaultState() {
@@ -252,7 +229,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     }
 
     private applyUriState() {
-        this.urlParams = this.route.queryParams
+        this.urlParamsSubscription = this.route.queryParams
             .pipe(
                 tap({
                     next: (params: Array<any>) => {
@@ -271,7 +248,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
                             this.selectedTags = this.tags.filter(tag => uriTag.includes(tag.id));
                         }
                         this.applyFilters();
-                        this.urlParams?.unsubscribe()
+                        this.urlParamsSubscription?.unsubscribe()
                     },
                     error: (error) => console.log(error)
                 })
@@ -300,7 +277,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
             }
             return sce;
         });
-        this.viewedScenarios = filterOnTextContent(scenariosWithJiraId, this.textFilter, ['title', 'id', 'jiraId', 'tags']);
+        this.viewedScenarios = filterOnTextContent(scenariosWithJiraId, this.textFilter, ['title', 'id', 'jiraId', 'tags', 'description']);
         this.viewedScenarios = this.filterOnAttributes();
         this.sortScenarios(this.orderBy, this.reverseOrder);
         this.applyFiltersToRoute();
@@ -330,7 +307,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
             queryParams: {
                 text: this.textFilter,
                 orderBy: this.orderBy,
-                status:this.selectedStatus.map((status) => status.text).join(','),
+                status: this.selectedStatus.map((status) => status.text).join(','),
                 reverseOrder: this.reverseOrder,
                 tags: this.getSelectedTags().toString()
             }
