@@ -120,10 +120,16 @@ export class LoginService {
         }
 
         const options = {
-            headers: new HttpHeaders().set('no-intercept-error', '')
+            headers: new HttpHeaders()
+                .set('no-intercept-error', '')
+                .set('Content-Type', 'application/x-www-form-urlencoded')
         };
 
-        return this.http.post<{ token: string }>(environment.backend + this.loginUrl, {username, password}, options)
+        const body = new URLSearchParams({
+            username: username,
+            password: password
+        })
+        return this.http.post<{ token: string }>(environment.backend + this.loginUrl, body, options)
             .pipe(
                 map(response => {
                     localStorage.setItem('jwt', response.token)

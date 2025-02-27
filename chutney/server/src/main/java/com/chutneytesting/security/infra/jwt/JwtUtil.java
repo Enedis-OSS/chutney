@@ -7,71 +7,67 @@
 
 package com.chutneytesting.security.infra.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
-import javax.crypto.SecretKey;
-import org.springframework.security.core.userdetails.UserDetails;
-import io.jsonwebtoken.Jwts;
+import java.util.UUID;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 
 public class JwtUtil {
 
-    private final String SECRET_KEY;
-    private final int TOKEN_VALIDITY;
 
-    public JwtUtil(JwtUtilPropertyConfiguration jwtUtilPropertyConfiguration) {
-        this.SECRET_KEY = jwtUtilPropertyConfiguration.getSecretKey();
-        this.TOKEN_VALIDITY = jwtUtilPropertyConfiguration.getTokenValidityInHours();
+    private final ChutneyJwtProperties chutneyJwtProperties;
+    private final RSAKey signinKey;
+    private final JWSAlgorithm algorithm;
+
+    public JwtUtil(ChutneyJwtProperties chutneyJwtProperties) throws JOSEException {
+        this.chutneyJwtProperties = chutneyJwtProperties;
+        this.signinKey = new RSAKeyGenerator(2048)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID(UUID.randomUUID().toString())
+            .generate();
+        this.algorithm = JWSAlgorithm.RS256;
+    }
+
+    public NimbusJwtDecoder nimbusJwtDecoder() throws JOSEException {
+        return NimbusJwtDecoder
+            .withPublicKey(signinKey.toRSAPublicKey())
+            .build();
     }
 
     public String generateToken(String username, Map<String, Object> claims) {
-        return createToken(claims, username);
-    }
+        var issuer = chutneyJwtProperties.issuer();
+        var issuedAt = Instant.now();
+        var expirationTime = issuedAt.plus(Duration.ofMillis(chutneyJwtProperties.expiresIn().toMillis()));
+        var header = new JWSHeader(algorithm);
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
+        JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet.Builder()
+            .subject(username)
+            .issuer(issuer)
+            .issueTime(Date.from(issuedAt))
+            .expirationTime(Date.from(expirationTime));
+        claims.forEach(claimsSetBuilder::claim);
+        JWTClaimsSet claimsSet = claimsSetBuilder.build();
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
+        var jwt = new SignedJWT(header, claimsSet);
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-            .claims(claims)
-            .subject(subject)
-            .issuedAt(new Date(System.currentTimeMillis()))
-            .expiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
-            .signWith(getSignInKey())
-            .compact();
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token).getPayload();
-    }
-
-    private SecretKey getSignInKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+        try {
+            var signer = new RSASSASigner(signinKey);
+            jwt.sign(signer);
+            return jwt.serialize();
+        } catch (JOSEException e) {
+            throw new RuntimeException("Unable to generate JWT", e);
+        }
     }
 }
-
