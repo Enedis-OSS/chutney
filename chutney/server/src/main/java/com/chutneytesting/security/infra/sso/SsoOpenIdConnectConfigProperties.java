@@ -11,7 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("auth.sso")
+@ConfigurationProperties("chutney.auth.sso")
 public class SsoOpenIdConnectConfigProperties implements InitializingBean  {
 
     public final String issuer;

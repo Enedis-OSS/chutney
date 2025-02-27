@@ -4,41 +4,20 @@
 spring:
   security:
     oauth2:
-      client:
-        registration:
-          sso-provider:
-            provider: sso-provider
-            client-id: "${auth.sso.clientId}"
-            client-secret: "${auth.sso.clientSecret}"
-            authorization-grant-type: authorization_code
-            redirect-uri: "https://${server.http.interface}:4200/login/oauth2/code/{registrationId}"
-            scope: openid, profile, email
-            client-name: My Provider
-        provider:
-          sso-provider:
-            authorization-uri: ${auth.sso.issuer}/auth
-            token-uri: ${auth.sso.issuer}/token
-            user-info-uri: ${auth.sso.issuer}/me
-            user-name-attribute: sub
-            jwk-set-uri: ${auth.sso.issuer}/jwks
       resourceserver:
         opaque-token:
-          introspection-uri: "${auth.sso.issuer}/token/introspection"
-          client-id: "${auth.sso.clientId}"
-          client-secret: "${auth.sso.clientSecret}"
-      authorizationserver:
-        issuer: "${auth.sso.issuer}"
-        endpoint:
-          oidc:
-            user-info-uri: "${auth.sso.issuer}/userinfo"
+          introspection-uri: "${chutney.auth.sso.issuer}/token/introspection"
+          client-id: "${chutney.auth.sso.clientId}"
+          client-secret: "${chutney.auth.sso.clientSecret}"
 
-auth:
-  sso:
-    issuer: "http://localhost:3000"
-    clientId: 'my-client'
-    clientSecret: 'my-client-secret'
-    responseType: 'code'
-    scope: 'openid profile email'
-    redirectBaseUrl: "https://${server.http.interface}:4200"
-    ssoProviderName: 'SSO OpenID Connect'
-    oidc: true
+chutney:
+  auth:
+    sso:
+      issuer: "http://localhost:3000"
+      clientId: 'my-client'
+      clientSecret: 'my-client-secret'
+      responseType: 'code'
+      scope: 'openid profile email'
+      redirectBaseUrl: "https://${server.http.interface}:4200"
+      ssoProviderName: 'SSO OpenID Connect'
+      oidc: true

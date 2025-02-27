@@ -47,12 +47,12 @@ spring:
       - mem-auth
       - db-sqlite
 
-auth:
-  jwt:
-    secretKey: localsecretazertyuiopazertyuiopsssefzerfgzrhrhrthrtege
-    tokenValidityInHours: 4
 
 chutney:
+  auth:
+    jwt:
+      issuer: chutney
+      expiresIn: 240
   configuration-folder: .chutney/conf
   environment:
     configuration-folder: ${chutney.configuration-folder}/environment
