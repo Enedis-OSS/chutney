@@ -35,12 +35,12 @@ spring:
       - undertow-https-redirect
       - mem-auth
       - db-h2
-auth:
-  jwt:
-    secretKey: localsecretazertyuiopazertyuiopsssefzerfgzrhrhrthrtege
-    tokenValidityInHours: 4
 
 chutney:
+  auth:
+    jwt:
+      issuer: chutney
+      expiresIn: 240
   configuration-folder: target/.chutney/conf
   environment:
     configuration-folder: ${chutney.configuration-folder}/environment

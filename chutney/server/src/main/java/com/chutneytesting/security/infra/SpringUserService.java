@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.stereotype.Component;
 
@@ -44,17 +45,25 @@ public class SpringUserService implements UserService {
         if (principal instanceof UserDto) {
             return (UserDto) principal;
         }
+        if (principal instanceof Jwt) {
+            String username = ((Jwt) principal).getClaim("sub");
+            return getUserFromUsername(username);
+        }
         if (principal instanceof OAuth2IntrospectionAuthenticatedPrincipal) {
             String username = (String) ((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub");
-            UserDto user = new UserDto();
-            user.setId(username);
-            user.setName(username);
-            user.setMail(username);
-            user.setFirstname(username);
-            user.setLastname(username);
-            user.setRoles(Collections.emptySet());
-            return UserDetailsServiceHelper.grantAuthoritiesFromUserRole(user, authenticationService);
+            return getUserFromUsername(username);
         }
         return null;
+    }
+
+    private UserDto getUserFromUsername(String username) {
+        UserDto user = new UserDto();
+        user.setId(username);
+        user.setName(username);
+        user.setMail(username);
+        user.setFirstname(username);
+        user.setLastname(username);
+        user.setRoles(Collections.emptySet());
+        return UserDetailsServiceHelper.grantAuthoritiesFromUserRole(user, authenticationService);
     }
 }
