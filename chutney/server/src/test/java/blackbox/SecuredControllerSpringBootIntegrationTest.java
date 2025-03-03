@@ -8,7 +8,6 @@
 package blackbox;
 
 import static java.util.Optional.ofNullable;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -24,9 +23,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.chutneytesting.ServerConfiguration;
 import com.chutneytesting.security.api.UserDto;
+import com.chutneytesting.security.domain.Authorizations;
 import com.chutneytesting.security.infra.jwt.JwtUtil;
+import com.chutneytesting.server.core.domain.security.Role;
+import com.chutneytesting.server.core.domain.security.User;
+import com.chutneytesting.server.core.domain.security.UserRoles;
 import com.chutneytesting.tools.file.FileUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,16 +41,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -58,13 +59,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class SecuredControllerSpringBootIntegrationTest {
 
     @Autowired
-    private @Qualifier("inMemoryUserDetailsService") UserDetailsService userDetailsService;
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
-
-    @MockBean
-    private AuthenticationManager authenticationManager;
+    private Authorizations authorizations;
 
     @Autowired
     private WebApplicationContext context;
@@ -73,6 +68,8 @@ public class SecuredControllerSpringBootIntegrationTest {
     private JwtUtil jwtUtil;
 
     private MockMvc mvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeAll
     public static void cleanUp() {
@@ -236,9 +233,9 @@ public class SecuredControllerSpringBootIntegrationTest {
     @ParameterizedTest
     @MethodSource({"securedEndPointList", "unsecuredEndPointList"})
     public void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
-        UserDto user = new UserDto();
-        user.setName("admin");
-        user.setId("admin");
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
         MockHttpServletRequestBuilder request = request(httpMethod, url)
             .secure(true)
             .contentType(MediaType.APPLICATION_JSON);
@@ -246,11 +243,16 @@ public class SecuredControllerSpringBootIntegrationTest {
             request.content(content);
         }
         ofNullable(authority).ifPresent(right -> {
-            String token = jwtUtil.generateToken(user.getId(), Map.of("user", user));
+            if (!"AUTHENTICATED".equals(authority)) {
+                Role adminRole = Role.builder().withAuthorizations(List.of(right)).withName("admin").build();
+                User user = User.builder().withRole("admin").withId("admin").build();
+                authorizations.save(UserRoles.builder().withRoles(List.of(adminRole)).withUsers(List.of(user)).build());
+                userDto.grantAuthority(right);
+            }
+            String token = jwtUtil.generateToken(userDto.getId(), objectMapper.convertValue(userDto, Map.class));
             if (token != null) {
                 request.header("Authorization", "Bearer " + token);
             }
-            user.grantAuthority(right);
         });
 
         mvc.perform(request)
@@ -260,12 +262,15 @@ public class SecuredControllerSpringBootIntegrationTest {
     @ParameterizedTest
     @MethodSource({"uploadEndpoints"})
     public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
-        UserDto user = new UserDto();
-        user.setName("admin");
-        user.setId("admin");
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
         ofNullable(authority).ifPresent(right -> {
             if (!"AUTHENTICATED".equals(authority)) {
-                user.grantAuthority(right);
+                Role adminRole = Role.builder().withAuthorizations(List.of(right)).withName("admin").build();
+                User user = User.builder().withRole("admin").withId("admin").build();
+                authorizations.save(UserRoles.builder().withRoles(List.of(adminRole)).withUsers(List.of(user)).build());
+                userDto.grantAuthority(right);
             }
         });
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -274,7 +279,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .secure(true);
 
-        String token = authority != null ? jwtUtil.generateToken(user.getId(), Map.of("user", user)) : null;
+        String token = authority != null ? jwtUtil.generateToken(userDto.getId(), Map.of("user", userDto)) : null;
         if (token != null) {
             request.header("Authorization", "Bearer " + token);
         }
