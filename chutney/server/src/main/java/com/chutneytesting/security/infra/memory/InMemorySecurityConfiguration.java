@@ -14,8 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @Profile("mem-auth")
@@ -28,28 +26,18 @@ public class InMemorySecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public InMemoryUserDetailsService inMemoryUserDetailsService(InMemoryUsersProperties users, AuthenticationService authenticationService) {
         return new InMemoryUserDetailsService(users, authenticationService);
     }
 
     @Configuration
     @Profile("mem-auth")
-    public static class UserMemoryConfiguration {
+    static class InMemoryConfiguration {
 
         @Autowired
         protected void configure(
-            final AuthenticationManagerBuilder auth,
-            final PasswordEncoder pwdEncoder,
-            final InMemoryUserDetailsService authService
-        ) throws Exception {
-            auth
-                .userDetailsService(authService)
-                .passwordEncoder(pwdEncoder);
+            final AuthenticationManagerBuilder auth, final InMemoryUserDetailsService userDetailsService) throws Exception {
+            auth.userDetailsService(userDetailsService);
         }
     }
 }
