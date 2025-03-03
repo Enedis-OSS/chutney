@@ -28,28 +28,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
@@ -64,6 +57,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
+import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -118,7 +113,7 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver(JwtDecoder jwtDecoder, @Nullable() OpaqueTokenIntrospector opaqueTokenIntrospector, ChutneyJwtAuthenticationConverter jwtConverter) {
+    AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver(JwtDecoder jwtDecoder, @Nullable() OpaqueTokenIntrospector opaqueTokenIntrospector, ChutneyJwtAuthenticationConverter jwtConverter, RestOperations restOperations) {
         var jwtAuthenticationProvider = new JwtAuthenticationProvider(jwtDecoder);
         jwtAuthenticationProvider.setJwtAuthenticationConverter(jwtConverter);
         OpaqueTokenIntrospector opaqueTokenIntrospectorFinal = opaqueTokenIntrospector != null
@@ -201,7 +196,16 @@ public class ChutneyWebSecurityConfig {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ssoOpenIdConnectConfigProperties.proxyHost, ssoOpenIdConnectConfigProperties.proxyPort));
                 requestFactory.setProxy(proxy);
             }
-            return new RestTemplate(requestFactory);
+            RestTemplate restTemplate = new RestTemplate(requestFactory);
+            restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(ssoOpenIdConnectConfigProperties.clientId, ssoOpenIdConnectConfigProperties.clientSecret));
+            return restTemplate;
+        }
+
+        @Bean
+        @Primary
+        @ConditionalOnProperty(name = "spring.security.oauth2.resourceserver.opaquetoken.introspection-uri")
+        public OpaqueTokenIntrospector opaqueTokenIntrospector(OAuth2ResourceServerProperties properties, RestOperations restOperations) {
+            return new SpringOpaqueTokenIntrospector(properties.getOpaquetoken().getIntrospectionUri(), restOperations);
         }
     }
 }
