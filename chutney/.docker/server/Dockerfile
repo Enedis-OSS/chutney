@@ -1,7 +1,7 @@
 #SPDX-FileCopyrightText: 2017-2024 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21
 VOLUME /config
 VOLUME /.chutney
 ARG JAR_PATH=packaging/local-dev/target

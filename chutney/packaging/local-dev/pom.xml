@@ -142,10 +142,7 @@
                     <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                     <image>
                         <name>ghcr.io/enedis-oss/chutney/chutney-server</name>
-                        <runImage>eclipse-temurin:17-jre</runImage>
-                        <env>
-                            <BP_JVM_VERSION>17</BP_JVM_VERSION>
-                        </env>
+                        <runImage>eclipse-temurin:21</runImage>
                     </image>
                 </configuration>
                 <executions>
