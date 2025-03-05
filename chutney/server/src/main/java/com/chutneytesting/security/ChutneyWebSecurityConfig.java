@@ -156,7 +156,9 @@ public class ChutneyWebSecurityConfig {
             )
             .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer
                 .loginProcessingUrl(LOGIN_URL)
-                .successHandler(new HttpLoginSuccessHandler(jwtUtil)))
+                .successHandler(new HttpLoginSuccessHandler(jwtUtil))
+                .failureHandler(new HttpLoginFailureHandler())
+            )
             .httpBasic(Customizer.withDefaults())
             .addFilterAfter(oAuth2TokenAuthenticationFilter, BearerTokenAuthenticationFilter.class);
         return http.build();

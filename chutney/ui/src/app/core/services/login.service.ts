@@ -8,7 +8,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
@@ -132,6 +132,10 @@ export class LoginService {
         })
         return this.http.post<{ token: string }>(environment.backend + this.loginUrl, body, options)
             .pipe(
+                catchError(error => {
+                    this.connectionErrorMessage = this.unauthorizedMessage
+                    return EMPTY
+                }),
                 map(response => {
                     localStorage.setItem('jwt', response.token)
                     const {sub, iat, exp, ...user} = JwtService.decodeToken(response.token);
@@ -175,7 +179,6 @@ export class LoginService {
     isAuthenticatedSso(): boolean {
         return this.ssoService.accessTokenValid
     }
-
 
 
     hasAuthorization(authorization: Array<Authorization> | Authorization = [], u: User = null): boolean {
