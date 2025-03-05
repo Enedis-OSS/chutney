@@ -12,6 +12,7 @@ import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, of } f
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { JwtService } from '@core/services/jwt.service';
 
 
 interface SsoAuthConfig {
@@ -43,6 +44,8 @@ export class SsoService {
     private resourceUrl = '/api/v1/sso/config';
     private ssoConfig: SsoAuthConfig
     private enableSso = false
+
+    private readonly clockSkew = 60; // 60 seconds skew tolerance
 
 
     constructor(
@@ -93,6 +96,9 @@ export class SsoService {
             .then(() => this.oauthService.tryLogin())
             .then(() => {
                 if (this.oauthService.hasValidAccessToken()) {
+                    if (!this.verifyIdToken(this.oauthService.getIdToken())) {
+                        return Promise.reject()
+                    }
                     return Promise.resolve();
                 }
                 return this.oauthService.silentRefresh()
@@ -166,6 +172,25 @@ export class SsoService {
             silentRefreshTimeout: 0,
             useSilentRefresh: true
         } as AuthConfig
+    }
+
+    private verifyIdToken(idToken: string): boolean {
+        try {
+            const decoded = JwtService.decodeToken(idToken)
+            const now = Math.floor(Date.now() / 1000);
+            if (!decoded.iss || !decoded.sub || !decoded.aud || !decoded.exp || !decoded.iat) return false
+            const audienceValid = Array.isArray(decoded.aud)
+                ? decoded.aud.includes(this.ssoConfig.clientId)
+                : decoded.aud === this.ssoConfig.clientId;
+            if (!audienceValid) return false
+            if (decoded.iss !== this.ssoConfig.issuer) return false
+            if (Array.isArray(decoded.aud) && decoded.aud.length > 1 && !decoded.azp) return false
+            if (decoded.azp && decoded.azp !== this.ssoConfig.clientId) return false
+            if (now > decoded.exp + this.clockSkew) return false
+            return now >= decoded.iat - this.clockSkew;
+        } catch (error) {
+            return false;
+        }
     }
 
     getSsoProviderName() {

@@ -16,6 +16,7 @@ import { Authorization, User } from '@model';
 import { contains, intersection, isNullOrBlankString } from '@shared/tools';
 import { SsoService } from '@core/services/sso.service';
 import { TranslateService } from '@ngx-translate/core';
+import { JwtService } from '@core/services/jwt.service';
 
 @Injectable({
     providedIn: 'root'
@@ -58,7 +59,7 @@ export class LoginService {
     }
 
     private isAuthorizedJwt(token: string, requestURL: string, route: ActivatedRouteSnapshot) {
-        const payload = this.decodeToken(token);
+        const payload = JwtService.decodeToken(token);
         if (payload) {
             const {sub, iat, exp, ...user} = payload
             if ((user == this.NO_USER || this.isTokenExpired(token)) && !this.ssoService.accessToken) {
@@ -133,7 +134,7 @@ export class LoginService {
             .pipe(
                 map(response => {
                     localStorage.setItem('jwt', response.token)
-                    const {sub, iat, exp, ...user} = this.decodeToken(response.token);
+                    const {sub, iat, exp, ...user} = JwtService.decodeToken(response.token);
                     this.setUser(user as User)
                     return user as User
 
@@ -218,22 +219,8 @@ export class LoginService {
     }
 
 
-    private decodeToken(token: string): JwtTokenPayload {
-        if (!token) {
-            return null;
-        }
-        const payload = token.split('.')[1];
-        try {
-            const user = JSON.parse(atob(payload));
-            return user
-        } catch (error) {
-            console.error('Error while decoding token', error);
-            return null;
-        }
-    }
-
     private isTokenExpired(token: string): boolean {
-        const decodedToken = this.decodeToken(token);
+        const decodedToken = JwtService.decodeToken(token);
         if (!decodedToken || !decodedToken.exp) {
             return true;
         }
@@ -253,16 +240,4 @@ export class LoginService {
     set connectionErrorMessage(value: string | null) {
         this._connectionErrorMessage = value;
     }
-}
-
-interface JwtTokenPayload {
-    id: string,
-    name: string,
-    firstname: string,
-    lastname: string,
-    mail: string,
-    authorizations: string[],
-    sub: string,
-    iat: number,
-    exp: number,
 }
