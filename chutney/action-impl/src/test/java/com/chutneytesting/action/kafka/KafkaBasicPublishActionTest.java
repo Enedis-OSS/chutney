@@ -98,7 +98,7 @@ public class KafkaBasicPublishActionTest {
         assertThat(errors.size()).isEqualTo(7);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(errors.get(0)).isEqualTo("No topic provided (String)");
+        softly.assertThat(errors.getFirst()).isEqualTo("No topic provided (String)");
         softly.assertThat(errors.get(1)).isEqualTo("topic should not be blank");
 
         softly.assertThat(errors.get(2)).isEqualTo("No payload provided");

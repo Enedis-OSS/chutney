@@ -116,7 +116,7 @@ public class SeleniumWaitAction extends SeleniumAction implements SeleniumFindBe
                     (ExpectedCondition<?>[]) expectedByConditions.parallelStream()
                         .map(expectedByCondition -> expectedByCondition.toExpectedCondition(by)).toArray()
                 );
-                case NOT -> ExpectedConditions.not(expectedByConditions.get(0).toExpectedCondition(by));
+                case NOT -> ExpectedConditions.not(expectedByConditions.getFirst().toExpectedCondition(by));
             };
 
         }

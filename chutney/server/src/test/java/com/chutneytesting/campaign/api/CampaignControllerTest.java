@@ -282,7 +282,7 @@ public class CampaignControllerTest {
         // Then
         // get campaign with all executions
         assertThat(receivedCampaign.getCampaignExecutionReports()).hasSize(4);
-        assertThat(receivedCampaign.getCampaignExecutionReports().get(0).getExecutionId()).isEqualTo(1L);
+        assertThat(receivedCampaign.getCampaignExecutionReports().getFirst().getExecutionId()).isEqualTo(1L);
         assertThat(receivedCampaign.getCampaignExecutionReports().get(1).getExecutionId()).isEqualTo(2L);
         assertThat(receivedCampaign.getCampaignExecutionReports().get(2).getExecutionId()).isEqualTo(3L);
         assertThat(receivedCampaign.getCampaignExecutionReports().get(3).getExecutionId()).isEqualTo(4L);
@@ -302,9 +302,9 @@ public class CampaignControllerTest {
         // Then
         // get campaign with all executions
         assertThat(receivedCampaign.getCampaignExecutionReports()).hasSize(1);
-        assertThat(receivedCampaign.getCampaignExecutionReports().get(0).getExecutionId()).isEqualTo(1L);
+        assertThat(receivedCampaign.getCampaignExecutionReports().getFirst().getExecutionId()).isEqualTo(1L);
 
-        assertThat(receivedCampaign.getCampaignExecutionReports().get(0).getUserId()).isEqualTo("user_2");
+        assertThat(receivedCampaign.getCampaignExecutionReports().getFirst().getUserId()).isEqualTo("user_2");
     }
 
     @Test

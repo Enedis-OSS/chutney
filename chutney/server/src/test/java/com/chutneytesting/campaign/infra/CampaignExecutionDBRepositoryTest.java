@@ -168,7 +168,7 @@ public class CampaignExecutionDBRepositoryTest {
                 .hasFieldOrPropertyWithValue("userId", campaignExecution.userId)
             ;
 
-            assertThat(reports.get(0).scenarioExecutionReports()).hasSize(1)
+            assertThat(reports.getFirst().scenarioExecutionReports()).hasSize(1)
                 .first()
                 .hasFieldOrPropertyWithValue("scenarioId", scenarioEntity.getId().toString())
                 .hasFieldOrPropertyWithValue("scenarioName", scenarioEntity.getTitle())
@@ -214,9 +214,9 @@ public class CampaignExecutionDBRepositoryTest {
                 .hasFieldOrPropertyWithValue("userId", campaignExecution.userId)
             ;
 
-            assertThat(reports.get(0).scenarioExecutionReports()).hasSize(2);
+            assertThat(reports.getFirst().scenarioExecutionReports()).hasSize(2);
 
-            assertThat(reports.get(0).scenarioExecutionReports()).element(0)
+            assertThat(reports.getFirst().scenarioExecutionReports()).element(0)
                 .hasFieldOrPropertyWithValue("scenarioId", scenarioEntityOne.getId().toString())
                 .hasFieldOrPropertyWithValue("scenarioName", scenarioEntityOne.getTitle())
                 .extracting("execution")
@@ -224,7 +224,7 @@ public class CampaignExecutionDBRepositoryTest {
                 .hasFieldOrPropertyWithValue("status", scenarioOneExecution.status())
                 .hasFieldOrPropertyWithValue("environment", scenarioOneExecution.environment())
             ;
-            assertThat(reports.get(0).scenarioExecutionReports()).element(1)
+            assertThat(reports.getFirst().scenarioExecutionReports()).element(1)
                 .hasFieldOrPropertyWithValue("scenarioId", scenarioEntityTwo.getId().toString())
                 .hasFieldOrPropertyWithValue("scenarioName", scenarioEntityTwo.getTitle())
                 .extracting("execution")
@@ -332,7 +332,7 @@ public class CampaignExecutionDBRepositoryTest {
 
             assertThat(lastExecutions).hasSize(2);
 
-            assertThat(lastExecutions.get(0).scenarioExecutionReports()).hasSize(1)
+            assertThat(lastExecutions.getFirst().scenarioExecutionReports()).hasSize(1)
                 .element(0)
                 .hasFieldOrPropertyWithValue("scenarioId", scenarioEntity.getId().toString())
                 .hasFieldOrPropertyWithValue("scenarioName", scenarioEntity.getTitle())

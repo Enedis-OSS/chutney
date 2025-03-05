@@ -78,7 +78,7 @@ public class IndexRepositoryTest {
         List<Hit> results = campaignRepository.search("Campaign");
 
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).title()).isEqualTo("<mark>Campaign</mark> Title");
+        assertThat(results.getFirst().title()).isEqualTo("<mark>Campaign</mark> Title");
     }
 
     @Test
@@ -89,9 +89,9 @@ public class IndexRepositoryTest {
         List<Hit> results = scenarioRepository.search("Scenario");
 
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).title()).isEqualTo("<mark>Scenario</mark> Title");
-        assertThat(results.get(0).description()).isEqualTo("Description of the <mark>Scenario</mark>");
-        assertThat(results.get(0).content()).isEqualTo("Content with <mark>scenario</mark> described");
+        assertThat(results.getFirst().title()).isEqualTo("<mark>Scenario</mark> Title");
+        assertThat(results.getFirst().description()).isEqualTo("Description of the <mark>Scenario</mark>");
+        assertThat(results.getFirst().content()).isEqualTo("Content with <mark>scenario</mark> described");
     }
 
     @Test
@@ -102,8 +102,8 @@ public class IndexRepositoryTest {
         List<Hit> results = datasetRepository.search("A");
 
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).description()).isEqualTo("<mark>Dataset</mark> <mark>Name</mark>");
-        assertThat(results.get(0).content()).contains("<mark>");
+        assertThat(results.getFirst().description()).isEqualTo("<mark>Dataset</mark> <mark>Name</mark>");
+        assertThat(results.getFirst().content()).contains("<mark>");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class IndexRepositoryTest {
         List<Hit> results = scenarioRepository.search("#");
 
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).title()).isEqualTo("~12345 OR <mark>#appel</mark> OR --copy");
+        assertThat(results.getFirst().title()).isEqualTo("~12345 OR <mark>#appel</mark> OR --copy");
     }
 
     private CampaignEntity createCampaignEntity(Long id, String title, String description, String environment, boolean parallelRun, boolean retryAuto, String datasetId, List<String> tags, Integer version, List<CampaignScenarioEntity> campaignScenarios) {

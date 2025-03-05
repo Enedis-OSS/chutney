@@ -71,6 +71,6 @@ public class LdapUserDetailsService implements UserDetailsService {
             throw new InternalAuthenticationServiceException("Cannot retrieve ldap attributes for user: " + username);
         }
 
-        return UserDetailsServiceHelper.grantAuthoritiesFromUserRole(results.get(0), authenticationService);
+        return UserDetailsServiceHelper.grantAuthoritiesFromUserRole(results.getFirst(), authenticationService);
     }
 }

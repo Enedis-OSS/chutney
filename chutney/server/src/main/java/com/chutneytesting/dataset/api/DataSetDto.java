@@ -76,7 +76,7 @@ public interface DataSetDto {
 
     default List<String> duplicatedHeaders() {
         if(!datatable().isEmpty()) {
-            List<String> headers = datatable().get(0).stream().map(KeyValue::key).toList();
+            List<String> headers = datatable().getFirst().stream().map(KeyValue::key).toList();
             return headers.stream()
                 .collect(groupingBy(h -> h, counting()))
                 .entrySet().stream()

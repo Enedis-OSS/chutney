@@ -97,7 +97,7 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
         // Then
         assertThat(actionExecutionResult.status).isEqualTo(Success);
         List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
-        assertThat(body.get(0).get("payload")).isEqualTo("my-test-value");
+        assertThat(body.getFirst().get("payload")).isEqualTo("my-test-value");
     }
 
     @ParameterizedTest
@@ -143,7 +143,7 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
         ActionExecutionResult actionExecutionResult = consumeAction.execute();
         assertThat(actionExecutionResult.status).isEqualTo(Success);
         List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
-        assertThat(body.get(0).get("payload")).isEqualTo("1");
+        assertThat(body.getFirst().get("payload")).isEqualTo("1");
 
         // Second time
         consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
@@ -157,7 +157,7 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
 
         assertThat(actionExecutionResult.status).isEqualTo(Success);
         body = assertActionOutputsSize(actionExecutionResult, 1);
-        assertThat(body.get(0).get("payload")).isEqualTo("1");
+        assertThat(body.getFirst().get("payload")).isEqualTo("1");
 
         // Third time without reset
         consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
@@ -197,7 +197,7 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
             // Then
             assertThat(actionExecutionResult.status).isEqualTo(Success);
             List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
-            assertThat(body.get(0).get("payload")).isInstanceOf(byte[].class);
+            assertThat(body.getFirst().get("payload")).isInstanceOf(byte[].class);
             assertThat(actionExecutionResult.outputs.get("payloads")).asList().first()
                 .isInstanceOf(byte[].class)
                 .isEqualTo(payload);
@@ -233,7 +233,7 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
             // Then
             assertThat(actionExecutionResult.status).isEqualTo(Success);
             List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
-            assertThat(body.get(0).get("payload")).isInstanceOf(byte[].class);
+            assertThat(body.getFirst().get("payload")).isInstanceOf(byte[].class);
             assertThat(actionExecutionResult.outputs.get("payloads")).asList().first()
                 .isInstanceOf(byte[].class)
                 .isEqualTo(payload);
@@ -268,7 +268,7 @@ public abstract class KafkaBasicConsumeActionIntegrationTest {
             // Then
             assertThat(actionExecutionResult.status).isEqualTo(Success);
             List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
-            assertThat(body.get(0).get("payload")).isInstanceOf(byte[].class);
+            assertThat(body.getFirst().get("payload")).isInstanceOf(byte[].class);
             assertThat(actionExecutionResult.outputs.get("payloads")).asList().first()
                 .isInstanceOf(byte[].class)
                 .isEqualTo(payload);

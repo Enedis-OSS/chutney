@@ -322,19 +322,19 @@ public class ScenarioExecutionEngineAsyncTest {
         final List<String> stepNames = Arrays.asList("name", "sub 1", "sub 2");
         Instant startDate = Instant.now();
         final List<StepExecutionReportCore> reportsList = Arrays.asList(
-            stepExecution(stepNames.get(0), ServerReportStatus.NOT_EXECUTED,
+            stepExecution(stepNames.getFirst(), ServerReportStatus.NOT_EXECUTED,
                 Arrays.asList(
                     stepExecution(stepNames.get(1), ServerReportStatus.NOT_EXECUTED, null, startDate),
                     stepExecution(stepNames.get(2), ServerReportStatus.NOT_EXECUTED, null, startDate)), startDate),
-            stepExecution(stepNames.get(0), ServerReportStatus.RUNNING,
+            stepExecution(stepNames.getFirst(), ServerReportStatus.RUNNING,
                 Arrays.asList(
                     stepExecution(stepNames.get(1), ServerReportStatus.RUNNING, null, startDate),
                     stepExecution(stepNames.get(2), ServerReportStatus.NOT_EXECUTED, null, startDate)), startDate),
-            stepExecution(stepNames.get(0), ServerReportStatus.RUNNING,
+            stepExecution(stepNames.getFirst(), ServerReportStatus.RUNNING,
                 Arrays.asList(
                     stepExecution(stepNames.get(1), ServerReportStatus.SUCCESS, null, startDate),
                     stepExecution(stepNames.get(2), ServerReportStatus.RUNNING, null, startDate)), startDate),
-            stepExecution(stepNames.get(0), ServerReportStatus.SUCCESS,
+            stepExecution(stepNames.getFirst(), ServerReportStatus.SUCCESS,
                 Arrays.asList(
                     stepExecution(stepNames.get(1), ServerReportStatus.SUCCESS, null, startDate),
                     stepExecution(stepNames.get(2), ServerReportStatus.SUCCESS, null, startDate)), startDate));

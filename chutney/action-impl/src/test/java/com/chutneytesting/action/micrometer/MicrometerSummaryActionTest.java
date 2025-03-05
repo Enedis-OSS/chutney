@@ -35,7 +35,7 @@ public class MicrometerSummaryActionTest {
 
         assertThat(errors.size()).isEqualTo(10);
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(errors.get(0)).isEqualTo("name and distributionSummary cannot be both null");
+        softly.assertThat(errors.getFirst()).isEqualTo("name and distributionSummary cannot be both null");
         softly.assertThat(errors.get(1)).isEqualTo("[bufferLength parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"not a integer\")");
         softly.assertThat(errors.get(2)).isEqualTo("[percentilePrecision parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"not a integer\")");
         softly.assertThat(errors.get(3)).isEqualTo("[maxValue parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"not a long\")");
@@ -144,7 +144,7 @@ public class MicrometerSummaryActionTest {
         assertSuccessAndSummaryObjectType(result);
 
         assertThat(logger.info).hasSize(5);
-        assertThat(logger.info.get(0)).isEqualTo("Distribution summary updated by 6.0");
+        assertThat(logger.info.getFirst()).isEqualTo("Distribution summary updated by 6.0");
         assertThat(logger.info.get(1)).isEqualTo("Distribution summary current total is 6.0");
         assertThat(logger.info.get(2)).isEqualTo("Distribution summary current max is 6.0");
         assertThat(logger.info.get(3)).isEqualTo("Distribution summary current mean is 6.0");

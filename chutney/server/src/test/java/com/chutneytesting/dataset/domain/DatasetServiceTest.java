@@ -83,12 +83,12 @@ class DatasetServiceTest {
 
         // Then
         assertThat(actual).hasSize(2);
-        assertThat(actual.get(0).scenarioUsage).hasSize(1);
-        assertThat(actual.get(0).scenarioUsage).contains("Scenario1");
-        assertThat(actual.get(0).campaignUsage).hasSize(2);
-        assertThat(actual.get(0).campaignUsage).contains("campaign1");
-        assertThat(actual.get(0).campaignUsage).contains("campaign2");
-        assertThat(actual.get(0).scenarioInCampaignUsage).containsEntry("campaign1", Set.of("Scenario1"));
+        assertThat(actual.getFirst().scenarioUsage).hasSize(1);
+        assertThat(actual.getFirst().scenarioUsage).contains("Scenario1");
+        assertThat(actual.getFirst().campaignUsage).hasSize(2);
+        assertThat(actual.getFirst().campaignUsage).contains("campaign1");
+        assertThat(actual.getFirst().campaignUsage).contains("campaign2");
+        assertThat(actual.getFirst().scenarioInCampaignUsage).containsEntry("campaign1", Set.of("Scenario1"));
     }
 
     @Test

@@ -61,9 +61,9 @@ public class XPathFunction {
         // CDATA
         // TextNode \n
         if (cdata.size() == 1) {
-            result = unwrapJdomSimpleObject(cdata.get(0));
+            result = unwrapJdomSimpleObject(cdata.getFirst());
         } else if (contents.size() == 1) {
-            result = unwrapJdomSimpleObject(contents.get(0));
+            result = unwrapJdomSimpleObject(contents.getFirst());
         } else {
             result = jDomObject;
         }

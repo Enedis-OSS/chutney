@@ -82,7 +82,7 @@ public class TestCaseEditionControllerTest {
         );
 
         assertThat(result).hasSize(2);
-        assertDtoIsEqualToEdition(result.get(0), firstTestCaseEdition);
+        assertDtoIsEqualToEdition(result.getFirst(), firstTestCaseEdition);
         assertDtoIsEqualToEdition(result.get(1), secondTestCaseEdition);
     }
 

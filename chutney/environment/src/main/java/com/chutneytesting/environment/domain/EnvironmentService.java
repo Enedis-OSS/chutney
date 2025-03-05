@@ -115,7 +115,7 @@ public class EnvironmentService {
             throw new NoEnvironmentFoundException();
         }
 
-        return envs.get(0);
+        return envs.getFirst();
     }
 
 
@@ -194,7 +194,7 @@ public class EnvironmentService {
             Environment updated = environment.updateVariable(existingKey, variable);
             if (!environment.equals(updated)) {
                 createOrUpdate(updated);
-                logger.debug("Updated variable " + existingKey + " as " + values.get(0).key());
+                logger.debug("Updated variable " + existingKey + " as " + values.getFirst().key());
             }
         });
     }

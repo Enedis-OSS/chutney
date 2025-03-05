@@ -30,7 +30,7 @@ public class GwtScenarioMapperTest {
 
         //Then:
         assertThat(actualScenario.givens.size()).isEqualTo(2);
-        assertThat(actualScenario.givens.get(0).xRef).hasValue("common/frag1.icefrag.json");
+        assertThat(actualScenario.givens.getFirst().xRef).hasValue("common/frag1.icefrag.json");
         assertThat(actualScenario.givens.get(1).implementation.get().xRef).isEqualTo("common/frag2.icefrag.json");
 
     }
@@ -45,9 +45,9 @@ public class GwtScenarioMapperTest {
 
         //Then:
         assertThat(actualScenario.givens.size()).isEqualTo(1);
-        assertThat(actualScenario.givens.get(0).implementation.get().inputs).containsEntry("fake_param", "fake_value");
-        assertThat(actualScenario.givens.get(0).implementation.get().outputs).containsEntry("fake_output", "fake_output_value");
-        assertThat(actualScenario.givens.get(0).implementation.get().validations).containsEntry("fake_validation", "${true}");
+        assertThat(actualScenario.givens.getFirst().implementation.get().inputs).containsEntry("fake_param", "fake_value");
+        assertThat(actualScenario.givens.getFirst().implementation.get().outputs).containsEntry("fake_output", "fake_output_value");
+        assertThat(actualScenario.givens.getFirst().implementation.get().validations).containsEntry("fake_validation", "${true}");
     }
 
 }

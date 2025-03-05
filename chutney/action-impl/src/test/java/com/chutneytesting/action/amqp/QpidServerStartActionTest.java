@@ -37,7 +37,7 @@ class QpidServerStartActionTest {
                 .hasSize(1)
                 .hasOnlyElementsOfType(FinallyAction.class);
 
-            assertThat(finallyActionRegistry.finallyActions.get(0).type())
+            assertThat(finallyActionRegistry.finallyActions.getFirst().type())
                 .isEqualTo("qpid-server-stop");
         } finally {
             if (executionResult != null) {

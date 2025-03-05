@@ -117,7 +117,7 @@ public class Reporter {
 
     private static String getEnvironment(Step step) {
         if (step.isParentStep()) {
-            return getEnvironment(step.subSteps().get(0));
+            return getEnvironment(step.subSteps().getFirst());
         }
         return (String) step.getScenarioContext().get("environment");
     }

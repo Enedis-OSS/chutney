@@ -35,7 +35,7 @@ public class MicrometerCounterActionTest {
         List<String> errors = no_number.validateInputs();
 
         assertThat(errors.size()).isEqualTo(1);
-        assertThat(errors.get(0)).isEqualTo("[increment parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"no number\")");
+        assertThat(errors.getFirst()).isEqualTo("[increment parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"no number\")");
     }
 
     @Test
@@ -132,7 +132,7 @@ public class MicrometerCounterActionTest {
         assertSuccessAndCounterObjectType(result);
 
         assertThat(logger.info).hasSize(2);
-        assertThat(logger.info.get(0)).isEqualTo("Counter incremented by 5.0");
+        assertThat(logger.info.getFirst()).isEqualTo("Counter incremented by 5.0");
         assertThat(logger.info.get(1)).isEqualTo("Counter current count is 5.0");
     }
 

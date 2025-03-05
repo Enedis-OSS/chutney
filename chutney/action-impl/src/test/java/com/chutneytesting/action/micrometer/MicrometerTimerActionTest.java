@@ -36,7 +36,7 @@ public class MicrometerTimerActionTest {
 
         assertThat(errors.size()).isEqualTo(9);
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(errors.get(0)).isEqualTo("name and timer cannot be both null");
+        softly.assertThat(errors.getFirst()).isEqualTo("name and timer cannot be both null");
         softly.assertThat(errors.get(1)).isEqualTo("[bufferLength parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"not a integer\")");
         softly.assertThat(errors.get(2)).isEqualTo("[percentilePrecision parsing] not applied because of exception java.lang.NumberFormatException(For input string: \"not a integer\")");
         softly.assertThat(errors.get(3)).startsWith("[maxValue is not parsable] not applied because of exception java.lang.IllegalArgumentException(Cannot parse duration: not a duration");
@@ -142,7 +142,7 @@ public class MicrometerTimerActionTest {
         assertSuccessAndTimerObjectType(result);
 
         assertThat(logger.info).hasSize(5);
-        assertThat(logger.info.get(0)).isEqualTo("Timer updated by 6 s");
+        assertThat(logger.info.getFirst()).isEqualTo("Timer updated by 6 s");
         assertThat(logger.info.get(1)).isEqualTo("Timer current total time is 6.0 SECONDS");
         assertThat(logger.info.get(2)).isEqualTo("Timer current max time is 6.0 SECONDS");
         assertThat(logger.info.get(3)).isEqualTo("Timer current mean time is 6.0 SECONDS");

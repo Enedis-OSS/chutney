@@ -45,7 +45,7 @@ public class MicrometerGaugeActionTest {
         List<String> errors = micrometerGaugeAction.validateInputs();
 
         assertThat(errors.size()).isEqualTo(2);
-        assertThat(errors.get(0)).isEqualTo("No name provided (String)");
+        assertThat(errors.getFirst()).isEqualTo("No name provided (String)");
         assertThat(errors.get(1)).isEqualTo("name should not be blank");
     }
 
@@ -55,7 +55,7 @@ public class MicrometerGaugeActionTest {
         List<String> errors = micrometerGaugeAction.validateInputs();
 
         assertThat(errors.size()).isEqualTo(1);
-        assertThat(errors.get(0)).isEqualTo("gaugeObject and gaugeFunction cannot be both null");
+        assertThat(errors.getFirst()).isEqualTo("gaugeObject and gaugeFunction cannot be both null");
 
     }
 
@@ -135,7 +135,7 @@ public class MicrometerGaugeActionTest {
 
         // Then
         assertThat(errors.size()).isEqualTo(1);
-        assertThat(errors.get(0)).isEqualTo("gaugeObject must be a Number, a Collection or a Map if no gaugeFunction supplied");
+        assertThat(errors.getFirst()).isEqualTo("gaugeObject must be a Number, a Collection or a Map if no gaugeFunction supplied");
     }
 
     @Test
@@ -309,7 +309,7 @@ public class MicrometerGaugeActionTest {
         assertThat(result.status).isEqualTo(Failure);
         assertThat(logger.errors).hasSize(1);
         for (String message : messages) {
-            assertThat(logger.errors.get(0)).contains(message);
+            assertThat(logger.errors.getFirst()).contains(message);
         }
     }
 

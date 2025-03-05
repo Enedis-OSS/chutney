@@ -75,7 +75,7 @@ public class SurefireScenarioExecutionReportBuilderTest {
 
         assertThat(testsuite.getTestcase()).hasSize(2);
 
-        Testcase step1 = testsuite.getTestcase().get(0);
+        Testcase step1 = testsuite.getTestcase().getFirst();
         assertThat(step1.getName()).isEqualTo("1 - step 1");
         assertThat(step1.getTime()).isEqualTo("0.024");
         assertThat(step1.getFailure()).hasSize(0);
@@ -129,7 +129,7 @@ public class SurefireScenarioExecutionReportBuilderTest {
 
         assertThat(testsuite.getTestcase()).hasSize(3);
 
-        Testcase step1 = testsuite.getTestcase().get(0);
+        Testcase step1 = testsuite.getTestcase().getFirst();
         assertThat(step1.getName()).isEqualTo("1 - step1");
         assertThat(step1.getTime()).isEqualTo("0.023");
         assertThat(step1.getFailure()).hasSize(0);
@@ -140,7 +140,7 @@ public class SurefireScenarioExecutionReportBuilderTest {
         assertThat(step2.getName()).isEqualTo("2 - step2");
         assertThat(step2.getTime()).isEqualTo("0.42");
         assertThat(step2.getFailure()).hasSize(1);
-        assertThat(step2.getFailure().get(0).message).isEqualTo("test error");
+        assertThat(step2.getFailure().getFirst().message).isEqualTo("test error");
         assertThat(step2.getSkipped()).isNull();
         assertThat(step2.getSystemOut()).isNull();
 

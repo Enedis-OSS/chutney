@@ -144,7 +144,7 @@ class KafkaConsumerFactoryTest {
             AUTO_COMMIT_INTERVAL_MS_CONFIG, // Could be used but must be a long
             GROUP_ID_CONFIG // Overridden by action group
         ).forEach(consumerConfigKeys::remove);
-        String targetProperty = consumerConfigKeys.get(0);
+        String targetProperty = consumerConfigKeys.getFirst();
         String propertyToOverride = consumerConfigKeys.get(1);
         String inputProperty = consumerConfigKeys.get(2);
         String notConsumerConfigTargetProperty = "not.a.kafka.consumer.config.key";

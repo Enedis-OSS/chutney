@@ -86,7 +86,7 @@ public class MicrometerTimerStopActionTest {
         assertSuccessAndDurationObjectType(result);
 
         assertThat(logger.info).hasSize(5);
-        assertThat(logger.info.get(0)).contains("stopped").contains("last for");
+        assertThat(logger.info.getFirst()).contains("stopped").contains("last for");
         assertThat(logger.info.get(1)).contains("Timer current total time is");
         assertThat(logger.info.get(2)).contains("Timer current max time is");
         assertThat(logger.info.get(3)).contains("Timer current mean time is");

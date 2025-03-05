@@ -61,8 +61,8 @@ public class CampaignEnvironmentUpdateHandlerTest {
         verify(campaignRepository, times(2)).createOrUpdate(argument.capture());
         List<Campaign> campaigns = argument.getAllValues();
         assertThat(campaigns).hasSize(2);
-        assertThat("TITLE1").isEqualTo(campaigns.get(0).title);
-        assertThat("NEW_ENV").isEqualTo(campaigns.get(0).executionEnvironment());
+        assertThat("TITLE1").isEqualTo(campaigns.getFirst().title);
+        assertThat("NEW_ENV").isEqualTo(campaigns.getFirst().executionEnvironment());
         assertThat("TITLE2").isEqualTo(campaigns.get(1).title);
         assertThat("NEW_ENV").isEqualTo(campaigns.get(1).executionEnvironment());
     }
@@ -107,8 +107,8 @@ public class CampaignEnvironmentUpdateHandlerTest {
         verify(campaignRepository, times(2)).createOrUpdate(argument.capture());
         List<Campaign> campaigns = argument.getAllValues();
         assertThat(campaigns).hasSize(2);
-        assertThat("TITLE1").isEqualTo(campaigns.get(0).title);
-        assertThat(campaigns.get(0).executionEnvironment()).isNull();
+        assertThat("TITLE1").isEqualTo(campaigns.getFirst().title);
+        assertThat(campaigns.getFirst().executionEnvironment()).isNull();
         assertThat("TITLE2").isEqualTo(campaigns.get(1).title);
         assertThat(campaigns.get(1).executionEnvironment()).isNull();
     }

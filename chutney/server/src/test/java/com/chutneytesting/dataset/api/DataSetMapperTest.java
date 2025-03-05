@@ -78,7 +78,7 @@ class DataSetMapperTest {
 
         DataSetDto dataset = toDto(fromDto(dataSetDto));
 
-        assertThat(dataset.datatable().get(0)).containsExactlyElementsOf(datatableLine);
+        assertThat(dataset.datatable().getFirst()).containsExactlyElementsOf(datatableLine);
     }
 
     @Test
@@ -99,11 +99,11 @@ class DataSetMapperTest {
         DataSetDto datasetDto = DataSetMapper.toDto(dataSet);
 
         assertThat(datasetDto).isNotNull();
-        assertThat(datasetDto.constants().get(0).key()).isEqualTo("TOTO");
-        assertThat(datasetDto.constants().get(0).value()).isEqualTo("TUTU");
-        assertThat(datasetDto.datatable().get(0).get(0).key()).isEqualTo("TOTO");
-        assertThat(datasetDto.datatable().get(0).get(0).value()).isEqualTo("TUTU");
-        assertThat(datasetDto.tags().get(0)).isEqualTo("TAG");
+        assertThat(datasetDto.constants().getFirst().key()).isEqualTo("TOTO");
+        assertThat(datasetDto.constants().getFirst().value()).isEqualTo("TUTU");
+        assertThat(datasetDto.datatable().getFirst().getFirst().key()).isEqualTo("TOTO");
+        assertThat(datasetDto.datatable().getFirst().getFirst().value()).isEqualTo("TUTU");
+        assertThat(datasetDto.tags().getFirst()).isEqualTo("TAG");
         assertThat(datasetDto.description()).isEqualTo("description");
         assertThat(datasetDto.lastUpdated()).isAfter(Instant.now().minus(1, ChronoUnit.HOURS));
         assertThat(datasetDto.id().get()).isEqualTo("id");
@@ -134,8 +134,8 @@ class DataSetMapperTest {
         assertThat(dataset).isNotNull();
         assertThat(dataset.constants).containsKey("TOTO");
         assertThat(dataset.constants).containsValue("TUTU");
-        assertThat(dataset.datatable.get(0)).containsKey("TOTO");
-        assertThat(dataset.datatable.get(0)).containsValue("TUTU");
+        assertThat(dataset.datatable.getFirst()).containsKey("TOTO");
+        assertThat(dataset.datatable.getFirst()).containsValue("TUTU");
         assertThat(dataset.id).isEqualTo("dataset");
         assertThat(dataset.name).isEqualTo("");
     }

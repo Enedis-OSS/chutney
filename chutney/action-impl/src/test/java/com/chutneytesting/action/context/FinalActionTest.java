@@ -55,7 +55,7 @@ public class FinalActionTest {
         assertThat(logger.errors).isEmpty();
 
         assertThat(registeredFinallyActions).hasSize(1);
-        FinallyAction finallyAction = registeredFinallyActions.get(0);
+        FinallyAction finallyAction = registeredFinallyActions.getFirst();
         assertThat(finallyAction.name()).isEqualTo("a finally action");
         assertThat(finallyAction.type()).isEqualTo("debug");
         assertThat(finallyAction.target()).isEmpty();
@@ -80,7 +80,7 @@ public class FinalActionTest {
         sut.execute();
 
         assertThat(registeredFinallyActions).hasSize(1);
-        FinallyAction finallyAction = registeredFinallyActions.get(0);
+        FinallyAction finallyAction = registeredFinallyActions.getFirst();
         assertThat(finallyAction.name()).isEqualTo("testing ??");
         assertThat(finallyAction.type()).isEqualTo("complex action");
         assertThat(finallyAction.target()).contains(target);

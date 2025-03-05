@@ -32,7 +32,7 @@ public class TestCaseEditionsService {
     public TestCaseEdition editTestCase(String testCaseId, String user) {
         List<TestCaseEdition> edition = testCaseEditions.findBy(byId(testCaseId).and(byEditor(user)));
         if (!edition.isEmpty()) {
-            return edition.get(0);
+            return edition.getFirst();
         }
 
         TestCaseEdition testCaseEdition = new TestCaseEdition(

@@ -81,15 +81,15 @@ public class CampaignSchedulerTest {
 
         softAssertVerifies(of(
             // Execution called with scheduledCampaign parameter with user "auto"
-            () -> verify(campaignExecutionEngine).executeScheduledCampaign(periodicScheduledCampaign.get(0).campaignExecutionRequests.get(0).campaignId(), environment, dataset.id, "auto"),
+            () -> verify(campaignExecutionEngine).executeScheduledCampaign(periodicScheduledCampaign.getFirst().campaignExecutionRequests.getFirst().campaignId(), environment, dataset.id, "auto"),
             // Last execution is removed
-            () -> verify(scheduledCampaignRepository).removeById(periodicScheduledCampaign.get(0).id),
+            () -> verify(scheduledCampaignRepository).removeById(periodicScheduledCampaign.getFirst().id),
             // Add next execution except for EMPTY frequency
             () -> {
                 if (EMPTY.equals(frequency)) {
                     verify(scheduledCampaignRepository, times(0)).add(any());
                 } else {
-                    verify(scheduledCampaignRepository).add(periodicScheduledCampaign.get(0).nextScheduledExecution());
+                    verify(scheduledCampaignRepository).add(periodicScheduledCampaign.getFirst().nextScheduledExecution());
                 }
             }
         ));
@@ -113,7 +113,7 @@ public class CampaignSchedulerTest {
             .thenReturn(
                 periodicScheduledCampaigns
             );
-        when(campaignExecutionEngine.executeById(periodicScheduledCampaigns.get(0).campaignExecutionRequests.get(0).campaignId(), SCHEDULER_EXECUTE_USER))
+        when(campaignExecutionEngine.executeById(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.getFirst().campaignId(), SCHEDULER_EXECUTE_USER))
             .thenThrow(new RuntimeException("campaignExecutionEngine.executeById"));
 
         assertDoesNotThrow(
@@ -137,8 +137,8 @@ public class CampaignSchedulerTest {
 
         sut.executeScheduledCampaigns();
 
-        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.get(0).campaignExecutionRequests.get(0).campaignId()), eq(environment), eq(dataset.id), eq("auto"));
-        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.get(0).campaignExecutionRequests.get(1).campaignId()), eq(environment), eq(dataset.id), eq("auto"));
+        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.getFirst().campaignId()), eq(environment), eq(dataset.id), eq("auto"));
+        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.get(1).campaignId()), eq(environment), eq(dataset.id), eq("auto"));
         verify(campaignExecutionEngine, times(2)).executeScheduledCampaign(any(), any(), any(), any());
     }
 

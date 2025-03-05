@@ -118,7 +118,7 @@ public class StepDataEvaluatorTest {
 
         assertThat(evaluatedInputs.get("list")).isInstanceOf(List.class);
         List<Object> evaluatedList = (List<Object>) evaluatedInputs.get("list");
-        assertThat(evaluatedList.get(0)).isEqualTo("rawValue");
+        assertThat(evaluatedList.getFirst()).isEqualTo("rawValue");
         assertThat(evaluatedList.get(1)).isEqualTo(testObject);
         assertThat(evaluatedList.get(2)).isEqualTo("stringDestination");
         assertThat(evaluatedList.get(3)).isEqualTo("other stringDestination");

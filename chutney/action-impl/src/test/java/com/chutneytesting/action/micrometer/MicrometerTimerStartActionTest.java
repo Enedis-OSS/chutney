@@ -67,7 +67,7 @@ public class MicrometerTimerStartActionTest {
         assertSuccessAndSampleObjectType(result);
 
         assertThat(logger.info).hasSize(1);
-        assertThat(logger.info.get(0)).contains("started");
+        assertThat(logger.info.getFirst()).contains("started");
     }
 
     private void assertSuccessAndSampleObjectType(ActionExecutionResult result) {

@@ -85,7 +85,7 @@ public class StepStateTest {
             stepState.stopWatch();
             durations.add(stepState.duration().toMillis());
         });
-        Long firstStopDuration = durations.get(0);
+        Long firstStopDuration = durations.getFirst();
         assertThat(durations).containsExactly(firstStopDuration, firstStopDuration, firstStopDuration, firstStopDuration);
     }
 

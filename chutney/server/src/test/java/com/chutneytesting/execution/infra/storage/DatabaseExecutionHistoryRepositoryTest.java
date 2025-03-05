@@ -126,7 +126,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             List<Throwable> throwns = new ArrayList<>(numThreads);
             ids.forEach(((id) -> {
-                ExecutionSummary summary = sut.getExecutions(id).get(0);
+                ExecutionSummary summary = sut.getExecutions(id).getFirst();
                 Thread t = new Thread(() -> {
                     try {
                         startLatch.await();
@@ -228,7 +228,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
             String scenarioId = givenScenario().getId().toString();
             sut.store(scenarioId, buildDetachedExecution(RUNNING, "exec", ""));
 
-            ExecutionSummary last = sut.getExecutions(scenarioId).get(0);
+            ExecutionSummary last = sut.getExecutions(scenarioId).getFirst();
             assertThat(last.status()).isEqualTo(RUNNING);
             assertThat(last.info()).hasValue("exec");
 
@@ -247,7 +247,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
             sut.store(scenarioId, buildDetachedExecution(SUCCESS, "exec2", ""));
             sut.store(scenarioId, buildDetachedExecution(RUNNING, "exec3", ""));
 
-            ExecutionSummary last = sut.getExecutions(scenarioId).get(0);
+            ExecutionSummary last = sut.getExecutions(scenarioId).getFirst();
             assertThat(last.status()).isEqualTo(RUNNING);
             assertThat(last.info()).contains("exec3");
 
@@ -283,8 +283,8 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             // Then, these executions are KO
             assertThat(nbOfAffectedExecutions).isEqualTo(2);
-            assertThat(sut.getExecutions(scenarioIdOne).get(0).status()).isEqualTo(FAILURE);
-            assertThat(sut.getExecutions(scenarioIdTwo).get(0).status()).isEqualTo(FAILURE);
+            assertThat(sut.getExecutions(scenarioIdOne).getFirst().status()).isEqualTo(FAILURE);
+            assertThat(sut.getExecutions(scenarioIdTwo).getFirst().status()).isEqualTo(FAILURE);
 
             // And there is no more running execution
             assertThat(sut.getExecutionsWithStatus(RUNNING).size()).isEqualTo(0);
@@ -301,14 +301,14 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             // Then, these executions are KO
             assertThat(nbOfAffectedExecutions).isEqualTo(1);
-            assertThat(sut.getExecutions(scenarioIdOne).get(0).status()).isEqualTo(FAILURE);
+            assertThat(sut.getExecutions(scenarioIdOne).getFirst().status()).isEqualTo(FAILURE);
             ScenarioExecutionReportEntity scenarioExecutionReport = scenarioExecutionReportJpaRepository.findById(scenarioId).orElseThrow();
             ScenarioExecutionReport report = objectMapper.readValue(scenarioExecutionReport.getReport(), ScenarioExecutionReport.class);
             assertThat(report.report.status).isEqualTo(SUCCESS);
             assertThat(report.report.steps.size()).isEqualTo(1);
-            assertThat(report.report.steps.get(0).status).isEqualTo(STOPPED);
-            assertThat(report.report.steps.get(0).steps.size()).isEqualTo(1);
-            assertThat(report.report.steps.get(0).steps.get(0).status).isEqualTo(STOPPED);
+            assertThat(report.report.steps.getFirst().status).isEqualTo(STOPPED);
+            assertThat(report.report.steps.getFirst().steps.size()).isEqualTo(1);
+            assertThat(report.report.steps.getFirst().steps.getFirst().status).isEqualTo(STOPPED);
 
             // And there is no more running execution
             assertThat(sut.getExecutionsWithStatus(RUNNING).size()).isEqualTo(0);
@@ -325,16 +325,16 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             // Then, these executions are KO
             assertThat(nbOfAffectedExecutions).isEqualTo(1);
-            ExecutionSummary execution = sut.getExecutions(scenarioIdOne).get(0);
+            ExecutionSummary execution = sut.getExecutions(scenarioIdOne).getFirst();
             assertThat(execution.status()).isEqualTo(FAILURE);
             assertThat(execution.tags()).hasValue(defaultScenarioTags());
             ScenarioExecutionReportEntity scenarioExecutionReport = scenarioExecutionReportJpaRepository.findById(scenarioId).orElseThrow();
             ScenarioExecutionReport report = objectMapper.readValue(scenarioExecutionReport.getReport(), ScenarioExecutionReport.class);
             assertThat(report.report.status).isEqualTo(SUCCESS);
             assertThat(report.report.steps.size()).isEqualTo(1);
-            assertThat(report.report.steps.get(0).status).isEqualTo(STOPPED);
-            assertThat(report.report.steps.get(0).steps.size()).isEqualTo(1);
-            assertThat(report.report.steps.get(0).steps.get(0).status).isEqualTo(STOPPED);
+            assertThat(report.report.steps.getFirst().status).isEqualTo(STOPPED);
+            assertThat(report.report.steps.getFirst().steps.size()).isEqualTo(1);
+            assertThat(report.report.steps.getFirst().steps.getFirst().status).isEqualTo(STOPPED);
 
             // And there is no more running execution
             assertThat(sut.getExecutionsWithStatus(PAUSED).size()).isEqualTo(0);
@@ -366,18 +366,18 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             Execution last = sut.store(scenarioId, buildDetachedExecution(SUCCESS, tooLongString, tooLongString));
 
-            assertThat(sut.getExecutions(scenarioId).get(0).info())
+            assertThat(sut.getExecutions(scenarioId).getFirst().info())
                 .hasValueSatisfying(v -> assertThat(v).hasSize(512));
 
-            assertThat(sut.getExecutions(scenarioId).get(0).error())
+            assertThat(sut.getExecutions(scenarioId).getFirst().error())
                 .hasValueSatisfying(v -> assertThat(v).hasSize(512));
 
             sut.update(scenarioId, buildDetachedExecution(SUCCESS, tooLongString, tooLongString).attach(last.executionId(), scenarioId));
 
-            assertThat(sut.getExecutions(scenarioId).get(0).info())
+            assertThat(sut.getExecutions(scenarioId).getFirst().info())
                 .hasValueSatisfying(v -> assertThat(v).hasSize(512));
 
-            assertThat(sut.getExecutions(scenarioId).get(0).error())
+            assertThat(sut.getExecutions(scenarioId).getFirst().error())
                 .hasValueSatisfying(v -> assertThat(v).hasSize(512));
         }
 
@@ -408,8 +408,8 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             // Then
             assertThat(executions).hasSize(2);
-            assertThat(executions.get(0).executionId()).isEqualTo(scenarioExecutionTwo.id());
-            assertThat(executions.get(0).campaignReport()).isEmpty();
+            assertThat(executions.getFirst().executionId()).isEqualTo(scenarioExecutionTwo.id());
+            assertThat(executions.getFirst().campaignReport()).isEmpty();
             assertThat(executions.get(1).executionId()).isEqualTo(scenarioExecutionOne.id());
             assertThat(executions.get(1).campaignReport()).hasValueSatisfying(report -> {
                 assertThat(report.campaignId).isEqualTo(campaign.id());
@@ -529,7 +529,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
                     .isInstanceOf(ReportNotFoundException.class));
 
                 assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports().size()).isEqualTo(1);
-                assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports().get(0).execution().executionId()).isEqualTo(scenarioExecutionTwo.id());
+                assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(scenarioExecutionTwo.id());
 
             }
 
@@ -554,8 +554,8 @@ public class DatabaseExecutionHistoryRepositoryTest {
                 var executionSummaryList = sut.getExecutionReportMatchKeyword("to");
 
                 assertThat(executionSummaryList).hasSize(1);
-                assertThat(executionSummaryList.get(0).executionId()).isEqualTo(exec1.executionId());
-                assertThat(executionSummaryList.get(0).scenarioId()).isEqualTo(exec1.scenarioId());
+                assertThat(executionSummaryList.getFirst().executionId()).isEqualTo(exec1.executionId());
+                assertThat(executionSummaryList.getFirst().scenarioId()).isEqualTo(exec1.scenarioId());
             }
 
             @Test
@@ -569,8 +569,8 @@ public class DatabaseExecutionHistoryRepositoryTest {
                 var executionSummaryList = sut.getExecutionReportMatchKeyword("t");
 
                 assertThat(executionSummaryList).hasSize(1);
-                assertThat(executionSummaryList.get(0).executionId()).isEqualTo(exec1.executionId());
-                assertThat(executionSummaryList.get(0).scenarioId()).isEqualTo(exec1.scenarioId());
+                assertThat(executionSummaryList.getFirst().executionId()).isEqualTo(exec1.executionId());
+                assertThat(executionSummaryList.getFirst().scenarioId()).isEqualTo(exec1.scenarioId());
             }
 
             @Test

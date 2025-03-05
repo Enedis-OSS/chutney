@@ -54,8 +54,8 @@ public class DefaultExecutionRequestMapperTest {
         // Then
         assertThat(executionRequestDto.scenario).isNotNull();
         assertThat(executionRequestDto.scenario.name).isEqualTo("root step");
-        assertThat(executionRequestDto.scenario.steps.get(0).name).isEqualTo("context-put name");
-        assertThat(executionRequestDto.scenario.steps.get(0).inputs).containsKey("someID");
+        assertThat(executionRequestDto.scenario.steps.getFirst().name).isEqualTo("context-put name");
+        assertThat(executionRequestDto.scenario.steps.getFirst().inputs).containsKey("someID");
         assertThat(executionRequestDto.environment).isNotNull();
         assertThat(executionRequestDto.environment.name()).isEqualTo(envName);
         assertThat(executionRequestDto.dataset.constants).isEqualTo(dataset.constants);

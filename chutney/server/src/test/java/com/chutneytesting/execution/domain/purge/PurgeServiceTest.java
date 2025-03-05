@@ -1313,13 +1313,13 @@ public class PurgeServiceTest {
         List<ScenarioExecutionCampaign> scenarioExecutionsForCampaign = Arrays.stream(scenarioExecutions)
             .map(t -> {
                 List<Object> tt = t.toList();
-                String scenarioId = (String) tt.get(0);
+                String scenarioId = (String) tt.getFirst();
                 ExecutionHistory.ExecutionSummary scenarioExecution = (ExecutionHistory.ExecutionSummary) tt.get(1);
                 return new ScenarioExecutionCampaign(scenarioId, scenarioExecution.testCaseTitle(), scenarioExecution);
             })
             .toList();
 
-        ExecutionHistory.ExecutionSummary firsScenarioExecution = scenarioExecutionsForCampaign.get(0).execution();
+        ExecutionHistory.ExecutionSummary firsScenarioExecution = scenarioExecutionsForCampaign.getFirst().execution();
         return CampaignExecutionReportBuilder.builder()
             .executionId(campaignExecutionId)
             .campaignId(campaignId)

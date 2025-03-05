@@ -104,9 +104,9 @@ public class XmlAssertAction implements Action {
             List<Content> contents = element.getContent((Filter<Content>) new ContentFilter(ContentFilter.COMMENT).negate());
             List<Content> cdata = element.getContent(new ContentFilter(ContentFilter.CDATA));
             if (contents.size() == 1) {
-                evaluatedValueAsString = convertEvaluationResultToString(contents.get(0));
+                evaluatedValueAsString = convertEvaluationResultToString(contents.getFirst());
             } else if (cdata.size() == 1) {
-                evaluatedValueAsString = ((CDATA) cdata.get(0)).getText();
+                evaluatedValueAsString = ((CDATA) cdata.getFirst()).getText();
             } else if (contents.size() == 0) {
                 return null;
             } else {
