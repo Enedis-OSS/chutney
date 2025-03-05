@@ -27,7 +27,7 @@ public class ListenerContainerErrorHandler extends DefaultErrorHandler {
 
     @Override
     public void handleRemaining(Exception thrownException, List<ConsumerRecord<?, ?>> records, Consumer<?, ?> consumer, MessageListenerContainer container) {
-        logger.error("Error occurred while processing " + KafkaUtils.format(records.get(0)) + " : " + thrownException.getCause());
+        logger.error("Error occurred while processing " + KafkaUtils.format(records.getFirst()) + " : " + thrownException.getCause());
         super.handleRemaining(thrownException, records, consumer, container);
     }
 

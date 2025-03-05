@@ -150,7 +150,7 @@ public class CampaignExecutionEngineTest {
         verify(executionHistoryRepository, times(4)).getExecution(anyString(), anyLong());
 
         assertThat(campaignExecution.scenarioExecutionReports()).hasSize(campaign.scenarios.size());
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().executionId()).isEqualTo(firstScenarioExecutionId);
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(firstScenarioExecutionId);
         assertThat(campaignExecution.scenarioExecutionReports().get(1).execution().executionId()).isEqualTo(secondScenarioExecutionId);
         assertThat(campaignExecution.partialExecution).isFalse();
         verify(campaignExecutionRepository).saveCampaignExecution(campaign.id, campaignExecution);
@@ -176,7 +176,7 @@ public class CampaignExecutionEngineTest {
         verify(executionHistoryRepository, times(2)).getExecution(anyString(), anyLong());
 
         assertThat(campaignExecution.scenarioExecutionReports()).hasSize(1);
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().executionId()).isEqualTo(secondScenarioExecutionId);
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(secondScenarioExecutionId);
         assertThat(campaignExecution.partialExecution).isTrue();
         verify(campaignExecutionRepository).saveCampaignExecution(campaign.id, campaignExecution);
     }
@@ -221,10 +221,10 @@ public class CampaignExecutionEngineTest {
 
         assertThat(campaignExecutionReport.get().status()).isEqualTo(ServerReportStatus.STOPPED);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports()).hasSize(2);
-        assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(0).status()).isEqualTo(ServerReportStatus.SUCCESS);
+        assertThat(campaignExecutionReport.get().scenarioExecutionReports().getFirst().status()).isEqualTo(ServerReportStatus.SUCCESS);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(1).status()).isEqualTo(ServerReportStatus.NOT_EXECUTED);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports()).hasSize(2);
-        assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(0).execution().executionId()).isEqualTo(firstScenarioExecutionId);
+        assertThat(campaignExecutionReport.get().scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(firstScenarioExecutionId);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(1).execution().executionId()).isEqualTo(-1L);
     }
 
@@ -448,7 +448,7 @@ public class CampaignExecutionEngineTest {
         // Then
         verify(campaignRepository).findByName(campaign.title);
         assertThat(campaignExecutions).hasSize(1);
-        assertThat(campaignExecutions.get(0).dataset.id).isEqualTo(executionDataset.id);
+        assertThat(campaignExecutions.getFirst().dataset.id).isEqualTo(executionDataset.id);
     }
 
     @Test
@@ -611,9 +611,9 @@ public class CampaignExecutionEngineTest {
         assertThat(campaignExecution.dataset.constants).isEqualTo(constants);
         assertThat(campaignExecution.dataset.datatable).isEqualTo(datatable);
         assertThat(campaignExecution.scenarioExecutionReports()).isNotEmpty();
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().dataset()).isPresent();
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().dataset().get().constants).isEqualTo(constants);
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().dataset().get().datatable).isEqualTo(datatable);
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset()).isPresent();
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset().get().constants).isEqualTo(constants);
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset().get().datatable).isEqualTo(datatable);
     }
 
     @Test
@@ -636,8 +636,8 @@ public class CampaignExecutionEngineTest {
         assertThat(campaignExecution.dataset.datatable).isEmpty();
         assertThat(campaignExecution.dataset.id).isNotNull();
         assertThat(campaignExecution.dataset.id).isEqualTo("DATASET_ID");
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().dataset()).isPresent();
-        assertThat(campaignExecution.scenarioExecutionReports().get(0).execution().dataset().get().id).isEqualTo("DATASET_ID");
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset()).isPresent();
+        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset().get().id).isEqualTo("DATASET_ID");
     }
 
     @Test

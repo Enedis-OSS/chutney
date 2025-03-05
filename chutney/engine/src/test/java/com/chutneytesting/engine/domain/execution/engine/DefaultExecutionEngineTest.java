@@ -86,7 +86,7 @@ class DefaultExecutionEngineTest {
         } else {
             assertThat(report.status).isEqualTo(Status.FAILURE);
             assertThat(report.errors).hasSize(1);
-            assertThat(report.errors.get(0)).isEqualTo(throwableToCatchMessage);
+            assertThat(report.errors.getFirst()).isEqualTo(throwableToCatchMessage);
         }
     }
 
@@ -119,12 +119,12 @@ class DefaultExecutionEngineTest {
         assertThat(scenarioExecution.hasToStop()).isFalse();
 
         assertThat(report.steps).hasSize(1);
-        StepExecutionReport tearDownRootNode = report.steps.get(0);
+        StepExecutionReport tearDownRootNode = report.steps.getFirst();
         assertThat(tearDownRootNode.name).isEqualTo(tearDownRootNodeName);
         assertThat(tearDownRootNode.strategy).isEqualTo(new SoftAssertStrategy().getType());
         assertThat(tearDownRootNode.steps).hasSize(1);
-        assertThat(tearDownRootNode.steps.get(0).name).isEqualTo(finallyAction.name());
-        assertThat(tearDownRootNode.steps.get(0).type).isEqualTo(finallyAction.type());
+        assertThat(tearDownRootNode.steps.getFirst().name).isEqualTo(finallyAction.name());
+        assertThat(tearDownRootNode.steps.getFirst().type).isEqualTo(finallyAction.type());
     }
 
     @Test
@@ -369,11 +369,11 @@ class DefaultExecutionEngineTest {
             assertThat(report.status).isEqualTo(Status.FAILURE);
             assertThat(report.errors).hasSize(0);
             assertThat(report.steps).hasSize(1);
-            StepExecutionReport tearDownRootNode = report.steps.get(0);
+            StepExecutionReport tearDownRootNode = report.steps.getFirst();
             assertThat(tearDownRootNode.name).isEqualTo(tearDownRootNodeName);
             assertThat(tearDownRootNode.status).isEqualTo(Status.FAILURE);
             assertThat(tearDownRootNode.errors).hasSize(1);
-            assertThat(tearDownRootNode.errors.get(0)).isEqualTo(throwableToCatchMessage);
+            assertThat(tearDownRootNode.errors.getFirst()).isEqualTo(throwableToCatchMessage);
         }
     }
 
@@ -412,11 +412,11 @@ class DefaultExecutionEngineTest {
         //Test order is reversed
         assertThat(report.status).isEqualTo(Status.NOT_EXECUTED);
         assertThat(report.steps).hasSize(1);
-        StepExecutionReport tearDownRootNode = report.steps.get(0);
+        StepExecutionReport tearDownRootNode = report.steps.getFirst();
         assertThat(tearDownRootNode.name).isEqualTo(tearDownRootNodeName);
 
         assertThat(tearDownRootNode.steps).hasSize(3);
-        StepExecutionReport tearDownFirstActionReport = tearDownRootNode.steps.get(0);
+        StepExecutionReport tearDownFirstActionReport = tearDownRootNode.steps.getFirst();
         StepExecutionReport tearDownSecondActionReport = tearDownRootNode.steps.get(1);
         StepExecutionReport tearDownThirdActionReport = tearDownRootNode.steps.get(2);
 

@@ -53,15 +53,15 @@ public class ReporterTest {
 
     @Test
     public void parent_status_should_be_recalculate() {
-        Step subStep1 = step.subSteps().get(0);
-        Step subSubStep1 = step.subSteps().get(0).subSteps().get(0);
-        Step subSubStep2 = step.subSteps().get(0).subSteps().get(1);
+        Step subStep1 = step.subSteps().getFirst();
+        Step subSubStep1 = step.subSteps().getFirst().subSteps().getFirst();
+        Step subSubStep2 = step.subSteps().getFirst().subSteps().get(1);
 
         StepExecutionReport report = sut.generateReport(step, Step::status, "env");
         assertThat(report.status).isEqualTo(Status.NOT_EXECUTED);
-        assertThat(report.steps.get(0).status).isEqualTo(Status.NOT_EXECUTED);
-        assertThat(report.steps.get(0).steps.get(0).status).isEqualTo(Status.NOT_EXECUTED);
-        assertThat(report.steps.get(0).steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
+        assertThat(report.steps.getFirst().status).isEqualTo(Status.NOT_EXECUTED);
+        assertThat(report.steps.getFirst().steps.getFirst().status).isEqualTo(Status.NOT_EXECUTED);
+        assertThat(report.steps.getFirst().steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
         assertThat(report.steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
 
         step.beginExecution(scenarioExecution);
@@ -69,42 +69,42 @@ public class ReporterTest {
         subSubStep1.beginExecution(scenarioExecution);
         report = sut.generateReport(step, Step::status, "env");
         assertThat(report.status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).steps.get(0).status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
+        assertThat(report.steps.getFirst().status).isEqualTo(RUNNING);
+        assertThat(report.steps.getFirst().steps.getFirst().status).isEqualTo(RUNNING);
+        assertThat(report.steps.getFirst().steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
         assertThat(report.steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
 
         subSubStep1.pauseExecution(scenarioExecution);
         report = sut.generateReport(step, Step::status, "env");
         assertThat(report.status).isEqualTo(Status.PAUSED);
-        assertThat(report.steps.get(0).status).isEqualTo(Status.PAUSED);
-        assertThat(report.steps.get(0).steps.get(0).status).isEqualTo(Status.PAUSED);
-        assertThat(report.steps.get(0).steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
+        assertThat(report.steps.getFirst().status).isEqualTo(Status.PAUSED);
+        assertThat(report.steps.getFirst().steps.getFirst().status).isEqualTo(Status.PAUSED);
+        assertThat(report.steps.getFirst().steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
         assertThat(report.steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
 
         subSubStep1.success();
         report = sut.generateReport(step, Step::status, "env");
         assertThat(report.status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).steps.get(0).status).isEqualTo(SUCCESS);
-        assertThat(report.steps.get(0).steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
+        assertThat(report.steps.getFirst().status).isEqualTo(RUNNING);
+        assertThat(report.steps.getFirst().steps.getFirst().status).isEqualTo(SUCCESS);
+        assertThat(report.steps.getFirst().steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
         assertThat(report.steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
 
         subSubStep2.beginExecution(scenarioExecution);
         report = sut.generateReport(step, Step::status, "env");
         assertThat(report.status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).steps.get(0).status).isEqualTo(SUCCESS);
-        assertThat(report.steps.get(0).steps.get(1).status).isEqualTo(RUNNING);
+        assertThat(report.steps.getFirst().status).isEqualTo(RUNNING);
+        assertThat(report.steps.getFirst().steps.getFirst().status).isEqualTo(SUCCESS);
+        assertThat(report.steps.getFirst().steps.get(1).status).isEqualTo(RUNNING);
         assertThat(report.steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
 
         subSubStep2.success();
         subStep1.endExecution(scenarioExecution);
         report = sut.generateReport(step, Step::status, "env");
         assertThat(report.status).isEqualTo(RUNNING);
-        assertThat(report.steps.get(0).status).isEqualTo(SUCCESS);
-        assertThat(report.steps.get(0).steps.get(0).status).isEqualTo(SUCCESS);
-        assertThat(report.steps.get(0).steps.get(1).status).isEqualTo(SUCCESS);
+        assertThat(report.steps.getFirst().status).isEqualTo(SUCCESS);
+        assertThat(report.steps.getFirst().steps.getFirst().status).isEqualTo(SUCCESS);
+        assertThat(report.steps.getFirst().steps.get(1).status).isEqualTo(SUCCESS);
         assertThat(report.steps.get(1).status).isEqualTo(Status.NOT_EXECUTED);
     }
 
@@ -149,9 +149,9 @@ public class ReporterTest {
 
     @Test
     public void should_calculate_root_step_only_when_scenario_end_else_running() {
-        Step subStep1 = step.subSteps().get(0);
-        Step subStep11 = step.subSteps().get(0).subSteps().get(0);
-        Step subStep12 = step.subSteps().get(0).subSteps().get(1);
+        Step subStep1 = step.subSteps().getFirst();
+        Step subStep11 = step.subSteps().getFirst().subSteps().getFirst();
+        Step subStep12 = step.subSteps().getFirst().subSteps().get(1);
         Step subStep2 = step.subSteps().get(1);
 
         sut.createPublisher(scenarioExecution.executionId, step);
@@ -202,9 +202,9 @@ public class ReporterTest {
     }
 
     private void executeFakeScenarioSuccess() {
-        Step subStep1 = step.subSteps().get(0);
-        Step subSubStep1 = step.subSteps().get(0).subSteps().get(0);
-        Step subSubStep2 = step.subSteps().get(0).subSteps().get(1);
+        Step subStep1 = step.subSteps().getFirst();
+        Step subSubStep1 = step.subSteps().getFirst().subSteps().getFirst();
+        Step subSubStep2 = step.subSteps().getFirst().subSteps().get(1);
 
         RxBus.getInstance().post(new StartScenarioExecutionEvent(scenarioExecution, step));
         step.beginExecution(scenarioExecution);

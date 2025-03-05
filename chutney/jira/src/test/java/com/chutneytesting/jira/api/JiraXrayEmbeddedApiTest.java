@@ -82,7 +82,7 @@ class JiraXrayEmbeddedApiTest {
         when(jiraXrayApiMock.getTestExecutionScenarios(anyString())).thenReturn(result);
 
         List<XrayTestExecTest> statusByTest = jiraXrayEmbeddedApi.getTestStatusInTestExec("");
-        assertThat(statusByTest.get(0).getStatus()).isEqualTo(PASS.value);
+        assertThat(statusByTest.getFirst().getStatus()).isEqualTo(PASS.value);
         assertThat(statusByTest.get(1).getStatus()).isEqualTo(FAIL.value);
     }
 
@@ -104,7 +104,7 @@ class JiraXrayEmbeddedApiTest {
         verify(jiraXrayApiMock, times(1)).updateRequest(xrayArgumentCaptor.capture());
 
         Xray xrayValue = xrayArgumentCaptor.getValue();
-        XrayTest xrayTest = xrayValue.getTests().get(0);
+        XrayTest xrayTest = xrayValue.getTests().getFirst();
         assertThat(xrayTest.getTestKey()).isEqualTo("SCE-1");
         assertThat(xrayTest.getStart()).isEqualTo(Instant.parse("2021-05-19T11:22:33.00Z").atZone(ZoneId.systemDefault()).format(formatter));
         assertThat(xrayTest.getFinish()).isEqualTo(Instant.parse("2021-05-19T11:22:43.00Z").atZone(ZoneId.systemDefault()).format(formatter));
@@ -177,7 +177,7 @@ class JiraXrayEmbeddedApiTest {
         verify(jiraXrayApiMock, times(1)).updateRequest(xrayArgumentCaptor.capture());
 
         Xray xrayValue = xrayArgumentCaptor.getValue();
-        assertThat(xrayValue.getTests().get(0).getTestKey()).isEqualTo(expectedTestKey);
+        assertThat(xrayValue.getTests().getFirst().getTestKey()).isEqualTo(expectedTestKey);
     }
 
     private static Object[] datatableListParameters() {

@@ -100,8 +100,8 @@ public class TargetControllerTest {
     @Test
     public void should_list_distinct_targets_names_in_any_environment() throws Exception {
         List<String> targetsNames = Lists.list("t1", "t2", "t3");
-        addAvailableEnvironment("env1", targetsNames.get(0), targetsNames.get(2));
-        addAvailableEnvironment("env2", targetsNames.get(0), targetsNames.get(1));
+        addAvailableEnvironment("env1", targetsNames.getFirst(), targetsNames.get(2));
+        addAvailableEnvironment("env2", targetsNames.getFirst(), targetsNames.get(1));
 
         ResultActions resultActions = mockMvc.perform(get(targetBasePath + "/names"))
             .andDo(MockMvcResultHandlers.log())

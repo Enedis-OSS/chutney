@@ -43,7 +43,7 @@ public class RecordsTest {
 
         Records sut = new Records(-1, emptyList(), records);
 
-        assertThat(sut.getRows().get(0)).isEqualTo(List.of("A", "B"));
+        assertThat(sut.getRows().getFirst()).isEqualTo(List.of("A", "B"));
         assertThat(sut.getRows().get(1)).isEqualTo(List.of("AA", "BB"));
     }
 

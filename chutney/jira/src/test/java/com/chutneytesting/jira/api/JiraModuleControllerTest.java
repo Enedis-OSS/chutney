@@ -153,9 +153,9 @@ class JiraModuleControllerTest {
         });
 
         assertThat(scenarios).hasSize(1);
-        assertThat(scenarios.get(0).id()).isEqualTo("SCE-2");
-        assertThat(scenarios.get(0).chutneyId()).isEqualTo("2");
-        assertThat(scenarios.get(0).executionStatus().get()).isEqualTo(PASS.value);
+        assertThat(scenarios.getFirst().id()).isEqualTo("SCE-2");
+        assertThat(scenarios.getFirst().chutneyId()).isEqualTo("2");
+        assertThat(scenarios.getFirst().executionStatus().get()).isEqualTo(PASS.value);
     }
 
     @Test
@@ -173,9 +173,9 @@ class JiraModuleControllerTest {
         });
 
         assertThat(jiraTestExecution.jiraScenarios()).hasSize(1);
-        assertThat(jiraTestExecution.jiraScenarios().get(0).id()).isEqualTo("SCE-2");
-        assertThat(jiraTestExecution.jiraScenarios().get(0).chutneyId()).isEqualTo("2");
-        assertThat(jiraTestExecution.jiraScenarios().get(0).executionStatus().get()).isEqualTo(PASS.value);
+        assertThat(jiraTestExecution.jiraScenarios().getFirst().id()).isEqualTo("SCE-2");
+        assertThat(jiraTestExecution.jiraScenarios().getFirst().chutneyId()).isEqualTo("2");
+        assertThat(jiraTestExecution.jiraScenarios().getFirst().executionStatus().get()).isEqualTo(PASS.value);
     }
 
     @Test

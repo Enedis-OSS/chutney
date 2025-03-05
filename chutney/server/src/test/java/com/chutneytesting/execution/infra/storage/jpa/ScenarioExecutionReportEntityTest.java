@@ -92,8 +92,8 @@ public class ScenarioExecutionReportEntityTest {
         assertThat(dataset.constants).containsEntry("TITI", "TATA");
         assertThat(dataset.constants).containsEntry("TOTO", "TUTU");
         assertThat(dataset.datatable).hasSize(1);
-        assertThat(dataset.datatable.get(0)).containsEntry("VIVI", "VOVO");
-        assertThat(dataset.datatable.get(0)).containsEntry("VUVU", "VAVA");
+        assertThat(dataset.datatable.getFirst()).containsEntry("VIVI", "VOVO");
+        assertThat(dataset.datatable.getFirst()).containsEntry("VUVU", "VAVA");
     }
 
     @Test

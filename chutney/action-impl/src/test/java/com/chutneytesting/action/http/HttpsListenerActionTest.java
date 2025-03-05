@@ -65,8 +65,8 @@ public class HttpsListenerActionTest {
         assertThat(executionResult.status).isEqualTo(Success);
         List<LoggedRequest> requests = (List<LoggedRequest>) executionResult.outputs.get("requests");
         assertThat(requests).hasSize(1);
-        assertThat(requests.get(0).getBodyAsString()).isEqualTo("fake request");
-        assertThat(WireMockFunction.wiremockQueryParams(requests.get(0))).containsOnly(entry("param", "toto"), entry("param2", "toto2"));
+        assertThat(requests.getFirst().getBodyAsString()).isEqualTo("fake request");
+        assertThat(WireMockFunction.wiremockQueryParams(requests.getFirst())).containsOnly(entry("param", "toto"), entry("param2", "toto2"));
 
     }
 

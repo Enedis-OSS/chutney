@@ -96,7 +96,7 @@ public class DatabaseCampaignRepositoryTest {
 
             List<Campaign> campaigns = sut.findByName("test");
             assertThat(campaigns).hasSize(1);
-            assertThat(campaigns.get(0).scenarios).containsExactlyElementsOf(scenarioIds);
+            assertThat(campaigns.getFirst().scenarios).containsExactlyElementsOf(scenarioIds);
         }
 
         @Test
@@ -110,7 +110,7 @@ public class DatabaseCampaignRepositoryTest {
 
             List<Campaign> selected = sut.findByName(campaign.title);
             assertThat(selected).hasSize(1);
-            assertThat(selected.get(0).scenarios).containsExactlyElementsOf(scenarioIds);
+            assertThat(selected.getFirst().scenarios).containsExactlyElementsOf(scenarioIds);
         }
 
         @Test

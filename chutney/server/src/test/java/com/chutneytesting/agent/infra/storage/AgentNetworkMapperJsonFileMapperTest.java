@@ -54,7 +54,7 @@ public class AgentNetworkMapperJsonFileMapperTest {
 
         AgentNetworkForJsonFile dto = mapper.toDto(network);
 
-        AgentForJsonFile firstAgent = dto.agents.get(0);
+        AgentForJsonFile firstAgent = dto.agents.getFirst();
         assertThat(firstAgent.name).isEqualTo("name");
         assertThat(firstAgent.host).isEqualTo("host");
         assertThat(firstAgent.port).isEqualTo(42);

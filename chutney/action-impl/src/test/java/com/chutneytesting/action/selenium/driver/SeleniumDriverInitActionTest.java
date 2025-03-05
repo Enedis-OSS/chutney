@@ -107,7 +107,7 @@ public class SeleniumDriverInitActionTest {
 
         // Then
         verify(finallyActionRegistry, times(1)).registerFinallyAction(any());
-        FinallyAction quitAction = finallyActionRegistry.finallyActions.get(0);
+        FinallyAction quitAction = finallyActionRegistry.finallyActions.getFirst();
         assertThat(quitAction.type()).isEqualTo("selenium-quit");
         assertThat(quitAction.inputs()).containsOnlyKeys("web-driver");
 

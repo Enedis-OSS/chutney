@@ -116,7 +116,7 @@ public class KafkaBasicConsumeActionTest {
             assertThat(errors.size()).isEqualTo(8);
             SoftAssertions softly = new SoftAssertions();
 
-            softly.assertThat(errors.get(0)).isEqualTo("No topic provided (String)");
+            softly.assertThat(errors.getFirst()).isEqualTo("No topic provided (String)");
             softly.assertThat(errors.get(1)).isEqualTo("topic should not be blank");
 
             softly.assertThat(errors.get(2)).isEqualTo("No group provided (String)");
@@ -138,7 +138,7 @@ public class KafkaBasicConsumeActionTest {
             List<String> errors = defaultAction.validateInputs();
 
             assertThat(errors.size()).isEqualTo(1);
-            assertThat(errors.get(0)).startsWith("[timeout is not parsable]");
+            assertThat(errors.getFirst()).startsWith("[timeout is not parsable]");
         }
 
         @Test
@@ -149,7 +149,7 @@ public class KafkaBasicConsumeActionTest {
             List<String> errors = defaultAction.validateInputs();
 
             assertThat(errors.size()).isEqualTo(1);
-            assertThat(errors.get(0)).startsWith("ackMode is not a valid value");
+            assertThat(errors.getFirst()).startsWith("ackMode is not a valid value");
         }
     }
 
@@ -211,7 +211,7 @@ public class KafkaBasicConsumeActionTest {
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
                 List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
 
-                final Map<String, Object> message = body.get(0);
+                final Map<String, Object> message = body.getFirst();
                 final String payload1 = (String) message.get(OUTPUT_BODY_PAYLOAD_KEY);
                 assertThat(payload1).isEqualTo("test message");
                 final Map<String, Object> headers = (Map<String, Object>) message.get(OUTPUT_BODY_HEADERS_KEY);
@@ -240,7 +240,7 @@ public class KafkaBasicConsumeActionTest {
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
                 var result_headers = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY_HEADERS_KEY);
                 assertThat(result_headers).hasSize(1);
-                assertThat(result_headers.get(0))
+                assertThat(result_headers.getFirst())
                     .containsExactly(
                         Map.entry("key-with-multiple-values", asList("value 1", "value 2"))
                     );
@@ -262,7 +262,7 @@ public class KafkaBasicConsumeActionTest {
                 // Then
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-                final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).getFirst();
                 assertThat(payload.get("value")).isEqualTo("test message");
                 assertThat(payload.get("id")).isEqualTo("1111");
             }
@@ -282,7 +282,7 @@ public class KafkaBasicConsumeActionTest {
                 // Then
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).getFirst();
                 assertThat(payload).isEqualTo(xmlPayload);
             }
         }
@@ -309,7 +309,7 @@ public class KafkaBasicConsumeActionTest {
 
                 List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
                 assertThat(body).hasSize(1);
-                final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).getFirst();
                 assertThat(payload.get("id")).isEqualTo("1122");
             }
 
@@ -332,7 +332,7 @@ public class KafkaBasicConsumeActionTest {
 
                 List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
                 assertThat(body).hasSize(1);
-                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).getFirst();
                 assertThat(payload).isEqualTo(payloadToSelect);
             }
 
@@ -355,7 +355,7 @@ public class KafkaBasicConsumeActionTest {
 
                 List<Map<String, Object>> body = (List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_BODY);
                 assertThat(body).hasSize(1);
-                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+                final String payload = ((List<String>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).getFirst();
                 assertThat(payload).isEqualTo(payloadToSelect);
             }
 
@@ -388,7 +388,7 @@ public class KafkaBasicConsumeActionTest {
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
                 List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 3);
 
-                final String payload = (String) body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY);
+                final String payload = (String) body.getFirst().get(OUTPUT_BODY_PAYLOAD_KEY);
                 assertThat(payload).isEqualTo(textMessageToSelect);
                 final String xmlPayload = (String) body.get(1).get(OUTPUT_BODY_PAYLOAD_KEY);
                 assertThat(xmlPayload).isEqualTo(xmlMessageToSelect);
@@ -417,7 +417,7 @@ public class KafkaBasicConsumeActionTest {
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
                 List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
 
-                final String payload = (String) body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY);
+                final String payload = (String) body.getFirst().get(OUTPUT_BODY_PAYLOAD_KEY);
                 assertThat(payload).isEqualTo(textMessageToSelect);
             }
 
@@ -444,7 +444,7 @@ public class KafkaBasicConsumeActionTest {
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
                 List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 2);
 
-                assertThat(body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo(Map.of("id", "1", "value", "test message"));
+                assertThat(body.getFirst().get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo(Map.of("id", "1", "value", "test message"));
                 assertThat(body.get(1).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
             }
 
@@ -471,7 +471,7 @@ public class KafkaBasicConsumeActionTest {
                 assertThat(actionExecutionResult.status).isEqualTo(Success);
                 List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
 
-                assertThat(body.get(0).get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
+                assertThat(body.getFirst().get(OUTPUT_BODY_PAYLOAD_KEY)).isEqualTo("<root>second test message</root>");
             }
         }
 
@@ -526,7 +526,7 @@ public class KafkaBasicConsumeActionTest {
             // Then
             assertThat(actionExecutionResult.status).isEqualTo(Success);
 
-            final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).get(0);
+            final Map<String, Object> payload = ((List<Map<String, Object>>) actionExecutionResult.outputs.get(OUTPUT_PAYLOADS)).getFirst();
             assertThat(payload.get("value")).isEqualTo("test message");
             assertThat(payload.get("id")).isEqualTo("1111");
         }
