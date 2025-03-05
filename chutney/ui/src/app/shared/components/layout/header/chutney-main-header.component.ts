@@ -17,7 +17,7 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
     templateUrl: './chutney-main-header.component.html',
     styleUrls: ['./chutney-main-header.component.scss']
 })
-export class ChutneyMainHeaderComponent {
+export class ChutneyMainHeaderComponent{
 
     public user$: Observable<User>;
 

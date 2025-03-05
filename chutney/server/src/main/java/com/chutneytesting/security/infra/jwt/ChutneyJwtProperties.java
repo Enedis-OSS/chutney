@@ -23,6 +23,11 @@ public class ChutneyJwtProperties {
         this.expiresIn = Duration.ofMinutes(expiresIn);
     }
 
+    public ChutneyJwtProperties setIssuer(String issuer) {
+        this.issuer = issuer;
+        return this;
+    }
+
     public String issuer() {
         return issuer;
     }

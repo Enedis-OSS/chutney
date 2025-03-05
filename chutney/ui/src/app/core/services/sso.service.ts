@@ -89,7 +89,7 @@ export class SsoService {
         this.router.navigateByUrl('/login');
     }
 
-    public runInitialLoginSequence(): Promise<void> {
+    public async runInitialLoginSequence(): Promise<void> {
         return firstValueFrom(this.fetchSsoConfig())
             .then(config => this.oauthService.configure(config))
             .then(() => this.oauthService.loadDiscoveryDocument())

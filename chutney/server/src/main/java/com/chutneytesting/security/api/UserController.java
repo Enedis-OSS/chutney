@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     public static final String BASE_URL = "/api/v1/user";
+
     private final SpringUserService userService;
 
     public UserController(SpringUserService userService) {

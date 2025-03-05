@@ -70,7 +70,6 @@ export class LoginComponent implements OnDestroy, OnInit {
     login() {
         this.loginService.login(this.username, this.password).pipe(
             catchError((err => {
-                console.log(err.error)
                     this.loginService.connectionErrorMessage = err.error;
                     this.action = null;
                     return of(null)
