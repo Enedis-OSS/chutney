@@ -279,7 +279,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .secure(true);
 
-        String token = authority != null ? jwtUtil.generateToken(userDto.getId(), Map.of("user", userDto)) : null;
+        String token = authority != null ? jwtUtil.generateToken(userDto.getId(), objectMapper.convertValue(userDto, Map.class)) : null;
         if (token != null) {
             request.header("Authorization", "Bearer " + token);
         }

@@ -35,7 +35,9 @@ public final class UserDetailsServiceHelper {
                 role.authorizations.stream().map(Enum::name).forEach(dto::grantAuthority);
             } catch (RoleNotFoundException rnfe) {
                 LOGGER.warn("User {} has no role defined", dto.getId());
-                throw new NoRoleUserException(rnfe);
+                if (dto.getAuthorizations().isEmpty()) {
+                    throw new NoRoleUserException(rnfe);
+                }
             }
         }
 

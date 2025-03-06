@@ -146,6 +146,8 @@
                         <env>
                             <BP_JVM_VERSION>17</BP_JVM_VERSION>
                         </env>
+                        <builder>paketobuildpacks/builder:base</builder>
+                        <runImage>gcr.io/paketo-buildpacks/run:base-cnb</runImage>
                     </image>
                 </configuration>
                 <executions>

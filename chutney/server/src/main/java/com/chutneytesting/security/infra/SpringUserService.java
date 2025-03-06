@@ -11,8 +11,11 @@ import com.chutneytesting.security.api.UserDto;
 import com.chutneytesting.security.domain.AuthenticationService;
 import com.chutneytesting.security.domain.CurrentUserNotFoundException;
 import com.chutneytesting.server.core.domain.security.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Component;
 public class SpringUserService implements UserService {
 
     private final AuthenticationService authenticationService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     SpringUserService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
@@ -46,14 +50,21 @@ public class SpringUserService implements UserService {
             return (UserDto) principal;
         }
         if (principal instanceof Jwt) {
-            String username = ((Jwt) principal).getClaim("sub");
-            return getUserFromUsername(username);
+            return getUserFromClaims(((Jwt) principal).getClaims());
         }
         if (principal instanceof OAuth2IntrospectionAuthenticatedPrincipal) {
-            String username = (String) ((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub");
-            return getUserFromUsername(username);
+             return getUserFromUsername(((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub").toString());
         }
         return null;
+    }
+
+    private UserDto getUserFromClaims(Map<String, Object> claims) {
+        String username = claims.get("sub").toString();
+        UserDto user = getUserFromUsername(username);
+        objectMapper.convertValue(claims.get("authorizations"), Set.class).forEach(authorization -> {
+            user.grantAuthority(authorization.toString());
+        });
+        return user;
     }
 
     private UserDto getUserFromUsername(String username) {
