@@ -42,23 +42,17 @@ public class AmqpUtils {
      * @return consolidated object
      */
     private static Object convertLongStringToString(Object value) {
-
-        if (value instanceof LongString) {
-            return value.toString();
-        }
-
-        if (value instanceof List listValue) {
-            var newList = new ArrayList<>();
-            for (Object item : listValue) {
-                newList.add(convertLongStringToString(item));
+        return switch (value) {
+            case LongString ls -> ls.toString();
+            case List lt -> {
+                var newList = new ArrayList<>();
+                for (Object item : lt) {
+                    newList.add(convertLongStringToString(item));
+                }
+                yield newList;
             }
-            return newList;
-        }
-
-        if (value instanceof Map mapValue) {
-            return convertMapLongStringToString(mapValue);
-        }
-
-        return value;
+            case Map map -> convertMapLongStringToString(map);
+            default -> value;
+        };
     }
 }

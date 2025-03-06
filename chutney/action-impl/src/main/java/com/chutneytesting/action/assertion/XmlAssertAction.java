@@ -97,26 +97,24 @@ public class XmlAssertAction implements Action {
         if (evaluationResult == null) {
             return null;
         }
-        final String evaluatedValueAsString;
-        if (evaluationResult instanceof Text text) {
-            evaluatedValueAsString = text.getText();
-        } else if (evaluationResult instanceof Element element) {
-            List<Content> contents = element.getContent((Filter<Content>) new ContentFilter(ContentFilter.COMMENT).negate());
-            List<Content> cdata = element.getContent(new ContentFilter(ContentFilter.CDATA));
-            if (contents.size() == 1) {
-                evaluatedValueAsString = convertEvaluationResultToString(contents.getFirst());
-            } else if (cdata.size() == 1) {
-                evaluatedValueAsString = ((CDATA) cdata.getFirst()).getText();
-            } else if (contents.size() == 0) {
-                return null;
-            } else {
-                return "!!!MULTIPLE!";
+        return switch (evaluationResult) {
+            case Text text -> text.getText();
+            case Element element -> {
+                List<Content> contents = element.getContent((Filter<Content>) new ContentFilter(ContentFilter.COMMENT).negate());
+                List<Content> cdata = element.getContent(new ContentFilter(ContentFilter.CDATA));
+
+                if (contents.size() == 1) {
+                    yield convertEvaluationResultToString(contents.getFirst());
+                } else if (cdata.size() == 1) {
+                    yield ((CDATA) cdata.getFirst()).getText();
+                } else if (contents.isEmpty()) {
+                    yield null;
+                } else {
+                    yield "!!!MULTIPLE!";
+                }
             }
-        } else if (evaluationResult instanceof Attribute attribute) {
-            evaluatedValueAsString = attribute.getValue();
-        } else {
-            evaluatedValueAsString = String.valueOf(evaluationResult);
-        }
-        return evaluatedValueAsString;
+            case Attribute attribute -> attribute.getValue();
+            default -> String.valueOf(evaluationResult);
+        };
     }
 }

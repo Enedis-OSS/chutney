@@ -37,17 +37,12 @@ public class XPathFunction {
     }
 
     private static Object unwrapJdomSimpleObject(Object jDomObject) {
-        final Object result;
-        if (jDomObject instanceof Text text) {
-            result = text.getText();
-        } else if(jDomObject instanceof Attribute attribute) {
-            result = attribute.getValue();
-        } else if (jDomObject instanceof Element element) {
-            result = unwrapJdomElement(element);
-        } else {
-            result = jDomObject;
-        }
-        return result;
+        return switch (jDomObject) {
+            case Text text -> text.getText();
+            case Attribute attribute -> attribute.getValue();
+            case Element element -> unwrapJdomElement(element);
+            default -> jDomObject;
+        };
     }
 
     @SuppressWarnings("unchecked")

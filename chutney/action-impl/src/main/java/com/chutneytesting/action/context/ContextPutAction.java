@@ -35,19 +35,14 @@ public class ContextPutAction implements Action {
     }
 
     private String prettyLog(Object value) {
-        if (value == null) {
-            return "null";
-        } else if (value instanceof String) {
-            return value.toString();
-        } else if (value instanceof Object[] objects) {
-            return Arrays.toString(objects);
-        } else if (value instanceof List list) {
-            return Arrays.toString(list.toArray());
-        } else if (value instanceof Map map) {
-            return Arrays.toString(map.entrySet().toArray());
-        } else {
-            return value.toString();
-        }
+        return switch (value) {
+            case null -> "null";
+            case String s -> s;
+            case Object[] objects -> Arrays.toString(objects);
+            case List<?> list -> Arrays.toString(list.toArray());
+            case Map<?, ?> map -> Arrays.toString(map.entrySet().toArray());
+            default -> value.toString();
+        };
     }
 
     private String logClassType(Object value) {
