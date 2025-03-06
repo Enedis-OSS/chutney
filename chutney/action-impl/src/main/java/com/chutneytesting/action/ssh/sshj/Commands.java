@@ -38,17 +38,14 @@ public class Commands {
 
     @SuppressWarnings("unchecked")
     private static Command buildCommand(Object command) {
-        if (command instanceof String stringCommand) {
-            return new Command(stringCommand);
-        }
-
-        if (command instanceof Map) {
-            return new Command(((Map<String, String>) command).get("command"),
-                ((Map<String, String>) command).get("timeout"));
-        }
-
-        throw new IllegalStateException("Unable to understand command: " + command.toString());
+        return switch (command) {
+            case String stringCommand -> new Command(stringCommand);
+            case Map<?, ?> map -> new Command(((Map<String, String>) map).get("command"),
+                ((Map<String, String>) map).get("timeout"));
+            default -> throw new IllegalStateException("Unable to understand command: " + command);
+        };
     }
+
 
     public List<CommandResult> executeWith(SshClient sshClient) throws IOException {
         List<CommandResult> results = new ArrayList<>();

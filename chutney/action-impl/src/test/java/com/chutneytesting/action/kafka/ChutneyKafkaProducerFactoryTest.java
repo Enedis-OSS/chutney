@@ -85,7 +85,7 @@ class ChutneyKafkaProducerFactoryTest {
         List.of(
             TRANSACTIONAL_ID_CONFIG // Used by Spring DefaultKafkaProducerFactory as transaction id prefix
         ).forEach(producerConfigKeys::remove);
-        String targetProperty = producerConfigKeys.get(0);
+        String targetProperty = producerConfigKeys.getFirst();
         String propertyToOverride = producerConfigKeys.get(1);
         String inputProperty = producerConfigKeys.get(2);
         String notProducerConfigTargetProperty = "not.a.kafka.producer.config.key";

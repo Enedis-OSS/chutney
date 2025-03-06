@@ -69,7 +69,7 @@ public class SshClientActionTest {
 
         // Then
         assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
-        assertThat(logger.info.get(0)).startsWith("Authentication via username/password as ");
+        assertThat(logger.info.getFirst()).startsWith("Authentication via username/password as ");
     }
 
     @ParameterizedTest
@@ -88,7 +88,7 @@ public class SshClientActionTest {
 
         // Then
         assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
-        assertThat(logger.info.get(0)).startsWith("Authentication via private key as ");
+        assertThat(logger.info.getFirst()).startsWith("Authentication via private key as ");
     }
 
     public static List<Arguments> usernamePrivateKeyTargets() {
@@ -139,7 +139,7 @@ public class SshClientActionTest {
 
         assertThat(errors.size()).isEqualTo(6);
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(errors.get(0)).isEqualTo("No target provided");
+        softly.assertThat(errors.getFirst()).isEqualTo("No target provided");
         softly.assertThat(errors.get(1)).isEqualTo("[Target name is blank] not applied because of exception java.lang.NullPointerException(null)");
         softly.assertThat(errors.get(2)).isEqualTo("[Target url is not valid: null target] not applied because of exception java.lang.NullPointerException(null)");
         softly.assertThat(errors.get(3)).isEqualTo("[Target url has an undefined host: null target] not applied because of exception java.lang.NullPointerException(null)");
@@ -169,7 +169,7 @@ public class SshClientActionTest {
 
             // Then
             assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
-            assertThat(logger.info.get(0)).startsWith("Authentication via username/password as proxySshUser");
+            assertThat(logger.info.getFirst()).startsWith("Authentication via username/password as proxySshUser");
             assertThat(logger.info.get(1)).startsWith("Authentication via username/password as mockssh");
         } finally {
             proxy.stop();

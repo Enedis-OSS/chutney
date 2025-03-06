@@ -37,17 +37,15 @@ public class XPathFunction {
     }
 
     private static Object unwrapJdomSimpleObject(Object jDomObject) {
-        final Object result;
-        if (jDomObject instanceof Text text) {
-            result = text.getText();
-        } else if(jDomObject instanceof Attribute attribute) {
-            result = attribute.getValue();
-        } else if (jDomObject instanceof Element element) {
-            result = unwrapJdomElement(element);
-        } else {
-            result = jDomObject;
+        if (jDomObject == null) {
+            return null;
         }
-        return result;
+        return switch (jDomObject) {
+            case Text text -> text.getText();
+            case Attribute attribute -> attribute.getValue();
+            case Element element -> unwrapJdomElement(element);
+            default -> jDomObject;
+        };
     }
 
     @SuppressWarnings("unchecked")
@@ -61,9 +59,9 @@ public class XPathFunction {
         // CDATA
         // TextNode \n
         if (cdata.size() == 1) {
-            result = unwrapJdomSimpleObject(cdata.get(0));
+            result = unwrapJdomSimpleObject(cdata.getFirst());
         } else if (contents.size() == 1) {
-            result = unwrapJdomSimpleObject(contents.get(0));
+            result = unwrapJdomSimpleObject(contents.getFirst());
         } else {
             result = jDomObject;
         }

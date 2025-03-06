@@ -30,7 +30,7 @@ public class AmqpUtils {
         }
 
         return map.entrySet().stream()
-            .map(e-> new AbstractMap.SimpleEntry<>(
+            .map(e -> new AbstractMap.SimpleEntry<>(
                 e.getKey(),
                 Optional.ofNullable(convertLongStringToString(e.getValue())).orElse("null")))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -42,23 +42,21 @@ public class AmqpUtils {
      * @return consolidated object
      */
     private static Object convertLongStringToString(Object value) {
-
-        if (value instanceof LongString) {
-            return value.toString();
+        if (value == null) {
+            return null;
         }
 
-        if (value instanceof List listValue) {
-            var newList = new ArrayList<>();
-            for (Object item : listValue) {
-                newList.add(convertLongStringToString(item));
+        return switch (value) {
+            case LongString ls -> ls.toString();
+            case List lt -> {
+                var newList = new ArrayList<>();
+                for (Object item : lt) {
+                    newList.add(convertLongStringToString(item));
+                }
+                yield newList;
             }
-            return newList;
-        }
-
-        if (value instanceof Map mapValue) {
-            return convertMapLongStringToString(mapValue);
-        }
-
-        return value;
+            case Map map -> convertMapLongStringToString(map);
+            default -> value;
+        };
     }
 }

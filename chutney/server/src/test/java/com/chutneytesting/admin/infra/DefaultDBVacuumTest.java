@@ -108,15 +108,16 @@ public class DefaultDBVacuumTest {
         }
 
         private double dbSizeBytes() {
-            Object r = entityManager.createNativeQuery("select page_size * page_count from pragma_page_count(), pragma_page_size()").getSingleResult();
-            if (r instanceof Integer ri) {
-                return ri.doubleValue();
-            }
-            if (r instanceof Long rl) {
-                return rl.doubleValue();
-            }
-            throw new RuntimeException("dbSizeBytes not integer nor long value.");
+            Object r = entityManager.createNativeQuery(
+                "select page_size * page_count from pragma_page_count(), pragma_page_size()"
+            ).getSingleResult();
+            return switch (r) {
+                case Integer ri -> ri.doubleValue();
+                case Long rl -> rl.doubleValue();
+                default -> throw new RuntimeException("dbSizeBytes not integer nor long value.");
+            };
         }
+
 
         static Stream<Arguments> lock_db_for_max_time_source() {
             return Stream.of(

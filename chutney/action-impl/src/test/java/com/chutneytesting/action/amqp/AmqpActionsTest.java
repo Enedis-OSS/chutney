@@ -139,14 +139,14 @@ public class AmqpActionsTest {
         final List<Map<String, Object>> payloads = (List<Map<String, Object>>) amqpBasicConsumeResult.outputs.get("payloads");
         final List<Map<String, Object>> headers = (List<Map<String, Object>>) amqpBasicConsumeResult.outputs.get("headers");
         assertThat(body.size()).isEqualTo(5);
-        final Map<String, Object> message = body.get(0);
+        final Map<String, Object> message = body.getFirst();
         final Map<String, Object> payload1 = (Map<String, Object>) message.get("payload");
         assertThat(payload1.get("value")).isEqualTo("test message");
         final Map<String, Object> headers1 = (Map<String, Object>) message.get("headers");
         assertThat(headers1).containsAllEntriesOf(ImmutableMap.of("header1", "value1",
             "header2", ImmutableList.of("value1", "value2", "value3")));
-        assertThat(payload1).isEqualTo(payloads.get(0));
-        assertThat(headers1).isEqualTo(headers.get(0));
+        assertThat(payload1).isEqualTo(payloads.getFirst());
+        assertThat(headers1).isEqualTo(headers.getFirst());
     }
 
     private void basicPublish(MockConnectionFactory mockConnectionFactory, TestLogger logger, Target target) {
@@ -210,7 +210,7 @@ public class AmqpActionsTest {
         assertThat(amqpCleanQueueResult.status).isEqualTo(Status.Success);
         assertThat(amqpCleanQueueResult.outputs).hasSize(0);
         assertThat(logger.info.get(logger.info.size() - 1)).isEqualTo("Purge queue " + queueName.get(1) + ". 3 messages deleted");
-        assertThat(logger.info.get(logger.info.size() - 2)).isEqualTo("Purge queue " + queueName.get(0) + ". 2 messages deleted");
+        assertThat(logger.info.get(logger.info.size() - 2)).isEqualTo("Purge queue " + queueName.getFirst() + ". 2 messages deleted");
     }
 
     static <T extends Action> T mockConnectionFactory(T action, ConnectionFactory connectionFactory) {

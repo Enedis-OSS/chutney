@@ -54,7 +54,7 @@ public class ExecutionConfigurationTest {
         reports.blockingSubscribe(results::add);
 
         //T
-        StepExecutionReportDto lastReport = results.get(results.size() - 1);
+        StepExecutionReportDto lastReport = results.getLast();
         assertThat(lastReport).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
         assertThat(lastReport.environment).isEqualTo(FAKE_ENV.name());
     }
@@ -86,7 +86,7 @@ public class ExecutionConfigurationTest {
         Long executionId = testEngine.executeAsync(requestDto);
         Observable<StepExecutionReportDto> reports = testEngine.receiveNotification(executionId);
         reports.blockingSubscribe(report -> {
-            if (StatusDto.RUNNING.equals(report.steps.get(0).status)) {
+            if (StatusDto.RUNNING.equals(report.steps.getFirst().status)) {
                 testEngine.pauseExecution(executionId);
             } else if (StatusDto.PAUSED.equals(report.steps.get(1).status)) {
                 testEngine.resumeExecution(executionId);
@@ -96,11 +96,11 @@ public class ExecutionConfigurationTest {
             results.add(report);
         });
 
-        StepExecutionReportDto finalReport = results.get(results.size() - 1);
+        StepExecutionReportDto finalReport = results.getLast();
         // check scenario status
         assertThat(finalReport).hasFieldOrPropertyWithValue("status", StatusDto.STOPPED);
         // check first step status
-        assertThat(finalReport.steps.get(0)).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
+        assertThat(finalReport.steps.getFirst()).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
         // check second step status
         assertThat(finalReport.steps.get(1)).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
         // check third step status
@@ -134,7 +134,7 @@ public class ExecutionConfigurationTest {
 
         //T
         assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.FAILURE);
-        assertThat(result.errors.get(0)).isEqualTo("Action [error] failed: Should be catch by fault barrier");
+        assertThat(result.errors.getFirst()).isEqualTo("Action [error] failed: Should be catch by fault barrier");
     }
 
     @Test

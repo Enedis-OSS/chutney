@@ -142,7 +142,7 @@ public class AmqpBasicConsumeActionTest {
         final List<Map<String, Object>> body = extractData(amqpBasicConsumeResult, "body");
         assertThat(body.size()).isEqualTo(1);
 
-        final Map<String, Object> message = body.get(0);
+        final Map<String, Object> message = body.getFirst();
         final Map<String, Object> payload1 = (Map<String, Object>) message.get("payload");
         assertThat(payload1.get("value")).isEqualTo("test message");
         assertThat(payload1.get("id")).isEqualTo("1111");
@@ -151,10 +151,10 @@ public class AmqpBasicConsumeActionTest {
         assertThat(headers1.get("maVersion")).isEqualTo("2.0");
 
         final List<Map<String, Object>> payloads = extractData(amqpBasicConsumeResult, "payloads");
-        assertThat(payload1).isEqualTo(payloads.get(0));
+        assertThat(payload1).isEqualTo(payloads.getFirst());
 
         final List<Map<String, Object>> headers = extractData(amqpBasicConsumeResult, "headers");
-        assertThat(headers1).isEqualTo(headers.get(0));
+        assertThat(headers1).isEqualTo(headers.getFirst());
 
         // Assert that message matching selector is ack and the other is not
         channel.basicRecover();
@@ -176,7 +176,7 @@ public class AmqpBasicConsumeActionTest {
         assertThat(payloadsRemaining.size()).isEqualTo(1);
 
         final List<Map<String, Object>> bodyRemaining = extractData(amqpBasicConsumeResultRemainingMessage, "body");
-        final Map<String, Object> messageRemaining = bodyRemaining.get(0);
+        final Map<String, Object> messageRemaining = bodyRemaining.getFirst();
         final Map<String, Object> headersRemaining = (Map<String, Object>) messageRemaining.get("headers");
         assertThat(headersRemaining.get("maVersion")).isEqualTo("1.0");
     }

@@ -135,10 +135,10 @@ class CampaignServiceTest {
 
         // Then
         assertThat(executionsReports).hasSize(1);
-        assertThat(executionsReports.get(0).status()).isEqualTo(RUNNING);
-        assertThat(executionsReports.get(0).scenarioExecutionReports()).hasSize(2);
-        assertThat(executionsReports.get(0).scenarioExecutionReports().get(0).scenarioId()).isEqualTo("scenario 1");
-        assertThat(executionsReports.get(0).scenarioExecutionReports().get(1).scenarioId()).isEqualTo("scenario 2");
+        assertThat(executionsReports.getFirst().status()).isEqualTo(RUNNING);
+        assertThat(executionsReports.getFirst().scenarioExecutionReports()).hasSize(2);
+        assertThat(executionsReports.getFirst().scenarioExecutionReports().getFirst().scenarioId()).isEqualTo("scenario 1");
+        assertThat(executionsReports.getFirst().scenarioExecutionReports().get(1).scenarioId()).isEqualTo("scenario 2");
 
     }
 
@@ -319,7 +319,7 @@ class CampaignServiceTest {
 
         // Then
         assertThat(executionsReports).hasSize(3);
-        assertThat(executionsReports.get(0).scenarioExecutionReports()).hasSize(2);
+        assertThat(executionsReports.getFirst().scenarioExecutionReports()).hasSize(2);
         assertThat(executionsReports.get(1).scenarioExecutionReports()).hasSize(2);
         assertThat(executionsReports.get(2).scenarioExecutionReports()).hasSize(2);
     }

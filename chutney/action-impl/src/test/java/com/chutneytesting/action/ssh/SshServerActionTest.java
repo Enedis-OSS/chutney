@@ -72,7 +72,7 @@ class SshServerActionTest {
         assertThat(actualResult.status).isEqualTo(ActionExecutionResult.Status.Success);
 
         List<CommandResult> commandsResults = (List<CommandResult>) actualResult.outputs.get("results");
-        assertThat(commandsResults.get(0).exitCode).isEqualTo(0);
+        assertThat(commandsResults.getFirst().exitCode).isEqualTo(0);
         assertThat(commandsResults.get(1).exitCode).isEqualTo(0);
 
         assertThat(sshServer.commands()).containsExactlyElementsOf(
@@ -95,8 +95,8 @@ class SshServerActionTest {
         assertThat(actualResult.status).isEqualTo(ActionExecutionResult.Status.Success);
 
         List<CommandResult> commandsResults = (List<CommandResult>) actualResult.outputs.get("results");
-        assertThat(commandsResults.get(0).stdout).isEqualTo(stubs.get(0));
-        assertThat(commandsResults.get(0).exitCode).isEqualTo(0);
+        assertThat(commandsResults.getFirst().stdout).isEqualTo(stubs.getFirst());
+        assertThat(commandsResults.getFirst().exitCode).isEqualTo(0);
         assertThat(commandsResults.get(1).stdout).isEqualTo(stubs.get(1));
         assertThat(commandsResults.get(1).exitCode).isEqualTo(0);
 
@@ -124,7 +124,7 @@ class SshServerActionTest {
             assertThat(sshServer.isStarted()).isTrue();
             assertThat(sshServer.isOpen()).isTrue();
         });
-        FinallyAction stopServerAction = finallyActionRegistry.finallyActions.get(0);
+        FinallyAction stopServerAction = finallyActionRegistry.finallyActions.getFirst();
         assertThat(stopServerAction.type()).isEqualTo("ssh-server-stop");
         assertThat(stopServerAction.inputs().get("ssh-server")).isEqualTo(sshServer);
     }

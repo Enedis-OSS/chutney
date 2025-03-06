@@ -102,13 +102,12 @@ public class MicrometerGaugeAction implements Action {
 
     private Gauge.Builder<?> createGaugeBuilder() {
         if (gaugeObject != null && gaugeFunction == null) {
-            if (gaugeObject instanceof Number) {
-                return Gauge.builder(name, (Number) gaugeObject, Number::doubleValue);
-            } else if (gaugeObject instanceof Collection) {
-                return Gauge.builder(name, (Collection) gaugeObject, Collection::size);
-            } else if (gaugeObject instanceof Map) {
-                return Gauge.builder(name, (Map) gaugeObject, Map::size);
-            }
+            return switch (gaugeObject) {
+                case Number number -> Gauge.builder(name, number, Number::doubleValue);
+                case Collection<?> collection -> Gauge.builder(name, collection, Collection::size);
+                case Map<?, ?> map -> Gauge.builder(name, map, Map::size);
+                default -> throw new IllegalArgumentException("Unsupported type: " + gaugeObject.getClass());
+            };
         } else if (gaugeObject != null) {
             Method method = retrieveMethod(gaugeFunction, gaugeObject.getClass());
             return Gauge.builder(name, gaugeObject, o -> {
@@ -128,7 +127,6 @@ public class MicrometerGaugeAction implements Action {
                 }
             });
         }
-        throw new IllegalStateException("Should not happen");
     }
 
     private Method retrieveMethod(final String methodPath, final Class clazz) {

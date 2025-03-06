@@ -101,11 +101,11 @@ public class SqlClientTest {
 
             assertThat(actual.getHeaders()).containsOnly("ID", "NAME", "EMAIL");
             assertThat(actual.records).hasSize(1);
-            assertThat(actual.records.get(0)).isNotNull();
-            List<Cell> firstRowCells = actual.records.get(0).cells;
+            assertThat(actual.records.getFirst()).isNotNull();
+            List<Cell> firstRowCells = actual.records.getFirst().cells;
             assertThat(firstRowCells).hasSize(3);
-            assertThat(firstRowCells.get(0).column.name).isEqualTo("ID");
-            assertThat(((Number) firstRowCells.get(0).value).intValue()).isEqualTo(1);
+            assertThat(firstRowCells.getFirst().column.name).isEqualTo("ID");
+            assertThat(((Number) firstRowCells.getFirst().value).intValue()).isEqualTo(1);
             assertThat(firstRowCells.get(1).column.name).isEqualTo("NAME");
             assertThat(firstRowCells.get(1).value).isEqualTo("laitue");
             assertThat(firstRowCells.get(2).column.name).isEqualTo("EMAIL");
@@ -127,12 +127,12 @@ public class SqlClientTest {
             Records actual = sqlClient.execute("SELECT COUNT(*) as total FROM USERS");
 
             assertThat(actual.records).hasSize(1);
-            assertThat(actual.records.get(0)).isNotNull();
-            assertThat(actual.records.get(0).cells).hasSize(1);
-            assertThat(actual.records.get(0).cells.get(0)).isNotNull();
-            Number count = (Number) actual.records.get(0).cells.get(0).value;
+            assertThat(actual.records.getFirst()).isNotNull();
+            assertThat(actual.records.getFirst().cells).hasSize(1);
+            assertThat(actual.records.getFirst().cells.getFirst()).isNotNull();
+            Number count = (Number) actual.records.getFirst().cells.getFirst().value;
             assertThat(count.intValue()).isEqualTo(3);
-            assertThat(actual.records.get(0).cells.get(0).column.name).isEqualTo("TOTAL");
+            assertThat(actual.records.getFirst().cells.getFirst().column.name).isEqualTo("TOTAL");
         }
 
         @Test

@@ -41,7 +41,7 @@ public abstract class Streams {
                 if (list.size() > 1) {
                     throw new IllegalArgumentException("Found " + list.size() + " result");
                 } else if (list.size() == 1) {
-                    return Optional.of(list.get(0));
+                    return Optional.of(list.getFirst());
                 }
                 return Optional.empty();
             }

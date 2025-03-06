@@ -57,7 +57,7 @@ class ForEachStrategyTest {
         assertThat(result.steps).hasSize(2);
         assertThat(result.steps.get(1).name).isEqualTo("Step 2 Parent : value");
         assertThat(result.steps.get(1).steps).hasSize(2);
-        assertThat(result.steps.get(1).steps.get(0).name).isEqualTo("Step 2 Parent : value");
+        assertThat(result.steps.get(1).steps.getFirst().name).isEqualTo("Step 2 Parent : value");
         assertThat(result.steps.get(1).steps.get(1).name).isEqualTo("Step 2 Parent : value");
     }
 
@@ -74,13 +74,13 @@ class ForEachStrategyTest {
         assertThat(result).hasFieldOrPropertyWithValue("status", SUCCESS);
         assertThat(result.name).isEqualTo("<i> - parent");
         assertThat(result.steps).hasSize(1);
-        assertThat(result.steps.get(0).name).isEqualTo("0 - parent");
-        assertThat(result.steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).name).isEqualTo("0 sub parent");
-        assertThat(result.steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 sub sub parent");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 child");
+        assertThat(result.steps.getFirst().name).isEqualTo("0 - parent");
+        assertThat(result.steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().name).isEqualTo("0 sub parent");
+        assertThat(result.steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 sub sub parent");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 child");
     }
 
     @Test
@@ -96,20 +96,20 @@ class ForEachStrategyTest {
         assertThat(result).hasFieldOrPropertyWithValue("status", SUCCESS);
         assertThat(result.name).isEqualTo("${#env} - parent");
         assertThat(result.steps).hasSize(2);
-        assertThat(result.steps.get(0).name).isEqualTo("env0 - parent");
-        assertThat(result.steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).name).isEqualTo("env0 sub parent");
-        assertThat(result.steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("env0 sub sub parent");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("env0 child");
+        assertThat(result.steps.getFirst().name).isEqualTo("env0 - parent");
+        assertThat(result.steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().name).isEqualTo("env0 sub parent");
+        assertThat(result.steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("env0 sub sub parent");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("env0 child");
         assertThat(result.steps.get(1).name).isEqualTo("env1 - parent");
         assertThat(result.steps.get(1).steps).hasSize(1);
-        assertThat(result.steps.get(1).steps.get(0).name).isEqualTo("env1 sub parent");
-        assertThat(result.steps.get(1).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(1).steps.get(0).steps.get(0).name).isEqualTo("env1 sub sub parent");
-        assertThat(result.steps.get(1).steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(1).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("env1 child");
+        assertThat(result.steps.get(1).steps.getFirst().name).isEqualTo("env1 sub parent");
+        assertThat(result.steps.get(1).steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.get(1).steps.getFirst().steps.getFirst().name).isEqualTo("env1 sub sub parent");
+        assertThat(result.steps.get(1).steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.get(1).steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("env1 child");
     }
 
     @Test
@@ -126,7 +126,7 @@ class ForEachStrategyTest {
         assertThat(result.steps).hasSize(2);
         assertThat(result.steps.get(1).name).isEqualTo("Step 2 Parent : value ${#env}");
         assertThat(result.steps.get(1).steps).hasSize(2);
-        assertThat(result.steps.get(1).steps.get(0).name).isEqualTo("Step 2 Parent : value env0");
+        assertThat(result.steps.get(1).steps.getFirst().name).isEqualTo("Step 2 Parent : value env0");
         assertThat(result.steps.get(1).steps.get(1).name).isEqualTo("Step 2 Parent : value env1");
     }
 
@@ -144,7 +144,7 @@ class ForEachStrategyTest {
         assertThat(result.steps).hasSize(2);
         assertThat(result.steps.get(1).name).isEqualTo("Step 2 : value ${#env}");
         assertThat(result.steps.get(1).steps).hasSize(2);
-        assertThat(result.steps.get(1).steps.get(0).name).isEqualTo("Step 2 : value env0");
+        assertThat(result.steps.get(1).steps.getFirst().name).isEqualTo("Step 2 : value env0");
         assertThat(result.steps.get(1).steps.get(1).name).isEqualTo("Step 2 : value env1");
     }
 
@@ -158,7 +158,7 @@ class ForEachStrategyTest {
         StepExecutionReportDto result = testEngine.execute(requestDto);
 
         // T
-        assertThat(result.steps.get(0).steps).hasSize(2);
+        assertThat(result.steps.getFirst().steps).hasSize(2);
         assertThat(result.status).isEqualTo(SUCCESS);
     }
 
@@ -172,7 +172,7 @@ class ForEachStrategyTest {
         StepExecutionReportDto result = testEngine.execute(requestDto);
 
         // T
-        assertThat(result.steps.get(0).steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps).hasSize(1);
         assertThat(result.status).isEqualTo(SUCCESS);
     }
 
@@ -186,20 +186,20 @@ class ForEachStrategyTest {
         StepExecutionReportDto result = testEngine.execute(requestDto);
 
         // T
-        StepExecutionReportDto parentStep = result.steps.get(0);
+        StepExecutionReportDto parentStep = result.steps.getFirst();
         assertThat(parentStep.steps).hasSize(2);
         assertThat(parentStep.status).isEqualTo(SUCCESS);
 
-        StepExecutionReportDto iteration0 = parentStep.steps.get(0);
+        StepExecutionReportDto iteration0 = parentStep.steps.getFirst();
         assertThat(iteration0.status).isEqualTo(SUCCESS);
         assertThat(iteration0.name).startsWith("0 -");
-        assertThat(iteration0.information.get(0)).isEqualTo("Validation [check_0_ok : ${#check_0 == \"/\" + #generatedID + \"/0\"}] : OK");
+        assertThat(iteration0.information.getFirst()).isEqualTo("Validation [check_0_ok : ${#check_0 == \"/\" + #generatedID + \"/0\"}] : OK");
         assertDoesNotThrow(() -> UUID.fromString(((JsonNode) iteration0.context.evaluatedInputs.get("stringParam")).asText()));
 
         StepExecutionReportDto iteration1 = parentStep.steps.get(1);
         assertThat(iteration1.status).isEqualTo(SUCCESS);
         assertThat(iteration1.name).startsWith("1 -");
-        assertThat(iteration1.information.get(0)).isEqualTo("Validation [check_1_ok : ${#check_1 == \"/\" + #generatedID + \"/1\"}] : OK");
+        assertThat(iteration1.information.getFirst()).isEqualTo("Validation [check_1_ok : ${#check_1 == \"/\" + #generatedID + \"/1\"}] : OK");
         assertDoesNotThrow(() -> UUID.fromString(((JsonNode) iteration1.context.evaluatedInputs.get("stringParam")).asText()));
     }
 
@@ -213,31 +213,31 @@ class ForEachStrategyTest {
         StepExecutionReportDto result = testEngine.execute(requestDto);
 
         // T
-        StepExecutionReportDto iterationWithMap = result.steps.get(0);
+        StepExecutionReportDto iterationWithMap = result.steps.getFirst();
         assertThat(iterationWithMap.steps).hasSize(2);
         assertThat(iterationWithMap.status).isEqualTo(SUCCESS);
-        assertThat(iterationWithMap.steps.get(0).context.evaluatedInputs.values().stream().toList().get(0)).isInstanceOf(ObjectNode.class);
-        assertDoesNotThrow(() -> ZonedDateTime.parse(((ObjectNode) iterationWithMap.steps.get(0).context.evaluatedInputs.values().stream().toList().get(0)).elements().next().asText()));
+        assertThat(iterationWithMap.steps.getFirst().context.evaluatedInputs.values().stream().toList().getFirst()).isInstanceOf(ObjectNode.class);
+        assertDoesNotThrow(() -> ZonedDateTime.parse(((ObjectNode) iterationWithMap.steps.getFirst().context.evaluatedInputs.values().stream().toList().getFirst()).elements().next().asText()));
 
         StepExecutionReportDto iterationWithList = result.steps.get(1);
         assertThat(iterationWithList.steps).hasSize(2);
         assertThat(iterationWithList.status).isEqualTo(SUCCESS);
-        assertThat(iterationWithList.steps.get(0).context.evaluatedInputs.values().stream().toList().get(0)).isInstanceOf(ArrayNode.class);
-        assertDoesNotThrow(() -> ZonedDateTime.parse(((ArrayNode) iterationWithList.steps.get(0).context.evaluatedInputs.values().stream().toList().get(0)).elements().next().asText()));
+        assertThat(iterationWithList.steps.getFirst().context.evaluatedInputs.values().stream().toList().getFirst()).isInstanceOf(ArrayNode.class);
+        assertDoesNotThrow(() -> ZonedDateTime.parse(((ArrayNode) iterationWithList.steps.getFirst().context.evaluatedInputs.values().stream().toList().getFirst()).elements().next().asText()));
 
         StepExecutionReportDto iterationWithBoolean = result.steps.get(2);
         assertThat(iterationWithBoolean.steps).hasSize(2);
         assertThat(iterationWithBoolean.status).isEqualTo(SUCCESS);
-        assertThat(iterationWithBoolean.steps.get(0).context.stepResults.get("bool")).isInstanceOf(BooleanNode.class);
-        assertThat(iterationWithBoolean.steps.get(0).context.stepResults.get("bool_0")).isInstanceOf(BooleanNode.class);
-        assertThat(((BooleanNode) iterationWithBoolean.steps.get(0).context.stepResults.get("bool_0")).asBoolean()).isEqualTo(true);
+        assertThat(iterationWithBoolean.steps.getFirst().context.stepResults.get("bool")).isInstanceOf(BooleanNode.class);
+        assertThat(iterationWithBoolean.steps.getFirst().context.stepResults.get("bool_0")).isInstanceOf(BooleanNode.class);
+        assertThat(((BooleanNode) iterationWithBoolean.steps.getFirst().context.stepResults.get("bool_0")).asBoolean()).isEqualTo(true);
 
         StepExecutionReportDto iterationWithInteger = result.steps.get(3);
         assertThat(iterationWithInteger.steps).hasSize(2);
         assertThat(iterationWithInteger.status).isEqualTo(SUCCESS);
-        assertThat(iterationWithInteger.steps.get(0).context.stepResults.get("integer1")).isInstanceOf(IntNode.class);
-        assertThat(iterationWithInteger.steps.get(0).context.stepResults.get("int_0")).isInstanceOf(IntNode.class);
-        assertThat(((IntNode) iterationWithInteger.steps.get(0).context.stepResults.get("int_0")).asInt()).isEqualTo(3);
+        assertThat(iterationWithInteger.steps.getFirst().context.stepResults.get("integer1")).isInstanceOf(IntNode.class);
+        assertThat(iterationWithInteger.steps.getFirst().context.stepResults.get("int_0")).isInstanceOf(IntNode.class);
+        assertThat(((IntNode) iterationWithInteger.steps.getFirst().context.stepResults.get("int_0")).asInt()).isEqualTo(3);
     }
 
     @Test
@@ -250,11 +250,11 @@ class ForEachStrategyTest {
         StepExecutionReportDto result = testEngine.execute(requestDto);
 
         // T
-        StepExecutionReportDto parentStep = result.steps.get(0);
+        StepExecutionReportDto parentStep = result.steps.getFirst();
         assertThat(parentStep.steps).hasSize(2);
-        assertThat(parentStep.steps.get(0).name).startsWith("0 -");
-        assertThat(parentStep.steps.get(0).errors).contains("Validation [check_0_ok : ${#env == \"B\"}] : KO");
-        assertThat(parentStep.steps.get(0).status).isEqualTo(FAILURE);
+        assertThat(parentStep.steps.getFirst().name).startsWith("0 -");
+        assertThat(parentStep.steps.getFirst().errors).contains("Validation [check_0_ok : ${#env == \"B\"}] : KO");
+        assertThat(parentStep.steps.getFirst().status).isEqualTo(FAILURE);
         assertThat(parentStep.steps.get(1).name).startsWith("1 -");
         assertThat(parentStep.steps.get(1).information).contains("Validation [check_1_ok : ${#env == \"B\"}] : OK");
         assertThat(parentStep.steps.get(1).status).isEqualTo(SUCCESS);
@@ -285,13 +285,13 @@ class ForEachStrategyTest {
 
         // T
         assertThat(result.status).isEqualTo(FAILURE);
-        StepExecutionReportDto iterativeStep = result.steps.get(0);
+        StepExecutionReportDto iterativeStep = result.steps.getFirst();
         assertThat(iterativeStep.steps).hasSize(3); // 3 iterations from dataset
-        StepExecutionReportDto firstIteration = iterativeStep.steps.get(0);
+        StepExecutionReportDto firstIteration = iterativeStep.steps.getFirst();
         assertThat(firstIteration.steps).hasSize(1); // each iteration has only 1 step having a soft-assert strategy
-        List<StepExecutionReportDto> softStep = firstIteration.steps.get(0).steps;
+        List<StepExecutionReportDto> softStep = firstIteration.steps.getFirst().steps;
         assertThat(softStep).hasSize(2); // soft-assert strategy step has 2 children
-        assertThat(softStep.get(0).status).isEqualTo(FAILURE);
+        assertThat(softStep.getFirst().status).isEqualTo(FAILURE);
         assertThat(softStep.get(1).status).isEqualTo(SUCCESS);
     }
 
@@ -308,28 +308,28 @@ class ForEachStrategyTest {
         assertThat(result.status).isEqualTo(SUCCESS);
 
         // And the parent step has 2 iterations
-        StepExecutionReportDto parentIterativeStep = result.steps.get(0);
+        StepExecutionReportDto parentIterativeStep = result.steps.getFirst();
         assertThat(parentIterativeStep.steps).hasSize(2); // has 2 iterations
 
         // And the first iteration contains 2 nested iterations
-        StepExecutionReportDto firstIteration = parentIterativeStep.steps.get(0).steps.get(0);
+        StepExecutionReportDto firstIteration = parentIterativeStep.steps.getFirst().steps.getFirst();
         assertThat(firstIteration.steps).hasSize(2);
-        assertThat(firstIteration.steps.get(0).name).startsWith("0 -");
-        assertThat(firstIteration.steps.get(0).context.stepResults).containsKey("environment_0.0");
-        assertThat(firstIteration.steps.get(0).context.stepResults.get("environment_0.0")).isInstanceOf(TextNode.class);
-        assertThat(((TextNode) firstIteration.steps.get(0).context.stepResults.get("environment_0.0")).asText()).isEqualTo("overriddenEnvX");
+        assertThat(firstIteration.steps.getFirst().name).startsWith("0 -");
+        assertThat(firstIteration.steps.getFirst().context.stepResults).containsKey("environment_0.0");
+        assertThat(firstIteration.steps.getFirst().context.stepResults.get("environment_0.0")).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) firstIteration.steps.getFirst().context.stepResults.get("environment_0.0")).asText()).isEqualTo("overriddenEnvX");
         assertThat(firstIteration.steps.get(1).name).startsWith("1 -");
         assertThat(firstIteration.steps.get(1).context.stepResults).containsKey("environment_0.1");
         assertThat(firstIteration.steps.get(1).context.stepResults.get("environment_0.1")).isInstanceOf(TextNode.class);
         assertThat(((TextNode) firstIteration.steps.get(1).context.stepResults.get("environment_0.1")).asText()).isEqualTo("overriddenEnvY");
 
         // And the second iteration contains 2 nested iterations
-        StepExecutionReportDto secondIteration = parentIterativeStep.steps.get(1).steps.get(0);
+        StepExecutionReportDto secondIteration = parentIterativeStep.steps.get(1).steps.getFirst();
         assertThat(secondIteration.steps).hasSize(2);
-        assertThat(secondIteration.steps.get(0).name).startsWith("0 -");
-        assertThat(secondIteration.steps.get(0).context.stepResults).containsKey("environment_1.0");
-        assertThat(secondIteration.steps.get(0).context.stepResults.get("environment_1.0")).isInstanceOf(TextNode.class);
-        assertThat(((TextNode) secondIteration.steps.get(0).context.stepResults.get("environment_1.0")).asText()).isEqualTo("overriddenEnvX");
+        assertThat(secondIteration.steps.getFirst().name).startsWith("0 -");
+        assertThat(secondIteration.steps.getFirst().context.stepResults).containsKey("environment_1.0");
+        assertThat(secondIteration.steps.getFirst().context.stepResults.get("environment_1.0")).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) secondIteration.steps.getFirst().context.stepResults.get("environment_1.0")).asText()).isEqualTo("overriddenEnvX");
         assertThat(secondIteration.steps.get(1).name).startsWith("1 -");
         assertThat(secondIteration.steps.get(1).context.stepResults).containsKey("environment_1.1");
         assertThat(secondIteration.steps.get(1).context.stepResults.get("environment_1.1")).isInstanceOf(TextNode.class);
@@ -349,15 +349,15 @@ class ForEachStrategyTest {
         assertThat(result).hasFieldOrPropertyWithValue("status", SUCCESS);
         assertThat(result.name).isEqualTo("Test iterations");
         assertThat(result.steps).hasSize(1);
-        assertThat(result.steps.get(0).name).isEqualTo("<i> - Hello env ${#env} ");
-        assertThat(result.steps.get(0).steps).hasSize(2);
-        assertThat(result.steps.get(0).steps.get(0).name).isEqualTo("0 - Hello env envX ");
-        assertThat(result.steps.get(0).steps.get(1).name).isEqualTo("1 - Hello env envY ");
-        assertThat(result.steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("<j> - Hello nested on envX with user ${#user}");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps).hasSize(2);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 - Hello nested on envX with user userA");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(1).name).isEqualTo("1 - Hello nested on envX with user userB");
+        assertThat(result.steps.getFirst().name).isEqualTo("<i> - Hello env ${#env} ");
+        assertThat(result.steps.getFirst().steps).hasSize(2);
+        assertThat(result.steps.getFirst().steps.getFirst().name).isEqualTo("0 - Hello env envX ");
+        assertThat(result.steps.getFirst().steps.get(1).name).isEqualTo("1 - Hello env envY ");
+        assertThat(result.steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("<j> - Hello nested on envX with user ${#user}");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps).hasSize(2);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 - Hello nested on envX with user userA");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.get(1).name).isEqualTo("1 - Hello nested on envX with user userB");
     }
 
     @Test
@@ -373,19 +373,19 @@ class ForEachStrategyTest {
         assertThat(result).hasFieldOrPropertyWithValue("status", SUCCESS);
         assertThat(result.name).isEqualTo("Test iterations");
         assertThat(result.steps).hasSize(1);
-        assertThat(result.steps.get(0).name).isEqualTo("<i> - level 1 - ${#level1}");
-        assertThat(result.steps.get(0).steps).hasSize(2);
-        assertThat(result.steps.get(0).steps.get(0).name).isEqualTo("0 - level 1 - level1.0");
-        assertThat(result.steps.get(0).steps.get(1).name).isEqualTo("1 - level 1 - level1.1");
-        assertThat(result.steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 <j> - level 2 - level1.0 ${#level2}");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps).hasSize(2);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 0 - level 2 - level1.0 level2.0");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(1).name).isEqualTo("0 1 - level 2 - level1.0 level2.1");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps).hasSize(1);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 0 <k> - level 3 - level1.0 level2.0 ${#level3}");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps).hasSize(2);
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps.get(0).name).isEqualTo("0 0 0 - level 3 - level1.0 level2.0 level3.0");
-        assertThat(result.steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps.get(0).steps.get(1).name).isEqualTo("0 0 1 - level 3 - level1.0 level2.0 level3.1");
+        assertThat(result.steps.getFirst().name).isEqualTo("<i> - level 1 - ${#level1}");
+        assertThat(result.steps.getFirst().steps).hasSize(2);
+        assertThat(result.steps.getFirst().steps.getFirst().name).isEqualTo("0 - level 1 - level1.0");
+        assertThat(result.steps.getFirst().steps.get(1).name).isEqualTo("1 - level 1 - level1.1");
+        assertThat(result.steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 <j> - level 2 - level1.0 ${#level2}");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps).hasSize(2);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 0 - level 2 - level1.0 level2.0");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.get(1).name).isEqualTo("0 1 - level 2 - level1.0 level2.1");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps).hasSize(1);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 0 <k> - level 3 - level1.0 level2.0 ${#level3}");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps).hasSize(2);
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 0 0 - level 3 - level1.0 level2.0 level3.0");
+        assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.get(1).name).isEqualTo("0 0 1 - level 3 - level1.0 level2.0 level3.1");
     }
 }

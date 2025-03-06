@@ -11,7 +11,31 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Version of {@link Supplier} throwing {@link Exception}.
+ * A version of {@link Supplier} that allows throwing a checked {@link Exception}.
+ * <p>
+ * This interface is useful when working with functional programming constructs that need to
+ * handle checked exceptions, such as stream operations or deferred computations.
+ * </p>
+ *
+ * <h2>Usage Example</h2>
+ * <pre>{@code
+ * ThrowingSupplier<String, IOException> fileReader = () -> {
+ *     try (BufferedReader reader = new BufferedReader(new FileReader("example.txt"))) {
+ *         return reader.readLine();
+ *     }
+ * };
+ *
+ * try {
+ *     String line = fileReader.get();
+ *     System.out.println("Read line: " + line);
+ * } catch (IOException e) {
+ *     e.printStackTrace();
+ * }
+ * }</pre>
+ *
+ * @param <T> The type of the result supplied
+ * @param <E> The type of exception thrown by the supplier
+ * @see Supplier
  */
 @FunctionalInterface
 public interface ThrowingSupplier<T, E extends Exception> {

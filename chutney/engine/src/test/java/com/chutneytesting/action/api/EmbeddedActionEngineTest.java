@@ -46,7 +46,7 @@ public class EmbeddedActionEngineTest {
 
         // T
         assertThat(allActions).hasSize(2);
-        assertThat(allActions.get(0).getIdentifier()).isEqualTo("test");
+        assertThat(allActions.getFirst().getIdentifier()).isEqualTo("test");
         assertThat(allActions.get(1).getIdentifier()).isEqualTo("test2");
     }
 

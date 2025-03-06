@@ -46,7 +46,7 @@ public class DatasetEntityMapperTest {
         assertThat(dataset.constants).containsAllEntriesOf(constants);
         assertThat(dataset.datatable).isNotNull();
         assertThat(dataset.datatable).hasSize(2);
-        assertThat(dataset.datatable.get(0)).containsAllEntriesOf(datatable.get(0));
+        assertThat(dataset.datatable.getFirst()).containsAllEntriesOf(datatable.getFirst());
         assertThat(dataset.datatable.get(1)).containsAllEntriesOf(datatable.get(1));
     }
 

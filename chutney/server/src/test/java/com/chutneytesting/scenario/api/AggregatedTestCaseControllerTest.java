@@ -90,7 +90,7 @@ class AggregatedTestCaseControllerTest {
         verify(testCaseRepository).findAll();
 
         GwtTestCaseMetadataDto actualMetadata = (om.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<TestCaseIndexDto>>() {
-        })).get(0).metadata();
+        })).getFirst().metadata();
         assertThat(actualMetadata.id()).isEqualTo(of(fakeMetadata.id()));
         assertThat(actualMetadata.creationDate()).isEqualTo(fakeMetadata.creationDate());
         assertThat(actualMetadata.updateDate()).isEqualTo(fakeMetadata.updateDate());

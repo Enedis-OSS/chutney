@@ -146,7 +146,7 @@ class CampaignExecutionTest {
 
             // Then
             assertThat(campaignReport.scenarioExecutionReports()).hasSize(1);
-            assertThat(campaignReport.scenarioExecutionReports().get(0)).satisfies(report -> {
+            assertThat(campaignReport.scenarioExecutionReports().getFirst()).satisfies(report -> {
                 assertThat(report.scenarioId()).isEqualTo(testCase.metadata().id());
                 assertThat(report.scenarioName()).isEqualTo(testCase.metadata().title());
                 assertThat(report.execution()).satisfies(executionSummary -> {
@@ -164,7 +164,7 @@ class CampaignExecutionTest {
 
             // Then
             assertThat(campaignReport.scenarioExecutionReports()).hasSize(1);
-            assertThat(campaignReport.scenarioExecutionReports().get(0)).satisfies(report -> {
+            assertThat(campaignReport.scenarioExecutionReports().getFirst()).satisfies(report -> {
                 assertThat(report.scenarioId()).isEqualTo(testCase.metadata().id());
                 assertThat(report.scenarioName()).isEqualTo(testCase.metadata().title());
                 assertThat(report.execution()).satisfies(executionSummary -> {
@@ -188,7 +188,7 @@ class CampaignExecutionTest {
 
             // Then
             assertThat(campaignReport.scenarioExecutionReports()).hasSize(1);
-            assertThat(campaignReport.scenarioExecutionReports().get(0)).satisfies(report -> {
+            assertThat(campaignReport.scenarioExecutionReports().getFirst()).satisfies(report -> {
                 assertThat(report.scenarioId()).isEqualTo(testCase.metadata().id());
                 assertThat(report.scenarioName()).isEqualTo(testCase.metadata().title());
                 assertThat(report.execution()).satisfies(executionSummary -> {
@@ -220,7 +220,7 @@ class CampaignExecutionTest {
 
             // Then
             assertThat(campaignReport.scenarioExecutionReports()).hasSize(1);
-            assertThat(campaignReport.scenarioExecutionReports().get(0).execution().status()).isEqualTo(SUCCESS);
+            assertThat(campaignReport.scenarioExecutionReports().getFirst().execution().status()).isEqualTo(SUCCESS);
         }
 
         @Test
@@ -379,8 +379,8 @@ class CampaignExecutionTest {
 
     private List<ScenarioExecutionCampaign> stubScenarioExecution(List<LocalDateTime> times, List<Long> durations) {
         ExecutionHistory.ExecutionSummary execution = mock(ExecutionHistory.ExecutionSummary.class);
-        when(execution.time()).thenReturn(times.get(0), times.subList(1, durations.size()).toArray(new LocalDateTime[0]));
-        when(execution.duration()).thenReturn(durations.get(0), durations.subList(1, durations.size()).toArray(new Long[0]));
+        when(execution.time()).thenReturn(times.getFirst(), times.subList(1, durations.size()).toArray(new LocalDateTime[0]));
+        when(execution.duration()).thenReturn(durations.getFirst(), durations.subList(1, durations.size()).toArray(new Long[0]));
 
         ScenarioExecutionCampaign dto = new ScenarioExecutionCampaign("0", UUID.randomUUID().toString(), execution);
         List<ScenarioExecutionCampaign> reports = new ArrayList<>();
