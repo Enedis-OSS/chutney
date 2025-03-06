@@ -37,6 +37,9 @@ public class XPathFunction {
     }
 
     private static Object unwrapJdomSimpleObject(Object jDomObject) {
+        if (jDomObject == null) {
+            return null;
+        }
         return switch (jDomObject) {
             case Text text -> text.getText();
             case Attribute attribute -> attribute.getValue();

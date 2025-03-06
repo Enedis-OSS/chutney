@@ -30,7 +30,7 @@ public class AmqpUtils {
         }
 
         return map.entrySet().stream()
-            .map(e-> new AbstractMap.SimpleEntry<>(
+            .map(e -> new AbstractMap.SimpleEntry<>(
                 e.getKey(),
                 Optional.ofNullable(convertLongStringToString(e.getValue())).orElse("null")))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -42,6 +42,10 @@ public class AmqpUtils {
      * @return consolidated object
      */
     private static Object convertLongStringToString(Object value) {
+        if (value == null) {
+            return null;
+        }
+
         return switch (value) {
             case LongString ls -> ls.toString();
             case List lt -> {
