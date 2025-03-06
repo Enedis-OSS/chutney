@@ -37,6 +37,10 @@ spring:
       - db-h2
 
 chutney:
+  auth:
+    jwt:
+      issuer: chutney
+      expiresIn: 240
   configuration-folder: target/.chutney/conf
   environment:
     configuration-folder: ${chutney.configuration-folder}/environment

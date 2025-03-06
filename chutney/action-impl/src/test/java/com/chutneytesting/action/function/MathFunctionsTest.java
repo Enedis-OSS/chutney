@@ -75,7 +75,8 @@ class MathFunctionsTest {
 
         @Test
         void exp() {
-            assertThat(sut.exp(1f)).isEqualTo(sut.e());
+            assertThat(sut.exp(1)).isEqualTo(Math.exp(1));
+            assertThat(sut.e()).isEqualTo(Math.E);
         }
 
         @Test
