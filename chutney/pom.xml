@@ -48,7 +48,7 @@
     <properties>
 
         <!-- Runtime dependencies versions -->
-        <springboot.version>3.2.1</springboot.version>
+        <springboot.version>3.4.3</springboot.version>
         <guava.version>31.0.1-jre</guava.version> <!-- Divergence on dependencies checker-qual and error_prone_annotations --> <!-- Test on https://github.com/FasterXML/jackson-datatypes-collections/tree/2.14/guava -->
 
         <mapstruct.version>1.6.2</mapstruct.version>
@@ -60,6 +60,7 @@
         <liquibase.version>4.31.0</liquibase.version>
 
         <!-- action-impl dependencies versions -->
+        <activemq.version>5.19.0</activemq.version> <!-- for JMS 1.1 support via Jms actions -->
         <sshj.version>0.39.0</sshj.version>
         <sshd.version>2.15.0</sshd.version>
         <qpid-broker.version>9.2.1</qpid-broker.version>
@@ -68,7 +69,6 @@
         <org.everit.json.schema.version>1.14.1</org.everit.json.schema.version> <!-- Divergence on dependencies commons-logging and joda-time -->
 
         <!-- action-impl test dependencies versions -->
-        <activemq-junit.version>6.1.2</activemq-junit.version> <!-- = Follow spring boot version -->
         <rabbitmq-mock.version>1.2.0</rabbitmq-mock.version>
 
         <!-- test dependencies versions -->
@@ -90,7 +90,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -220,6 +219,28 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-client</artifactId>
+                <version>${activemq.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-broker</artifactId>
+                <version>${activemq.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <!-- External dependencies -->
             <dependency>
@@ -317,7 +338,7 @@
             <dependency>
                 <groupId>org.apache.activemq.tooling</groupId>
                 <artifactId>activemq-junit</artifactId>
-                <version>${activemq-junit.version}</version>
+                <version>${activemq.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

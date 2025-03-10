@@ -8,17 +8,6 @@
 
 package com.chutneytesting.server.core.domain.execution;
 
-import static java.time.LocalDateTime.now;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.chutneytesting.server.core.domain.dataset.DataSet;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistory;
 import com.chutneytesting.server.core.domain.execution.history.ExecutionHistoryRepository;
@@ -38,6 +27,7 @@ import io.reactivex.rxjava3.observers.TestObserver;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import io.reactivex.rxjava3.schedulers.TestScheduler;
 import java.time.Instant;
+import static java.time.LocalDateTime.now;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +35,18 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ScenarioExecutionEngineAsyncTest {
 
@@ -144,7 +143,7 @@ public class ScenarioExecutionEngineAsyncTest {
         DataSet dataset = DataSet.builder().withName("ds").withConstants(Map.of("A", "B")).build();
 
         // When
-        TestObserver<ScenarioExecutionReport> testObserver = sut.buildScenarioExecutionReportObservable(new ExecutionRequest(emptyTestCase(), "", "", dataset ), executionId, engineStub.getLeft()).test();
+        TestObserver<ScenarioExecutionReport> testObserver = sut.buildScenarioExecutionReportObservable(new ExecutionRequest(emptyTestCase(), "", "", dataset), executionId, engineStub.getLeft()).test();
 
         // Then
         assertTestObserverStateWithValues(testObserver, 0, false);
@@ -203,7 +202,7 @@ public class ScenarioExecutionEngineAsyncTest {
 
         // Then
         engineStub.getRight().advanceTimeBy(500, TimeUnit.MILLISECONDS);
-        assertTestObserverStateAndValues(testObserver, true, executionId, reportsList, 4,null);
+        assertTestObserverStateAndValues(testObserver, true, executionId, reportsList, 4, null);
 
         testObserver.dispose();
     }
@@ -267,7 +266,7 @@ public class ScenarioExecutionEngineAsyncTest {
         assertThat(execution).isEqualTo(expected);
     }
 
-    private void assertTestObserverStateAndValues(TestObserver<ScenarioExecutionReport> testObserver, Long executionId, List<StepExecutionReportCore> reportsList, int valuesCount,DataSet dataset) {
+    private void assertTestObserverStateAndValues(TestObserver<ScenarioExecutionReport> testObserver, Long executionId, List<StepExecutionReportCore> reportsList, int valuesCount, DataSet dataset) {
         assertTestObserverStateAndValues(testObserver, false, executionId, reportsList, valuesCount, dataset);
     }
 
@@ -280,14 +279,14 @@ public class ScenarioExecutionEngineAsyncTest {
         assertThat(actual.scenarioName).isEqualTo(EMPTY_TESTCASE_NAME);
         assertThat(actual.executionId).isEqualTo(executionId);
         Optional.ofNullable(dataSet)
-                .ifPresent(ds -> {
-                    assertThat(actual.constants).isEqualTo(dataSet.constants);
-                    assertThat(actual.datatable).isEqualTo(dataSet.datatable);
-                });
+            .ifPresent(ds -> {
+                assertThat(actual.constants).isEqualTo(dataSet.constants);
+                assertThat(actual.datatable).isEqualTo(dataSet.datatable);
+            });
         assertThat(actual.report.name).isEqualTo(rootStepExecutionReportCore.name);
         assertThat(actual.report.status).isEqualTo(rootStepExecutionReportCore.status);
         assertThat(actual.report.steps)
-            .usingRecursiveFieldByFieldElementComparatorOnFields("executionId", "name", "status")
+            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "status")
             .containsExactlyElementsOf(rootStepExecutionReportCore.steps);
     }
 

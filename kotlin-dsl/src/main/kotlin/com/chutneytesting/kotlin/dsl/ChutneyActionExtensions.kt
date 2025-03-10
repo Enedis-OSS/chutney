@@ -34,7 +34,11 @@ fun ChutneyStepBuilder.FailAction(outputs: Map<String, Any> = mapOf(), validatio
 /**
  * Log values in the execution context
  */
-fun ChutneyStepBuilder.DebugAction(filters: List<String> = listOf(), outputs: Map<String, Any> = mapOf(), validations: Map<String, Any> = emptyMap()) {
+fun ChutneyStepBuilder.DebugAction(
+    filters: List<String> = listOf(),
+    outputs: Map<String, Any> = mapOf(),
+    validations: Map<String, Any> = emptyMap()
+) {
     implementation = ChutneyStepImpl(
         type = "debug",
         inputs = listOf(
@@ -48,7 +52,11 @@ fun ChutneyStepBuilder.DebugAction(filters: List<String> = listOf(), outputs: Ma
 /**
  * Wait "5 min", "300 sec", "500 ms" or "until 14:34"
  */
-fun ChutneyStepBuilder.SleepAction(duration: String, outputs: Map<String, Any> = mapOf(), validations: Map<String, Any> = emptyMap()) {
+fun ChutneyStepBuilder.SleepAction(
+    duration: String,
+    outputs: Map<String, Any> = mapOf(),
+    validations: Map<String, Any> = emptyMap()
+) {
     implementation = ChutneyStepImpl(
         type = "sleep",
         inputs = mapOf("duration" to duration),
@@ -60,7 +68,11 @@ fun ChutneyStepBuilder.SleepAction(duration: String, outputs: Map<String, Any> =
 /**
  * Add variable to execution context
  */
-fun ChutneyStepBuilder.ContextPutAction(entries: Map<String, Any>, outputs: Map<String, Any> = mapOf(), validations: Map<String, Any> = emptyMap()) {
+fun ChutneyStepBuilder.ContextPutAction(
+    entries: Map<String, Any>,
+    outputs: Map<String, Any> = mapOf(),
+    validations: Map<String, Any> = emptyMap()
+) {
     implementation = ChutneyStepImpl(
         type = "context-put",
         inputs = mapOf("entries" to entries),
@@ -93,7 +105,8 @@ fun ChutneyStepBuilder.FinalAction(
             "strategy-properties" to strategyProperties,
             "validations" to validations
         ).notEmptyToMap(),
-        outputs = outputs)
+        outputs = outputs
+    )
 }
 
 /**
@@ -2268,7 +2281,7 @@ fun ChutneyStepBuilder.JakartaListenerAction(
 }
 
 /**
- * On a jms target, send a message to a queue
+ * On a jakarta target, send a message to a queue
  */
 fun ChutneyStepBuilder.JakartaSenderAction(
     target: String,
@@ -2280,7 +2293,7 @@ fun ChutneyStepBuilder.JakartaSenderAction(
     strategy: Strategy? = null
 ) {
     implementation = ChutneyStepImpl(
-        type = "jms-sender",
+        type = "jakarta-sender",
         target = target,
         inputs = listOf(
             "destination" to destination,

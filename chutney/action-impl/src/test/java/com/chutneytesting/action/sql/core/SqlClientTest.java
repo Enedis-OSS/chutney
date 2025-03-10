@@ -7,9 +7,6 @@
 
 package com.chutneytesting.action.sql.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.chutneytesting.action.TestTarget;
 import com.chutneytesting.action.spi.injectable.Target;
 import com.chutneytesting.tools.ChutneyMemoryInfo;
@@ -20,7 +17,9 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -72,13 +71,11 @@ public class SqlClientTest {
         @BeforeAll
         static void beforeAll() {
             oracle.start();
-            String address = oracle.getHost();
-            Integer port = oracle.getFirstMappedPort();
             sqlTarget = TestTarget.TestTargetBuilder.builder()
                 .withTargetId("sql")
-                .withUrl("jdbc:oracle:thin:@" + address + ":" + port + "/testDB")
-                .withProperty("user", "testUser")
-                .withProperty("password", "testPassword")
+                .withUrl(oracle.getJdbcUrl())
+                .withProperty("user", oracle.getUsername())
+                .withProperty("password", oracle.getPassword())
                 .build();
         }
 

@@ -155,7 +155,8 @@ class ChutneyScenarioExecutionContext(
                 chutneyScenarioDescriptor,
                 reportEntry = ReportEntry.from(
                     mapOf(
-                        ChutneyJUnitReportingKeys.REPORT_JSON_STRING.value to JsonReportWriter.reportAsJson(ReportUtil.generateReportDto(rootStep))
+                        ChutneyJUnitReportingKeys.REPORT_JSON_STRING.value to JsonReportWriter.reportAsJson(ReportUtil.generateReportDto(rootStep)),
+                        ChutneyJUnitReportingKeys.REPORT_STATUS_SUCCESS.value to (executionStatus == Status.SUCCESS).toString()
                     ))
             )
 

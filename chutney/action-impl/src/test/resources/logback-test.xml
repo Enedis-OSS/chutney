@@ -6,7 +6,8 @@
   -->
 
 <configuration>
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -43,7 +44,7 @@
     <logger name="wiremock" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
 
-    <root level="WARN">
-        <appender-ref ref="STDOUT" />
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

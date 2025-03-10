@@ -10,7 +10,6 @@ package com.chutneytesting.scenario.infra.raw;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.Long.valueOf;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import com.chutneytesting.campaign.infra.CampaignScenarioJpaRepository;
@@ -25,17 +24,9 @@ import com.chutneytesting.server.core.domain.scenario.ScenarioNotParsableExcepti
 import com.chutneytesting.server.core.domain.scenario.TestCase;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadata;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,8 +38,6 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
     private final ScenarioJpaRepository scenarioJpaRepository;
     private final DatabaseExecutionJpaRepository scenarioExecutionsJpaRepository;
     private final CampaignScenarioJpaRepository campaignScenarioJpaRepository;
-    private final EntityManager entityManager;
-    private final Pattern pattern = Pattern.compile("\"([^\"]*)\"");
 
 
     public DatabaseTestCaseRepository(
@@ -58,13 +47,12 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
         this.scenarioJpaRepository = jpa;
         this.scenarioExecutionsJpaRepository = scenarioExecutionsJpaRepository;
         this.campaignScenarioJpaRepository = campaignScenarioJpaRepository;
-        this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
     public String save(GwtTestCase testCase) {
-        if (testCaseDoesNotExist(testCase.id())) {
+        if (scenarioWithExplicitIdNotExists(testCase)) {
             saveScenarioWithExplicitId(testCase);
             return testCase.id();
         }
@@ -72,6 +60,15 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
             return scenarioJpaRepository.save(ScenarioEntity.fromGwtTestCase(testCase)).getId().toString();
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new ScenarioNotFoundException(testCase.id(), testCase.metadata().version());
+        }
+    }
+
+    private boolean scenarioWithExplicitIdNotExists(TestCase testCase) {
+        var testCaseId = testCase.id();
+        try {
+            return testCaseId != null && !scenarioJpaRepository.existsById(Long.parseLong(testCaseId));
+        } catch (NumberFormatException e) {
+            throw new ScenarioNotParsableException("Cannot parse id", e);
         }
     }
 
@@ -143,14 +140,6 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
             return scenarioJpaRepository.lastVersion(valueOf(scenarioId));
         } catch (IncorrectResultSizeDataAccessException e) {
             return empty();
-        }
-    }
-
-    private boolean testCaseDoesNotExist(String id) {
-        try {
-            return Long.parseLong(id) >= 0 && findById(id).isEmpty();
-        } catch (NumberFormatException e) {
-            throw new ScenarioNotParsableException("Cannot parse id", e);
         }
     }
 

@@ -149,7 +149,9 @@ public class CampaignExecution {
 
     public void endScenarioExecution(ScenarioExecutionCampaign scenarioExecutionCampaign) throws UnsupportedOperationException {
         int index = this.scenarioExecutions.indexOf(scenarioExecutionCampaign);
-        this.scenarioExecutions.set(index, scenarioExecutionCampaign);
+        if (index > -1) {
+            this.scenarioExecutions.set(index, scenarioExecutionCampaign);
+        }
     }
 
     public void endCampaignExecution() {

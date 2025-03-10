@@ -7,31 +7,23 @@
 
 package com.chutneytesting.action.kafka;
 
-import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
-import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
-import static java.util.Collections.emptyMap;
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.chutneytesting.action.TestLogger;
 import com.chutneytesting.action.TestTarget;
 import com.chutneytesting.action.http.HttpsServerStartActionTest;
 import com.chutneytesting.action.spi.Action;
 import com.chutneytesting.action.spi.ActionExecutionResult;
+import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
+import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
 import com.chutneytesting.action.spi.injectable.Target;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Collections;
+import static java.util.Collections.emptyMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -40,12 +32,20 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentMatchers;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -60,13 +60,18 @@ public class KafkaBasicPublishActionTest {
     private static final String TOPIC = "topic";
     private static final String PAYLOAD = "payload";
     private static final String GROUP = "mygroup";
-    private final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true, TOPIC);
+    private static final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true, TOPIC);
 
     private TestLogger logger;
 
     @BeforeEach
     public void before() {
         logger = new TestLogger();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        embeddedKafkaBroker.destroy();
     }
 
     private Target getKafkaTarget() {

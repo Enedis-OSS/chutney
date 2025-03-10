@@ -85,7 +85,12 @@ public class DatabaseTestCaseRepositoryTest {
         @Test
         public void should_generate_id_when_scenario_is_persisted() {
             // When: a scenarioTemplate is saved
-            String scenarioID = sut.save(GWT_TEST_CASE);
+            var testCase = GwtTestCase.builder()
+                .withMetadata(TestCaseMetadataImpl.builder().build())
+                .withScenario(
+                    GwtScenario.builder().withWhen(GwtStep.NONE).build()
+                ).build();
+            String scenarioID = sut.save(testCase);
 
             // Then: a non blank id is generated
             assertThat(scenarioID).isNotBlank();

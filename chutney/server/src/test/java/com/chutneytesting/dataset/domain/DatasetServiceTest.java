@@ -11,7 +11,6 @@ import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -102,13 +101,15 @@ class DatasetServiceTest {
         GwtTestCase testCase = GwtTestCase.builder().withMetadata(metadata).withScenario(mock(GwtScenario.class)).build();
         when(testCaseRepository.findById(any())).thenReturn(of(testCase));
 
+        when(datasetRepository.save(any())).thenReturn(newId);
+
         GwtTestCase expected = GwtTestCase.builder().from(testCase).withMetadata(
             TestCaseMetadataImpl.TestCaseMetadataBuilder.from(metadata).withDefaultDataset(newId).build()
         ).build();
 
-        sut.update(of(oldId), DataSet.builder().withId(newId).withName(newId).build());
+        sut.update(oldId, DataSet.builder().withName(newId).build());
 
-        verify(testCaseRepository, times(1)).save(expected);
+        verify(testCaseRepository).save(expected);
     }
 
     @Test
@@ -132,14 +133,14 @@ class DatasetServiceTest {
         when(campaignRepository.findAll()).thenReturn(List.of(campaign));
 
         GwtTestCase expectedScenario = GwtTestCase.builder().from(testCase).withMetadata(
-            TestCaseMetadataImpl.TestCaseMetadataBuilder.from(metadata).build()
+            TestCaseMetadataImpl.TestCaseMetadataBuilder.from(metadata).withDefaultDataset(null).build()
         ).build();
         Campaign expectedCampaign = CampaignBuilder.builder().from(campaign).setDatasetId("").build();
 
         sut.remove(datasetId);
 
-        verify(testCaseRepository, times(1)).save(expectedScenario);
-        verify(campaignRepository, times(1)).createOrUpdate(expectedCampaign);
+        verify(testCaseRepository).save(expectedScenario);
+        verify(campaignRepository).createOrUpdate(expectedCampaign);
     }
 
     @Test

@@ -13,7 +13,6 @@ import com.chutneytesting.kotlin.dsl.Scenario
 import com.chutneytesting.kotlin.dsl.hjsonSpEL
 import com.chutneytesting.kotlin.dsl.spEL
 
-
 fun `Jms jmsAction wrong url`(
   jmsAction: String,
   actionInputs: String

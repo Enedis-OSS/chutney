@@ -81,7 +81,7 @@ class AggregatedTestCaseControllerTest {
         when(testCaseRepository.findAll()).thenReturn(List.of(fakeMetadata));
 
         //When
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/scenario/v2/")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/scenario/v2")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn();

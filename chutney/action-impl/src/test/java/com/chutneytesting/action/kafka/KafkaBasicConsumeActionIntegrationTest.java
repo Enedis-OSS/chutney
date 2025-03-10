@@ -7,6 +7,9 @@
 
 package com.chutneytesting.action.kafka;
 
+import com.chutneytesting.action.TestLogger;
+import com.chutneytesting.action.TestTarget;
+import com.chutneytesting.action.http.HttpsServerStartActionTest;
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_BODY;
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_BODY_HEADERS_KEY;
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_BODY_KEY_KEY;
@@ -14,30 +17,20 @@ import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_BOD
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_HEADERS;
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_KEYS;
 import static com.chutneytesting.action.kafka.KafkaBasicConsumeAction.OUTPUT_PAYLOADS;
-import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
-import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
-import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.ContentType.APPLICATION_OCTET_STREAM;
-import static java.util.Collections.emptyMap;
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_XML_VALUE;
-import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
-
-import com.chutneytesting.action.TestLogger;
-import com.chutneytesting.action.TestTarget;
-import com.chutneytesting.action.http.HttpsServerStartActionTest;
 import com.chutneytesting.action.spi.Action;
 import com.chutneytesting.action.spi.ActionExecutionResult;
+import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Failure;
+import static com.chutneytesting.action.spi.ActionExecutionResult.Status.Success;
 import com.chutneytesting.action.spi.injectable.Target;
+import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.ContentType.APPLICATION_OCTET_STREAM;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import static java.util.Collections.emptyMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import java.util.UUID;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
@@ -48,6 +41,9 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -56,29 +52,41 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.springframework.kafka.test.EmbeddedKafkaZKBroker;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_XML_VALUE;
+import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
 
-public abstract class KafkaBasicConsumeActionIntegrationTest {
+public class KafkaBasicConsumeActionIntegrationTest {
 
     private final String GROUP = "mygroup";
     private String uniqueTopic;
 
-    protected static Producer<Integer, String> producer;
+    private final static EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true);
+    private static Producer<Integer, String> producer;
     private final TestTarget.TestTargetBuilder targetBuilder;
 
     private TestLogger logger;
 
     public KafkaBasicConsumeActionIntegrationTest() {
-        String brokerPath = initBroker();
+        embeddedKafkaBroker.afterPropertiesSet();
+        String brokerPath = embeddedKafkaBroker.getBrokersAsString();
         producer = createProducer(brokerPath);
         targetBuilder = TestTarget.TestTargetBuilder.builder().withTargetId("kafka").withUrl("tcp://" + brokerPath);
     }
-
-    protected abstract String initBroker();
 
     @BeforeEach
     public void before() {
         logger = new TestLogger();
         uniqueTopic = UUID.randomUUID().toString();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        producer.close();
+        embeddedKafkaBroker.destroy();
     }
 
     @Test
