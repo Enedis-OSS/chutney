@@ -139,6 +139,7 @@ export class SsoService {
             return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
                 map(ssoConfig => {
                     this.ssoConfig = ssoConfig
+                    this.enableSso = true
                     localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig))
                     return this.getAuthConfigFromSsoAuthConfig(ssoConfig)
                 }),

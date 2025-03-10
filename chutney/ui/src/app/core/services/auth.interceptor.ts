@@ -39,7 +39,6 @@ export class TokenInterceptor implements HttpInterceptor {
                 if (event instanceof HttpResponse) {
                     const token = event.headers.get('X-Custom-Token');
                     if (token) {
-                        console.log('Token reçu :', token);
                         localStorage.setItem('jwt', token);
                     }
                 }

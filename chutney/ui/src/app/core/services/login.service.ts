@@ -158,13 +158,13 @@ export class LoginService {
 
     logout(onlyJwt = false) {
         localStorage.removeItem('jwt')
+        this._connectionErrorMessage = ''
         this.setUser(this.NO_USER)
         if (!onlyJwt && this.ssoService.accessTokenValid) {
             this.ssoService.logout()
         } else {
             this.router.navigateByUrl('/login');
         }
-
     }
 
     getUser(): Observable<User> {
