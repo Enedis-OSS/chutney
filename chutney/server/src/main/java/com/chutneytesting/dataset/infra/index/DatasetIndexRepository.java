@@ -32,7 +32,7 @@ public class DatasetIndexRepository extends AbstractIndexRepository<DataSet> {
     protected Document createDocument(DataSet dataSet) {
         Document document = new Document();
         document.add(new StringField(WHAT, whatValue, Field.Store.YES));
-        document.add(new TextField(ID, dataSet.id, Field.Store.YES));
+        document.add(new StringField(ID, dataSet.id, Field.Store.YES));
         document.add(new TextField(TITLE, dataSet.name, Field.Store.YES));
         document.add(new TextField(DESCRIPTION, dataSet.description, Field.Store.YES));
         document.add(new TextField(CONTENT, content(dataSet), Field.Store.YES));

@@ -27,7 +27,7 @@ public class ScenarioIndexRepository extends AbstractIndexRepository<ScenarioEnt
     protected Document createDocument(ScenarioEntity scenario) {
         Document document = new Document();
         document.add(new StringField(WHAT, whatValue, Field.Store.YES));
-        document.add(new TextField(ID, scenario.getId().toString(), Field.Store.YES));
+        document.add(new StringField(ID, scenario.getId().toString(), Field.Store.YES));
         document.add(new TextField(TITLE, scenario.getTitle(), Field.Store.YES));
         document.add(new TextField(DESCRIPTION, scenario.getDescription(), Field.Store.YES));
         document.add(new TextField(CONTENT, scenario.getContent(), Field.Store.YES));

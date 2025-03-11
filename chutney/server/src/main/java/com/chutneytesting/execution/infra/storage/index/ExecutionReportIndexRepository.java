@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.Term;
@@ -25,7 +24,6 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.util.BytesRef;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -46,8 +44,6 @@ public class ExecutionReportIndexRepository {
         document.add(new StringField(WHAT, WHAT_VALUE, Store.YES));
         document.add(new StringField(ID, report.scenarioExecutionId().toString(), Store.YES));
         document.add(new TextField(REPORT, report.getReport().toLowerCase(), Store.NO));
-        // for sorting
-        document.add(new SortedDocValuesField(ID, new BytesRef(report.scenarioExecutionId().toString().getBytes())));
         luceneIndexRepository.index(document);
     }
 

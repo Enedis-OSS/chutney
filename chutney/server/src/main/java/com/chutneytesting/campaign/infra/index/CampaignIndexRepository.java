@@ -27,7 +27,7 @@ public class CampaignIndexRepository extends AbstractIndexRepository<CampaignEnt
     protected Document createDocument(CampaignEntity campaign) {
         Document document = new Document();
         document.add(new StringField(WHAT, whatValue, Field.Store.YES));
-        document.add(new TextField(ID, campaign.id().toString(), Field.Store.YES));
+        document.add(new StringField(ID, campaign.id().toString(), Field.Store.YES));
         document.add(new TextField(TITLE, campaign.title(), Field.Store.YES));
         document.add(new TextField(DESCRIPTION, campaign.description(), Field.Store.YES));
         document.add(new TextField(TAGS, campaign.tags(), Field.Store.YES));
