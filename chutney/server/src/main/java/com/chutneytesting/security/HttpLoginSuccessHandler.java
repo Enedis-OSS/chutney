@@ -38,6 +38,7 @@ public class HttpLoginSuccessHandler implements AuthenticationSuccessHandler {
         if (!authentication.isAuthenticated()) {
             LOGGER.debug("Authentication failure for user [{}]", authentication.getPrincipal());
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Authentication failed");
+            return;
         }
         LOGGER.info("User {} logged in", authentication.getName());
         Map<String, Object> claims = objectMapper.convertValue(authentication.getPrincipal(), Map.class);

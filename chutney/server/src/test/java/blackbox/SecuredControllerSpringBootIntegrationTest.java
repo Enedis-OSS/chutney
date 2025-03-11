@@ -242,6 +242,37 @@ public class SecuredControllerSpringBootIntegrationTest {
         if (content != null) {
             request.content(content);
         }
+        manageAuth(authority, userDto, request);
+
+        mvc.perform(request)
+            .andExpect(status().is(status.value()));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"uploadEndpoints"})
+    public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .multipart(url)
+            .file(new MockMultipartFile("file", "myFile.json", "text/json", content.getBytes()))
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .secure(true);
+        manageAuth(authority, userDto, request);
+
+        mvc.perform(request)
+            .andExpect(status().is(expectedStatus.value()));
+    }
+
+    private static Stream<Arguments> uploadEndpoints() {
+        return Stream.of(
+            Arguments.of("/api/v2/environments", "ENVIRONMENT_ACCESS", "{\"name\": \"env\"}", OK),
+            Arguments.of("/api/v2/environments/env/targets", "ENVIRONMENT_ACCESS", "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"env\"}", OK)
+        );
+    }
+
+    private void manageAuth(String authority, UserDto userDto, MockHttpServletRequestBuilder request) {
         ofNullable(authority).ifPresent(right -> {
             if (!"AUTHENTICATED".equals(authority)) {
                 Role adminRole = Role.builder().withAuthorizations(List.of(right)).withName("admin").build();
@@ -254,44 +285,5 @@ public class SecuredControllerSpringBootIntegrationTest {
                 request.header("Authorization", "Bearer " + token);
             }
         });
-
-        mvc.perform(request)
-            .andExpect(status().is(status.value()));
-    }
-
-    @ParameterizedTest
-    @MethodSource({"uploadEndpoints"})
-    public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setName("admin");
-        userDto.setId("admin");
-        ofNullable(authority).ifPresent(right -> {
-            if (!"AUTHENTICATED".equals(authority)) {
-                Role adminRole = Role.builder().withAuthorizations(List.of(right)).withName("admin").build();
-                User user = User.builder().withRole("admin").withId("admin").build();
-                authorizations.save(UserRoles.builder().withRoles(List.of(adminRole)).withUsers(List.of(user)).build());
-                userDto.grantAuthority(right);
-            }
-        });
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .multipart(url)
-            .file(new MockMultipartFile("file", "myFile.json", "text/json", content.getBytes()))
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .secure(true);
-
-        String token = authority != null ? jwtUtil.generateToken(userDto.getId(), objectMapper.convertValue(userDto, Map.class)) : null;
-        if (token != null) {
-            request.header("Authorization", "Bearer " + token);
-        }
-
-        mvc.perform(request)
-            .andExpect(status().is(expectedStatus.value()));
-    }
-
-    private static Stream<Arguments> uploadEndpoints() {
-        return Stream.of(
-            Arguments.of("/api/v2/environments", "ENVIRONMENT_ACCESS", "{\"name\": \"env\"}", OK),
-            Arguments.of("/api/v2/environments/env/targets", "ENVIRONMENT_ACCESS", "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"env\"}", OK)
-        );
     }
 }

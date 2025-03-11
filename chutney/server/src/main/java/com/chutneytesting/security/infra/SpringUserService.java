@@ -53,22 +53,19 @@ public class SpringUserService implements UserService {
             return getUserFromClaims(((Jwt) principal).getClaims());
         }
         if (principal instanceof OAuth2IntrospectionAuthenticatedPrincipal) {
-             return getUserFromUsername(((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub").toString());
+             return getUserFromUsername(((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub").toString(), new UserDto());
         }
         return null;
     }
 
     private UserDto getUserFromClaims(Map<String, Object> claims) {
         String username = claims.get("sub").toString();
-        UserDto user = getUserFromUsername(username);
-        objectMapper.convertValue(claims.get("authorizations"), Set.class).forEach(authorization -> {
-            user.grantAuthority(authorization.toString());
-        });
-        return user;
+        UserDto user = new UserDto();
+        objectMapper.convertValue(claims.get("authorizations"), Set.class).forEach(authorization -> user.grantAuthority(authorization.toString()));
+        return getUserFromUsername(username, user);
     }
 
-    private UserDto getUserFromUsername(String username) {
-        UserDto user = new UserDto();
+    private UserDto getUserFromUsername(String username, UserDto user) {
         user.setId(username);
         user.setName(username);
         user.setMail(username);

@@ -46,6 +46,7 @@ spring:
       - undertow-https-redirect
       - mem-auth
       - db-sqlite
+      - ldap-auth
 
 
 chutney:

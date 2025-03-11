@@ -138,6 +138,9 @@ export class SsoService {
         if (!ssoConfigLocalStorage) {
             return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
                 map(ssoConfig => {
+                    if (Object.keys(ssoConfig).length === 0) {
+                        throw new Error('SSO error: Missing configuration')
+                    }
                     this.ssoConfig = ssoConfig
                     this.enableSso = true
                     localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig))

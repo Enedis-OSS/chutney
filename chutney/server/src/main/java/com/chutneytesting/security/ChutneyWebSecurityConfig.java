@@ -83,11 +83,6 @@ public class ChutneyWebSecurityConfig {
     private Boolean sslEnabled;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public JwtUtil jwtUtil(ChutneyJwtProperties chutneyJwtProperties) throws JOSEException {
         return new JwtUtil(chutneyJwtProperties);
     }
