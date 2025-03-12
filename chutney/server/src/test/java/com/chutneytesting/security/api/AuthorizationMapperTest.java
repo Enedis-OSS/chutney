@@ -82,7 +82,7 @@ class AuthorizationMapperTest {
                 Lists.partition(new ArrayList<>(ids), 2).forEach(idss -> {
                     if (!idss.isEmpty() && !roles.isEmpty()) {
                         roleUsersDtos.add(
-                            buildRoleUsersDto(roles.remove(0).getName(), idss)
+                            buildRoleUsersDto(roles.removeFirst().getName(), idss)
                         );
                     }
                 });

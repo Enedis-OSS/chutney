@@ -33,7 +33,7 @@ public class DelegationService {
         if (!agents.isEmpty()) {
             NamedHostAndPort nextAgent = agents.getFirst();
             // TODO should we do that here ?
-            agents.remove(0);
+            agents.removeFirst();
             return new RemoteStepExecutor(delegationClient, nextAgent);
         } else {
             return localStepExecutor;
