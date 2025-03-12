@@ -15,7 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
     constructor() {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
-        if (!req.url.includes('/api/')) {
+        if (!req.url.includes('/api/') && !req.url.includes('/prometheus')) {
             return next.handle(req);
         }
         const token = localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
