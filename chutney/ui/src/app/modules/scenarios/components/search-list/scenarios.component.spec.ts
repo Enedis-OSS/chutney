@@ -15,7 +15,7 @@ import { MoleculesModule } from '../../../../molecules/molecules.module';
 
 import { MomentModule } from 'ngx-moment';
 import { NgbModule, NgbPopoverConfig } from '@ng-bootstrap/ng-bootstrap';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, of, Subject } from 'rxjs';
 import { ScenarioIndex } from '@core/model';
 import { ScenarioService } from '@core/services';
 
@@ -26,6 +26,8 @@ import { ActivatedRouteStub } from '../../../../testing/activated-route-stub';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
+import { OAuthService } from "angular-oauth2-oidc";
+import { AlertService } from '@shared';
 
 function getScenarios(html: HTMLElement) {
     return html.querySelectorAll('.scenario-title');
@@ -41,7 +43,10 @@ describe('ScenariosComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.resetTestingModule();
+        const eventsSubject = new Subject<any>();
         const scenarioService = jasmine.createSpyObj('ScenarioService', ['findScenarios', 'search']);
+        const oAuthService = jasmine.createSpyObj('OAuthService', ['loadDiscoveryDocumentAndTryLogin', 'hasValidAccessToken', 'setupAutomaticSilentRefresh', 'configure', 'initCodeFlow', 'logOut', 'getAccessToken'], {events: eventsSubject.asObservable()});
+        const alertService = jasmine.createSpyObj('AlertService', ['error']);
         const jiraPluginService = jasmine.createSpyObj('JiraPluginService', ['findScenarios', 'findCampaigns']);
         const jiraPluginConfigurationService = jasmine.createSpyObj('JiraPluginConfigurationService', ['getUrl']);
         const mockScenarioIndex = [new ScenarioIndex('1', 'title1', 'description', 'source', new Date(), new Date(), 1, 'guest', [], []),
@@ -70,6 +75,8 @@ describe('ScenariosComponent', () => {
             providers: [
                 NgbPopoverConfig,
                 {provide: ScenarioService, useValue: scenarioService},
+                {provide: OAuthService, useValue: oAuthService},
+                {provide: AlertService, useValue: alertService},
                 {provide: JiraPluginService, useValue: jiraPluginService},
                 {provide: JiraPluginConfigurationService, useValue: jiraPluginConfigurationService},
                 {provide: ActivatedRoute, useValue: activatedRouteStub},

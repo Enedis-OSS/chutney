@@ -28,28 +28,23 @@ public class InMemorySecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public InMemoryUserDetailsService inMemoryUserDetailsService(InMemoryUsersProperties users, AuthenticationService authenticationService) {
         return new InMemoryUserDetailsService(users, authenticationService);
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Configuration
     @Profile("mem-auth")
-    public static class UserMemoryConfiguration {
+    static class InMemoryConfiguration {
 
         @Autowired
         protected void configure(
-            final AuthenticationManagerBuilder auth,
-            final PasswordEncoder pwdEncoder,
-            final InMemoryUserDetailsService authService
-        ) throws Exception {
-            auth
-                .userDetailsService(authService)
-                .passwordEncoder(pwdEncoder);
+            final AuthenticationManagerBuilder auth, final InMemoryUserDetailsService userDetailsService) throws Exception {
+            auth.userDetailsService(userDetailsService);
         }
     }
 }

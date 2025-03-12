@@ -17,15 +17,23 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.chutneytesting.ServerConfiguration;
 import com.chutneytesting.security.api.UserDto;
+import com.chutneytesting.security.domain.Authorizations;
+import com.chutneytesting.security.infra.jwt.JwtUtil;
+import com.chutneytesting.server.core.domain.security.Role;
+import com.chutneytesting.server.core.domain.security.User;
+import com.chutneytesting.server.core.domain.security.UserRoles;
 import com.chutneytesting.tools.file.FileUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,9 +59,17 @@ import org.springframework.web.context.WebApplicationContext;
 public class SecuredControllerSpringBootIntegrationTest {
 
     @Autowired
+    private Authorizations authorizations;
+
+    @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     private MockMvc mvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeAll
     public static void cleanUp() {
@@ -114,7 +130,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/ui/campaign/v1/scenario/scenarioId", "SCENARIO_READ", null, OK},
             {GET, "/api/ui/campaign/v1/scheduling", "CAMPAIGN_READ", null, OK},
             {POST, "/api/ui/campaign/v1/scheduling", "CAMPAIGN_WRITE",
-                 """
+                """
                 {"id":1,"schedulingDate":[2024,10,12,14,30,45],"frequency":"Daily","environment":"PROD","campaignsId":[1],"campaignsTitle":["title"],"datasetsId":["datasetId"]}
                 """, OK},
             {DELETE, "/api/ui/campaign/v1/scheduling/123", "CAMPAIGN_WRITE", null, OK},
@@ -204,28 +220,30 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     private static Object[] unsecuredEndPointList() {
         return new Object[][]{
-            {GET, "/api/v1/user", null, null, OK},
-            {POST, "/api/v1/user", null, "{}", OK},
-            {GET, "/api/v1/ui/plugins/linkifier/", null, null, OK},
+            {GET, "/api/v1/user", "AUTHENTICATED", null, OK},
+            {POST, "/api/v1/user", "AUTHENTICATED", "{}", OK},
+            {GET, "/api/v1/ui/plugins/linkifier/", "AUTHENTICATED", null, OK},
             {GET, "/api/v1/info/build/version", null, null, OK},
             {GET, "/api/v1/info/appname", null, null, OK},
-            {GET, "/api/v2/features", null, null, OK},
+            {GET, "/api/v2/features", "AUTHENTICATED", null, OK},
+            {GET, "/api/v1/sso/config", null, null, OK},
         };
     }
 
     @ParameterizedTest
     @MethodSource({"securedEndPointList", "unsecuredEndPointList"})
     public void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
-        UserDto user = new UserDto();
-        user.setName("userName");
-        ofNullable(authority).ifPresent(user::grantAuthority);
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
         MockHttpServletRequestBuilder request = request(httpMethod, url)
             .secure(true)
-            .with(user(user))
             .contentType(MediaType.APPLICATION_JSON);
         if (content != null) {
             request.content(content);
         }
+        manageAuth(authority, userDto, request);
+
         mvc.perform(request)
             .andExpect(status().is(status.value()));
     }
@@ -233,15 +251,16 @@ public class SecuredControllerSpringBootIntegrationTest {
     @ParameterizedTest
     @MethodSource({"uploadEndpoints"})
     public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
-        UserDto user = new UserDto();
-        user.setName("userName");
-        ofNullable(authority).ifPresent(user::grantAuthority);
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .multipart(url)
             .file(new MockMultipartFile("file", "myFile.json", "text/json", content.getBytes()))
             .contentType(MediaType.MULTIPART_FORM_DATA)
-            .secure(true)
-            .with(user(user));
+            .secure(true);
+        manageAuth(authority, userDto, request);
+
         mvc.perform(request)
             .andExpect(status().is(expectedStatus.value()));
     }
@@ -251,5 +270,20 @@ public class SecuredControllerSpringBootIntegrationTest {
             Arguments.of("/api/v2/environments", "ENVIRONMENT_ACCESS", "{\"name\": \"env\"}", OK),
             Arguments.of("/api/v2/environments/env/targets", "ENVIRONMENT_ACCESS", "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"env\"}", OK)
         );
+    }
+
+    private void manageAuth(String authority, UserDto userDto, MockHttpServletRequestBuilder request) {
+        ofNullable(authority).ifPresent(right -> {
+            if (!"AUTHENTICATED".equals(authority)) {
+                Role adminRole = Role.builder().withAuthorizations(List.of(right)).withName("admin").build();
+                User user = User.builder().withRole("admin").withId("admin").build();
+                authorizations.save(UserRoles.builder().withRoles(List.of(adminRole)).withUsers(List.of(user)).build());
+                userDto.grantAuthority(right);
+            }
+            String token = jwtUtil.generateToken(userDto.getId(), objectMapper.convertValue(userDto, Map.class));
+            if (token != null) {
+                request.header("Authorization", "Bearer " + token);
+            }
+        });
     }
 }

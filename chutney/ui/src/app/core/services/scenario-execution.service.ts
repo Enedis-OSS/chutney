@@ -8,6 +8,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 import { environment } from '@env/environment';
 import { Dataset, Execution, KeyValue, ScenarioExecutionReport } from '@model';
@@ -20,8 +21,10 @@ import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
 export class ScenarioExecutionService {
 
     resourceUrl = '/api/ui/scenario';
+    token: string;
 
     constructor(private http: HttpClient) {
+        this.token = localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
     }
 
     findScenarioExecutions(scenarioId: string): Observable<Execution[]> {
@@ -77,7 +80,7 @@ export class ScenarioExecutionService {
     }
 
     deleteExecution(executionId: number): Observable<Object> {
-        return this.http.delete(environment.backend + 
+        return this.http.delete(environment.backend +
             `${this.resourceUrl}/execution/${executionId}`);
     }
 
@@ -85,7 +88,11 @@ export class ScenarioExecutionService {
         return new Observable<ScenarioExecutionReport>(obs => {
             let es;
             try {
-                es = new EventSource(url);
+                es = new EventSourcePolyfill(url, {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    }
+                });
                 es.onerror = () => obs.error('Error loading execution');
                 es.addEventListener('partial', (evt: any) => {
                     obs.next(this.buildExecutionReportFromEvent(JSON.parse(evt.data)));
