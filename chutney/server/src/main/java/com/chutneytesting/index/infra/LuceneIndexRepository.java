@@ -34,9 +34,7 @@ import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.store.Directory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class LuceneIndexRepository {
 
     private final IndexWriter indexWriter;

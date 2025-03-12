@@ -12,9 +12,9 @@ import static java.time.Instant.now;
 import com.chutneytesting.campaign.infra.jpa.CampaignEntity;
 import com.chutneytesting.campaign.infra.jpa.CampaignScenarioEntity;
 import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionEntity;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import com.chutneytesting.scenario.infra.raw.TagListMapper;
-import com.chutneytesting.index.infra.LuceneIndexRepository;
 import com.chutneytesting.server.core.domain.execution.report.ServerReportStatus;
 import com.chutneytesting.server.core.domain.scenario.campaign.Campaign;
 import jakarta.persistence.EntityManager;
@@ -60,7 +60,7 @@ public abstract class AbstractLocalDatabaseTest {
     private Liquibase liquibase;
 
     @Autowired
-    private LuceneIndexRepository luceneIndexRepository;
+    private List<LuceneIndexRepository> luceneIndexRepositories;
 
     @BeforeEach
     void setTransactionTemplate() {
@@ -79,7 +79,7 @@ public abstract class AbstractLocalDatabaseTest {
     }
 
     private void clearIndexes() {
-        luceneIndexRepository.deleteAll();
+        luceneIndexRepositories.forEach(LuceneIndexRepository::deleteAll);
     }
 
     protected void liquibaseUpdate() throws LiquibaseException, SQLException {

@@ -14,12 +14,13 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class ScenarioIndexRepository extends AbstractIndexRepository<ScenarioEntity> {
 
-    public ScenarioIndexRepository(LuceneIndexRepository luceneIndexRepository) {
+    public ScenarioIndexRepository(@Qualifier("scenarioLuceneIndexRepository") LuceneIndexRepository luceneIndexRepository) {
         super("scenario", luceneIndexRepository);
     }
 

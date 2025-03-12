@@ -24,6 +24,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -35,7 +36,7 @@ public class ExecutionReportIndexRepository {
     private final String REPORT = "report";
     private final LuceneIndexRepository luceneIndexRepository;
 
-    public ExecutionReportIndexRepository(LuceneIndexRepository luceneIndexRepository) {
+    public ExecutionReportIndexRepository(@Qualifier("reportLuceneIndexRepository") LuceneIndexRepository luceneIndexRepository) {
         this.luceneIndexRepository = luceneIndexRepository;
     }
 

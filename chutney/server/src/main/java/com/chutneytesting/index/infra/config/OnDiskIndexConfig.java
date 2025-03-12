@@ -19,18 +19,15 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.TieredMergePolicy;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
 public class OnDiskIndexConfig implements IndexConfig {
     private final IndexWriter indexWriter;
     private final Directory indexDirectory;
     private final Analyzer analyzer;
 
-    public OnDiskIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String indexDir) {
+    public OnDiskIndexConfig(String indexDir, String indexName) {
         try {
-            Path path = Paths.get(indexDir);
+            Path path = Paths.get(indexDir + "/" + indexName);
             initFolder(path);
             this.indexDirectory = FSDirectory.open(path);
             analyzer = new CustemChutneyAnalyzer();

@@ -18,13 +18,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class DatasetIndexRepository extends AbstractIndexRepository<DataSet> {
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
-    public DatasetIndexRepository(LuceneIndexRepository luceneIndexRepository) {
+    public DatasetIndexRepository(@Qualifier("datasetLuceneIndexRepository") LuceneIndexRepository luceneIndexRepository) {
         super("dataset", luceneIndexRepository);
     }
 

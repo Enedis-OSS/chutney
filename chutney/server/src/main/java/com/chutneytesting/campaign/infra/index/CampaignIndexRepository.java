@@ -14,12 +14,13 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class CampaignIndexRepository extends AbstractIndexRepository<CampaignEntity> {
 
-    public CampaignIndexRepository(LuceneIndexRepository luceneIndexRepository) {
+    public CampaignIndexRepository(@Qualifier("campaignLuceneIndexRepository")  LuceneIndexRepository luceneIndexRepository) {
         super("campaign", luceneIndexRepository);
     }
 

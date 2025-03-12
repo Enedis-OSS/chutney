@@ -30,6 +30,9 @@ import com.chutneytesting.engine.api.execution.TestEngine;
 import com.chutneytesting.execution.domain.campaign.CampaignExecutionEngine;
 import com.chutneytesting.execution.infra.execution.ExecutionRequestMapper;
 import com.chutneytesting.execution.infra.execution.ServerTestEngineJavaImpl;
+import com.chutneytesting.index.infra.LuceneIndexRepository;
+import com.chutneytesting.index.infra.config.IndexConfig;
+import com.chutneytesting.index.infra.config.OnDiskIndexConfig;
 import com.chutneytesting.jira.api.JiraXrayEmbeddedApi;
 import com.chutneytesting.scenario.infra.TestCaseRepositoryAggregator;
 import com.chutneytesting.server.core.domain.execution.ScenarioExecutionEngine;
@@ -224,4 +227,45 @@ public class ServerConfiguration {
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
             .findAndRegisterModules();
     }
+
+    @Bean
+    public LuceneIndexRepository reportLuceneIndexRepository(IndexConfig reportIndexConfig) {
+        return new LuceneIndexRepository(reportIndexConfig);
+    }
+
+    @Bean
+    public LuceneIndexRepository scenarioLuceneIndexRepository(IndexConfig scenarioIndexConfig) {
+        return new LuceneIndexRepository(scenarioIndexConfig);
+    }
+
+    @Bean
+    public LuceneIndexRepository datasetLuceneIndexRepository(IndexConfig datasetIndexConfig) {
+        return new LuceneIndexRepository(datasetIndexConfig);
+    }
+
+    @Bean
+    public LuceneIndexRepository campaignLuceneIndexRepository(IndexConfig campaignIndexConfig) {
+        return new LuceneIndexRepository(campaignIndexConfig);
+    }
+
+    @Bean
+    public IndexConfig reportIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
+        return new OnDiskIndexConfig(directory, "report");
+    }
+
+    @Bean
+    public IndexConfig scenarioIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
+        return new OnDiskIndexConfig(directory, "scenario");
+    }
+
+    @Bean
+    public IndexConfig datasetIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
+        return new OnDiskIndexConfig(directory, "dataset");
+    }
+
+    @Bean
+    public IndexConfig campaignIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
+        return new OnDiskIndexConfig(directory, "campaign");
+    }
+
 }

@@ -196,22 +196,53 @@ class TestInfraConfiguration {
     }
 
     @Bean
-    public LuceneIndexRepository indexRepository() throws IOException {
-        Path tempDirectory = Files.createTempDirectory("test-infra-index");
-        IndexConfig config = new OnDiskIndexConfig(tempDirectory.toString());
-        return new LuceneIndexRepository(config);
+    public LuceneIndexRepository reportLuceneIndexRepository(IndexConfig reportIndexConfig) {
+        return new LuceneIndexRepository(reportIndexConfig);
     }
 
     @Bean
-    public ExecutionReportIndexRepository executionReportIndexRepository(LuceneIndexRepository luceneIndexRepository) {
-        return new ExecutionReportIndexRepository(luceneIndexRepository);
+    public LuceneIndexRepository scenarioLuceneIndexRepository(IndexConfig scenarioIndexConfig) {
+        return new LuceneIndexRepository(scenarioIndexConfig);
+    }
+
+    @Bean
+    public LuceneIndexRepository datasetLuceneIndexRepository(IndexConfig datasetIndexConfig) {
+        return new LuceneIndexRepository(datasetIndexConfig);
+    }
+
+    @Bean
+    public LuceneIndexRepository campaignLuceneIndexRepository(IndexConfig campaignIndexConfig) {
+        return new LuceneIndexRepository(campaignIndexConfig);
+    }
+
+    @Bean
+    public IndexConfig reportIndexConfig() throws IOException {
+        Path tempDirectory = Files.createTempDirectory("test-report-index");
+        return new OnDiskIndexConfig(tempDirectory.toString(), "report");
+    }
+
+    @Bean
+    public IndexConfig scenarioIndexConfig() throws IOException{
+        Path tempDirectory = Files.createTempDirectory("test-scenario-index");
+        return new OnDiskIndexConfig(tempDirectory.toString(), "scenario");
+    }
+
+    @Bean
+    public IndexConfig datasetIndexConfig() throws IOException{
+        Path tempDirectory = Files.createTempDirectory("test-dataset-index");
+        return new OnDiskIndexConfig(tempDirectory.toString(), "dataset");
+    }
+
+    @Bean
+    public IndexConfig campaignIndexConfig() throws IOException{
+        Path tempDirectory = Files.createTempDirectory("test-campaign-index");
+        return new OnDiskIndexConfig(tempDirectory.toString(), "campaign");
     }
 
     @Bean
     public ExecutionReportIndexingAspect indexingAspect(ExecutionReportIndexRepository indexRepository, DatabaseExecutionJpaRepository scenarioExecutionsJpaRepository) {
         return new ExecutionReportIndexingAspect(indexRepository, scenarioExecutionsJpaRepository);
     }
-
 
     @Primary
     @Bean
