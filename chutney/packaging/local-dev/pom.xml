@@ -146,7 +146,7 @@
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
                         </env>
                         <builder>paketobuildpacks/builder-jammy-base</builder>
-                        <runImage>gcr.io/paketo-buildpacks/run:base-cnb</runImage>
+                        <runImage>paketobuildpacks/run-jammy-base</runImage>
                     </image>
                 </configuration>
                 <executions>
