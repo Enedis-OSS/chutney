@@ -27,7 +27,7 @@ class SeleniumTest {
 
     private val network = Network.newNetwork()
     private val chutneyServer =
-        GenericContainer(DockerImageName.parse("ghcr.io/enedis-oss/chutney/chutney-server"))
+        GenericContainer(DockerImageName.parse("chutney-acceptance-test-server"))
             .withNetworkAliases("chutneyServer")
             .withExposedPorts(8443)
             .withNetwork(network)
