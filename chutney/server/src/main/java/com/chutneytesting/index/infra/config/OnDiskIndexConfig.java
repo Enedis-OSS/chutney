@@ -27,7 +27,7 @@ public class OnDiskIndexConfig implements IndexConfig {
 
     public OnDiskIndexConfig(String indexDir, String indexName) {
         try {
-            Path path = Paths.get(indexDir + "/" + indexName);
+            Path path = Paths.get(indexDir, indexName);
             initFolder(path);
             this.indexDirectory = FSDirectory.open(path);
             analyzer = new CustemChutneyAnalyzer();
