@@ -26,6 +26,7 @@ import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -104,7 +105,13 @@ public class ScenarioExecutionEngineAsync {
         scenarioExecutions.put(storedExecution.executionId(), Pair.of(executionObservable, followResult.getRight()));
         LOGGER.debug("Replayers map size : {}", scenarioExecutions.size());
         // Begin execution
-        executionObservable.subscribeOn(io()).subscribe();
+        executionObservable
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe(
+                report -> LOGGER.trace("Execution report received: {}", report),
+                throwable -> LOGGER.error("Error during execution", throwable)
+            );
         // Return execution id
         return storedExecution.executionId();
     }
@@ -138,16 +145,23 @@ public class ScenarioExecutionEngineAsync {
         return followResult;
     }
 
-    Observable<ScenarioExecutionReport> buildScenarioExecutionReportObservable(ExecutionRequest executionRequest, Long executionId, Pair<Observable<StepExecutionReportCore>, Long> engineExecution) {
+    Observable<ScenarioExecutionReport> buildScenarioExecutionReportObservable(
+        ExecutionRequest executionRequest,
+        Long executionId,
+        Pair<Observable<StepExecutionReportCore>, Long> engineExecution
+    ) {
         // Observe in background
-        Observable<StepExecutionReportCore> replayer = engineExecution.getLeft().observeOn(io());
+        Observable<StepExecutionReportCore> replayer = engineExecution.getLeft()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io());
+
         // Debounce configuration
         if (debounceMilliSeconds > 0) {
             replayer = replayer.throttleLatest(debounceMilliSeconds, TimeUnit.MILLISECONDS, true);
         }
+
         return replayer
             .doOnSubscribe(disposable -> notifyExecutionStart(executionId, executionRequest.testCase))
-
             // Create report
             .map(report -> {
                 LOGGER.trace("Map report for execution {}", executionId);
@@ -161,13 +175,17 @@ public class ScenarioExecutionEngineAsync {
                     report
                 );
             })
-
             .doOnNext(report -> updateHistory(executionId, executionRequest, report))
-
-            .doOnTerminate(() -> notifyExecutionEnd(executionId, executionRequest.testCase))
-            .doOnTerminate(() -> sendMetrics(executionId, executionRequest.testCase))
-            .doOnTerminate(() -> cleanExecutionId(executionId))
-
+            // Handle errors to avoid flow interruption
+            .onErrorResumeNext(throwable -> {
+                LOGGER.error("Error in execution report processing", throwable);
+                return Observable.empty();
+            })
+            .doFinally(() -> {
+                notifyExecutionEnd(executionId, executionRequest.testCase);
+                sendMetrics(executionId, executionRequest.testCase);
+                cleanExecutionId(executionId);
+            })
             // Make hot with replay last state
             .replay(1)
             // Begin process on the first subscribe
@@ -307,15 +325,19 @@ public class ScenarioExecutionEngineAsync {
     private void cleanExecutionId(long executionId) {
         LOGGER.trace("Clean for execution {}", executionId);
         if (retentionDelaySeconds > 0) {
-            Completable.timer(retentionDelaySeconds, TimeUnit.SECONDS)
+            Completable.timer(retentionDelaySeconds, TimeUnit.SECONDS, Schedulers.io())
+                .doOnError(throwable -> LOGGER.error("Unexpected error before subscription", throwable))
                 .subscribe(() -> {
                     LOGGER.trace("Remove replayer for execution {}", executionId);
                     scenarioExecutions.remove(executionId);
                 }, throwable -> LOGGER.error("Cannot remove replayer for execution {}", executionId, throwable));
         } else {
-            scenarioExecutions.remove(executionId);
+            Completable.fromRunnable(() -> scenarioExecutions.remove(executionId))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         }
     }
+
 
     private void sendMetrics(long executionId, TestCase testCase) {
         LOGGER.trace("Send metrics for execution {}", executionId);

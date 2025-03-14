@@ -26,6 +26,7 @@ import com.chutneytesting.engine.domain.execution.strategies.StepStrategyDefinit
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import java.util.List;
@@ -162,17 +163,22 @@ public class Reporter {
         LOGGER.trace("Complete publisher for execution {}", executionId);
         observer.onComplete();
         if (retentionDelaySeconds > 0) {
-            Completable.timer(retentionDelaySeconds, TimeUnit.SECONDS)
-                .subscribe(() -> {
-                    rootSteps.remove(executionId);
-                    reportsPublishers.remove(executionId);
-                    LOGGER.trace("Remove publisher for execution {}", executionId);
-                }, throwable -> LOGGER.error("Cannot remove publisher for execution {}", executionId, throwable));
+            Completable.timer(retentionDelaySeconds, TimeUnit.SECONDS, Schedulers.io())
+                .subscribe(
+                    () -> {
+                        rootSteps.remove(executionId);
+                        reportsPublishers.remove(executionId);
+                        LOGGER.trace("Remove publisher for execution {}", executionId);
+                    },
+                    throwable -> LOGGER.error("Cannot remove publisher for execution {}", executionId, throwable)
+                );
         } else {
             rootSteps.remove(executionId);
             reportsPublishers.remove(executionId);
+            LOGGER.trace("Remove publisher for execution {}", executionId);
         }
     }
+
 
     private void doIfPublisherExists(long executionId, Consumer<Observer<StepExecutionReport>> consumer) {
         Optional.ofNullable((Observer<StepExecutionReport>) reportsPublishers.get(executionId))

@@ -16,9 +16,14 @@ import com.chutneytesting.engine.domain.execution.engine.Dataset;
 import com.chutneytesting.engine.domain.execution.engine.Environment;
 import com.chutneytesting.engine.domain.report.Reporter;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class EmbeddedTestEngine implements TestEngine {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedTestEngine.class);
 
     private final ExecutionEngine engine;
     private final Reporter reporter;
@@ -55,7 +60,13 @@ public final class EmbeddedTestEngine implements TestEngine {
     @Override
     public Observable<StepExecutionReportDto> receiveNotification(Long executionId) {
         return reporter.subscribeOnExecution(executionId)
-            .map(StepExecutionReportMapper::toDto);
+            .subscribeOn(Schedulers.io())
+            .map(StepExecutionReportMapper::toDto)
+            .observeOn(Schedulers.io())
+            .onErrorResumeNext(throwable -> {
+                LOGGER.error("Error in receiveNotification for execution {}", executionId, throwable);
+                return Observable.empty(); // Does not stop the flow in case of error
+            });
     }
 
     @Override
