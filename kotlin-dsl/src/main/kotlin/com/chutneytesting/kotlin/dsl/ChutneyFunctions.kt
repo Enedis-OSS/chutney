@@ -7,11 +7,6 @@
 
 package com.chutneytesting.kotlin.dsl
 
-@Deprecated("Use jsonPath global function")
-fun json(variable: String, path: String = JSON_PATH_ROOT): String {
-    require(variable.isNotBlank()) { "variable cannot be empty" }
-    return "json(${variable.spELVar}, ${path.elString()})".spEL()
-}
 
 private fun chutneyFunction(
     name: String,
