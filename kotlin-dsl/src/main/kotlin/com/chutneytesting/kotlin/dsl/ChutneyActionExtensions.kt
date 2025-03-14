@@ -994,14 +994,6 @@ fun ChutneyStepBuilder.SshServerStartAction(
     )
 }
 
-@Deprecated("Bad naming", ReplaceWith("JmsCleanQueueAction(target, queueName)"), DeprecationLevel.WARNING)
-fun ChutneyStepBuilder.JmsCleanQueuesAction(
-    target: String,
-    queueName: String
-) {
-    JmsCleanQueueAction(target, queueName)
-}
-
 /**
  * On a jms target, consume all messages from a queue
  */
@@ -1743,14 +1735,6 @@ fun ChutneyStepBuilder.StringAssertAction(
         ).notEmptyToMap(),
         outputs = outputs,
         validations = validations
-    )
-}
-
-@Deprecated("Bad naming", ReplaceWith("AssertAction(List<String>)"), DeprecationLevel.WARNING)
-fun ChutneyStepBuilder.AssertTrueAction(asserts: List<Map<String, Any>>) {
-    implementation = ChutneyStepImpl(
-        type = "assert",
-        inputs = listOf("asserts" to asserts).notEmptyToMap()
     )
 }
 
