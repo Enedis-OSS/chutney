@@ -15,8 +15,8 @@ val `Sql query success` = Scenario(title = "Sql query success") {
     createSqlTarget("SQL_ENV_OK")
   }
   And("This scenario with sql task is saved") {
-    createScenario("scenarioId",
-        """
+    createScenario(      "scenarioId",
+      """
         {
             "givens":[
                 {
@@ -45,48 +45,46 @@ val `Sql query success` = Scenario(title = "Sql query success") {
     )
   }
   When("The scenario is executed") {
-    executeScenario("scenarioId".spEL,"SQL_ENV_OK")
+    executeScenario("scenarioId".spEL, "SQL_ENV_OK")
   }
   Then("the report status is SUCCESS") {
     checkScenarioReportSuccess()
   }
-  And("The report contains record results"){
-    CompareAction(
-        mode = "equals",
-        actual = "json(#report, \"$.report.steps[-1:].stepOutputs.recordResult\").toString()".spEL,
-        expected = "[[{\"affectedRows\":-1,\"headers\":[\"ID\",\"NAME\",\"EMAIL\"],\"rows\":[[1,\"laitue\",\"laitue@fake.com\"],[2,\"carotte\",\"kakarot@fake.db\"]],\"columns\":[{\"name\":\"ID\",\"index\":0},{\"name\":\"NAME\",\"index\":1},{\"name\":\"EMAIL\",\"index\":2}],\"records\":[{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":1},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"laitue\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"laitue@fake.com\"}]},{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":2},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"carotte\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"kakarot@fake.db\"}]}]}]]"
+  And("The report contains record results") {
+    JsonCompareAction(
+      document1 = "json(#report, '$.report.steps[-1:].stepOutputs.recordResult').toString()".spEL,
+      document2 = "[[{\"affectedRows\":-1,\"headers\":[\"ID\",\"NAME\",\"EMAIL\"],\"rows\":[[1,\"laitue\",\"laitue@fake.com\"],[2,\"carotte\",\"kakarot@fake.db\"]],\"columns\":[{\"name\":\"ID\",\"index\":0},{\"name\":\"NAME\",\"index\":1},{\"name\":\"EMAIL\",\"index\":2}],\"records\":[{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":1},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"laitue\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"laitue@fake.com\"}]},{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":2},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"carotte\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"kakarot@fake.db\"}]}]}]]"
     )
   }
-  And("the report contains firstRow output"){
-    CompareAction(
-        mode = "equals",
-        actual = "json(#report, \"$.report.steps[-1:].stepOutputs.firstRow\").toString()".spEL,
-        expected = "[{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":1},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"laitue\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"laitue@fake.com\"}]}]"
+  And("the report contains firstRow output") {
+    JsonCompareAction(
+      document1 = "json(#report, '$.report.steps[-1:].stepOutputs.firstRow').toString()".spEL,
+      document2 = "[{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":1},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"laitue\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"laitue@fake.com\"}]}]"
     )
   }
-  And("the report contains rows output"){
-    CompareAction(
-        mode = "equals",
-        actual = "json(#report, \"\$.report.steps[-1:].stepOutputs.rows\").toString()".spEL,
-        expected = "[{\"rows\":[{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":1},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"laitue\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"laitue@fake.com\"}]},{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":2},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"carotte\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"kakarot@fake.db\"}]}]}]"
+  And("the report contains rows output") {
+    JsonCompareAction(
+      document1 = "json(#report, '$.report.steps[-1:].stepOutputs.rows').toString()".spEL,
+      document2 = "[{\"rows\":[{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":1},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"laitue\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"laitue@fake.com\"}]},{\"cells\":[{\"column\":{\"name\":\"ID\",\"index\":0},\"value\":2},{\"column\":{\"name\":\"NAME\",\"index\":1},\"value\":\"carotte\"},{\"column\":{\"name\":\"EMAIL\",\"index\":2},\"value\":\"kakarot@fake.db\"}]}]}]"
     )
   }
-  And("the report contains affectedRows output"){
+  And("the report contains affectedRows output") {
     CompareAction(
-        mode = "equals",
-        actual = "json(#report, \"\$.report.steps[-1:].stepOutputs.affectedRows\").toString()".spEL,
-        expected = "[-1]"
+      mode = "equals",
+      actual = "json(#report, '$.report.steps[-1:].stepOutputs.affectedRows').toString()".spEL,
+      expected = "[-1]"
     )
   }
 }
 
-val `Sql query wrong table` = Scenario(title = "Sql query success") {
+val `Sql query wrong table` = Scenario(title = "Sql query wrong table") {
   Given("A sql database target") {
     createSqlTarget("SQL_ENV_KO")
   }
   And("This scenario with sql task is saved") {
-    createScenario("scenarioId",
-        """
+    createScenario(
+      "scenarioId",
+      """
          {
          "when":{
               "sentence":"select unknown table",
@@ -100,7 +98,7 @@ val `Sql query wrong table` = Scenario(title = "Sql query success") {
     )
   }
   When("The scenario is executed") {
-    executeScenario("scenarioId".spEL,"SQL_ENV_KO")
+    executeScenario("scenarioId".spEL, "SQL_ENV_KO")
   }
   Then("the report status is FAILURE") {
     checkScenarioReportFailure()
@@ -108,8 +106,9 @@ val `Sql query wrong table` = Scenario(title = "Sql query success") {
 }
 
 private fun ChutneyStepBuilder.createSqlTarget(environmentName: String) {
-  createEnvironment(environmentName,
-      """
+  createEnvironment(
+    environmentName,
+    """
         [
             {
                 "name": "test_sql",
@@ -122,5 +121,5 @@ private fun ChutneyStepBuilder.createSqlTarget(environmentName: String) {
             }
         ]
       """.trimIndent()
-      )
+  )
 }

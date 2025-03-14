@@ -10,7 +10,6 @@ package com.chutneytesting.admin.api;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,13 +37,17 @@ class InfoControllerTest {
     @Test
     public void should_return_chutney_version() throws Exception {
         String versionRegex = "\\d\\.\\d\\.\\d+(-SNAPSHOT|-RC(\\d+)*)?";
-        this.mockMvc.perform(get("/api/v1/info/build/version")).andDo(print()).andExpect(status().isOk())
-            .andExpect(content().string(matchesRegex(versionRegex)));
+        this.mockMvc.perform(get("/api/v1/info/build/version"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(matchesRegex(versionRegex))
+            );
     }
 
     @Test
     public void should_return_application_name() throws Exception {
-        this.mockMvc.perform(get("/api/v1/info/appname")).andDo(print()).andExpect(status().isOk())
-            .andExpect(content().string(containsString("my application description")));
+        this.mockMvc.perform(get("/api/v1/info/appname"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("my application description"))
+            );
     }
 }

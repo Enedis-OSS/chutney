@@ -23,37 +23,62 @@ var GRAVE_OF_THE_FIREFLIES = """
                 }
             """
 
-val activemq_scenario = Scenario(title = "Films library") {
-    Given ("A new fiction film is released") {
-        JmsSenderAction(
-            target = ACTIVEMQ_TARGET_NAME,
-            destination = FILMS_DESTINATION,
-            headers = mapOf(
-                "category" to "fiction"
-            ),
-            payload =  GRAVE_OF_THE_FIREFLIES.trimIndent()
+fun activemq_scenario(jakarta: Boolean = true): ChutneyScenario {
+    return Scenario(title = "Films library") {
+        Given("A new fiction film is released") {
+            if (jakarta) {
+                JakartaSenderAction(
+                    target = ACTIVEMQ_TARGET_NAME,
+                    destination = FILMS_DESTINATION,
+                    headers = mapOf(
+                        "category" to "fiction"
+                    ),
+                    payload = GRAVE_OF_THE_FIREFLIES.trimIndent()
+                )
+            } else {
+                JmsSenderAction(
+                    target = ACTIVEMQ_TARGET_NAME,
+                    destination = FILMS_DESTINATION,
+                    headers = mapOf(
+                        "category" to "fiction"
+                    ),
+                    payload = GRAVE_OF_THE_FIREFLIES.trimIndent()
 
-        )
-    }
+                )
+            }
+        }
 
-    When("I subscribe to receive fiction films") {
-        JmsListenerAction(
-            target = ACTIVEMQ_TARGET_NAME,
-            destination = FILMS_DESTINATION,
-            selector = "category = 'fiction'",
-            outputs = mapOf(
-                "title" to "jsonPath(#textMessage, '\$.title')".spEL(),
-                "rating" to "jsonPath(#textMessage, '\$.rating')".spEL()
+        When("I subscribe to receive fiction films") {
+            if (jakarta) {
+                JakartaListenerAction(
+                    target = ACTIVEMQ_TARGET_NAME,
+                    destination = FILMS_DESTINATION,
+                    selector = "category = 'fiction'",
+                    outputs = mapOf(
+                        "title" to "jsonPath(#textMessage, '\$.title')".spEL(),
+                        "rating" to "jsonPath(#textMessage, '\$.rating')".spEL()
+                    )
+                )
+            } else {
+                JmsListenerAction(
+                    target = ACTIVEMQ_TARGET_NAME,
+                    destination = FILMS_DESTINATION,
+                    selector = "category = 'fiction'",
+                    outputs = mapOf(
+                        "title" to "jsonPath(#textMessage, '\$.title')".spEL(),
+                        "rating" to "jsonPath(#textMessage, '\$.rating')".spEL()
+                    )
+                )
+            }
+        }
+
+        Then("I check that got the new film") {
+            AssertAction(
+                asserts = listOf(
+                    "title.equals('Grave of the Fireflies')".spEL(),
+                    "rating.equals(\"94\")".spEL(),
+                )
             )
-        )
-    }
-
-    Then ("I check that got the new film") {
-        AssertAction(
-            asserts = listOf(
-                "title.equals('Grave of the Fireflies')".spEL(),
-                "rating.equals(\"94\")".spEL(),
-            )
-        )
+        }
     }
 }

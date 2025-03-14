@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import javax.sql.DataSource;
 import liquibase.Liquibase;
 import liquibase.Scope;
+import liquibase.UpdateSummaryEnum;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
@@ -293,7 +294,8 @@ class TestInfraConfiguration {
         @Value("${chutney.test-infra.liquibase.run:true}") boolean liquibaseInit,
         @Value("${chutney.test-infra.liquibase.context:!test}") String initContext,
         @Value("${chutney.test-infra.liquibase.log.service:false}") boolean logService,
-        @Value("${chutney.test-infra.liquibase.log.ui:true}") boolean logUi
+        @Value("${chutney.test-infra.liquibase.log.ui:false}") boolean logUi,
+        @Value("${chutney.test-infra.liquibase.log.summary:false}") boolean logSummary
     ) throws Exception {
         try (Connection conn = ds.getConnection()) {
             Database liquibaseDB = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
@@ -303,6 +305,9 @@ class TestInfraConfiguration {
             }
             if (!logUi) {
                 Scope.enter(Map.of(Scope.Attr.ui.name(), new LoggerUIService()));
+            }
+            if (!logSummary) {
+                liquibase.setShowSummary(UpdateSummaryEnum.OFF);
             }
             if (liquibaseInit) {
                 liquibase.update(initContext);

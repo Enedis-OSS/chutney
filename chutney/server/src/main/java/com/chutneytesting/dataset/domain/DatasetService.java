@@ -7,12 +7,9 @@
 
 package com.chutneytesting.dataset.domain;
 
-import static java.util.Optional.ofNullable;
-
 import com.chutneytesting.campaign.domain.CampaignRepository;
 import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
 import com.chutneytesting.server.core.domain.dataset.DataSet;
-import com.chutneytesting.server.core.domain.dataset.DataSetNotFoundException;
 import com.chutneytesting.server.core.domain.scenario.AggregatedRepository;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadata;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadataImpl;
@@ -20,7 +17,6 @@ import com.chutneytesting.server.core.domain.scenario.campaign.Campaign;
 import com.chutneytesting.server.core.domain.scenario.campaign.CampaignBuilder;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,20 +87,15 @@ public class DatasetService {
         return DataSet.builder().fromDataSet(dataset).withId(id).build();
     }
 
-    public DataSet update(Optional<String> oldId, DataSet dataset) {
-        return ofNullable(dataset.id)
-            .map(id -> {
-                String newId = datasetRepository.save(dataset);
-                oldId.ifPresent(old -> {
-                    if (!dataset.id.equals(newId)) {
-                        updateScenarios(old, newId);
-                        updateCampaigns(old, newId);
-                        datasetRepository.removeById(old);
-                    }
-                });
-                return DataSet.builder().fromDataSet(dataset).withId(newId).build();
-            })
-            .orElseThrow(() -> new DataSetNotFoundException(null));
+    public DataSet update(String oldId, DataSet dataset) {
+        DataSet newDataset = save(dataset);
+        String newId = newDataset.id;
+        if (!oldId.equals(newId)) {
+            updateScenarios(oldId, newId);
+            updateCampaigns(oldId, newId);
+            datasetRepository.removeById(oldId);
+        }
+        return newDataset;
     }
 
     private void updateScenarios(String oldId, String newId) {

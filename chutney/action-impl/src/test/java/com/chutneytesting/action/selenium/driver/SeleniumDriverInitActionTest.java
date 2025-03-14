@@ -7,8 +7,19 @@
 
 package com.chutneytesting.action.selenium.driver;
 
+import com.chutneytesting.action.TestFinallyActionRegistry;
+import com.chutneytesting.action.TestLogger;
+import com.chutneytesting.action.spi.Action;
+import com.chutneytesting.action.spi.ActionExecutionResult;
+import com.chutneytesting.action.spi.FinallyAction;
+import com.chutneytesting.action.spi.injectable.FinallyActionRegistry;
+import java.util.List;
+import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import static org.junit.jupiter.params.provider.Arguments.of;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -16,30 +27,10 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import com.chutneytesting.action.TestFinallyActionRegistry;
-import com.chutneytesting.action.TestLogger;
-import com.chutneytesting.action.spi.Action;
-import com.chutneytesting.action.spi.ActionExecutionResult;
-import com.chutneytesting.action.spi.FinallyAction;
-import com.chutneytesting.action.spi.injectable.FinallyActionRegistry;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class SeleniumDriverInitActionTest {
@@ -77,7 +68,7 @@ public class SeleniumDriverInitActionTest {
         doReturn(edgeRemoteWebDriver)
             .when(remoteEdgeAction).createWebDriver(any());
 
-        String firefoxJsonConfiguration ="{\"acceptInsecureCerts\":true,\"browserName\":\"firefox\",\"moz:debuggerAddress\":true,\"moz:firefoxOptions\":{\"args\":[\"-headless\"],\"binary\":\"browserPath\",\"log\":{\"level\":\"debug\"}}}";
+        String firefoxJsonConfiguration = "{\"acceptInsecureCerts\":true,\"browserName\":\"firefox\",\"moz:debuggerAddress\":true,\"moz:firefoxOptions\":{\"args\":[\"-headless\"],\"binary\":\"browserPath\",\"log\":{\"level\":\"debug\"}}}";
         SeleniumGenericDriverInitAction firefoxGenericSeleniumAction = spy(new SeleniumGenericDriverInitAction(finallyActionRegistry, logger, "http://hub:99", firefoxJsonConfiguration));
 
         RemoteWebDriver genericFirefoxRemoteWebDriver = mock(RemoteWebDriver.class);
@@ -148,22 +139,5 @@ public class SeleniumDriverInitActionTest {
             of(edgeDriverPathOKBrowserPathNull),
             of(edgeDriverPathNullBrowserPathOK)
         );
-    }
-
-    @Test
-    void name() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-
-        FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.addArguments("-headless");
-        firefoxOptions.setLogLevel(FirefoxDriverLogLevel.DEBUG);
-        firefoxOptions.setBinary("browserPath");
-        String jsonFirefoxOptions = mapper.writeValueAsString(firefoxOptions.toJson());
-
-        Map<String, Object> readFromJson = mapper.readValue(jsonFirefoxOptions, new TypeReference<>() {
-        });
-        Capabilities unknownCaps = new MutableCapabilities(readFromJson);
-
-        assertThat(firefoxOptions.asMap()).containsExactlyEntriesOf(unknownCaps.asMap());
     }
 }

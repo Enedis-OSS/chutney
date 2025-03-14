@@ -66,7 +66,7 @@ public class CampaignControllerTest {
 
     private static final CampaignDto SAMPLE_CAMPAIGN = new CampaignDto(null, "test", "desc",
         Stream.of("1", "2", "3").map(CampaignScenarioDto::new).toList(), emptyList(), "env", false, false, null, emptyList());
-    private static final String BASE_URL = CampaignController.BASE_URL + "/";
+    private static final String BASE_URL = CampaignController.BASE_URL;
 
     private final FakeCampaignRepository repository = new FakeCampaignRepository();
     private TestCaseRepositoryAggregator repositoryAggregator;
@@ -108,13 +108,13 @@ public class CampaignControllerTest {
 
     @Test
     public void should_not_found_campaign_when_it_does_not_exist() throws Exception {
-        execute(MockMvcRequestBuilders.get(BASE_URL + MAX_VALUE))
+        execute(MockMvcRequestBuilders.get(BASE_URL + "/" + MAX_VALUE))
             .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     public void should_found_campaign_when_it_exists() throws Exception {
-        execute(MockMvcRequestBuilders.get(BASE_URL + existingCampaign.getId()))
+        execute(MockMvcRequestBuilders.get(BASE_URL + "/" + existingCampaign.getId()))
             .andExpect(MockMvcResultMatchers.status().isOk());
         CampaignDto receivedCampaign = resultExtractor.campaign();
         assertThat(receivedCampaign).usingRecursiveComparison().isEqualTo(existingCampaign);
@@ -182,14 +182,14 @@ public class CampaignControllerTest {
 
     @Test
     public void should_return_true_when_deleting_existing_campaign() throws Exception {
-        execute(delete(BASE_URL + existingCampaign.getId()))
+        execute(delete(BASE_URL + "/" + existingCampaign.getId()))
             .andExpect(MockMvcResultMatchers.status().isOk());
         assertThat(resultExtractor.content()).isEqualTo("true");
     }
 
     @Test
     public void should_return_false_when_trying_to_delete_non_existing_campaign() throws Exception {
-        execute(delete(BASE_URL + MAX_VALUE))
+        execute(delete(BASE_URL + "/" + MAX_VALUE))
             .andExpect(MockMvcResultMatchers.status().isOk());
         assertThat(resultExtractor.content()).isEqualTo("false");
     }
@@ -198,10 +198,10 @@ public class CampaignControllerTest {
     @Test
     public void should_not_found_deleted_campaign() throws Exception {
         // Given
-        execute(delete(BASE_URL + existingCampaign.getId()));
+        execute(delete(BASE_URL + "/" + existingCampaign.getId()));
 
         // When
-        execute(MockMvcRequestBuilders.get(BASE_URL + existingCampaign.getId()))
+        execute(MockMvcRequestBuilders.get(BASE_URL + "/" + existingCampaign.getId()))
             /*Then*/.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -275,7 +275,7 @@ public class CampaignControllerTest {
         repository.saveCampaignExecution(existingCampaign.getId(), report4);
 
         // When
-        execute(MockMvcRequestBuilders.get(BASE_URL + existingCampaign.getId()))
+        execute(MockMvcRequestBuilders.get(BASE_URL + "/" + existingCampaign.getId()))
             .andExpect(MockMvcResultMatchers.status().isOk());
         CampaignDto receivedCampaign = resultExtractor.campaign();
 
@@ -295,7 +295,7 @@ public class CampaignControllerTest {
         repository.saveCampaignExecution(existingCampaign.getId(), report1);
 
         // When
-        execute(MockMvcRequestBuilders.get(BASE_URL + existingCampaign.getId()))
+        execute(MockMvcRequestBuilders.get(BASE_URL + "/" + existingCampaign.getId()))
             .andExpect(MockMvcResultMatchers.status().isOk());
         CampaignDto receivedCampaign = resultExtractor.campaign();
 
@@ -363,7 +363,7 @@ public class CampaignControllerTest {
         when(repositoryAggregator.findMetadataById("55")).thenReturn(Optional.of(TestCaseMetadataImpl.builder().withId("55").build()));
 
         // When
-        execute(MockMvcRequestBuilders.get(BASE_URL + "2" + "/scenarios"))
+        execute(MockMvcRequestBuilders.get(BASE_URL + "/2/scenarios"))
             .andExpect(MockMvcResultMatchers.status().isOk());
         TestCaseIndexDto[] scenarios = resultExtractor.scenarios();
 
@@ -394,7 +394,8 @@ public class CampaignControllerTest {
     public void should_throw_exception_if_scenario_dataset_is_not_found() throws Exception {
         // When
         CampaignDto campaignDto = new CampaignDto(null, "test", "desc",
-            List.of(new CampaignScenarioDto("1", "UNKNOWN_DATASET")), emptyList(), "env", false, false, null, emptyList());;
+            List.of(new CampaignScenarioDto("1", "UNKNOWN_DATASET")), emptyList(), "env", false, false, null, emptyList());
+        ;
 
         when(datasetService.findById("UNKNOWN_DATASET")).thenThrow(new DataSetNotFoundException("UNKNOWN_DATASET"));
 
@@ -424,7 +425,7 @@ public class CampaignControllerTest {
     }
 
     private void removeCampaign(Long idCampaign) throws Exception {
-        execute(delete(BASE_URL + idCampaign));
+        execute(delete(BASE_URL + "/" + idCampaign));
     }
 
 

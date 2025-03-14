@@ -24,19 +24,19 @@ public class TestLogger implements Logger {
     @Override
     public void info(String message) {
         info.add(message);
-        LOGGER.info(message);
+        LOGGER.debug("Add info : {}", message);
     }
 
     @Override
     public void error(String message) {
         errors.add(message);
-        LOGGER.error(message);
+        LOGGER.debug("Add error : {}", message);
     }
 
     @Override
     public void error(Throwable exception) {
         errors.add(exception.getMessage());
-        LOGGER.debug(exception.getMessage(), exception);
+        LOGGER.debug("Add error : {}", exception.getMessage(), exception);
     }
 
     @Override

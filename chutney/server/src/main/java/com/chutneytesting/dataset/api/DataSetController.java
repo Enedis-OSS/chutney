@@ -60,7 +60,11 @@ public class DataSetController {
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public DataSetDto update(@RequestBody DataSetDto dataSetDto, @RequestParam Optional<String> oldId) {
         hasNoDuplicatedHeaders(dataSetDto);
-        return toDto(datasetService.update(oldId, fromDto(dataSetDto)));
+        if (oldId.isPresent()) {
+            return toDto(datasetService.update(oldId.get(), fromDto(dataSetDto)));
+        } else {
+            return save(dataSetDto);
+        }
     }
 
     @PreAuthorize("hasAuthority('DATASET_WRITE')")
@@ -78,7 +82,7 @@ public class DataSetController {
     static void hasNoDuplicatedHeaders(DataSetDto dataset) {
         List<String> duplicates = dataset.duplicatedHeaders();
         if (!duplicates.isEmpty()) {
-            throw new IllegalArgumentException( duplicates.size() + " column(s) have duplicated headers: [" + String.join(", ", duplicates) +"]");
+            throw new IllegalArgumentException(duplicates.size() + " column(s) have duplicated headers: [" + String.join(", ", duplicates) + "]");
         }
     }
 

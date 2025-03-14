@@ -15,10 +15,9 @@ import com.chutneytesting.security.api.SsoOpenIdConnectController;
 import com.chutneytesting.security.api.UserController;
 import com.chutneytesting.security.api.UserDto;
 import com.chutneytesting.security.domain.AuthenticationService;
-import com.chutneytesting.security.domain.Authorizations;
 import com.chutneytesting.security.infra.jwt.ChutneyJwtAuthenticationConverter;
-import com.chutneytesting.security.infra.jwt.JwtUtil;
 import com.chutneytesting.security.infra.jwt.ChutneyJwtProperties;
+import com.chutneytesting.security.infra.jwt.JwtUtil;
 import com.chutneytesting.security.infra.sso.OAuth2TokenAuthenticationFilter;
 import com.chutneytesting.security.infra.sso.SsoOpenIdConnectConfigProperties;
 import com.chutneytesting.server.core.domain.security.Authorization;
@@ -39,11 +38,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
-import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -52,13 +50,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ChannelSecurityConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
+import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -71,6 +68,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableConfigurationProperties({OAuth2AuthorizationServerProperties.class, SsoOpenIdConnectConfigProperties.class})
+@ConditionalOnProperty(value = "chutney.security.enabled", havingValue = "true", matchIfMissing = true)
 public class ChutneyWebSecurityConfig {
 
     private static final String LOGIN_URL = UserController.BASE_URL + "/login";
@@ -85,11 +83,6 @@ public class ChutneyWebSecurityConfig {
     @Bean
     public JwtUtil jwtUtil(ChutneyJwtProperties chutneyJwtProperties) throws JOSEException {
         return new JwtUtil(chutneyJwtProperties);
-    }
-
-    @Bean
-    public AuthenticationService authenticationService(Authorizations authorizations) {
-        return new AuthenticationService(authorizations);
     }
 
     @Bean
@@ -130,7 +123,7 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver,OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter, JwtUtil jwtUtil) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver, OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter, JwtUtil jwtUtil) throws Exception {
         configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
         http.anonymous(anonymousConfigurer -> anonymousConfigurer
@@ -159,7 +152,7 @@ public class ChutneyWebSecurityConfig {
         return http.build();
     }
 
-    protected void configureBaseHttpSecurity(final HttpSecurity http) throws Exception {
+    private void configureBaseHttpSecurity(final HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -167,7 +160,7 @@ public class ChutneyWebSecurityConfig {
             .requiresChannel(this.requireChannel(sslEnabled));
     }
 
-    protected UserDto anonymous() {
+    private UserDto anonymous() {
         UserDto anonymous = new UserDto();
         anonymous.setId(User.ANONYMOUS.id);
         anonymous.setName(User.ANONYMOUS.id);

@@ -149,7 +149,7 @@ public class ScenarioEntity {
 
     public static ScenarioEntity fromGwtTestCase(GwtTestCase testCase) {
         return new ScenarioEntity(
-            Long.valueOf(testCase.id()),
+            ofNullable(testCase.id()).map(Long::valueOf).orElse(null),
             testCase.metadata().title(),
             testCase.metadata().description(),
             ofNullable(testCase.scenario).map(marshaller::serialize).orElse(null),

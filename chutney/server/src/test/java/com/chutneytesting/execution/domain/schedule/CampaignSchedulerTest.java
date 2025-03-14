@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.List.of;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.apache.commons.lang3.RandomStringUtils.secure;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -61,10 +61,10 @@ public class CampaignSchedulerTest {
     public void setUp() {
         clock = Clock.systemDefaultZone();
         sut = new CampaignScheduler(campaignExecutionEngine, clock, scheduledCampaignRepository, Executors.newFixedThreadPool(2));
-        environment = randomAlphanumeric(10);
+        environment = secure().nextAlphanumeric(10);
         dataset = DataSet.builder()
-            .withId(randomAlphanumeric(10))
-            .withName(randomAlphanumeric(10))
+            .withId(secure().nextAlphanumeric(10))
+            .withName(secure().nextAlphanumeric(10))
             .build();
     }
 
@@ -126,7 +126,7 @@ public class CampaignSchedulerTest {
 
     @Test
     void should_execute_sequentially_campaigns() {
-        PeriodicScheduledCampaign sc1 = new PeriodicScheduledCampaign(1L, now(clock).minusSeconds(5), Frequency.HOURLY, environment,  of(new CampaignExecutionRequest(11L, "campaign title 1", dataset.id), new CampaignExecutionRequest(22L, "campaign title 2", dataset.id)));
+        PeriodicScheduledCampaign sc1 = new PeriodicScheduledCampaign(1L, now(clock).minusSeconds(5), Frequency.HOURLY, environment, of(new CampaignExecutionRequest(11L, "campaign title 1", dataset.id), new CampaignExecutionRequest(22L, "campaign title 2", dataset.id)));
 
         List<PeriodicScheduledCampaign> periodicScheduledCampaigns = of(sc1);
         when(scheduledCampaignRepository.getAll())
@@ -150,7 +150,7 @@ public class CampaignSchedulerTest {
         Random rand = new Random();
         return frequencies.stream()
             .map(f ->
-                new PeriodicScheduledCampaign(rand.nextLong(), now(clock).minusSeconds(5), f, environment, of(new CampaignExecutionRequest( rand.nextLong(), "title", datasetId)))
+                new PeriodicScheduledCampaign(rand.nextLong(), now(clock).minusSeconds(5), f, environment, of(new CampaignExecutionRequest(rand.nextLong(), "title", datasetId)))
             )
             .collect(toList());
     }

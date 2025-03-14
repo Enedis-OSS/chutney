@@ -26,7 +26,8 @@ enum class ChutneyConfigurationParameters(val parameter: String, private val def
     CONFIG_REPORT_SITE("chutney.report.site.enabled", false),
     CONFIG_CONSOLE_LOG_COLOR("chutney.log.color.enabled", true),
     CONFIG_SCENARIO_LOG("chutney.log.scenario.enabled", true),
-    CONFIG_STEP_LOG("chutney.log.step.enabled", true);
+    CONFIG_SCENARIO_LOG_ONLY_FAILED("chutney.log.scenario.onlyFailure", true),
+    CONFIG_STEP_LOG("chutney.log.step.enabled", false);
 
     fun defaultBoolean(): Boolean {
         return when (this.default) {

@@ -300,7 +300,8 @@ Chutney JUnit configuration parameters are :
 * **chutney.report.rootPath** : Path where reports and website will be accessible after execution (string
   with ```.chutney/reports``` default value)
 * **chutney.log.scenario.enabled** : Log scenario report to console (boolean with ```true``` default value)
-* **chutney.log.step.enabled** : Log scenario step report to console (boolean with ```true``` default value)
+* **chutney.log.scenario.onlyFailure** : Log scenario report to console only if report status is not success (boolean with ```true``` default value)
+* **chutney.log.step.enabled** : Log scenario step report to console (boolean with ```false``` default value)
 * **chutney.log.color.enabled** : Log scenario report and scenario step report to console with ANSI colors (
   boolean with ```true``` default value)
 * **chutney.report.file.enabled** : Write scenario JSON report to disk (boolean with ```true``` default value)

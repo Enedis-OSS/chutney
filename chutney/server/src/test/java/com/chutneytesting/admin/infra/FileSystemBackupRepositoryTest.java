@@ -133,7 +133,7 @@ public class FileSystemBackupRepositoryTest {
         sut.save(new Backup(List.of(aBackupable.name())));
 
         // Then
-        verify(aBackupable, times(1)).backup(any());
+        verify(aBackupable).backup(any());
         verify(otherBackupable, never()).backup(any());
     }
 

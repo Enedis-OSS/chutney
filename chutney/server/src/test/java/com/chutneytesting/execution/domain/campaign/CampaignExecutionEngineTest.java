@@ -116,13 +116,14 @@ public class CampaignExecutionEngineTest {
             .thenReturn(executionWithId(firstTestCase.id(), firstScenarioExecutionId));
         when(executionHistoryRepository.getExecution(eq(secondTestCase.id()), or(eq(0L), eq(20L))))
             .thenReturn(executionWithId(secondTestCase.id(), secondScenarioExecutionId));
+        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
+        when(scenarioExecutionEngine.saveNotExecutedScenarioExecution(any(ExecutionRequest.class))).thenReturn(mock(ExecutionHistory.Execution.class));
     }
 
     @Test
     public void should_update_jira_xray() {
         // Given
         Campaign campaign = createCampaign(firstTestCase, secondTestCase);
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
 
         // When
         CampaignExecution cer = sut.executeScenarioInCampaign(campaign, "user", null);
@@ -138,8 +139,6 @@ public class CampaignExecutionEngineTest {
     public void should_execute_scenarios_in_sequence_and_store_reports_in_campaign_report_when_executed() {
         // Given
         Campaign campaign = createCampaign(firstTestCase, secondTestCase);
-
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
 
         // When
         CampaignExecution campaignExecution = sut.executeScenarioInCampaign(campaign, "user", null);
@@ -164,8 +163,6 @@ public class CampaignExecutionEngineTest {
     public void should_execute_partially_scenarios_requested() {
         // Given
         Campaign campaign = createCampaign(createGwtTestCase("not executed test case"), secondTestCase);
-
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
 
         // When
         CampaignExecution campaignExecution = sut.executeScenarioInCampaign(singletonList(new ScenarioExecutionCampaign("2", secondTestCase.metadata.title, executionWithId("2", 2L).summary())), campaign, "user", null);
@@ -196,6 +193,9 @@ public class CampaignExecutionEngineTest {
         when(executionHistoryRepository.getExecution(eq(firstTestCase.id()), or(eq(0L), eq(10L))))
             .thenReturn(firstScenarioExecution);
 
+        when(scenarioExecutionEngine.saveNotExecutedScenarioExecution(any(ExecutionRequest.class)))
+            .thenReturn(executionWithId(secondTestCase.id(), secondScenarioExecutionId, ServerReportStatus.NOT_EXECUTED));
+
         CampaignExecution campaignExecution = mock(CampaignExecution.class);
         when(campaignExecution.scenarioExecutionReports())
             .thenReturn(List.of(
@@ -215,7 +215,7 @@ public class CampaignExecutionEngineTest {
 
         // Then
         verify(scenarioExecutionEngine).execute(any(ExecutionRequest.class));
-        verify(executionHistoryRepository, times(2)).getExecution(anyString(), anyLong());
+        verify(executionHistoryRepository, times(3)).getExecution(anyString(), anyLong());
         verify(campaignExecutionRepository).getCampaignExecutionById(0L);
         verify(scenarioExecutionEngineAsync).stop(firstTestCase.id(), firstScenarioExecutionId);
 
@@ -225,7 +225,7 @@ public class CampaignExecutionEngineTest {
         assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(1).status()).isEqualTo(ServerReportStatus.NOT_EXECUTED);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports()).hasSize(2);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(firstScenarioExecutionId);
-        assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(1).execution().executionId()).isEqualTo(-1L);
+        assertThat(campaignExecutionReport.get().scenarioExecutionReports().get(1).execution().executionId()).isEqualTo(secondScenarioExecutionId);
     }
 
     @Test
@@ -233,7 +233,6 @@ public class CampaignExecutionEngineTest {
         // Given
         Campaign campaign = createCampaign(firstTestCase, secondTestCase, true);
 
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
         when(executionHistoryRepository.getExecution(eq(firstTestCase.id()), or(eq(0L), eq(10L)))).thenReturn(failedExecutionWithId(firstTestCase.id(), 10L));
         when(executionHistoryRepository.getExecution(eq(secondTestCase.id()), or(eq(0L), eq(20L)))).thenReturn(failedExecutionWithId(secondTestCase.id(), 20L));
 
@@ -508,7 +507,6 @@ public class CampaignExecutionEngineTest {
 
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
         when(testCaseRepository.findExecutableById(gwtTestCase.id())).thenReturn(of(gwtTestCase));
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
         when(executionHistoryRepository.getExecution(any(), any())).thenReturn(executionWithId(gwtTestCase.id(), 42L));
 
         when(datasetRepository.findById(eq("campaignDataSet"))).thenReturn(DataSet.builder().withName("campaignDataSet").build());
@@ -542,7 +540,6 @@ public class CampaignExecutionEngineTest {
 
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
         when(testCaseRepository.findExecutableById(gwtTestCase.id())).thenReturn(of(gwtTestCase));
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
         when(executionHistoryRepository.getExecution(any(), any())).thenReturn(executionWithId(gwtTestCase.id(), 42L));
 
         when(datasetRepository.findById(eq("scenarioInCampaignDataset"))).thenReturn(DataSet.builder().withName("scenarioInCampaignDataset").build());
@@ -576,7 +573,6 @@ public class CampaignExecutionEngineTest {
 
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
         when(testCaseRepository.findExecutableById(gwtTestCase.id())).thenReturn(of(gwtTestCase));
-        when(scenarioExecutionEngine.execute(any(ExecutionRequest.class))).thenReturn(mock(ScenarioExecutionReport.class));
         when(executionHistoryRepository.getExecution(any(), any())).thenReturn(executionWithId(gwtTestCase.id(), 42L));
 
         // When
@@ -703,9 +699,9 @@ public class CampaignExecutionEngineTest {
 
         // Then
         if (datasetId != null) {
-            verify(spySut, times(1)).executeById(campaignId, environment, dataset, userId);
+            verify(spySut).executeById(campaignId, environment, dataset, userId);
         } else {
-            verify(spySut, times(1)).executeById(campaignId, environment, null, userId);
+            verify(spySut).executeById(campaignId, environment, null, userId);
         }
     }
 

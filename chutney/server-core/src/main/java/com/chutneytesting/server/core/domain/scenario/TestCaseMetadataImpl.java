@@ -95,30 +95,32 @@ public final class TestCaseMetadataImpl implements TestCaseMetadata {
             ", description='" + description + '\'' +
             ", tags=" + tags +
             ", creationDate=" + creationDate +
-            ", author=" + author +
+            ", defaultDataset=" + defaultDataset +
             ", updateDate=" + updateDate +
+            ", author=" + author +
             ", version=" + version +
             '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TestCaseMetadataImpl that = (TestCaseMetadataImpl) o;
-        return id.equals(that.id) &&
-            title.equals(that.title) &&
-            description.equals(that.description) &&
-            tags.equals(that.tags) &&
-            creationDate.equals(that.creationDate) &&
-            author.equals(that.author) &&
-            updateDate.equals(that.updateDate) &&
-            version.equals(that.version);
+        return Objects.equals(id, that.id) &&
+            Objects.equals(title, that.title) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(tags, that.tags) &&
+            Objects.equals(creationDate, that.creationDate) &&
+            Objects.equals(defaultDataset, that.defaultDataset) &&
+            Objects.equals(updateDate, that.updateDate) &&
+            Objects.equals(author, that.author) &&
+            Objects.equals(version, that.version)
+            ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, tags, creationDate, author, updateDate, version);
+        return Objects.hash(id, title, description, tags, creationDate, defaultDataset, updateDate, author, version);
     }
 
     public static TestCaseMetadataBuilder builder() {
@@ -142,7 +144,7 @@ public final class TestCaseMetadataImpl implements TestCaseMetadata {
         public TestCaseMetadataImpl build() {
             Instant creationDate = ofNullable(this.creationDate).orElse(Instant.now());
             return new TestCaseMetadataImpl(
-                ofNullable(id).orElse("-42"),
+                id,
                 ofNullable(title).orElse(""),
                 ofNullable(description).orElse(""),
                 ofNullable(tags).stream().flatMap(Collection::stream).filter(StringUtils::isNotBlank).map(String::toUpperCase).map(String::trim).collect(Collectors.toList()),

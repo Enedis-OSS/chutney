@@ -18,7 +18,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import com.chutneytesting.jira.domain.JiraRepository;
 import com.chutneytesting.jira.domain.JiraServerConfiguration;
@@ -47,7 +46,7 @@ class JiraModuleControllerTest {
 
     private JiraRepository jiraRepository;
     private MockMvc mockMvc;
-    private JiraXrayApi mockJiraXrayApi = mock(JiraXrayApi.class);
+    private final JiraXrayApi mockJiraXrayApi = mock(JiraXrayApi.class);
     private final JiraXrayClientFactory jiraXrayFactory = mock(JiraXrayClientFactory.class);
     private final ObjectMapper om = new ObjectMapper().findAndRegisterModules();
 
@@ -210,7 +209,6 @@ class JiraModuleControllerTest {
     void getConfigurationUrl() throws Exception {
         String url = mockMvc.perform(MockMvcRequestBuilders.get("/api/ui/jira/v1/configuration/url")
                 .accept(MediaType.TEXT_PLAIN_VALUE)) // <--
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn().getResponse().getContentAsString();
 
@@ -236,7 +234,6 @@ class JiraModuleControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(om.writeValueAsString(newConfiguration))
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk());
 
         JiraServerConfiguration expected = jiraRepository.loadServerConfiguration();
@@ -257,7 +254,6 @@ class JiraModuleControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(om.writeValueAsString(dto))
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk());
 
         verify(mockJiraXrayApi).updateStatusByTestRunId(eq("runIdentifier"), eq(PASS.value));
@@ -267,7 +263,6 @@ class JiraModuleControllerTest {
         try {
             String contentAsString = mockMvc.perform(MockMvcRequestBuilders.get(url)
                     .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
             return om.readValue(contentAsString, typeReference);
@@ -280,7 +275,6 @@ class JiraModuleControllerTest {
         try {
             mockMvc.perform(MockMvcRequestBuilders.delete(url)
                     .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
         } catch (Exception e) {
@@ -294,7 +288,6 @@ class JiraModuleControllerTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(om.writeValueAsString(object))
                     .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
             return om.readValue(contentAsString, typeReference);

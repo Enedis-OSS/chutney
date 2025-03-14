@@ -12,15 +12,15 @@ import com.chutneytesting.kotlin.ChutneyConfigurationParameters.*
 import com.chutneytesting.kotlin.execution.report.AnsiReportWriter
 import com.chutneytesting.kotlin.execution.report.JsonReportWriter
 import com.chutneytesting.kotlin.execution.report.SiteGenerator
-import com.chutneytesting.kotlin.junit.engine.execution.ChutneyJUnitReportingKeys.REPORT_JSON_STRING
-import com.chutneytesting.kotlin.junit.engine.execution.ChutneyJUnitReportingKeys.REPORT_STEP_JSON_STRING
+import com.chutneytesting.kotlin.junit.engine.execution.ChutneyJUnitReportingKeys.*
 import com.chutneytesting.kotlin.util.SystemEnvConfigurationParameters
 import org.junit.platform.engine.reporting.ReportEntry
 import org.junit.platform.launcher.TestExecutionListener
 import org.junit.platform.launcher.TestIdentifier
 import org.junit.platform.launcher.TestPlan
 
-class ConsoleLogScenarioReportExecutionListener : EnabledTestExecutionListener(enabledProperty = CONFIG_SCENARIO_LOG) {
+class ConsoleLogScenarioReportExecutionListener :
+    EnabledTestExecutionListener(enabledProperty = listOf(CONFIG_SCENARIO_LOG, CONFIG_SCENARIO_LOG_ONLY_FAILED)) {
 
     private var ansiReportWriter: AnsiReportWriter? = null
 
@@ -29,7 +29,8 @@ class ConsoleLogScenarioReportExecutionListener : EnabledTestExecutionListener(e
 
         if (enabled()) {
             ansiReportWriter = AnsiReportWriter(
-                configurationParameters().getBoolean(CONFIG_CONSOLE_LOG_COLOR.parameter).orElse(CONFIG_CONSOLE_LOG_COLOR.defaultBoolean())
+                configurationParameters().getBoolean(CONFIG_CONSOLE_LOG_COLOR.parameter)
+                    .orElse(CONFIG_CONSOLE_LOG_COLOR.defaultBoolean())
             )
         }
     }
@@ -42,14 +43,20 @@ class ConsoleLogScenarioReportExecutionListener : EnabledTestExecutionListener(e
 
     private fun printScenarioReport(entry: ReportEntry) {
         entry.keyValuePairs[REPORT_JSON_STRING.value]?.let {
-            if (enabled()) {
+            if (enabled(CONFIG_SCENARIO_LOG)) {
                 ansiReportWriter!!.printReport(JsonReportWriter.jsonAsReport(it))
+            } else {
+                entry.keyValuePairs[REPORT_STATUS_SUCCESS.value]?.let { success ->
+                    if (enabled(CONFIG_SCENARIO_LOG_ONLY_FAILED) && !success.toBoolean()) {
+                        ansiReportWriter!!.printReport(JsonReportWriter.jsonAsReport(it))
+                    }
+                }
             }
         }
     }
 }
 
-class ConsoleLogStepReportExecutionListener : EnabledTestExecutionListener(enabledProperty = CONFIG_STEP_LOG) {
+class ConsoleLogStepReportExecutionListener : EnabledTestExecutionListener(enabledProperty = listOf(CONFIG_STEP_LOG)) {
 
     private var ansiReportWriter: AnsiReportWriter? = null
 
@@ -58,7 +65,8 @@ class ConsoleLogStepReportExecutionListener : EnabledTestExecutionListener(enabl
 
         if (enabled()) {
             ansiReportWriter = AnsiReportWriter(
-                configurationParameters().getBoolean(CONFIG_CONSOLE_LOG_COLOR.parameter).orElse(CONFIG_CONSOLE_LOG_COLOR.defaultBoolean())
+                configurationParameters().getBoolean(CONFIG_CONSOLE_LOG_COLOR.parameter)
+                    .orElse(CONFIG_CONSOLE_LOG_COLOR.defaultBoolean())
             )
         }
     }
@@ -81,7 +89,8 @@ class ConsoleLogStepReportExecutionListener : EnabledTestExecutionListener(enabl
     }
 }
 
-class FileWriterScenarioReportExecutionListener : EnabledTestExecutionListener(enabledProperty = CONFIG_REPORT_FILE) {
+class FileWriterScenarioReportExecutionListener :
+    EnabledTestExecutionListener(enabledProperty = listOf(CONFIG_REPORT_FILE)) {
 
     private var reportRootPathConfig: String? = null
 
@@ -90,7 +99,8 @@ class FileWriterScenarioReportExecutionListener : EnabledTestExecutionListener(e
 
         if (enabled()) {
             reportRootPathConfig =
-                configurationParameters().get(CONFIG_REPORT_ROOT_PATH.parameter).orElse(CONFIG_REPORT_ROOT_PATH.defaultString())
+                configurationParameters().get(CONFIG_REPORT_ROOT_PATH.parameter)
+                    .orElse(CONFIG_REPORT_ROOT_PATH.defaultString())
         }
     }
 
@@ -114,23 +124,26 @@ class FileWriterScenarioReportExecutionListener : EnabledTestExecutionListener(e
     }
 }
 
-class SiteGeneratorExecutionListener : EnabledTestExecutionListener(enabledProperty = CONFIG_REPORT_SITE) {
+class SiteGeneratorExecutionListener : EnabledTestExecutionListener(enabledProperty = listOf(CONFIG_REPORT_SITE)) {
 
     override fun testPlanExecutionFinished(testPlan: TestPlan?) {
         if (enabled()) {
-           SiteGenerator().generateSite()
+            SiteGenerator().generateSite()
         }
     }
 }
 
 abstract class EnabledTestExecutionListener(
-    private val enabledProperty: ChutneyConfigurationParameters) : TestExecutionListener {
+    private val enabledProperty: List<ChutneyConfigurationParameters>
+) : TestExecutionListener {
     private var configurationParameters: SystemEnvConfigurationParameters? = null
-    private var enabled: Boolean = false
+    private var enabled: Map<ChutneyConfigurationParameters, Boolean> = emptyMap()
 
     override fun testPlanExecutionStarted(testPlan: TestPlan) {
         configurationParameters = SystemEnvConfigurationParameters()
-        enabled = configurationParameters!!.getBoolean(enabledProperty.parameter).orElse(enabledProperty.defaultBoolean())
+        enabled = enabledProperty.associateWith {
+            configurationParameters!!.getBoolean(it.parameter).orElse(it.defaultBoolean())
+        }
     }
 
     protected fun configurationParameters(): SystemEnvConfigurationParameters {
@@ -138,6 +151,10 @@ abstract class EnabledTestExecutionListener(
     }
 
     protected fun enabled(): Boolean {
-        return enabled
+        return enabled.values.reduce(Boolean::or)
+    }
+
+    protected fun enabled(enableProperty: ChutneyConfigurationParameters): Boolean {
+        return enabled[enableProperty] ?: false
     }
 }

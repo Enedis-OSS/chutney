@@ -9,13 +9,11 @@ package com.chutneytesting.campaign.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,14 +56,13 @@ class ScheduleCampaignControllerTest {
 
         CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "datasetId");
         when(scheduledCampaignRepository.getAll()).thenReturn(List.of(
-            new PeriodicScheduledCampaign(1L,  LocalDateTime.of(2024, 10, 12, 14, 30, 45), Frequency.DAILY, "PROD", List.of(request))
+            new PeriodicScheduledCampaign(1L, LocalDateTime.of(2024, 10, 12, 14, 30, 45), Frequency.DAILY, "PROD", List.of(request))
         ));
 
         // Act & Assert
         mockMvc.perform(get("/api/ui/campaign/v1/scheduling")
-            .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$[0].id").value(1L))
             .andExpect(jsonPath("$[0].frequency").value("Daily"))
@@ -80,7 +77,7 @@ class ScheduleCampaignControllerTest {
             .andExpect(jsonPath("$[0].schedulingDate[4]").value(30))
             .andExpect(jsonPath("$[0].schedulingDate[5]").value(45));
 
-        verify(scheduledCampaignRepository, times(1)).getAll();
+        verify(scheduledCampaignRepository).getAll();
     }
 
     @Test
@@ -88,19 +85,19 @@ class ScheduleCampaignControllerTest {
     void should_add_scheduled_campaign() throws Exception {
 
         mockMvc.perform(post("/api/ui/campaign/v1/scheduling")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(
-                """
-                    {
-                        "id":1,
-                        "schedulingDate":[2024,10,12,14,30,45],
-                        "frequency":"Daily",
-                        "environment":"PROD",
-                        "campaignExecutionRequest":[
-                            {"campaignId":1,"campaignTitle":"title","datasetId":"datasetId"}
-                        ]
-                    }
-                """))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                            {
+                                "id":1,
+                                "schedulingDate":[2024,10,12,14,30,45],
+                                "frequency":"Daily",
+                                "environment":"PROD",
+                                "campaignExecutionRequest":[
+                                    {"campaignId":1,"campaignTitle":"title","datasetId":"datasetId"}
+                                ]
+                            }
+                        """))
             .andExpect(status().isOk());
 
         ArgumentCaptor<PeriodicScheduledCampaign> captor = ArgumentCaptor.forClass(PeriodicScheduledCampaign.class);
@@ -133,7 +130,7 @@ class ScheduleCampaignControllerTest {
         Long schedulingCampaignId = 1L;
 
         mockMvc.perform(delete("/api/ui/campaign/v1/scheduling/{schedulingCampaignId}", schedulingCampaignId)
-            .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
         verify(scheduledCampaignRepository).removeById(schedulingCampaignId);

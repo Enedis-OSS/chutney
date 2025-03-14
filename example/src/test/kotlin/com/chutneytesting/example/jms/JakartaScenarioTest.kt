@@ -15,23 +15,22 @@ import com.chutneytesting.kotlin.dsl.Environment
 import com.chutneytesting.kotlin.launcher.Launcher
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.testcontainers.activemq.ActiveMQContainer
-import org.testcontainers.containers.GenericContainer
+import org.testcontainers.activemq.ArtemisContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 
 @Testcontainers
-class JmsScenarioTest {
+class JakartaScenarioTest {
 
     private var containerJmsPort = 61616
     private var environment: ChutneyEnvironment = ChutneyEnvironment("empty")
 
 
     @Container
-    // Last version for JMS 1.1 support
-    val activemqContainer = ActiveMQContainer(DockerImageName.parse("apache/activemq-classic:5.19.0"))
+    val activemqContainer = ArtemisContainer(DockerImageName.parse("apache/activemq-artemis"))
         .withExposedPorts(containerJmsPort)
+        .withEnv("ANONYMOUS_LOGIN", "true")
 
     @BeforeEach
     fun setUp() {
@@ -42,7 +41,7 @@ class JmsScenarioTest {
                 Name(ACTIVEMQ_TARGET_NAME)
                 Url("tcp://$activemqAddress:$hostJmsPort")
                 Properties(
-                    "java.naming.factory.initial" to "org.apache.activemq.jndi.ActiveMQSslInitialContextFactory",
+                    "java.naming.factory.initial" to "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
                     "jndi.queue.$FILMS_DESTINATION" to FILMS_DESTINATION
                 )
             }
@@ -51,6 +50,6 @@ class JmsScenarioTest {
 
     @Test
     fun `publish & consume jms message`() {
-        Launcher().run(activemq_scenario(false), environment)
+        Launcher().run(activemq_scenario(), environment)
     }
 }
