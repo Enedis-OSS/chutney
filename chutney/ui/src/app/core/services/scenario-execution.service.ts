@@ -14,6 +14,7 @@ import { environment } from '@env/environment';
 import { Dataset, Execution, KeyValue, ScenarioExecutionReport } from '@model';
 import { HttpClient } from '@angular/common/http';
 import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
+import { parse } from 'lossless-json'
 
 @Injectable({
     providedIn: "root"
@@ -118,13 +119,13 @@ export class ScenarioExecutionService {
         let constants;
         let datatable;
         let datasetId;
-        if(jsonResponse?.report) {
-            let parse = JSON.parse(jsonResponse.report);
-            report = parse.report;
-            contextVariables = parse.contextVariables;
-            constants = parse.constants &&  Object.keys(parse.constants).map(key => new KeyValue(key,parse.constants[key]));
-            datatable = parse.datatable?.map(line => Object.keys(line).map(key => new KeyValue(key, line[key])))
-            datasetId = parse.datasetId;
+        if (jsonResponse?.report) {
+            let parsedJson = parse(jsonResponse.report) as any;
+            report = parsedJson.report;
+            contextVariables = parsedJson.contextVariables;
+            constants = parsedJson.constants &&  Object.keys(parsedJson.constants).map(key => new KeyValue(key,parsedJson.constants[key]));
+            datatable = parsedJson.datatable?.map(line => Object.keys(line).map(key => new KeyValue(key, line[key])))
+            datasetId = parsedJson.datasetId;
         }
         return new ScenarioExecutionReport(
             jsonResponse.executionId,
