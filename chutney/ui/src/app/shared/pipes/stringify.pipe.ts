@@ -6,6 +6,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
+import { stringify } from 'lossless-json'
 
 @Pipe({
   name: 'stringify'
@@ -14,7 +15,7 @@ export class StringifyPipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
     if (value instanceof Object) {
-        return JSON.stringify(value, args?.replacer, args?.space);
+        return stringify(value, args?.replacer, args?.space);
     } else {
         return value;
     }

@@ -41,7 +41,7 @@ import { ScenarioExecutionService } from 'src/app/core/services/scenario-executi
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { StringifyPipe } from '@shared/pipes';
 import { findScrollContainer } from '@shared/tools';
-import { TranslateService } from "@ngx-translate/core";
+import { parse, stringify } from 'lossless-json'
 import { DatasetUtils } from "@shared/tools/dataset-utils";
 
 @Component({
@@ -107,7 +107,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
         if (this.scenario) {
             this.loadScenarioExecution(this.execution.executionId);
         } else {
-            this.scenarioExecutionReport = ScenarioExecutionReport.cleanReport(JSON.parse(this.execution.report));
+            this.scenarioExecutionReport = ScenarioExecutionReport.cleanReport(parse(this.execution.report) as any);
             this.afterReportUpdate();
         }
     }
@@ -208,7 +208,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     stopScenario() {
         this.scenarioExecutionService.stopScenario(this.scenario.id, this.execution.executionId).subscribe({
             error: (error) => {
-                const body = JSON.parse(error._body);
+                const body = parse(error._body) as any;
                 this.executionError = 'Cannot stop scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
             }
         });
@@ -217,7 +217,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     pauseScenario() {
         this.scenarioExecutionService.pauseScenario(this.scenario.id, this.execution.executionId).subscribe({
             error: (error) => {
-                const body = JSON.parse(error._body);
+                const body = parse(error._body) as any;
                 this.executionError = 'Cannot pause scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
             }
         });
@@ -231,7 +231,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
             .subscribe({
                 next: () => this.loadScenarioExecution(Number(this.execution.executionId)),
                 error: (error) => {
-                    const body = JSON.parse(error._body);
+                    const body = parse(error._body) as any;
                     this.executionError = 'Cannot resume scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
                 }
             });
@@ -388,8 +388,8 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
 
     exportReport() {
         const fileName = `${this.scenario.title}.execution.${this.execution.executionId}.chutney.json`;
-        this.execution.report = JSON.stringify(this.scenarioExecutionReport);
-        this.fileSaverService.saveText(JSON.stringify(this.execution), fileName);
+        this.execution.report = stringify(this.scenarioExecutionReport);
+        this.fileSaverService.saveText(stringify(this.execution), fileName);
     }
 
 ////////////////////////////////////////////////////// REPORT new view

@@ -7,6 +7,7 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { escapeHtml } from '@shared/tools/string-utils';
+import { parse, stringify } from 'lossless-json';
 
 @Pipe({ name: 'prettyPrint' })
 export class PrettyPrintPipe implements PipeTransform {
@@ -25,7 +26,7 @@ export class PrettyPrintPipe implements PipeTransform {
     beautify = (content: string, escapeHtmlP: boolean = false) => {
         let r = content;
         try {
-            let json = JSON.parse(content);
+            let json = parse(content);
             if (typeof json === 'string') {
                 content = json;
                 throw new Error('');
@@ -33,12 +34,12 @@ export class PrettyPrintPipe implements PipeTransform {
                 return (
                     '[\n' +
                     json
-                        .map((v) => this.beautify(JSON.stringify(v)))
+                        .map((v) => this.beautify(stringify(v)))
                         .join(',\n') +
                     '\n]'
                 );
             }
-            return JSON.stringify(json, null, '  ');
+            return stringify(json, null, '  ');
         } catch (error) {
             if (content.startsWith('data:image')) {
                 return '<img src="' + content + '" />';
