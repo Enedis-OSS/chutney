@@ -61,7 +61,7 @@ public class DataSetController {
     public DataSetDto update(@RequestBody DataSetDto dataSetDto, @RequestParam Optional<String> oldId) {
         hasNoDuplicatedHeaders(dataSetDto);
         if (oldId.isPresent()) {
-            return toDto(datasetService.update(oldId.get(), fromDto(dataSetDto)));
+            return toDto(datasetService.updateWithRename(oldId.get(), fromDto(dataSetDto)));
         } else {
             return save(dataSetDto);
         }

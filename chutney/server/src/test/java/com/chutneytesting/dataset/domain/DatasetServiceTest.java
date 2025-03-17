@@ -107,7 +107,7 @@ class DatasetServiceTest {
             TestCaseMetadataImpl.TestCaseMetadataBuilder.from(metadata).withDefaultDataset(newId).build()
         ).build();
 
-        sut.update(oldId, DataSet.builder().withName(newId).build());
+        sut.updateWithRename(oldId, DataSet.builder().withName(newId).build());
 
         verify(testCaseRepository).save(expected);
     }

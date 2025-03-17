@@ -7,9 +7,12 @@
 
 package com.chutneytesting.dataset.domain;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.chutneytesting.campaign.domain.CampaignRepository;
 import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
 import com.chutneytesting.server.core.domain.dataset.DataSet;
+import com.chutneytesting.server.core.domain.dataset.DataSetNotFoundException;
 import com.chutneytesting.server.core.domain.scenario.AggregatedRepository;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadata;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadataImpl;
@@ -87,7 +90,11 @@ public class DatasetService {
         return DataSet.builder().fromDataSet(dataset).withId(id).build();
     }
 
-    public DataSet update(String oldId, DataSet dataset) {
+    public DataSet updateWithRename(String oldId, DataSet dataset) {
+        if (isBlank(oldId)) {
+            throw new DataSetNotFoundException("");
+        }
+
         DataSet newDataset = save(dataset);
         String newId = newDataset.id;
         if (!oldId.equals(newId)) {
