@@ -298,7 +298,8 @@
             "selectJiraTag": "Select jira execution status",
             "selectDatasetScenario": "Select dataset",
             "errors": {
-                "scenarioDatasetDuplicate": "The combination already exists for the scenario {{scenarioId}} and the dataset {{datasetId}}"
+                "scenarioDatasetDuplicate": "The combination already exists for the scenario {{scenarioId}} and the dataset {{datasetId}}",
+                "scenarioDatasetNullDuplicate": "The combination without dataset already exists for the scenario {{scenarioId}}"
             }
         },
         "confirm": {

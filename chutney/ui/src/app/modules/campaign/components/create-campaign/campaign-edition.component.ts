@@ -358,10 +358,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                 this.campaign.scenarios.push(new CampaignScenario(scenario.scenarioId.id, scenario.dataset ? scenario.dataset.id as string : null));
             } else {
                 this.error = true;
-                this.translate.get('campaigns.edition.errors.scenarioDatasetDuplicate', {
+                const messageKey = scenario.dataset ? 'campaigns.edition.errors.scenarioDatasetDuplicate' : 'campaigns.edition.errors.scenarioDatasetNullDuplicate'
+                let messageParams = {
                     scenarioId: scenario.scenarioId.id,
                     datasetId: scenario.dataset ? scenario.dataset.id : "NULL"
-                }).subscribe((msg: string) => {
+                }
+                this.translate.get(messageKey, messageParams).subscribe((msg: string) => {
                     this.errorMessage = msg
                 });
                 break;

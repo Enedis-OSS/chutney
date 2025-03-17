@@ -298,7 +298,8 @@
             "selectJiraTag": "Sélectionner statut d'execution jira",
             "selectDatasetScenario": "Ajouter un dataset",
             "errors": {
-                "scenarioDatasetDuplicate": "La combinaison existe déjà pour le scenario {{scenarioId}} et le dataset {{datasetId}}"
+                "scenarioDatasetDuplicate": "La combinaison existe déjà pour le scenario {{scenarioId}} et le dataset {{datasetId}}",
+                "scenarioDatasetNullDuplicate": "La combinaison sans dataset existe déjà pour le scenario {{scenarioId}}"
             }
         },
         "confirm": {
