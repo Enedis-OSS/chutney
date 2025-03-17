@@ -32,7 +32,6 @@ import org.testcontainers.containers.Network
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.MountableFile
 import java.io.File
-import java.nio.file.Paths
 import java.time.Duration
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
