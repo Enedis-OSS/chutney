@@ -76,11 +76,11 @@ class ChutneyFunctionsTest {
 
     @Test
     fun `use json function`() {
-        assertELWrap(json("ctxVar"))
+        assertELWrap(jsonPath("ctxVar"))
 
         assertThrows<IllegalArgumentException> { jsonPath("") }
 
-        val unWrappedELExpr = json("ctxVar", "$.key[?(@.name='nn')]")
+        val unWrappedELExpr = jsonPath("ctxVar", "$.key[?(@.name='nn')]")
             .removePrefix("\${").removeSuffix("}")
         assertExpressionNotNullWhenParsed(unWrappedELExpr)
     }
