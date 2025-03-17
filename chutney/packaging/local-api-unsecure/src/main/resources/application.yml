@@ -78,8 +78,8 @@ chutney:
       max-scenario-executions: 10
       max-campaign-executions: 10
     agent:
-      #      name:
-      #      hostname:
+#      name:
+#      hostname:
       network:
         connection-checker-timeout: 1000
 
@@ -89,9 +89,9 @@ chutney:
     reporter:
       publisher:
         ttl: 5
-  #    delegation:
-  #      user:
-  #      password:
+#    delegation:
+#      user:
+#      password:
 
   actions:
     sql:

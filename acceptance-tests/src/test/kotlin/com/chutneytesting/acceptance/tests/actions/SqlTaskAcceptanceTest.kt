@@ -15,7 +15,8 @@ val `Sql query success` = Scenario(title = "Sql query success") {
     createSqlTarget("SQL_ENV_OK")
   }
   And("This scenario with sql task is saved") {
-    createScenario(      "scenarioId",
+    createScenario(
+      "scenarioId",
       """
         {
             "givens":[
