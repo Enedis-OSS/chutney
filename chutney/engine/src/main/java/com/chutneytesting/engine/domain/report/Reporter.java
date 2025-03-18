@@ -29,6 +29,7 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -124,6 +125,14 @@ public class Reporter {
     }
 
     StepExecutionReport generateReport(Step step, Function<Step, Status> statusSupplier, String env) {
+        if (step == null) {
+            String errorMessage = "Cannot generate report: Step is null.";
+            LOGGER.error(errorMessage);
+            return createErrorReport(errorMessage);
+        }
+
+        List<Step> subStepsCopy = new ArrayList<>(step.subSteps());
+
         try {
             return new StepExecutionReportBuilder()
                 .setName(step.name())
@@ -133,7 +142,9 @@ public class Reporter {
                 .setStatus(statusSupplier.apply(step))
                 .setInformation(step.informations())
                 .setErrors(step.errors())
-                .setSteps(step.subSteps().stream().map(subStep -> generateReport(subStep, Step::status, env)).collect(Collectors.toList()))
+                .setSteps(subStepsCopy.stream()
+                    .map(subStep -> generateReport(subStep, Step::status, env))
+                    .collect(Collectors.toList()))
                 .setEvaluatedInputs(step.getEvaluatedInputs())
                 .setStepResults(step.getStepOutputs())
                 .setEvaluatedInputsSnapshot(step.getStepContextInputSnapshot())
@@ -144,14 +155,18 @@ public class Reporter {
                 .setStrategy(guardNullStrategy(step.strategy()))
                 .createStepExecutionReport();
         } catch (Exception e) {
-            String error = "Cannot generate step report: " + e.getMessage();
-            LOGGER.error(error, e);
-            return new StepExecutionReportBuilder()
-                .setName(step.name())
-                .setStatus(Status.FAILURE)
-                .setErrors(List.of(error))
-                .createStepExecutionReport();
+            String errorMessage = "Unexpected error while generating report for step " + step.name() + ": " + e.getMessage();
+            LOGGER.error(errorMessage, e);
+            return createErrorReport(errorMessage);
         }
+    }
+
+    private StepExecutionReport createErrorReport(String errorMessage) {
+        return new StepExecutionReportBuilder()
+            .setName("Failed to generate report, please wait until the end of the execution")
+            .setStatus(Status.FAILURE)
+            .setErrors(List.of(errorMessage))
+            .createStepExecutionReport();
     }
 
     /* TODO mbb - hack - remove me when core module domain is decouple from lite-engine domain & API */

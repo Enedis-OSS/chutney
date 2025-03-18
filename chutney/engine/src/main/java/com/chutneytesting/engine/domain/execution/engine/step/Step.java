@@ -32,10 +32,12 @@ import com.chutneytesting.tools.Try;
 import com.google.common.collect.Lists;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -165,7 +167,8 @@ public class Step {
         if (!isParentStep() || Status.FAILURE.equals(state.status())) {
             return Lists.newArrayList(state.status());
         } else {
-            return this.steps.stream()
+            return new ArrayList<>(this.steps).stream()
+                .filter(Objects::nonNull)
                 .map(Step::status)
                 .collect(Collectors.toList());
         }
