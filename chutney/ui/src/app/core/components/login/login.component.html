@@ -30,16 +30,16 @@
 
         <div class="form-floating mb-4">
           <input type="text" id="username" class="form-control form-control-lg"
-            placeholder="Enter a user name"
+            placeholder="{{ 'login.enter' | translate }} {{ 'login.username' | translate }}"
             [(ngModel)]="username" [ngModelOptions]="{standalone: true}"/>
-          <label class="form-label" for="username">User name</label>
+          <label class="form-label" for="username">{{ 'login.username' | translate }}</label>
         </div>
 
         <div class="form-floating mb-3">
           <input type="password" id="password" class="form-control form-control-lg"
-            placeholder="Enter password"
+            placeholder="{{ 'login.enter' | translate }} {{ 'login.password' | translate }}"
             [(ngModel)]="password" [ngModelOptions]="{standalone: true}"/>
-          <label class="form-label" for="password">Password</label>
+          <label class="form-label" for="password">{{ 'login.password' | translate }}</label>
         </div>
 
         <div class="text-center text-lg-start mt-4 pt-2">
