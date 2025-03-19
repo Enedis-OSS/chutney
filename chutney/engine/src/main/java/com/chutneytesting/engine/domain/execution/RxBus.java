@@ -75,7 +75,7 @@ public class RxBus {
      */
     public <T> Disposable register(final Class<T> eventClass, Consumer<T> onNext) {
         return bus
-            .filter(event -> eventClass.isInstance(event))  // Filters events of the specified class type
+            .filter(eventClass::isInstance)  // Filters events of the specified class type
             .map(eventClass::cast)  // Safely casts the event to the expected class
             .subscribe(
                 onNext,  // Action to execute when the event is received

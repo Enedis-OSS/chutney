@@ -84,12 +84,24 @@ public class Reporter {
 
     private void publishReport(Event event) {
         LOGGER.trace("Publish report for execution {}", event.executionId());
-        doIfPublisherExists(event.executionId(), (observer) -> observer.onNext(generateRunningReport(event.executionId())));
+        doIfPublisherExists(event.executionId(), (observer) -> {
+            try {
+                observer.onNext(generateRunningReport(event.executionId()));
+            } catch (Exception e) {
+                LOGGER.warn("Failed to generate report for execution {}", event.executionId(), e);
+            }
+        });
     }
 
     private void publishLastReport(Event event) {
         LOGGER.trace("Publish report for execution {}", event.executionId());
-        doIfPublisherExists(event.executionId(), (observer) -> observer.onNext(generateLastReport(event.executionId())));
+        doIfPublisherExists(event.executionId(), (observer) -> {
+            try {
+                observer.onNext(generateLastReport(event.executionId()));
+            } catch (Exception e) {
+                LOGGER.warn("Failed to generate report for execution {}", event.executionId(), e);
+            }
+        });
     }
 
     private void publishReportAndCompletePublisher(Event event) {
@@ -99,7 +111,7 @@ public class Reporter {
         });
     }
 
-    private StepExecutionReport generateRunningReport(long executionId) {
+    private StepExecutionReport generateRunningReport(long executionId) throws CannotGenerateReportException {
         Step step = rootSteps.get(executionId);
         final Status calculatedRootStepStatus = step.status();
 
@@ -112,7 +124,7 @@ public class Reporter {
         return generateReport(step, s -> finalStatus, getEnvironment(step));
     }
 
-    private StepExecutionReport generateLastReport(long executionId) {
+    private StepExecutionReport generateLastReport(long executionId) throws CannotGenerateReportException {
         Step step = rootSteps.get(executionId);
         return generateReport(step, Step::status, getEnvironment(step));
     }
@@ -124,11 +136,9 @@ public class Reporter {
         return (String) step.getScenarioContext().get("environment");
     }
 
-    StepExecutionReport generateReport(Step step, Function<Step, Status> statusSupplier, String env) {
+    StepExecutionReport generateReport(Step step, Function<Step, Status> statusSupplier, String env) throws CannotGenerateReportException {
         if (step == null) {
-            String errorMessage = "Cannot generate report: Step is null.";
-            LOGGER.error(errorMessage);
-            return createErrorReport(errorMessage);
+            throw new CannotGenerateReportException("Cannot generate report: Step is null.");
         }
 
         List<Step> subStepsCopy = new ArrayList<>(step.subSteps());
@@ -154,19 +164,11 @@ public class Reporter {
                 .setTarget(step.target())
                 .setStrategy(guardNullStrategy(step.strategy()))
                 .createStepExecutionReport();
+        } catch (CannotGenerateReportException e) {
+            throw e;
         } catch (Exception e) {
-            String errorMessage = "Unexpected error while generating report for step " + step.name() + ": " + e.getMessage();
-            LOGGER.error(errorMessage, e);
-            return createErrorReport(errorMessage);
+            throw new CannotGenerateReportException("Unexpected error while generating report for step " + step.name(), e);
         }
-    }
-
-    private StepExecutionReport createErrorReport(String errorMessage) {
-        return new StepExecutionReportBuilder()
-            .setName("Failed to generate report, please wait until the end of the execution")
-            .setStatus(Status.FAILURE)
-            .setErrors(List.of(errorMessage))
-            .createStepExecutionReport();
     }
 
     /* TODO mbb - hack - remove me when core module domain is decouple from lite-engine domain & API */

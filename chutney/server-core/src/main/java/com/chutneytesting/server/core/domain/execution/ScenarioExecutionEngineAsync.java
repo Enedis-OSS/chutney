@@ -332,9 +332,7 @@ public class ScenarioExecutionEngineAsync {
                     scenarioExecutions.remove(executionId);
                 }, throwable -> LOGGER.error("Cannot remove replayer for execution {}", executionId, throwable));
         } else {
-            Completable.fromRunnable(() -> scenarioExecutions.remove(executionId))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+            scenarioExecutions.remove(executionId);
         }
     }
 

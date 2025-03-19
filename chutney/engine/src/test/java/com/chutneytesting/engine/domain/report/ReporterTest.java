@@ -31,6 +31,8 @@ import com.chutneytesting.engine.domain.execution.event.StartScenarioExecutionEv
 import com.chutneytesting.engine.domain.execution.report.Status;
 import com.chutneytesting.engine.domain.execution.report.StepExecutionReport;
 import io.reactivex.rxjava3.observers.TestObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -57,7 +59,7 @@ public class ReporterTest {
 
     @Test
     void testConcurrentModificationOnSubSteps() throws Exception {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             Runnable getter = () -> {
                 try {
@@ -83,7 +85,6 @@ public class ReporterTest {
             executor.shutdownNow();
         }
     }
-
 
     @Test
     public void parent_status_should_be_recalculate() {
