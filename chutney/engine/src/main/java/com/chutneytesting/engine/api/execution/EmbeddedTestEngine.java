@@ -17,13 +17,9 @@ import com.chutneytesting.engine.domain.execution.engine.Environment;
 import com.chutneytesting.engine.domain.report.Reporter;
 import io.reactivex.rxjava3.core.Observable;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class EmbeddedTestEngine implements TestEngine {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedTestEngine.class);
-
+    
     private final ExecutionEngine engine;
     private final Reporter reporter;
     private final ExecutionManager executionManager;

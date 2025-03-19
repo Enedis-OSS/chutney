@@ -7,7 +7,6 @@
 
 package com.chutneytesting.server.core.domain.execution;
 
-import static io.reactivex.rxjava3.schedulers.Schedulers.io;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
@@ -106,8 +105,6 @@ public class ScenarioExecutionEngineAsync {
         LOGGER.debug("Replayers map size : {}", scenarioExecutions.size());
         // Begin execution
         executionObservable
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
             .subscribe(
                 report -> LOGGER.trace("Execution report received: {}", report),
                 throwable -> LOGGER.error("Error during execution", throwable)
@@ -157,7 +154,7 @@ public class ScenarioExecutionEngineAsync {
 
         // Debounce configuration
         if (debounceMilliSeconds > 0) {
-            replayer = replayer.throttleLatest(debounceMilliSeconds, TimeUnit.MILLISECONDS, true);
+            replayer = replayer.throttleLatest(debounceMilliSeconds, TimeUnit.MILLISECONDS, Schedulers.io(), true);
         }
 
         return replayer
@@ -357,8 +354,12 @@ public class ScenarioExecutionEngineAsync {
     }
 
     private void notifyExecutionEnd(long executionId, TestCase testCase) {
-        LOGGER.trace("Notify end for execution {}", executionId);
-        executionStateRepository.notifyExecutionEnd(testCase.id());
+        try {
+            LOGGER.trace("Notify end for execution {}", executionId);
+            executionStateRepository.notifyExecutionEnd(testCase.id());
+        } catch (Exception e) {
+            LOGGER.error("Notify execution end {} failed", executionId, e);
+        }
     }
 
     private static List<String> searchInfo(StepExecutionReportCore report) {
