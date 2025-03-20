@@ -7,6 +7,84 @@
 
 # Changelog
 
+## [3.0.0.4](https://github.com/chutney-testing/chutney/tree/3.0.0.4)
+## What's Changed
+### 🚀 Implemented enhancements:
+* Kafka publish / consume - Allow serialization config by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/74
+* Assert action - Soft assert all assertions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/78
+* feat(server, ui): move search in reports from admin menu to normal user by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/79
+* Feat/stateless auth sso by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/73
+* Add Edge, add selenium quit action in dsl by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/75
+### 🐛 Fixed bugs:
+* Scenario search filter - Encode uri param by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/80
+* Fix encoding for keyword in lucene search by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/81
+* Standardize id field definition among each index repository by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/94
+* Fix parsing big numbers by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/95
+* ix error message fo campaign when saving duplicated scenari… by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/99
+* Manage error on rx subscribe by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/97
+* Remove global vars by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/76
+* Remove RawTestCase from domain and infra by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/77
+* Remove sql fulltext search by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/82
+* chore: Upgrade to jdk 21 by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/93
+* Remove deprecated by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/96
+* Revert deleting used json function by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/100
+* Bump Spring Boot to 3.4.3 by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/98
+* Clean login i18n by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/101
+### 👒 Dependencies:
+* Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.3.0 to 3.5.2 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/70
+* Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.1 to 3.5.2 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/69
+* Bump org.apache.maven.plugins:maven-install-plugin from 3.1.3 to 3.1.4 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/89
+* Bump org.apache.maven.plugins:maven-compiler-plugin from 3.13.0 to 3.14.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/87
+* Bump qpid-broker.version from 9.2.0 to 9.2.1 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/85
+* Bump org.wiremock:wiremock-standalone from 3.11.0 to 3.12.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/91
+* Bump org.testcontainers:testcontainers-bom from 1.20.2 to 1.20.5 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/88
+* Bump sshd.version from 2.14.0 to 2.15.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/86
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/before_3.0.0.3...3.0.0.4
+
+## [3.0.0.3](https://github.com/chutney-testing/chutney/tree/3.0.0.3)
+## What's Changed
+### 🐛 Fixed bugs:
+* Allow null body in HttpPostAction by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/62
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.0.0.2...3.0.0.3
+
+## [3.0.0.2](https://github.com/Enedis-OSS/chutney/tree/3.0.0.2)
+## What's Changed
+### 🚀 Implemented enhancements:
+* Clean scenario execution report by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/42
+* Spel math functions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/45
+### 🐛 Fixed bugs:
+* Remove useless logs by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/61
+* Scenario execution history - Missing subscribe on list replay button by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/60
+* Docker link to new oss-enedis organisation by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/59
+* Refacto exception constructor by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/44
+* Fix repository url by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/43
+### 🔧 Technical enhancements:
+* Regenerate action-impl jks by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/57
+* Delete message in exception constructors by @k-sauvee in https://github.com/Enedis-OSS/chutney/pull/41
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.0.0.1...3.0.0.2
+
+## [3.0.0.1](https://github.com/Enedis-OSS/chutney/tree/3.0.0.1)
+## What's Changed
+### 🐛 Fixed bugs:
+* Does not display button if user does not have the right for scenario exec by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/30
+* Should use default dataset if no dataset in scheduling campaing by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/31
+* Fix tab opening after campaign execution replay by @DelaunayAlex in https://github.com/Enedis-OSS/chutney/pull/19
+* Kafka multiple values header by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/35
+* Prevent title page modification when editing a target by @k-sauvee in https://github.com/Enedis-OSS/chutney/pull/39
+* Fix jiraId wording in campaign edition interface by @k-sauvee in https://github.com/Enedis-OSS/chutney/pull/38
+* Index execution for only activated scenarios by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/40
+### 🔧 Technical enhancements:
+* Sql action can read blob type by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/14
+* Fix dsl javadoc generation by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/16
+* Execution modal - Add dataset as first in the list by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/36
+* Compress and index in background by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/32
+### 📖 Documentation:
+* Doc rework : Overview + Getting started rework by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/18
+* Doc rework : Docker and Actions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/33
+* Doc rework : Readme + clean for enedis repo by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/13
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/before_3.0.0...3.0.0.1
+
 ## [3.0.0](https://github.com/chutney-testing/chutney/tree/3.0.0)
 ### 🚀 Implemented enhancements:
 * Zip scenario execution report in db & index it for search using lucene by @KarimGl in https://github.com/chutney-testing/chutney/pull/208
