@@ -18,9 +18,10 @@ export class PrettyPrintPipe implements PipeTransform {
                 value.map((v) => this.beautify(v, escapeHtml)).join(',\n') +
                 '\n]'
             );
-        } else {
+        } else if (value != null){
             return this.beautify(value, escapeHtml);
         }
+        return '';
     }
 
     beautify = (content: string, escapeHtmlP: boolean = false) => {
