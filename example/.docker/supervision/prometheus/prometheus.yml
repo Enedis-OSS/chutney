@@ -13,6 +13,6 @@ scrape_configs:
       username: "admin"
       password: "Admin"
     static_configs:
-      - targets: [ 'chutney-demo-server:8443' ]
+      - targets: [ 'chutney.dev.local:8443' ]
         labels:
           group: 'production'
