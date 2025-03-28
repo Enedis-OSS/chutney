@@ -8,3 +8,5 @@
 !.docker/demo/conf/chutney-demo.db-shm
 !.docker/demo/conf/chutney-demo.db-wal
 !.docker/supervision/grafana/grafana.db
+
+.docker/demo/conf/index/

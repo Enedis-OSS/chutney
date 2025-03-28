@@ -9,7 +9,7 @@ server:
     interface: localhost
   compression:
     enabled: true
-    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,text/event-stream
     min-response-size: 1024
   ssl:
     keyStore: 'classpath:security/https/server.jks'

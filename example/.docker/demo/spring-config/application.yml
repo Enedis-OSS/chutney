@@ -6,16 +6,8 @@ server:
   port: 8443
   compression:
     enabled: true
-    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,text/event-stream
     min-response-size: 1024
-  servlet:
-    session:
-      timeout: 240m
-      cookie:
-        http-only: true
-        secure: true
-        same-site: lax
-      tracking-modes: cookie
   ssl:
     enabled: false
 
@@ -44,11 +36,16 @@ spring:
       ddl-auto: none
 
 chutney:
+  auth:
+    jwt:
+      issuer: chutney
+      expiresIn: 240
   configuration-folder: .chutney
   environment:
     configuration-folder: ${chutney.configuration-folder}/environment
   jira:
     configuration-folder: ${chutney.configuration-folder}/jira
+  index-folder: ${chutney.configuration-folder}/index
 
   server:
     editions:
