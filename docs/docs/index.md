@@ -103,13 +103,13 @@ Finally, Chutney is production ready and used in companies by two main types of 
 
 Along each Chutney release, some built docker images are pushed to the [GitHub Chutney repo](https://github.com/orgs/Enedis-OSS/packages?repo_name=chutney){:target="_blank"} :
 
-* [chutney-server](https://github.com/orgs/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server){:target="_blank"}  
+* [chutney-server](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server){:target="_blank"}  
   This [image](https://github.com/Enedis-OSS/chutney/blob/main/chutney/.docker/server/Dockerfile){:target="_blank"} contains the Chutney server instance with embedded ui.
 
-* [chutney-ui](https://github.com/orgs/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-ui){:target="_blank"}  
+* [chutney-ui](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-ui){:target="_blank"}  
   This [image](https://github.com/Enedis-OSS/chutney/blob/main/chutney/.docker/ui/Dockerfile){:target="_blank"} contains only the Chutney ui.
     
-* [chutney-demo](https://github.com/orgs/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-demo){:target="_blank"}  
+* [chutney-demo](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-demo){:target="_blank"}  
   This [image](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/demo/Dockerfile){:target="_blank"} contains a Chutney server with some scenarios and campaigns samples.  
   Check [this](/getting_started/demo.md) for more !!
 

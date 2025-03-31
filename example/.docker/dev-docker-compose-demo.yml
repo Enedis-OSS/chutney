@@ -23,8 +23,10 @@ services:
     restart: unless-stopped
     depends_on:
       - server
+    links:
+      - "server:chutney.dev.local"
     ports:
-      - 9090:9090
+      - "9090:9090"
     volumes:
       - "./supervision/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
 
@@ -34,9 +36,10 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
+    links:
+      - "prometheus:prometheus.dev.local"
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
       - ./supervision/grafana/datasources:/etc/grafana/provisioning/datasources
       - ./supervision/grafana/dashboards/:/etc/grafana/provisioning/dashboards
-
