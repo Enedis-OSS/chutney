@@ -60,7 +60,7 @@
         <liquibase.version>4.31.0</liquibase.version>
 
         <!-- action-impl dependencies versions -->
-        <activemq.version>5.19.0</activemq.version> <!-- for JMS 1.1 support via Jms actions -->
+        <activemq.version>6.1.6</activemq.version> <!-- for JMS 1.1 support via Jms actions -->
         <sshj.version>0.39.0</sshj.version>
         <sshd.version>2.15.0</sshd.version>
         <qpid-broker.version>9.2.1</qpid-broker.version>
