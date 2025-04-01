@@ -43,6 +43,7 @@ public class SecurityConfiguration {
 
     private UserDto getDefaultUser() {
         UserDto defaultUser = new UserDto();
+        defaultUser.setId("plugin");
         defaultUser.setName("ChutneyPluginUser");
         defaultUser.addRole("ADMIN");
         Arrays.stream(Authorization.values()).map(Enum::name).forEach(defaultUser::grantAuthority);
