@@ -29,6 +29,11 @@
         </div>
     </div>
     <div class="row mt-3">
+        <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="height: 100px;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
         <execution-search-report-list [executions]="executions"
                                    [(filters)]="executionsFilters"
                                    (onExecutionSelect)="openReport($event)"></execution-search-report-list>

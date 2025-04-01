@@ -19,6 +19,7 @@ export class ExecutionSearchComponent {
     query: string;
     errorMessage: string;
     executions: Execution[];
+    isLoading: boolean = false;
     private _executionsFilters: Params = {};
 
 
@@ -66,14 +67,17 @@ export class ExecutionSearchComponent {
             return;
         }
         this.errorMessage = null;
+        this.isLoading = true
         this.executionSearchService.getExecutionReportMatchQuery(this.query)
             .subscribe({
                 next: (res: Execution[]) => {
                     res?.forEach(e => e.tags.sort());
                     this.executions = res;
+                    this.isLoading = false
                 },
                 error: (error) => {
                     this.errorMessage = error
+                    this.isLoading = false
                 }
             });
     }
