@@ -87,11 +87,15 @@ export class ScenarioExecutionService {
             let es;
             try {
                 const token = localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
-                es = new EventSourcePolyfill(url, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                var sseHeaders = {};
+                if (token && token.length > 0) {
+                    sseHeaders = {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    };
+                }
+                es = new EventSourcePolyfill(url, sseHeaders);
                 es.onerror = () => obs.error('Error loading execution');
                 es.addEventListener('partial', (evt: any) => {
                     obs.next(this.buildExecutionReportFromEvent(JSON.parse(evt.data)));
