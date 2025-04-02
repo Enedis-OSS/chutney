@@ -22,11 +22,8 @@ import { parse } from 'lossless-json'
 export class ScenarioExecutionService {
 
     resourceUrl = '/api/ui/scenario';
-    token: string;
 
-    constructor(private http: HttpClient) {
-        this.token = localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
-    }
+    constructor(private http: HttpClient) {}
 
     findScenarioExecutions(scenarioId: string): Observable<Execution[]> {
         return this.http.get<Execution[]>(environment.backend + `${this.resourceUrl}/${scenarioId}/execution/v1`)
@@ -89,11 +86,16 @@ export class ScenarioExecutionService {
         return new Observable<ScenarioExecutionReport>(obs => {
             let es;
             try {
-                es = new EventSourcePolyfill(url, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
-                });
+                const token = localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
+                var sseHeaders = {};
+                if (token && token.length > 0) {
+                    sseHeaders = {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    };
+                }
+                es = new EventSourcePolyfill(url, sseHeaders);
                 es.onerror = () => obs.error('Error loading execution');
                 es.addEventListener('partial', (evt: any) => {
                     obs.next(this.buildExecutionReportFromEvent(JSON.parse(evt.data)));
