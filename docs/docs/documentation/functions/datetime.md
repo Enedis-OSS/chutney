@@ -7,7 +7,7 @@
 
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/function/DateTimeFunctions.java){:target="_blank"}"
 
-Following functions help you write and shorten SpEL when you need to handle time or date values.
+Following functions help you write and shorten SpEL when you need to handle time, date and duration values.
 
 ## currentTimeMillis
 
@@ -15,7 +15,7 @@ Following functions help you write and shorten SpEL when you need to handle time
 
     Returns a String of the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 
-    See [System.currentTimeMillis()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html#currentTimeMillis()){:target="_blank"} for further details
+    See [System.currentTimeMillis()](https://devdocs.io/openjdk~21/java.base/java/lang/system#currentTimeMillis()){:target="_blank"} for further details
 
     **Returns** :
 
@@ -31,8 +31,8 @@ Following functions help you write and shorten SpEL when you need to handle time
 
 !!! note "Temporal date(String date, String... format)"
 
-    See [Date(Temporal)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/temporal/Temporal.html){:target="_blank"}
-    & [DateTimeFormatter.parseBest()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html#parseBest(java.lang.CharSequence,java.time.temporal.TemporalQuery...)){:target="_blank"} for further details
+    See [Date(Temporal)](https://devdocs.io/openjdk~21/java.base/java/time/temporal/temporal){:target="_blank"}
+    & [DateTimeFormatter.parseBest()](https://devdocs.io/openjdk~21/java.base/java/time/format/datetimeformatter#parseBest(java.lang.CharSequence,java.time.temporal.TemporalQuery...)){:target="_blank"} for further details
 
     **Parameters** :
 
@@ -56,7 +56,7 @@ Following functions help you write and shorten SpEL when you need to handle time
     Creates a formatter from a given pattern.  
     ex. Pattern `d MMM uuuu` will format date `2011-12-03` to `3 Dec 2011`.
 
-    See [DateTimeFormatter.ofPattern()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html#ofPattern(java.lang.String)){:target="_blank"} for further details
+    See [DateTimeFormatter.ofPattern()](https://devdocs.io/openjdk~21/java.base/java/time/format/datetimeformatter#ofPattern(java.lang.String)){:target="_blank"} for further details
 
     **Returns** :
 
@@ -75,7 +75,7 @@ Following functions help you write and shorten SpEL when you need to handle time
 
     Creates a formatter from a given pattern and given locale.
 
-    See [DateTimeFormatter.ofPattern()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html#ofPattern(java.lang.String)){:target="_blank"} for further details
+    See [DateTimeFormatter.ofPattern()](https://devdocs.io/openjdk~21/java.base/java/time/format/datetimeformatter#ofPattern(java.lang.String)){:target="_blank"} for further details
 
     **Returns** :
 
@@ -92,7 +92,7 @@ Following functions help you write and shorten SpEL when you need to handle time
 
 !!! note "DateTimeFormatter isoDateFormatter(String type)"
 
-    See [isoDateFormatter(DateTimeFormatter)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html){:target="_blank"} for further details
+    See [isoDateFormatter(DateTimeFormatter)](https://devdocs.io/openjdk~21/java.base/java/time/format/datetimeformatter){:target="_blank"} for further details
 
     **Parameters** :
 
@@ -130,7 +130,7 @@ Following functions help you write and shorten SpEL when you need to handle time
 
     Returns the current date-time from the system clock.
 
-    See [ZonedDateTime.now()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZonedDateTime.html#now()){:target="_blank"} for further details
+    See [ZonedDateTime.now()](https://devdocs.io/openjdk~21/java.base/java/time/zoneddatetime#now()){:target="_blank"} for further details
 
     **Returns** :
 
@@ -149,7 +149,7 @@ Following functions help you write and shorten SpEL when you need to handle time
     Create a TemporalAmount from a given string.  
     This is usefull when combine with other methods or functions.
 
-    See [timeAmount(TemporalAmount)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/temporal/TemporalAmount.html){:target="_blank"} for further details
+    See [timeAmount(TemporalAmount)](https://devdocs.io/openjdk~21/java.base/java/time/temporal/temporalamount){:target="_blank"} for further details
 
     **Returns** :
     
@@ -165,7 +165,7 @@ Following functions help you write and shorten SpEL when you need to handle time
 
 !!! note "ChronoUnit timeUnit(String unit)"
 
-    See [timeUnit(ChronoUnit)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/temporal/ChronoUnit.html){:target="_blank"} for further details
+    See [timeUnit(ChronoUnit)](https://devdocs.io/openjdk~21/java.base/java/time/temporal/chronounit){:target="_blank"} for further details
 
     **Parameters** :
 
@@ -202,8 +202,8 @@ Following functions help you write and shorten SpEL when you need to handle time
 
     Gets the time-zone rules for this zone id allowing calculations to be performed.
 
-    See [ZoneId.of(zoneId)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZoneId.html#of(java.lang.String)){:target="_blank"} and
-        [ZoneId.getRules()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZoneId.html#getRules()){:target="_blank"} for further details
+    See [ZoneId.of(zoneId)](https://devdocs.io/openjdk~21/java.base/java/time/zoneid#of(java.lang.String)){:target="_blank"} and
+        [ZoneId.getRules()](https://devdocs.io/openjdk~21/java.base/java/time/zoneid#getRules()){:target="_blank"} for further details
 
     **Parameters** :
 
@@ -226,8 +226,8 @@ Following functions help you write and shorten SpEL when you need to handle time
 
     Gets the time-zone rules for the system default zone id allowing calculations to be performed.
 
-    See [ZoneId.systemDefault()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZoneId.html#systemDefault()){:target="_blank"} and
-        [ZoneId.getRules()](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZoneId.html#getRules()){:target="_blank"} for further details
+    See [ZoneId.systemDefault()](https://devdocs.io/openjdk~21/java.base/java/time/zoneid#systemDefault()){:target="_blank"} and
+        [ZoneId.getRules()](https://devdocs.io/openjdk~21/java.base/java/time/zoneid#getRules()){:target="_blank"} for further details
 
     **Returns** :
     
@@ -238,3 +238,21 @@ Following functions help you write and shorten SpEL when you need to handle time
     SpEL without : `${T(java.time.ZoneId).systemDefault().getRules().nextTransition(T(java.time.Instant).now())}`
 
     SpEL with    : `${#systemDefault().nextTransition(#now())}`
+
+## durationBetween
+
+!!! note "Duration durationBetween(Temporal startInclusive, Temporal endInclusive)"
+
+    Obtains a Duration representing the duration between two temporal objects.
+
+    See [Duration.durationBetween()](https://devdocs.io/openjdk~21/java.base/java/time/duration#between(java.time.temporal.Temporal,java.time.temporal.Temporal)){:target="_blank"} for further details
+
+    **Returns** :
+    
+    * A `ZoneRules`
+
+    **Examples** :
+
+    SpEL without : `${T(java.time.Duration).durationBetween(T(java.time.Instant).now(), T(java.time.Instant).now().plusDays(1))}`
+
+    SpEL with    : `${#durationBetween(#now(), #now().plusDays(1))}`

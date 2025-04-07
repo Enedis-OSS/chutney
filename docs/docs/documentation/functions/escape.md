@@ -7,10 +7,9 @@
 
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/function/EscapeFunctions.java){:target="_blank"}"
 
-Following functions help you escape and unescape strings from JSON, HTML, XML and SQL.
-
-The class [StringEscapeUtils](https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/StringEscapeUtils.html){:target="_blank"}
-from **Apache commons text** library is used under the hood.
+Following functions help you
+ * Escape and unescape strings from JSON, HTML, XML and SQL (Usage of [StringEscapeUtils](https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/StringEscapeUtils.html){:target="_blank"}). 
+ * Encode and decode strings for URL (Usage of [URLEncoder](https://devdocs.io/openjdk~21/java.base/java/net/urlencoder){:target="_blank"} and [URLDecoder](https://devdocs.io/openjdk~21/java.base/java/net/urldecoder){:target="_blank"}).
 
 # JSON
 
@@ -80,3 +79,20 @@ from **Apache commons text** library is used under the hood.
 
     SpEL : `${#escapeXml11("text")}`
 
+# URL
+
+!!! note "String urlEncode(String toEncode, String charset)"
+
+    If `charset` is null, use the default charset.
+    
+    **Examples** :
+
+    SpEL : `${#urlEncode("text", null)}`
+
+!!! note "String urlDecode(String toDecode, String charset)"
+
+    If `charset` is null, use the default charset.
+    
+    **Examples** :
+
+    SpEL : `${#urlDecode("text", null)}`

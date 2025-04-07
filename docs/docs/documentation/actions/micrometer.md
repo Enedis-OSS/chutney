@@ -86,7 +86,7 @@ Use this action to report a [gauge](https://micrometer.io/docs/concepts#_gauges)
         4. If gaugeObject is null, gaugeFunction must be a static function.
         5. GaugeFunction is required if gaugeObject is null.
         6. GaugeFunction shouldn't have parameters.
-        7. GaugeFunction should return an `int`, `long`, `float`, `double` or any [Number](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Number.html){:target=_blank}'s child class.
+        7. GaugeFunction should return an `int`, `long`, `float`, `double` or any [Number](https://devdocs.io/openjdk~21/java.base/java/lang/number){:target=_blank}'s child class.
 
 === "Outputs"
 
@@ -189,7 +189,7 @@ metric.
     |                    | `sla`                         | String                                                                                                                                        | Comma separated list of doublepercentiles doubles                                                                                            |
     | if `name` is null  | `timer`                       | [Timer](https://micrometer.io/docs/concepts#_gauges:~:text=11.-,Timers,-Timers%20are%20intended){:target=_blank}                              | Timer instance.                                                                                                                              |
     |                    | `registry`                    | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank} | Creates and manages your application's set of meters                                                                                         |
-    |                    | `timeunit`                    | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String        | Time unit                                                                                                                                    |
+    |                    | `timeunit`                    | [TimeUnit](https://devdocs.io/openjdk~21/java.base/java/util/concurrent/timeunit){:target=_blank}  as String        | Time unit                                                                                                                                    |
     |                    | `record`                      | [Duration](https://www.chutney-testing.com/documentation/actions/introduction.md/#duration-type)                                              | The timer will be updated by the record duration                                                                                             |
 
 === "Outputs"
@@ -248,13 +248,13 @@ Use this action to stop a [Timer.Sample](https://www.javadoc.io/doc/io.micromete
     |:--------:|:-----------|:-------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|
     |    *     | `sample`   | [Timer.Sample](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank}  | The previously started sample                      |
     |    *     | `timer`    | [MeterRegistry](https://www.javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/Timer.Sample.html){:target=_blank} | Sample's duration will be recorded into this timer |
-    |          | `timeunit` | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String           | Time unit. Default is SECONDS                      |
+    |          | `timeunit` | [TimeUnit](https://devdocs.io/openjdk~21/java.base/java/util/concurrent/timeunit){:target=_blank}  as String           | Time unit. Default is SECONDS                      |
 
 === "Outputs"
 
     | Name                            | Type                                                                                                              | Description                  |
     |:--------------------------------|:------------------------------------------------------------------------------------------------------------------|:-----------------------------|
-    | `micrometerTimerSampleDuration` | [Duration](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html){:target=_blank}  | The sample recorded duration |
+    | `micrometerTimerSampleDuration` | [Duration](https://devdocs.io/openjdk~21/java.base/java/time/duration){:target=_blank}  | The sample recorded duration |
 
 ### Example
 
@@ -291,7 +291,7 @@ Use this action to report a [distribution summary](https://micrometer.io/docs/co
     |                                  | `scale`                       | Double as String                                                                                                                                                                       | Scale value                                                                                                                                  |
     |        if `name` is null         | `distributionSummary`         | [DistributionSummary](https://github.com/micrometer-metrics/micrometer/blob/main/micrometer-core/src/main/java/io/micrometer/core/instrument/DistributionSummary.java){:target=_blank} | Distribution instance.                                                                                                                       |
     |                                  | `registry`                    | [MeterRegistry](https://javadoc.io/doc/io.micrometer/micrometer-core/latest/io/micrometer/core/instrument/MeterRegistry.html){:target=_blank}                                          | Creates and manages your application's set of meters                                                                                         |
-    |                                  | `timeunit`                    | [TimeUnit](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html){:target=_blank}  as String                                                 | Time unit                                                                                                                                    |
+    |                                  | `timeunit`                    | [TimeUnit](https://devdocs.io/openjdk~21/java.base/java/util/concurrent/timeunit){:target=_blank}  as String                                                 | Time unit                                                                                                                                    |
     |                                  | `record`                      | Double as String                                                                                                                                                                       | The distribution will be updated by the record value                                                                                         |
 
 === "Outputs"
