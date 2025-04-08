@@ -11,10 +11,14 @@ import com.chutneytesting.action.spi.injectable.Logger;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-public class LessThanAsserter implements PlaceholderAsserter {
+public class LessThanAsserter extends GuardedPlaceholderAsserter {
 
     private static final String IS_LESS_THAN = "$isLessThan:";
     private static final NumberFormat nb = NumberFormat.getInstance();
+
+    public LessThanAsserter(Guard... guards) {
+        super(guards);
+    }
 
     @Override
     public boolean canApply(String value) {
@@ -22,7 +26,7 @@ public class LessThanAsserter implements PlaceholderAsserter {
     }
 
     @Override
-    public boolean assertValue(Logger logger, Object actual, Object expected) {
+    public boolean assertGuardedValue(Logger logger, Object actual, Object expected) {
         String expect = expected.toString().substring(IS_LESS_THAN.length());
         try {
             Number numActual = nb.parse(actual.toString().replaceAll(" ", ""));

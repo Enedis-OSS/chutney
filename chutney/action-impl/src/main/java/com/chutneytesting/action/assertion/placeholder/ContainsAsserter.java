@@ -9,9 +9,13 @@ package com.chutneytesting.action.assertion.placeholder;
 
 import com.chutneytesting.action.spi.injectable.Logger;
 
-public class ContainsAsserter implements PlaceholderAsserter {
+public class ContainsAsserter extends GuardedPlaceholderAsserter {
 
     private static final String CONTAINS = "$contains:";
+
+    public ContainsAsserter(Guard... guards) {
+        super(guards);
+    }
 
     @Override
     public boolean canApply(String value) {
@@ -19,9 +23,9 @@ public class ContainsAsserter implements PlaceholderAsserter {
     }
 
     @Override
-    public boolean assertValue(Logger logger, Object actual, Object expected) {
+    public boolean assertGuardedValue(Logger logger, Object actual, Object expected) {
         String toFind = expected.toString().substring(CONTAINS.length());
-        logger.info("Verify " + actual.toString() + " contains " + toFind);
+        logger.info("Verify " + actual + " contains " + toFind);
         return actual.toString().contains(toFind);
     }
 

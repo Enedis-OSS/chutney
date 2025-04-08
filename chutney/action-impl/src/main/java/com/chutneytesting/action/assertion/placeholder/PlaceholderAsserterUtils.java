@@ -7,6 +7,8 @@
 
 package com.chutneytesting.action.assertion.placeholder;
 
+import static com.chutneytesting.action.assertion.placeholder.GuardedPlaceholderAsserter.Guard.ActualNotNullGuard;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +20,16 @@ public class PlaceholderAsserterUtils {
     static {
         asserters.add(new IsNullAsserter());
         asserters.add(new NotNullAsserter());
-        asserters.add(new ContainsAsserter());
-        asserters.add(new BeforeDateAsserter());
-        asserters.add(new AfterDateAsserter());
-        asserters.add(new EqualDateAsserter());
-        asserters.add(new MatchesStringAsserter());
-        asserters.add(new LessThanAsserter());
-        asserters.add(new GreaterThanAsserter());
+        asserters.add(new ContainsAsserter(ActualNotNullGuard));
+        asserters.add(new BeforeDateAsserter(ActualNotNullGuard));
+        asserters.add(new AfterDateAsserter(ActualNotNullGuard));
+        asserters.add(new EqualDateAsserter(ActualNotNullGuard));
+        asserters.add(new MatchesStringAsserter(ActualNotNullGuard));
+        asserters.add(new LessThanAsserter(ActualNotNullGuard));
+        asserters.add(new GreaterThanAsserter(ActualNotNullGuard));
         asserters.add(new ValueArrayAsserter());
-        asserters.add(new IsEmptyAsserter());
-        asserters.add(new LenientEqualAsserter());
+        asserters.add(new IsEmptyAsserter(ActualNotNullGuard));
+        asserters.add(new LenientEqualAsserter(ActualNotNullGuard));
     }
 
     public static Optional<PlaceholderAsserter> getAsserterMatching(Object toMatch) {
