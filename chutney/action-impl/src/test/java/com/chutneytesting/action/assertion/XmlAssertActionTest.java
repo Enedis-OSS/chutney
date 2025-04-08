@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -29,7 +28,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class XmlAssertActionTest {
 
     @Test
-    public void should_execute_2_successful_assertions_on_comparing_actual_result_to_expected() {
+    public void execute_2_successful_assertions_on_comparing_actual_result_to_expected() {
         // Given
         Map<String, Object> expected = Map.of(
             "/root/node1/leaf1", "val1",
@@ -49,7 +48,7 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_execute_a_failing_assertion_on_comparing_actual_result_to_expected() {
+    public void execute_a_failing_assertion_on_comparing_actual_result_to_expected() {
         // Given
         Map<String, Object> expected = Map.of("/root/node1/leaf1", "val1");
         String fakeActualResult = "<root><node1><leaf1>incorrrectValue</leaf1></node1></root>";
@@ -63,7 +62,7 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_execute_a_failing_assertion_on_invalid_XML_content_in_actual() {
+    public void execute_a_failing_assertion_on_invalid_XML_content_in_actual() {
         // Given
         Map<String, Object> expected = Map.of("/root/node1/leaf1", "val1");
         String fakeActualResult = "broken xml";
@@ -77,7 +76,7 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_execute_a_failing_assertion_on_wrong_XPath_value_in_expected() {
+    public void execute_a_failing_assertion_on_wrong_XPath_value_in_expected() {
         // Given
         Map<String, Object> expected = Map.of("//missingnode", "val1");
         String fakeActualResult = "<root><node1><leaf1>val1</leaf1></node1></root>";
@@ -122,8 +121,7 @@ public class XmlAssertActionTest {
         "/something/anumber $isLessThan:42000 <anumber>4100</anumber>",
         "/something/thenumber $isGreaterThan:45 <thenumber>46</thenumber>"
     })
-    @DisplayName("placeholder ")
-    public void should_execute_successful_assertions_with_placeholder(String expectation) {
+    public void execute_successful_assertions_with_placeholder(String expectation) {
         // Given
         String[] expect = expectation.split(" ");
         Map<String, Object> expected = Map.of(expect[0], expect[1]);
@@ -150,7 +148,7 @@ public class XmlAssertActionTest {
             "/something/notpresent $isGreaterThan:45"
         }
     )
-    public void should_handle_null_actual_with_placeholder(String expectation) {
+    public void handle_null_actual_with_placeholder(String expectation) {
         // Given
         String[] expect = expectation.split(" ");
         Map<String, Object> expected = Map.of(expect[0], expect[1]);
@@ -165,7 +163,7 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_fails_when_xml_contains_doctype_declaration() {
+    public void fails_when_xml_contains_doctype_declaration() {
         // Given
         String xml = loadFileFromClasspath("xml_samples/with_dtd.xml");
 
@@ -175,6 +173,27 @@ public class XmlAssertActionTest {
 
         // Then
         assertThat(result.status).isEqualTo(Failure);
+    }
+
+    @Test
+    public void execute_all_assertions_not_failing_at_the_first_one() {
+        // Given
+        Map<String, Object> expected = new LinkedHashMap<>(Map.of(
+            "/something", "$isNotNull", // ok
+            "/something/fail", "aa", // ko
+            "/something/value", "3" // ok
+        ));
+        String fakeActualResult = "<something><value>3</value></something>";
+
+        // When
+        TestLogger testLogger = new TestLogger();
+        Action xmlAssertAction = new XmlAssertAction(testLogger, fakeActualResult, expected);
+        ActionExecutionResult result = xmlAssertAction.execute();
+
+        // Then
+        assertThat(result.status).isEqualTo(Failure);
+        assertThat(testLogger.info).hasSize(2);
+        assertThat(testLogger.errors).hasSize(1);
     }
 
     private String loadFileFromClasspath(String filePath) {

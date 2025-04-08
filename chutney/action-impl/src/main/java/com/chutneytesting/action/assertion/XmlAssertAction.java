@@ -58,17 +58,16 @@ public class XmlAssertAction implements Action {
         try {
             SAXBuilder saxBuilder = XmlUtils.saxBuilder();
             Document document = new XmlContent(saxBuilder, documentAsString).buildDocumentWithoutNamespaces();
-            boolean assertTrue = true;
-            for (Map.Entry<String, Object> xpathAndExpected : xpathsAndExpectedResults.entrySet()) {
+            boolean assertTrue = xpathsAndExpectedResults.entrySet().stream().map(xpathAndExpected -> {
                 String xpath = xpathAndExpected.getKey();
                 Object expected = xpathAndExpected.getValue();
                 try {
-                    assertTrue = assertTrue && assertXpathMatchExpectation(document, xpath, expected);
+                    return assertXpathMatchExpectation(document, xpath, expected);
                 } catch (XmlUtils.InvalidXPathException e) {
                     logger.error(e.getMessage());
-                    return ActionExecutionResult.ko();
+                    return false;
                 }
-            }
+            }).reduce(true, Boolean::logicalAnd);
             return assertTrue ? ActionExecutionResult.ok() : ActionExecutionResult.ko();
         } catch (XmlContent.InvalidXmlDocumentException e) {
             logger.error(e.getMessage());
