@@ -204,19 +204,12 @@ public class EnvironmentService {
     }
 
     public void deleteVariable(String key, List<String> envs) {
-        List<Environment> environments = environmentRepository.findByNames(envs)
-            .stream()
-            .filter(env -> env.containsVariable(key)).toList();
-
-        if (!envs.isEmpty() && environments.isEmpty()) {
-            throw new EnvVariableNotFoundException(key);
-        }
-        environments
+        environmentRepository.findByNames(envs)
             .forEach(env -> {
                 Environment updated = env.deleteVariable(key);
                 createOrUpdate(updated);
             });
-        logger.debug("Deleted variable: " + key);
+        logger.debug("Deleted variable: {}", key);
     }
 
     private void addVariable(EnvironmentVariable variable, Environment env) throws EnvironmentNotFoundException, VariableAlreadyExistingException {
@@ -226,7 +219,7 @@ public class EnvironmentService {
 
     }
 
-    private void createOrUpdate(Environment environment) {
+    protected void createOrUpdate(Environment environment) {
         if (!NAME_VALIDATION_PATTERN.matcher(environment.name).matches()) {
             throw new InvalidEnvironmentNameException();
         }

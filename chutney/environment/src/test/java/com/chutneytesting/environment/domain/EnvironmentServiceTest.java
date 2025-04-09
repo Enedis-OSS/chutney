@@ -11,6 +11,7 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -24,6 +25,7 @@ import com.chutneytesting.environment.domain.exception.NoEnvironmentFoundExcepti
 import com.chutneytesting.environment.domain.exception.SingleEnvironmentException;
 import com.chutneytesting.environment.domain.exception.UnresolvedEnvironmentException;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -140,5 +142,87 @@ class EnvironmentServiceTest {
 
         // Then
         verify(environmentRepository, times(1)).delete(eq("ENV"));
+    }
+
+    @Test
+    void should_delete_variable_from_all_environments_and_update_them() {
+        // Given
+        String key = "API_KEY";
+        List<String> envNames = List.of("dev", "prod");
+
+
+        EnvironmentVariable var1Env1 = new EnvironmentVariable("API_KEY", "123", "ENV1");
+        EnvironmentVariable var2Env1 = new EnvironmentVariable("TOKEN", "abc", "ENV1");
+        Environment env1 = Environment.builder()
+            .withName("ENV1")
+            .withVariables(Set.of(var1Env1, var2Env1))
+            .build();
+
+        EnvironmentVariable var1Env2 = new EnvironmentVariable("API_KEY", "123", "ENV2");
+        EnvironmentVariable var2Env2 = new EnvironmentVariable("TOKEN", "abc", "ENV2");
+        Environment env2 = Environment.builder()
+            .withName("ENV2")
+            .withVariables(Set.of(var1Env2, var2Env2))
+            .build();
+
+        when(environmentRepository.findByNames(envNames)).thenReturn(List.of(env1, env2));
+
+        // When
+        sut.deleteVariable(key, envNames);
+
+        // Then
+        verify(environmentRepository).findByNames(envNames);
+        verify(environmentRepository).save(argThat(env ->
+            env.name.equals("ENV1") &&
+                env.variables.size() == 1 &&
+                env.variables.stream().anyMatch(v -> v.key().equals("TOKEN"))
+        ));
+        verify(environmentRepository).save(argThat(env ->
+            env.name.equals("ENV2") &&
+                env.variables.size() == 1 &&
+                env.variables.stream().anyMatch(v -> v.key().equals("TOKEN"))
+        ));
+    }
+
+    @Test
+    void should_do_nothing_while_trying_to_delete_variable_from_all_environments() {
+        // Given
+        String key = "OTHER_KEY";
+        List<String> envNames = List.of("dev", "prod");
+
+
+        EnvironmentVariable var1Env1 = new EnvironmentVariable("API_KEY", "123", "ENV1");
+        EnvironmentVariable var2Env1 = new EnvironmentVariable("TOKEN", "abc", "ENV1");
+        Environment env1 = Environment.builder()
+            .withName("ENV1")
+            .withVariables(Set.of(var1Env1, var2Env1))
+            .build();
+
+        EnvironmentVariable var1Env2 = new EnvironmentVariable("API_KEY", "123", "ENV2");
+        EnvironmentVariable var2Env2 = new EnvironmentVariable("TOKEN", "abc", "ENV2");
+        Environment env2 = Environment.builder()
+            .withName("ENV2")
+            .withVariables(Set.of(var1Env2, var2Env2))
+            .build();
+
+        when(environmentRepository.findByNames(envNames)).thenReturn(List.of(env1, env2));
+
+        // When
+        sut.deleteVariable(key, envNames);
+
+        // Then
+        verify(environmentRepository).findByNames(envNames);
+        verify(environmentRepository).save(argThat(env ->
+            env.name.equals("ENV1") &&
+                env.variables.size() == 2 &&
+                env.variables.stream().anyMatch(v -> v.key().equals("TOKEN")) &&
+                env.variables.stream().anyMatch(v -> v.key().equals("API_KEY"))
+        ));
+        verify(environmentRepository).save(argThat(env ->
+            env.name.equals("ENV2") &&
+                env.variables.size() == 2 &&
+                env.variables.stream().anyMatch(v -> v.key().equals("TOKEN")) &&
+                env.variables.stream().anyMatch(v -> v.key().equals("API_KEY"))
+        ));
     }
 }
