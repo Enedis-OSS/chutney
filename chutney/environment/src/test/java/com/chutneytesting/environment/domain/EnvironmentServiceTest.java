@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.chutneytesting.environment.domain.exception.AlreadyExistingEnvironmentException;
+import com.chutneytesting.environment.domain.exception.EnvVariableNotFoundException;
 import com.chutneytesting.environment.domain.exception.InvalidEnvironmentNameException;
 import com.chutneytesting.environment.domain.exception.NoEnvironmentFoundException;
 import com.chutneytesting.environment.domain.exception.SingleEnvironmentException;
@@ -185,7 +186,7 @@ class EnvironmentServiceTest {
     }
 
     @Test
-    void should_do_nothing_while_trying_to_delete_variable_from_all_environments() {
+    void should_throw_exception_while_trying_to_delete_not_found_variable_from_all_environments() {
         // Given
         String key = "OTHER_KEY";
         List<String> envNames = List.of("dev", "prod");
@@ -207,22 +208,9 @@ class EnvironmentServiceTest {
 
         when(environmentRepository.findByNames(envNames)).thenReturn(List.of(env1, env2));
 
-        // When
-        sut.deleteVariable(key, envNames);
-
-        // Then
-        verify(environmentRepository).findByNames(envNames);
-        verify(environmentRepository).save(argThat(env ->
-            env.name.equals("ENV1") &&
-                env.variables.size() == 2 &&
-                env.variables.stream().anyMatch(v -> v.key().equals("TOKEN")) &&
-                env.variables.stream().anyMatch(v -> v.key().equals("API_KEY"))
-        ));
-        verify(environmentRepository).save(argThat(env ->
-            env.name.equals("ENV2") &&
-                env.variables.size() == 2 &&
-                env.variables.stream().anyMatch(v -> v.key().equals("TOKEN")) &&
-                env.variables.stream().anyMatch(v -> v.key().equals("API_KEY"))
-        ));
+        // When & Then
+        assertThatThrownBy(() -> sut.deleteVariable(key, envNames))
+            .isInstanceOf(EnvVariableNotFoundException.class)
+            .hasMessage("Variable [" + key + "] not found");
     }
 }
