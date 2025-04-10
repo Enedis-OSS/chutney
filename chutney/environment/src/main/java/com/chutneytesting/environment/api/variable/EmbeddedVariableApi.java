@@ -43,7 +43,9 @@ public class EmbeddedVariableApi implements EnvironmentVariableApi {
         List<EnvironmentVariable> toBeCreatedOrUpdated = partitionedVariables.get(true);
         List<EnvironmentVariable> toBeDeleted = partitionedVariables.get(false);
         environmentService.createOrUpdateVariable(key, toBeCreatedOrUpdated);
-        environmentService.deleteVariable(key, toBeDeleted.stream().map(EnvironmentVariable::env).toList());
+        try {
+            environmentService.deleteVariable(key, toBeDeleted.stream().map(EnvironmentVariable::env).toList());
+        } catch (EnvVariableNotFoundException ignored) {}
     }
 
     @Override
