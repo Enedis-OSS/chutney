@@ -204,7 +204,14 @@ public class EnvironmentService {
     }
 
     public void deleteVariable(String key, List<String> envs) {
-        environmentRepository.findByNames(envs)
+        List<Environment> environments = environmentRepository.findByNames(envs)
+            .stream()
+            .filter(env -> env.containsVariable(key)).toList();
+
+        if (!envs.isEmpty() && environments.isEmpty()) {
+            throw new EnvVariableNotFoundException(key);
+        }
+        environments
             .forEach(env -> {
                 Environment updated = env.deleteVariable(key);
                 createOrUpdate(updated);
