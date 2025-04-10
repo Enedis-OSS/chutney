@@ -7,7 +7,12 @@
 
 package com.chutneytesting.action.function;
 
+import static java.util.Optional.ofNullable;
+
 import com.chutneytesting.action.spi.SpelFunction;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class EscapeFunctions {
@@ -60,5 +65,15 @@ public class EscapeFunctions {
     @SpelFunction
     public static String escapeSql(String sql) {
         return sql.replaceAll("'", "''");
+    }
+
+    @SpelFunction
+    public static String urlEncode(String toEncode, String charset) {
+        return URLEncoder.encode(toEncode, ofNullable(charset).map(Charset::forName).orElse(Charset.defaultCharset()));
+    }
+
+    @SpelFunction
+    public static String urlDecode(String toDecode, String charset) {
+        return URLDecoder.decode(toDecode, ofNullable(charset).map(Charset::forName).orElse(Charset.defaultCharset()));
     }
 }

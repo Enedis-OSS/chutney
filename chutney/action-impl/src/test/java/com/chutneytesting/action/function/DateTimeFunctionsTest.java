@@ -207,6 +207,14 @@ public class DateTimeFunctionsTest {
         }
     }
 
+    @Test
+    @DisplayName("durationBetween function calculates duration between two temporals")
+    void durationBetween_calculates_duration_between_two_temporals() {
+        Instant now = Instant.now();
+        Duration durationBetween = DateTimeFunctions.durationBetween(now, now.plusSeconds(3600));
+        assertThat(durationBetween).hasHours(1);
+    }
+
     private static Stream<Arguments> isoDateFormatter() {
         return Stream.of(
             Arguments.of("INSTANT", DateTimeFormatter.ISO_INSTANT),

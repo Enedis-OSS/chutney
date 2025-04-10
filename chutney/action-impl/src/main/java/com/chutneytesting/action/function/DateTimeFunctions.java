@@ -135,6 +135,11 @@ public class DateTimeFunctions {
         return ZoneId.systemDefault().getRules();
     }
 
+    @SpelFunction
+    public static Duration durationBetween(Temporal startInclusive, Temporal endInclusive) {
+        return Duration.between(startInclusive, endInclusive);
+    }
+
     private static Temporal parseDateWithFormatter(String date, DateTimeFormatter dateFormatter) {
         return (Temporal) dateFormatter.parseBest(date, ZonedDateTime::from, LocalDateTime::from, LocalDate::from, Instant::from);
     }
