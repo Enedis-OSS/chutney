@@ -8,7 +8,6 @@
 package com.chutneytesting.action.assertion.placeholder;
 
 import com.chutneytesting.action.spi.injectable.Logger;
-import java.util.Arrays;
 
 public abstract class GuardedPlaceholderAsserter implements PlaceholderAsserter {
 
@@ -20,18 +19,30 @@ public abstract class GuardedPlaceholderAsserter implements PlaceholderAsserter 
 
     @Override
     public boolean assertValue(Logger logger, Object actual, Object expected) {
-        boolean guardResult = Arrays.stream(guards)
-            .map(g -> g.guardAssertValue(logger, actual, expected))
-            .anyMatch(b -> !b);
-        if (guardResult) return false;
+        for (Guard guard : guards) {
+            if (!guard.guardAssertValue(logger, actual)) {
+                return false;
+            }
+        }
         return assertGuardedValue(logger, actual, expected);
     }
 
     protected abstract boolean assertGuardedValue(Logger logger, Object actual, Object expected);
 
     public interface Guard {
-        boolean guardAssertValue(Logger logger, Object actual, Object expected);
+        /**
+         * Guard actual value for placeholder assertion.<br/>
+         * Returns true if guard is ok.<br/>
+         * When false, use logger to trace the guard assert.
+         */
+        boolean guardAssertValue(Logger logger, Object actual);
 
-        Guard ActualNotNullGuard = (logger, actual, expected) -> actual != null;
+        Guard ACTUAL_NOT_NULL_GUARD = (logger, actual) -> {
+            if (actual == null) {
+                logger.error("Actual value is null");
+                return false;
+            }
+            return true;
+        };
     }
 }
