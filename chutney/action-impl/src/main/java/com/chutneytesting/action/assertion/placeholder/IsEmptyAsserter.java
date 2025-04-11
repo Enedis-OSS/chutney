@@ -10,9 +10,13 @@ package com.chutneytesting.action.assertion.placeholder;
 import com.chutneytesting.action.spi.injectable.Logger;
 import net.minidev.json.JSONArray;
 
-public class IsEmptyAsserter implements PlaceholderAsserter {
+public class IsEmptyAsserter extends GuardedPlaceholderAsserter {
 
     private static final String IS_EMPTY = "$isEmpty";
+
+    public IsEmptyAsserter(Guard... guards) {
+        super(guards);
+    }
 
     @Override
     public boolean canApply(String value) {
@@ -20,7 +24,7 @@ public class IsEmptyAsserter implements PlaceholderAsserter {
     }
 
     @Override
-    public boolean assertValue(Logger logger, Object actual, Object expected) {
+    public boolean assertGuardedValue(Logger logger, Object actual, Object expected) {
         return assertValue(logger, actual);
     }
 

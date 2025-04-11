@@ -12,9 +12,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class EqualDateAsserter implements PlaceholderAsserter {
+public class EqualDateAsserter extends GuardedPlaceholderAsserter {
 
     private static final String LOCAL_DATETIME_EQUAL = "$isEqualDate:";
+
+    public EqualDateAsserter(Guard... guards) {
+        super(guards);
+    }
 
     @Override
     public boolean canApply(String value) {
@@ -22,7 +26,7 @@ public class EqualDateAsserter implements PlaceholderAsserter {
     }
 
     @Override
-    public boolean assertValue(Logger logger, Object actual, Object expected) {
+    public boolean assertGuardedValue(Logger logger, Object actual, Object expected) {
         String date = expected.toString().substring(LOCAL_DATETIME_EQUAL.length());
         try {
             ZonedDateTime expectedDate = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);

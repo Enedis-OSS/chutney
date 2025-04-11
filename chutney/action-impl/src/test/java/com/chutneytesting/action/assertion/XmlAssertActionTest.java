@@ -17,23 +17,26 @@ import com.chutneytesting.action.spi.Action;
 import com.chutneytesting.action.spi.ActionExecutionResult;
 import com.chutneytesting.action.spi.injectable.Logger;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class XmlAssertActionTest {
 
     @Test
-    public void should_execute_2_successful_assertions_on_comparing_actual_result_to_expected() throws Exception {
-        Map<String, Object> expected = new LinkedHashMap<>();
-        expected.put("/root/node1/leaf1", "val1");
-        expected.put("//leaf2", 5);
-        expected.put("//node1/leaf3", "val2");
-        expected.put("//node1/@at1", "val3");
-
+    public void execute_2_successful_assertions_on_comparing_actual_result_to_expected() {
         // Given
+        Map<String, Object> expected = Map.of(
+            "/root/node1/leaf1", "val1",
+            "//leaf2", 5,
+            "//node1/leaf3", "val2",
+            "//node1/@at1", "val3"
+        );
+
         String fakeActualResult = "<root><node1 at1=\"val3\"><leaf1>val1</leaf1><leaf2>5</leaf2><leaf3><![CDATA[val2]]></leaf3></node1></root>";
 
         // When
@@ -45,12 +48,9 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_execute_a_failing_assertion_on_comparing_actual_result_to_expected() throws Exception {
-        Map<String, Object> expected = new LinkedHashMap<>();
-        expected.put("/root/node1/leaf1", "val1");
-
+    public void execute_a_failing_assertion_on_comparing_actual_result_to_expected() {
         // Given
-
+        Map<String, Object> expected = Map.of("/root/node1/leaf1", "val1");
         String fakeActualResult = "<root><node1><leaf1>incorrrectValue</leaf1></node1></root>";
 
         // When
@@ -62,11 +62,9 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_execute_a_failing_assertion_on_invalid_XML_content_in_actual() throws Exception {
-        Map<String, Object> expected = new LinkedHashMap<>();
-        expected.put("/root/node1/leaf1", "val1");
-
+    public void execute_a_failing_assertion_on_invalid_XML_content_in_actual() {
         // Given
+        Map<String, Object> expected = Map.of("/root/node1/leaf1", "val1");
         String fakeActualResult = "broken xml";
 
         // When
@@ -78,11 +76,9 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void should_execute_a_failing_assertion_on_wrong_XPath_value_in_expected() throws Exception {
-        Map<String, Object> expected = new LinkedHashMap<>();
-        expected.put("//missingnode", "val1");
-
+    public void execute_a_failing_assertion_on_wrong_XPath_value_in_expected() {
         // Given
+        Map<String, Object> expected = Map.of("//missingnode", "val1");
         String fakeActualResult = "<root><node1><leaf1>val1</leaf1></node1></root>";
 
         // When
@@ -94,12 +90,13 @@ public class XmlAssertActionTest {
     }
 
     @Test
-    public void xpath_accesses_value_whatever_the_namepace() throws Exception {
-        Map<String, Object> expected = new LinkedHashMap<>();
-        expected.put("/descriptionComplete/test1/test2/number", "5072899");
-        expected.put("/descriptionComplete/test1/test2/num", "5072899");
-
+    public void xpath_accesses_value_whatever_the_namepace() {
         // Given
+        Map<String, Object> expected = Map.of(
+            "/descriptionComplete/test1/test2/number", "5072899",
+            "/descriptionComplete/test1/test2/num", "5072899"
+        );
+
         String fakeActualResult = loadFileFromClasspath("xml_samples/with_default_and_tag_namespaces.xml");
 
         // When
@@ -111,44 +108,62 @@ public class XmlAssertActionTest {
         //verify(stepContext, times(1)).success(eq("/descriptionComplete/test1/test2/number = 5072899"));
     }
 
-    @Test
-    public void should_execute_successful_assertions_with_placeholder() {
-        Map<String, Object> expected = new HashMap<>();
-        expected.put("/something/value", "$isNotNull");
-        expected.put("/something/notexist", "$isNull");
-        expected.put("/something/valuenull", "$isNull");
-        expected.put("/something/alphabet", "$contains:abcdefg");
-        expected.put("/something/matchregexp", "$matches:\\d{4}-\\d{2}-\\d{2}");
-        expected.put("/something/onedate", "$isBeforeDate:2010-01-01T11:12:13.1230Z");
-        expected.put("/something/seconddate", "$isAfterDate:1998-07-14T02:03:04.456Z");
-        expected.put("/something/thirddate", "$isEqualDate:2000-01-01T10:11:12.123Z");
-        expected.put("/something/anumber", "$isLessThan:42000");
-        expected.put("/something/thenumber", "$isGreaterThan:45");
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "/something/value $isNotNull <value>3</value>",
+        "/something/notexist $isNull <a>b</a>",
+        "/something/empty $isNull <empty></empty>",
+        "/something/alphabet $contains:abcdefg <alphabet>abcdefg</alphabet>",
+        "/something/matchregexp $matches:\\d{4}-\\d{2}-\\d{2} <matchregexp>1983-10-26</matchregexp>",
+        "/something/onedate $isBeforeDate:2010-01-01T11:12:13.1230Z <onedate>2000-01-01T10:11:12.123Z</onedate>",
+        "/something/seconddate $isAfterDate:1998-07-14T02:03:04.456Z <seconddate>2000-01-01T10:11:12.123Z</seconddate>",
+        "/something/thirddate $isEqualDate:2000-01-01T10:11:12.123Z <thirddate>2000-01-01T10:11:12.123Z</thirddate>",
+        "/something/anumber $isLessThan:42000 <anumber>4100</anumber>",
+        "/something/thenumber $isGreaterThan:45 <thenumber>46</thenumber>"
+    })
+    public void execute_successful_assertions_with_placeholder(String expectation) {
         // Given
-        String fakeActualResult =
-            "<something>" +
-                "<value>3</value>" +
-                "<alphabet>abcdefg</alphabet>" +
-                "<valuenull></valuenull>" +
-                "<matchregexp>1983-10-26</matchregexp>" +
-                "<onedate>2000-01-01T10:11:12.123Z</onedate>" +
-                "<seconddate>2000-01-01T10:11:12.123Z</seconddate>" +
-                "<thirddate>2000-01-01T10:11:12.123Z</thirddate>" +
-                "<anumber>4 100</anumber>" +
-                "<thenumber>46</thenumber>" +
-            "</something>";
+        String[] expect = expectation.split(" ");
+        Map<String, Object> expected = Map.of(expect[0], expect[1]);
+        String fakeActualResult = "<something>" + expect[2] + "</something>";
 
         // When
-        Action jsonAssertAction = new XmlAssertAction(new TestLogger(), fakeActualResult, expected);
-        ActionExecutionResult result = jsonAssertAction.execute();
+        Action xmlAssertAction = new XmlAssertAction(new TestLogger(), fakeActualResult, expected);
+        ActionExecutionResult result = xmlAssertAction.execute();
 
         // Then
         assertThat(result.status).isEqualTo(Success);
     }
 
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "/something/notpresent $isNotNull",
+            "/something/notpresent $contains:abcdefg",
+            "/something/notpresent $matches:\\d{4}-\\d{2}-\\d{2}",
+            "/something/notpresent $isBeforeDate:2010-01-01T11:12:13.1230Z",
+            "/something/notpresent $isAfterDate:1998-07-14T02:03:04.456Z",
+            "/something/notpresent $isEqualDate:2000-01-01T10:11:12.123Z",
+            "/something/notpresent $isLessThan:42000",
+            "/something/notpresent $isGreaterThan:45"
+        }
+    )
+    public void handle_null_actual_with_placeholder(String expectation) {
+        // Given
+        String[] expect = expectation.split(" ");
+        Map<String, Object> expected = Map.of(expect[0], expect[1]);
+        String fakeActualResult = "<something></something>";
+
+        // When
+        Action xmlAssertAction = new XmlAssertAction(new TestLogger(), fakeActualResult, expected);
+        ActionExecutionResult result = xmlAssertAction.execute();
+
+        // Then
+        assertThat(result.status).isEqualTo(Failure);
+    }
+
     @Test
-    public void should_fails_when_xml_contains_doctype_declaration() {
+    public void fails_when_xml_contains_doctype_declaration() {
         // Given
         String xml = loadFileFromClasspath("xml_samples/with_dtd.xml");
 
@@ -160,8 +175,28 @@ public class XmlAssertActionTest {
         assertThat(result.status).isEqualTo(Failure);
     }
 
-    @SuppressWarnings("resource")
+    @Test
+    public void execute_all_assertions_not_failing_at_the_first_one() {
+        // Given
+        Map<String, Object> expected = new LinkedHashMap<>(Map.of(
+            "/something", "$isNotNull", // ok
+            "/something/fail", "aa", // ko
+            "/something/value", "3" // ok
+        ));
+        String fakeActualResult = "<something><value>3</value></something>";
+
+        // When
+        TestLogger testLogger = new TestLogger();
+        Action xmlAssertAction = new XmlAssertAction(testLogger, fakeActualResult, expected);
+        ActionExecutionResult result = xmlAssertAction.execute();
+
+        // Then
+        assertThat(result.status).isEqualTo(Failure);
+        assertThat(testLogger.info).hasSize(2);
+        assertThat(testLogger.errors).hasSize(1);
+    }
+
     private String loadFileFromClasspath(String filePath) {
-        return new Scanner(XmlAssertAction.class.getClassLoader().getResourceAsStream(filePath), StandardCharsets.UTF_8).useDelimiter("\\A").next();
+        return new Scanner(Objects.requireNonNull(XmlAssertAction.class.getClassLoader().getResourceAsStream(filePath)), StandardCharsets.UTF_8).useDelimiter("\\A").next();
     }
 }

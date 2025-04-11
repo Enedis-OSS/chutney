@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public final class JsonUtils {
         } else if (read1 instanceof List && read2 instanceof List) {
             List<Object> list1 = (List<Object>) read1;
             List<Object> list2 = (List<Object>) read2;
-            return list1.size() == list2.size() && list1.containsAll(list2);
+            return list1.size() == list2.size() && new HashSet<>(list1).containsAll(list2);
         } else {
             return read1.equals(read2);
         }

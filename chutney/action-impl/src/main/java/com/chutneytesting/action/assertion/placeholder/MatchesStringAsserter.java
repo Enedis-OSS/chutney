@@ -11,9 +11,13 @@ import com.chutneytesting.action.spi.injectable.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MatchesStringAsserter implements PlaceholderAsserter {
+public class MatchesStringAsserter extends GuardedPlaceholderAsserter {
 
     private static final String MATCHES_STRINGS = "$matches:";
+
+    public MatchesStringAsserter(Guard... guards) {
+        super(guards);
+    }
 
     @Override
     public boolean canApply(String value) {
@@ -21,11 +25,12 @@ public class MatchesStringAsserter implements PlaceholderAsserter {
     }
 
     @Override
-    public boolean assertValue(Logger logger, Object actual, Object expected) {
+    public boolean assertGuardedValue(Logger logger, Object actual, Object expected) {
         String patternToFound = expected.toString().substring(MATCHES_STRINGS.length());
+        logger.info("Verify " + actual + " matches " + patternToFound);
+
         Pattern pattern = Pattern.compile(patternToFound);
         Matcher matcher = pattern.matcher(actual.toString());
-        logger.info("Verify " + actual.toString() + " matches " + patternToFound);
         return matcher.matches();
     }
 
