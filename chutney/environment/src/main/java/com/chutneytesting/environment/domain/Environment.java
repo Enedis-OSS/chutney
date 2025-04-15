@@ -106,7 +106,7 @@ public class Environment {
         return this;
     }
 
-    public Environment deleteVariable(String key) {
+    Environment deleteVariable(String key) {
         Optional<EnvironmentVariable> variable = variables.stream().filter(t -> t.key().equalsIgnoreCase(key)).findFirst();
         if (variable.isEmpty()) {
             return this;
