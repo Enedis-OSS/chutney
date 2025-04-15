@@ -534,7 +534,8 @@
             "empty": "Aucune donnée"
         },
         "words": {
-            "dataset": "Dataset"
+            "dataset": "Dataset",
+            "loading": "Chargement..."
         }
     },
     "metrics": {

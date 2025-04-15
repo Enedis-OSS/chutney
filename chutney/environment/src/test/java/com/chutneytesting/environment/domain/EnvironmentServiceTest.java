@@ -81,7 +81,7 @@ class EnvironmentServiceTest {
     }
 
     @Test
-    void should_return_the_unique_env_as_default() {
+    void return_the_unique_env_as_default() {
        // Given
         when(environmentRepository.listNames())
             .thenReturn(List.of("ENV"));
@@ -146,7 +146,7 @@ class EnvironmentServiceTest {
     }
 
     @Test
-    void should_delete_variable_from_all_environments_and_update_them() {
+    void delete_variable_from_all_environments_and_update_them() {
         // Given
         String key = "API_KEY";
         List<String> envNames = List.of("dev", "prod");
@@ -186,7 +186,7 @@ class EnvironmentServiceTest {
     }
 
     @Test
-    void should_throw_exception_while_trying_to_delete_not_found_variable_from_all_environments() {
+    void throw_exception_while_trying_to_delete_not_found_variable_from_all_environments() {
         // Given
         String key = "OTHER_KEY";
         List<String> envNames = List.of("dev", "prod");
