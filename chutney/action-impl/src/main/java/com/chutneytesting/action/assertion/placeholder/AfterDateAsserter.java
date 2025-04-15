@@ -12,9 +12,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class AfterDateAsserter implements PlaceholderAsserter {
+public class AfterDateAsserter extends GuardedPlaceholderAsserter {
 
     private static final String LOCAL_DATETIME_AFTER = "$isAfterDate:";
+
+    public AfterDateAsserter(Guard... guards) {
+        super(guards);
+    }
 
     @Override
     public boolean canApply(String value) {
@@ -22,7 +26,7 @@ public class AfterDateAsserter implements PlaceholderAsserter {
     }
 
     @Override
-    public boolean assertValue(Logger logger, Object actual, Object expected) {
+    public boolean assertGuardedValue(Logger logger, Object actual, Object expected) {
         String date = expected.toString().substring(LOCAL_DATETIME_AFTER.length());
         try {
             ZonedDateTime expectedDate = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
