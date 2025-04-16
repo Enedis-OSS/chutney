@@ -216,7 +216,7 @@ public class EnvironmentService {
                 Environment updated = env.deleteVariable(key);
                 createOrUpdate(updated);
             });
-        logger.debug("Deleted variable: " + key);
+        logger.debug("Deleted variable: {}", key);
     }
 
     private void addVariable(EnvironmentVariable variable, Environment env) throws EnvironmentNotFoundException, VariableAlreadyExistingException {
@@ -226,7 +226,7 @@ public class EnvironmentService {
 
     }
 
-    private void createOrUpdate(Environment environment) {
+    protected void createOrUpdate(Environment environment) {
         if (!NAME_VALIDATION_PATTERN.matcher(environment.name).matches()) {
             throw new InvalidEnvironmentNameException();
         }

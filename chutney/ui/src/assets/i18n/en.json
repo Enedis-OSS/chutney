@@ -534,7 +534,8 @@
             "empty": "No data available"
         },
         "words": {
-            "dataset": "Dataset"
+            "dataset": "Dataset",
+            "loading": "Loading..."
         }
     },
     "metrics": {

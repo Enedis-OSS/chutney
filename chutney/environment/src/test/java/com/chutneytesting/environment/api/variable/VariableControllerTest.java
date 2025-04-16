@@ -138,6 +138,10 @@ public class VariableControllerTest {
         addAvailableEnvironment("prod", emptyList(), List.of(key));
         when(environmentRepository.findByNames(List.of("test", "prod")))
             .thenReturn(List.of(registeredEnvironments.get("test"), registeredEnvironments.get("prod")));
+        when(environmentRepository.findByName("test"))
+            .thenReturn(registeredEnvironments.get("test"));
+        when(environmentRepository.findByName("prod"))
+            .thenReturn(registeredEnvironments.get("prod"));
 
         mockMvc.perform(delete(variablesBasePath + "/" + key))
             .andDo(MockMvcResultHandlers.log())
