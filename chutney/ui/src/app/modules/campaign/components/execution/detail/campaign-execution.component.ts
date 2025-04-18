@@ -94,7 +94,7 @@ export class CampaignExecutionComponent implements OnInit {
     protected getDataset(execution: ScenarioExecutionReportOutline) {
         if (!execution.dataset) {
             if (this.datasetByScenarioExecutionId && this.datasetByScenarioExecutionId.has(String(execution.executionId))) {
-                return this.datasetUtils.getExecutionDatasetName(this.datasetByScenarioExecutionId.get(String(execution.executionId)))
+                return this.datasetUtils.getExecutionDatasetName(this.datasetByScenarioExecutionId.get(String(execution.executionId)).datasetId)
             }
             return ''
         }
