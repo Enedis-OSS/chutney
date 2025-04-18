@@ -7,6 +7,7 @@
 
 package com.chutneytesting.execution.infra.storage.jpa;
 
+import static com.chutneytesting.server.core.domain.dataset.DataSet.CUSTOM_ID;
 import static java.util.Optional.ofNullable;
 
 import com.chutneytesting.campaign.infra.jpa.CampaignExecutionEntity;
@@ -201,10 +202,16 @@ public class ScenarioExecutionEntity {
             execution.testCaseTitle(),
             execution.environment(),
             execution.user(),
-            execution.dataset().map(ds -> ds.id).orElse(null),
+            execution.dataset().map(ScenarioExecutionEntity::mapDataset).orElse(null),
             truncateExecutionTags(TagListMapper.tagsToString(execution.tags().orElse(null))),
             version
         );
+    }
+
+    private static String mapDataset(DataSet dataset) {
+        if (dataset.id != null) return dataset.id;
+        if (dataset.name != null && dataset.name.isEmpty()) return CUSTOM_ID;
+        return null;
     }
 
     public ExecutionHistory.ExecutionSummary toDomain() {
@@ -212,15 +219,11 @@ public class ScenarioExecutionEntity {
     }
 
     public ExecutionHistory.ExecutionSummary toDomain(CampaignExecution campaignReport) {
-        return toDomain(campaignReport, null);
-    }
-    public ExecutionHistory.ExecutionSummary toDomain(CampaignExecution campaignReport, DataSet dataset) {
         Optional<DataSet> scenarioDataset = ofNullable(datasetId)
             .map(id -> DataSet.builder()
                 .withId(datasetId)
                 .withName("")
-                .build())
-            .or(() -> ofNullable(dataset));
+                .build());
         return ImmutableExecutionHistory.ExecutionSummary.builder()
             .executionId(id)
             .time(Instant.ofEpochMilli(executionTime).atZone(ZoneId.systemDefault()).toLocalDateTime())
