@@ -8,6 +8,10 @@
 import { areEquals, Clonable, cloneAsPossible } from '@shared';
 
 export class Dataset {
+
+    public static CUSTOM_ID = '__CUSTOM__';
+    public static CUSTOM_LABEL = 'Custom';
+
     constructor(
         public name: string = '',
         public description: string = '',
