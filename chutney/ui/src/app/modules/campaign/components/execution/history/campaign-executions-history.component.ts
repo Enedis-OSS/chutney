@@ -8,8 +8,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { empty, EMPTY, Observable, of, Subscription, timer, zip } from 'rxjs';
-import { delay, map, repeat, switchMap, tap } from 'rxjs/operators';
+import { empty, EMPTY, forkJoin, Observable, of, Subject, Subscription, timer, zip } from 'rxjs';
+import { delay, map, repeat, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign, CampaignReport } from '@model';
@@ -38,11 +38,8 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     private _executionsFilters: Params = {};
     private tabFilters: Params = {};
 
-    private onExecuteSubscription: Subscription;
-    private onErrorSubscription: Subscription;
-    private onReplaySubscription: Subscription;
     private refreshSubscription: Subscription;
-    private campaignExecutionLast: Subscription;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -55,24 +52,25 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
         this.loadJiraUrl();
 
         this.route.params.pipe(
-            tap(params => this.campaignId = params['id']),
-            switchMap(() => this.campaign$()),
-            switchMap(() => this.openTabs$())
+            tap((params) => this.campaignId = params['id']),
+            switchMap(() =>
+                forkJoin({
+                    executeEvent: this.eventManagerService.listen('execute', () => this.refreshCampaign()),
+                    errorEvent: this.eventManagerService.listen('error', (event) => of(this.onMenuError(event))),
+                    replayEvent: this.eventManagerService.listen('replay', () => this.refreshCampaign()),
+                    executeLastEvent: this.eventManagerService.listen('executeLast', () => this.replay()),
+                    campaigns: this.campaign$().pipe(switchMap(() => this.openTabs$()))
+                })
+            ),
+            takeUntil(this.unsubscribeSub$)
         ).subscribe({
             error: (error) => this.errors.push(error.error)
         });
-
-        this.onExecuteSubscription = this.eventManagerService.listen('execute', () => this.refreshCampaign()).subscribe();
-        this.onErrorSubscription = this.eventManagerService.listen('error', (event) => of(this.onMenuError(event))).subscribe();  
-        this.onReplaySubscription = this.eventManagerService.listen('replay', () => this.refreshCampaign()).subscribe(); 
-        this.campaignExecutionLast = this.eventManagerService.listen('executeLast', () => this.replay()).subscribe();  
     }
 
     ngOnDestroy(): void {
-        this.eventManagerService.destroy(this.onExecuteSubscription);
-        this.eventManagerService.destroy(this.onErrorSubscription);
-        this.eventManagerService.destroy(this.onReplaySubscription);
-        this.eventManagerService.destroy(this.campaignExecutionLast);
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
         this.unsubscribeRefresh();
     }
 
@@ -95,12 +93,16 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     }
 
     private loadJiraUrl() {
-        this.jiraPluginConfigurationService.getUrl().subscribe(url => this.jiraUrl = url);
+        this.jiraPluginConfigurationService.getUrl()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(url => this.jiraUrl = url);
     }
 
     private replay(): Observable<any> {
         const lastReport = this.campaignReports[0]
-        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset).subscribe()
+        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe()
         return timer(1000).pipe(
             switchMap(() => this.refreshCampaign())
         );

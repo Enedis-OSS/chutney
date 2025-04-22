@@ -7,8 +7,8 @@
 
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { interval, Observable, Subscription } from 'rxjs';
-import { catchError, mergeMap, takeWhile, tap } from 'rxjs/operators';
+import { interval, Observable, Subject, Subscription } from 'rxjs';
+import { catchError, mergeMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 
 import {
     distinct,
@@ -37,7 +37,7 @@ import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/sc
 export class ScenariosComponent implements OnInit, OnDestroy {
 
     private urlParamsSubscription: Subscription;
-    private reloadSubscription: Subscription;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     scenarios: Array<ScenarioIndex> = [];
 
@@ -74,6 +74,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.initJiraPlugin();
         this.fetchAndUpdateScenario()
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe(res => {
                 if (this.atLeastOneScenarioIsRunning(res)) {
                     this.subscribeForScenarios()
@@ -83,7 +84,8 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.urlParamsSubscription?.unsubscribe();
-        this.reloadSubscription?.unsubscribe();
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     createNewScenario() {
@@ -137,10 +139,12 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     // Jira link //
     initJiraPlugin() {
         this.jiraPluginConfigurationService.getUrl()
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((url) => {
                 if (url !== '') {
                     this.jiraUrl = url;
                     this.jiraLinkService.findScenarios()
+                        .pipe(takeUntil(this.unsubscribeSub$))
                         .subscribe(
                             (result) => {
                                 this.jiraMap = result;
@@ -161,8 +165,9 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     }
 
     private subscribeForScenarios() {
-        this.reloadSubscription = interval(3000)
+        interval(3000)
             .pipe(
+                takeUntil(this.unsubscribeSub$),
                 mergeMap(() => this.fetchAndUpdateScenario()),
                 takeWhile(t => this.atLeastOneScenarioIsRunning(t)))
             .subscribe()
@@ -170,6 +175,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     private fetchAndUpdateScenario(): Observable<Array<ScenarioIndex>> {
         return this.getScenarios().pipe(
+            takeUntil(this.unsubscribeSub$),
             tap(scenarios => {
                 if (!this.scenarios.length) {
                     this.scenarios = scenarios;
@@ -231,6 +237,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     private applyUriState() {
         this.urlParamsSubscription = this.route.queryParams
             .pipe(
+                takeUntil(this.unsubscribeSub$),
                 tap({
                     next: (params: Array<any>) => {
                         this.textFilter = params['text'] || '';

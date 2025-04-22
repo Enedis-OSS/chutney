@@ -5,7 +5,7 @@
  *
  */
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Execution } from '@model';
 import { ExecutionSearchService } from '@core/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -14,20 +14,24 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
     selector: 'chutney-database-admin',
     templateUrl: './execution-search.component.html'
 })
-export class ExecutionSearchComponent {
+export class ExecutionSearchComponent implements OnDestroy {
 
     query: string;
     errorMessage: string;
     executions: Execution[];
     isLoading: boolean = false;
     private _executionsFilters: Params = {};
-
+    private executionSearchSubscription: any;
 
     constructor(
         private executionSearchService: ExecutionSearchService,
         private route: ActivatedRoute,
         private router: Router) {
         this.executions = [];
+    }
+
+    ngOnDestroy(): void {
+        this.executionSearchSubscription?.unsubscribe();
     }
 
     get executionsFilters(): Params {
@@ -68,7 +72,7 @@ export class ExecutionSearchComponent {
         }
         this.errorMessage = null;
         this.isLoading = true
-        this.executionSearchService.getExecutionReportMatchQuery(this.query)
+        this.executionSearchSubscription = this.executionSearchService.getExecutionReportMatchQuery(this.query)
             .subscribe({
                 next: (res: Execution[]) => {
                     res?.forEach(e => e.tags.sort());

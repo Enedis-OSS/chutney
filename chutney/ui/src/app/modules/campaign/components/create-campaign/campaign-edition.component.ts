@@ -8,7 +8,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { DragulaService } from 'ng2-dragula';
 
 import { Campaign, CampaignScenario, Dataset, JiraScenario, ScenarioIndex } from '@model';
@@ -41,13 +41,11 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     scenarios: Array<ScenarioIndex> = [];
     scenariosToAdd: Array<{"scenarioId": ScenarioIndex, "dataset": ListItem}> = [];
     errorMessage: any;
-    subscription = new Subscription();
     datasets: ListItem[] = [];
     dropdownDatasetSettings: IDropdownSettings
     error: boolean = false;
 
-
-    private routeParamsSubscription: Subscription;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     DRAGGABLE = 'DRAGGABLE';
 
@@ -107,6 +105,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         });
     }
 
+    ngOnDestroy() {
+        this.dragulaService.destroy(this.DRAGGABLE);
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     onItemSelect(item: any) {
         this.selectedTags.push(item.text);
         this.selectedTags = newInstance(this.selectedTags);
@@ -138,46 +142,47 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.jiraFilter();
     }
 
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.dragulaService.destroy(this.DRAGGABLE);
-    }
-
     load(id: number) {
         if (id != null) {
-            this.campaignService.find(id).subscribe({
-                next: (campaignFound) => {
-                    this.campaign = campaignFound;
-                    this.campaignForm.controls['title'].setValue(this.campaign.title);
-                    this.campaignForm.controls['description'].setValue(this.campaign.description);
-                    this.campaignForm.controls['parallelRun'].setValue(this.campaign.parallelRun);
-                    this.campaignForm.controls['retryAuto'].setValue(this.campaign.retryAuto);
-                    this.campaignForm.controls['campaignTags'].setValue(this.campaign.tags);
-                    this.selectedEnvironment = this.campaign.environment;
-                    this.setCampaignScenarios();
-                    this.datasetId = this.campaign.datasetId;
-                    this.initJiraPlugin();
-                },
-                error: (error) => {
-                    this.errorMessage = error._body;
-                }
-            });
+            this.campaignService.find(id)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe({
+                    next: (campaignFound) => {
+                        this.campaign = campaignFound;
+                        this.campaignForm.controls['title'].setValue(this.campaign.title);
+                        this.campaignForm.controls['description'].setValue(this.campaign.description);
+                        this.campaignForm.controls['parallelRun'].setValue(this.campaign.parallelRun);
+                        this.campaignForm.controls['retryAuto'].setValue(this.campaign.retryAuto);
+                        this.campaignForm.controls['campaignTags'].setValue(this.campaign.tags);
+                        this.selectedEnvironment = this.campaign.environment;
+                        this.setCampaignScenarios();
+                        this.datasetId = this.campaign.datasetId;
+                        this.initJiraPlugin();
+                    },
+                    error: (error) => {
+                        this.errorMessage = error._body;
+                    }
+                });
         }
     }
 
     loadAllScenarios() {
-        this.subscription = this.scenarioService.findScenarios().subscribe({
-            next: (res) => {
-                this.scenarios = res;
-                this.routeParamsSubscription = this.route.params.subscribe((params) => {
-                    this.load(params['id']);
-                });
-                this.initTags();
-            },
-            error: (error) => {
-                this.errorMessage = error.error;
-            }
-        });
+        this.scenarioService.findScenarios()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.scenarios = res;
+                    this.route.params
+                        .pipe(takeUntil(this.unsubscribeSub$))
+                        .subscribe((params) => {
+                            this.load(params['id']);
+                        });
+                    this.initTags();
+                },
+                error: (error) => {
+                    this.errorMessage = error.error;
+                }
+            });
     }
 
     private initTags() {
@@ -189,35 +194,41 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     loadEnvironment() {
-        this.environmentService.names().subscribe({
-            next: (res) => {
-                this.environments = res.sort((t1, t2) => t1.toUpperCase() > t2.toUpperCase() ? 1 : 0);
-            },
-            error: (error) => {
-                this.errorMessage = error.error;
-            }
-        });
+        this.environmentService.names()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.environments = res.sort((t1, t2) => t1.toUpperCase() > t2.toUpperCase() ? 1 : 0);
+                },
+                error: (error) => {
+                    this.errorMessage = error.error;
+                }
+            });
     }
 
     loadJiraLink() {
-        this.jiraLinkService.findByCampaignId(this.campaign.id).subscribe({
-            next: (jiraId) => {
-                this.campaignForm.controls['jiraId'].setValue(jiraId);
-                this.refreshJiraScenarios();
-            },
-            error: (error) => {
-                this.errorMessage = error.error;
-            }
-        });
+        this.jiraLinkService.findByCampaignId(this.campaign.id)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (jiraId) => {
+                    this.campaignForm.controls['jiraId'].setValue(jiraId);
+                    this.refreshJiraScenarios();
+                },
+                error: (error) => {
+                    this.errorMessage = error.error;
+                }
+            });
     }
 
     initJiraPlugin() {
         this.jiraPluginConfigurationService.getUrl()
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((r) => {
                 if (r !== '') {
                     this.jiraUrl = r;
                     this.loadJiraLink();
                     this.jiraLinkService.findScenarios()
+                        .pipe(takeUntil(this.unsubscribeSub$))
                         .subscribe(
                             (result) => {
                                 this.jiraMap = result;
@@ -256,6 +267,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     refreshJiraScenarios() {
         if (this.campaignForm.value['jiraId'] !== '') {
             this.jiraLinkService.findTestExecScenarios(this.campaignForm.value['jiraId'])
+                .pipe(takeUntil(this.unsubscribeSub$))
                 .subscribe({
                     next: (result) => {
                         this.jiraScenarios = result;
@@ -387,10 +399,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     private subscribeToSaveResponse(result: Observable<Campaign>) {
-        result.subscribe({
-            next: (res: Campaign) => this.onSaveSuccess(res),
-            error: (error) => this.onSaveError(error)
-        });
+        result
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res: Campaign) => this.onSaveSuccess(res),
+                error: (error) => this.onSaveError(error)
+            });
     }
 
     private onSaveSuccess(result: Campaign) {
@@ -438,10 +452,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
 
     private updateJiraLink(campaignId: number) {
         this.jiraId = this.campaignForm.value['jiraId'];
-        this.jiraLinkService.saveForCampaign(campaignId, this.jiraId).subscribe({
-            error: (error) => {
-                this.errorMessage = error.error;
-            }
-        });
+        this.jiraLinkService.saveForCampaign(campaignId, this.jiraId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => {
+                    this.errorMessage = error.error;
+                }
+            });
     }
 }

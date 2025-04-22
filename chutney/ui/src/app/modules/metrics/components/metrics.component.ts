@@ -29,7 +29,8 @@ export class MetricsComponent implements OnInit, OnDestroy {
     activeTab = 'chutneyMetrics';
     autoRefresh = false;
 
-    refreshSubscribe: Subscription;
+    private refreshSubscribe: Subscription;
+    private prometheusServiceSubscription: Subscription;
 
     constructor(
         private prometheusService: PrometheusService) {
@@ -41,6 +42,7 @@ export class MetricsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.refreshSubscribe?.unsubscribe();
+        this.prometheusServiceSubscription?.unsubscribe();
     }
 
     onRefreshSwitchChange() {
@@ -69,7 +71,7 @@ export class MetricsComponent implements OnInit, OnDestroy {
 
     refreshMetrics() {
         const chutneyMetricPattern = '^scenario|^campaign';
-        this.prometheusService.getMetrics()
+        this.prometheusServiceSubscription = this.prometheusService.getMetrics()
             .subscribe(result => {
                 this.metrics = result;
                 this.chutneyMetrics = this.metrics.filter(metric => metric.name.match(chutneyMetricPattern));

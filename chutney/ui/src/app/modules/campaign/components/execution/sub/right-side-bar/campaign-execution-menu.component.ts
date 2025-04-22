@@ -5,11 +5,11 @@
  *
  */
 
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { combineLatest, identity, Observable, of, timer } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { combineLatest, identity, Observable, of, Subject, timer } from 'rxjs';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -30,7 +30,7 @@ import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/
     templateUrl: './campaign-execution-menu.component.html',
     styleUrls: ['./campaign-execution-menu.component.scss']
 })
-export class CampaignExecutionMenuComponent implements OnInit, OnChanges {
+export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() canReplay: boolean;
     @Input() campaign: Campaign;
@@ -38,6 +38,7 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges {
 
     private environments: Array<string> = [];
     private modalRef: BsModalRef;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     executeLastMenuItem = {
         label: 'global.actions.execute.last',
@@ -63,16 +64,21 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.route.params.pipe(
-            switchMap(() => this.environments$())
-        ).subscribe(environments => {
-            this.environments = environments;
-            this.initRightMenu();
-        });
+        this.environments$()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(environments => {
+                this.environments = environments;
+                this.initRightMenu();
+            });
     }
 
     ngOnChanges(changes: SimpleChanges) {
         this.addReplayButtonIfNecessary()
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     private addReplayButtonIfNecessary() {
@@ -94,8 +100,11 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges {
 
     private executeCampaign() {
         const executeCallback = (env: string, dataset: Dataset) => {
-            this.broadcastCatchError(this.campaignService.executeCampaign(this.campaign.id, env, dataset)).subscribe();
+            this.broadcastCatchError(this.campaignService.executeCampaign(this.campaign.id, env, dataset))
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe();
             timer(1000).pipe(
+                takeUntil(this.unsubscribeSub$),
                 switchMap(() => of(this.eventManagerService.broadcast({ name: 'execute', env: env })))
             ).subscribe();
         }
@@ -115,14 +124,18 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges {
         combineLatest([
             this.broadcastCatchError(this.campaignService.delete(this.campaign.id)),
             this.broadcastCatchError(this.jiraLinkService.removeForCampaign(this.campaign.id))
-        ]).subscribe(() => this.router.navigateByUrl('/campaign'));
+        ])
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(() => this.router.navigateByUrl('/campaign'));
     }
 
     private exportCampaign() {
         combineLatest([
             this.broadcastCatchError(this.campaignService.find(this.campaign.id)),
             this.broadcastCatchError(this.campaignService.findAllScenarios(this.campaign.id))
-        ]).subscribe(([campaign, scenarios]) => this.createZip(campaign.title, scenarios));
+        ])
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(([campaign, scenarios]) => this.createZip(campaign.title, scenarios));
     }
 
     private createZip(campaignTitle: string, scenarios: ScenarioIndex[]) {
@@ -132,16 +145,18 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges {
             $rawTestCases.push(this.scenarioService.findRawTestCase(testCase.id));
         }
 
-        combineLatest($rawTestCases).subscribe(rawTestCases => {
-            const zip = new JSZip();
-            rawTestCases.forEach(testCase => {
-                const fileName = `${testCase.id}-${testCase.title}.chutney.hjson`;
-                zip.file(fileName, testCase.content);
-            });
+        combineLatest($rawTestCases)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(rawTestCases => {
+                const zip = new JSZip();
+                rawTestCases.forEach(testCase => {
+                    const fileName = `${testCase.id}-${testCase.title}.chutney.hjson`;
+                    zip.file(fileName, testCase.content);
+                });
 
-            zip.generateAsync({ type: 'blob' })
-                .then(blob => this.fileSaverService.save(blob, campaignTitle));
-        });
+                zip.generateAsync({ type: 'blob' })
+                    .then(blob => this.fileSaverService.save(blob, campaignTitle));
+            });
     }
 
     private openDeleteModal() {

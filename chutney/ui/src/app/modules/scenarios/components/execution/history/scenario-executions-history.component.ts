@@ -6,12 +6,12 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { catchError, delay, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
 import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { EMPTY, Observable, of, Subscription, throwError, zip } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip } from 'rxjs';
 import { ScenarioService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { AlertService, EventManagerService } from '@shared';
@@ -32,8 +32,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     private tabFilters: Params = {};
     scenario: GwtTestCase;
     error: string;
-    private scenarioExecution$: Subscription;
-    private scenarioExecutionLast$: Subscription;
+    private unsubscribeSub$: Subject<void> = new Subject();
     private readonly LAST_ID = 'last';
 
     constructor(private route: ActivatedRoute,
@@ -48,29 +47,38 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
         this.route.params
             .pipe(
                 tap(params => this.scenarioId = params['id']),
-                switchMap(() => this.loadScenario()),
-                switchMap(() => this.getScenarioExecutions())
+                switchMap(() =>
+                    forkJoin({
+                        executionLastEvent: this.eventManagerService.listen('executeLast', () => this.replay(this.executions[0].executionId)),
+                        executionEvent: this.eventManagerService.listen('execute', (data) => this.executeScenario(data.env, data.dataset)),
+                        scenario: this.loadScenario(),
+                        scenarioExecutions: this.loadScenarioExecutions().pipe(tap(() => this.onQueryParamsChange()))
+                    })
+                )
             ).subscribe({
-                next: () => {
-                    this.onQueryParamsChange()
-                    this.onRightMenuAction();
-                },
                 error: (error) => this.error = error.error
             });
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     private onQueryParamsChange() {
         let executionsFilters: Params;
         this.route.queryParams.pipe(
+            takeUntil(this.unsubscribeSub$),
             tap(queryParams => executionsFilters = queryParams),
             switchMap(queryParams => this.openTabs(queryParams)),
             tap(() => this.executionsFilters = executionsFilters)
         ).subscribe();
     }
 
-    private getScenarioExecutions() {
+    private loadScenarioExecutions(): Observable<Execution[]> {
         return this.scenarioExecutionService.findScenarioExecutions(this.scenarioId)
             .pipe(
+                takeUntil(this.unsubscribeSub$),
                 tap(executions => {
                     executions?.forEach(e => e.tags.sort());
                     this.executions = executions;
@@ -199,6 +207,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
             openedExecutions$ = zip(executions$);
         }
         return openedExecutions$.pipe(
+            takeUntil(this.unsubscribeSub$),
             tap(executions => {
                 this.tabs = executions;
                 this.tabFilters['open'] = this.getOpenTabs(queryParams['open']);
@@ -210,6 +219,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     private findScenarioExecutionSummary(id): Observable<Execution> {
         return this.scenarioExecutionService.findScenarioExecutionSummary(+id)
             .pipe(
+                takeUntil(this.unsubscribeSub$),
                 catchError(error => {
                     this.error = error.error;
                     return EMPTY
@@ -257,15 +267,11 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
         redirect && this.updateQueryParams();
     }
 
-    private onRightMenuAction() {
-        this.scenarioExecutionLast$ = this.eventManagerService.listen('executeLast', () => this.replay(this.executions[0].executionId)).subscribe();
-        this.scenarioExecution$ = this.eventManagerService.listen('execute', (data) => this.executeScenario(data.env, data.dataset)).subscribe()
-    }
-
-    private executeScenario(env: string, dataset: Dataset = null) {
+    private executeScenario(env: string, dataset: Dataset = null): Observable<Execution> {
         return this.scenarioExecutionService
             .executeScenarioAsync(this.scenarioId, env, dataset)
             .pipe(
+                takeUntil(this.unsubscribeSub$),
                 delay(3000),
                 switchMap(executionId => this.findScenarioExecutionSummary(+executionId)),
                 tap((executionSummary) => {
@@ -283,17 +289,12 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
             )
     }
 
-    ngOnDestroy(): void {
-        this.eventManagerService.destroy(this.scenarioExecution$);
-        this.eventManagerService.destroy(this.scenarioExecutionLast$);
-    }
-
     getActiveTab() {
         return this.activeTab === this.LAST_ID ? this.executions[0]?.executionId?.toString() : this.activeTab;
     }
 
     replayButton(executionId: number) {
-        this.replay(executionId).subscribe();
+        this.replay(executionId).pipe(takeUntil(this.unsubscribeSub$)).subscribe();
     }
 
     replay(executionId: number): Observable<any> {
@@ -309,15 +310,15 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
 
     deleteExecution(executionId: number) {
         this.scenarioExecutionService.deleteExecution(executionId)
-        .subscribe({
-            next: () => {
-                this.getScenarioExecutions().subscribe();
-                this.closeReportTab(executionId);
-            },
-            error: error => {
-                this.error = error.error;
-            }
-        }
-        );
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                tap(() => this.closeReportTab(executionId)),
+                switchMap(() => this.loadScenarioExecutions())
+            )
+            .subscribe({
+                error: error => {
+                    this.error = error.error;
+                }
+            });
     }
 }

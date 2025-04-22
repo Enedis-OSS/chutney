@@ -20,7 +20,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { Location } from '@angular/common';
-import { fromEvent, merge, Observable, Subscription, timer } from 'rxjs';
+import { fromEvent, merge, Observable, Subject, Subscription, timer } from 'rxjs';
 import {
     auditTime,
     debounceTime,
@@ -28,6 +28,7 @@ import {
     delayWhen,
     retryWhen,
     scan,
+    takeUntil,
     takeWhile,
     throttleTime,
     timestamp
@@ -82,7 +83,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     collapseDataset = true;
 
     private scenarioExecutionAsyncSubscription: Subscription;
-    private resizeLeftPanelSubscription: Subscription;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     @ViewChild('leftPanel') leftPanel;
     @ViewChild('grab') grabPanel;
@@ -114,10 +115,11 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
 
     ngAfterViewInit(): void {
         if(this.leftPanel) {
-            this.resizeLeftPanelSubscription = merge(
+            merge(
                 fromEvent(window, 'resize'),
                 fromEvent(findScrollContainer(this.leftPanel.nativeElement),'scroll')
             ).pipe(
+                takeUntil(this.unsubscribeSub$),
                 throttleTime(150),
                 debounceTime(150)
             ).subscribe(() => {
@@ -156,14 +158,16 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
 
     ngOnDestroy() {
         this.unsubscribeScenarioExecutionAsyncSubscription();
-        if (this.resizeLeftPanelSubscription) this.resizeLeftPanelSubscription.unsubscribe();
         if (this.stickyTopElementResizeObserver) this.stickyTopElementResizeObserver.unobserve(this.stickyTopElement);
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     loadScenarioExecution(executionId: number) {
         this.executionError = '';
         this.execution.executionId = executionId;
         this.scenarioExecutionService.findExecutionReport(this.scenario.id, executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (scenarioExecutionReport: ScenarioExecutionReport) => {
                     if (scenarioExecutionReport?.report?.status === ExecutionStatus.RUNNING) {
@@ -192,9 +196,9 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     private selectFailedStep() {
         let failedStep = this.getFailureSteps(this.scenarioExecutionReport);
         if (failedStep?.length > 0) {
-            timer(500).subscribe(() => {
-                this.selectStep(failedStep[0], true);
-            });
+            timer(500)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe(() => this.selectStep(failedStep[0], true));
         }
     }
 
@@ -206,26 +210,31 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     }
 
     stopScenario() {
-        this.scenarioExecutionService.stopScenario(this.scenario.id, this.execution.executionId).subscribe({
-            error: (error) => {
-                const body = parse(error._body) as any;
-                this.executionError = 'Cannot stop scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
-            }
-        });
+        this.scenarioExecutionService.stopScenario(this.scenario.id, this.execution.executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => {
+                    const body = parse(error._body) as any;
+                    this.executionError = 'Cannot stop scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
+                }
+            });
     }
 
     pauseScenario() {
-        this.scenarioExecutionService.pauseScenario(this.scenario.id, this.execution.executionId).subscribe({
-            error: (error) => {
-                const body = parse(error._body) as any;
-                this.executionError = 'Cannot pause scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
-            }
-        });
+        this.scenarioExecutionService.pauseScenario(this.scenario.id, this.execution.executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => {
+                    const body = parse(error._body) as any;
+                    this.executionError = 'Cannot pause scenario : ' + error.status + ' ' + error.statusText + ' ' + body.message;
+                }
+            });
     }
 
     resumeScenario() {
         this.scenarioExecutionService.resumeScenario(this.scenario.id, this.execution.executionId)
             .pipe(
+                takeUntil(this.unsubscribeSub$),
                 delay(1000)
             )
             .subscribe({
@@ -251,12 +260,12 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
 
     toggleContextVariables() {
         this.collapseContextVariables = !this.collapseContextVariables;
-        timer(250).subscribe(() => this.setLefPanelHeight());
+        timer(250).pipe(takeUntil(this.unsubscribeSub$)).subscribe(() => this.setLefPanelHeight());
     }
 
     toggleDatasetVariables() {
         this.collapseDataset = !this.collapseDataset;
-        timer(250).subscribe(() => this.setLefPanelHeight());
+        timer(250).pipe(takeUntil(this.unsubscribeSub$)).subscribe(() => this.setLefPanelHeight());
     }
 
     private observeScenarioExecution(executionId: number) {
@@ -452,7 +461,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     togglePayloads() {
         this.prettyPrintToggle = !this.prettyPrintToggle;
 
-        timer(250).subscribe(() => this.setLefPanelHeight());
+        timer(250).pipe(takeUntil(this.unsubscribeSub$)).subscribe(() => this.setLefPanelHeight());
     }
 
     private inOutCtxToggle_onClass = 'm-0 text-wrap text-break';
@@ -533,9 +542,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
                 this.setAllStepsCollapsed(collapsed, step);
             });
             if (!collapsed) {
-                timer(500).subscribe(() => {
-                    this.selectStep(this.selectedStep, true);
-                });
+                timer(500).pipe(takeUntil(this.unsubscribeSub$)).subscribe(() => this.selectStep(this.selectedStep, true));
             }
         } else {
             parentStep['collapsed'] = collapsed;

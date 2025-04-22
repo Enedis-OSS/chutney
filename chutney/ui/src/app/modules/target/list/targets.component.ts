@@ -5,18 +5,19 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Environment, Target } from '@model';
 import { EnvironmentService } from '@core/services/environment.service';
 import { distinct, filterOnTextContent, match } from '@shared/tools';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'chutney-targets',
     templateUrl: './targets.component.html',
     styleUrls: ['./targets.component.scss']
 })
-export class TargetsComponent implements OnInit {
+export class TargetsComponent implements OnInit, OnDestroy {
 
     errorMessage: string = null;
     environments: Environment[] = [];
@@ -26,6 +27,8 @@ export class TargetsComponent implements OnInit {
     environmentFilter: Environment;
     targetFilter = '';
 
+    private environmentServiceSubscription: Subscription = null;
+
     constructor(
         private environmentService: EnvironmentService) {
     }
@@ -34,8 +37,12 @@ export class TargetsComponent implements OnInit {
         this.loadTargets();
     }
 
+    ngOnDestroy(): void {
+        this.environmentServiceSubscription?.unsubscribe();
+    }
+
     private loadTargets() {
-        this.environmentService.list().subscribe({
+        this.environmentServiceSubscription = this.environmentService.list().subscribe({
             next: envs => {
                 this.environments = envs;
                 this.targets = envs.flatMap(env => env.targets).sort(this.targetSortFunction());

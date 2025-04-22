@@ -5,8 +5,8 @@
  *
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { forkJoin, Observable, of, switchMap, timer } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { forkJoin, Observable, of, Subject, switchMap, timer } from 'rxjs';
 
 import {
     Authorization,
@@ -24,7 +24,7 @@ import { EventManagerService } from '@shared';
 import { sortByAndOrder } from '@shared/tools';
 import { CampaignReportService } from '@core/services/campaign-report.service';
 import { DatasetUtils } from "@shared/tools/dataset-utils";
-import { map, tap } from "rxjs/operators";
+import { map, takeUntil, tap } from "rxjs/operators";
 import { ScenarioExecutionService } from "src/app/core/services/scenario-execution.service";
 import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
 
@@ -33,7 +33,7 @@ import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
     templateUrl: './campaign-execution.component.html',
     styleUrls: ['./campaign-execution.component.scss']
 })
-export class CampaignExecutionComponent implements OnInit {
+export class CampaignExecutionComponent implements OnInit, OnDestroy {
 
     @Input() campaignId: number;
     @Input() report: CampaignReport;
@@ -54,6 +54,8 @@ export class CampaignExecutionComponent implements OnInit {
     orderBy: string;
     reverseOrder: boolean;
 
+    private unsubscribeSub$: Subject<void> = new Subject();
+
     constructor(
         private jiraLinkService: JiraPluginService,
         private campaignService: CampaignService,
@@ -65,20 +67,26 @@ export class CampaignExecutionComponent implements OnInit {
 
     ngOnInit(): void {
         this.cleanJiraUrl();
-        forkJoin({
-            jirjiraTestExecutionScenarios: this.jiraTestExecutionScenarios$()
-        }).subscribe(result => {
-            this.jiraScenarios = result.jirjiraTestExecutionScenarios.jiraScenarios;
-            this.jiraTestExecutionId = result.jirjiraTestExecutionScenarios.id;
-        });
+        this.jiraTestExecutionScenarios$().pipe(
+            takeUntil(this.unsubscribeSub$)
+        ).subscribe(result => {
+                this.jiraScenarios = result.jiraScenarios;
+                this.jiraTestExecutionId = result.id;
+            });
         this.report.report.scenarioExecutionReports.forEach((_report, index) => this.showMore[index] = false);
         this.fetchMissingInlineDatasetsForScenarioExecution()
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     private fetchMissingInlineDatasetsForScenarioExecution() {
         const scenarioExecutionReportWithoutDataset = this.report.report.scenarioExecutionReports.filter(scenarioExecutionReport => !scenarioExecutionReport.dataset);
         for (const execution of scenarioExecutionReportWithoutDataset) {
              this.scenarioExecutionService.findExecutionReport(execution.scenarioId, execution.executionId).pipe(
+                takeUntil(this.unsubscribeSub$),
                 map(scenarioExecution => scenarioExecution.dataset),
                 tap(dataset => this.datasetByScenarioExecutionId.set(String(execution.executionId), dataset))
             ).subscribe()
@@ -125,12 +133,13 @@ export class CampaignExecutionComponent implements OnInit {
     updateStatus(scenarioId: string) {
         const newStatus = this.selectedStatusByScenarioId.get(scenarioId);
         if (newStatus === XrayStatus.PASS || newStatus === XrayStatus.FAIL) {
-            this.jiraLinkService.updateScenarioStatus(this.jiraTestExecutionId, scenarioId, newStatus).subscribe(
-                () => { },
-                (error) => {
-                    console.log(error);
-                }
-            );
+            this.jiraLinkService.updateScenarioStatus(this.jiraTestExecutionId, scenarioId, newStatus)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe({
+                    error: (error) => {
+                        console.log(error);
+                    }
+                });
         }
     }
 
@@ -162,19 +171,24 @@ export class CampaignExecutionComponent implements OnInit {
     }
 
     replay() {
-        this.campaignService.replayFailedScenario(this.report.report.executionId).subscribe({
-            error: (error) => this.eventManagerService.broadcast({ name: 'error', msg: error.error })
-        });
+        this.campaignService.replayFailedScenario(this.report.report.executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => this.eventManagerService.broadcast({ name: 'error', msg: error.error })
+            });
 
         timer(1000).pipe(
+            takeUntil(this.unsubscribeSub$),
             switchMap(() => of(this.eventManagerService.broadcast({ name: 'replay', executionId: this.report.report.executionId })))
         ).subscribe();
     }
 
     stop() {
-        this.campaignService.stopExecution(this.campaignId, this.report.report.executionId).subscribe({
-            error: (error) => this.eventManagerService.broadcast({ name: 'error', msg: error.error })
-        });
+        this.campaignService.stopExecution(this.campaignId, this.report.report.executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => this.eventManagerService.broadcast({ name: 'error', msg: error.error })
+            });
     }
 
     statusClass(scenarioReportOutline: ScenarioExecutionReportOutline): string {
@@ -211,6 +225,7 @@ export class CampaignExecutionComponent implements OnInit {
 
     exportReport() {
         this.campaignService.findExecution(this.report.report.executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (report: CampaignExecutionFullReport) => {
                     this.campaignReportService.toPDF(report).save('campaignExecutionReport.pdf');

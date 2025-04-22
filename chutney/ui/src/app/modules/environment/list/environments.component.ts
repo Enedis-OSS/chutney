@@ -5,19 +5,20 @@
  *
  */
 
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { Environment } from '@model';
 import { ActivatedRoute } from '@angular/router';
 import { EnvironmentService } from '@core/services';
 import { ValidationService } from '../../../molecules/validation/validation.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chutney-environments',
     templateUrl: './environments.component.html',
     styleUrls: ['./environments.component.scss']
 })
-export class EnvironmentsComponent implements OnInit, DoCheck {
+export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
 
     editableEnvironments: Environment[] = [];
     environments: Environment[] = [];
@@ -25,7 +26,9 @@ export class EnvironmentsComponent implements OnInit, DoCheck {
     editionIndex: number;
     errorMessage: string;
     nameValidationMessage: string;
-    errorDeleteLastMessage: string
+    errorDeleteLastMessage: string;
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private route: ActivatedRoute,
                 private environmentService: EnvironmentService,
@@ -51,19 +54,26 @@ export class EnvironmentsComponent implements OnInit, DoCheck {
         }
     }
 
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     editing(index: number): boolean {
         return this.editionIndex === index;
     }
 
     save(index: number) {
-        this.environmentService.update(this.environments[index].name, this.editableEnvironments[index]).subscribe({
-            next: () => {
-                this.environments[index] = {...this.editableEnvironments[index]};
-                this.sort();
-                this.editionIndex = null;
-            },
-            error: err => this.errorMessage = err.error
-        });
+        this.environmentService.update(this.environments[index].name, this.editableEnvironments[index])
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.environments[index] = {...this.editableEnvironments[index]};
+                    this.sort();
+                    this.editionIndex = null;
+                },
+                error: err => this.errorMessage = err.error
+            });
     }
 
     enableAdd() {
@@ -71,50 +81,58 @@ export class EnvironmentsComponent implements OnInit, DoCheck {
     }
 
     add() {
-        this.environmentService.create(this.environment).subscribe({
-            next: () => {
-                this.editableEnvironments.push(this.environment);
-                this.environments.push(this.environment);
-                this.sort();
-                this.environment = null;
-            },
-            error: err => {
-                this.errorMessage = err.error
-            }
-        });
+        this.environmentService.create(this.environment)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.editableEnvironments.push(this.environment);
+                    this.environments.push(this.environment);
+                    this.sort();
+                    this.environment = null;
+                },
+                error: err => {
+                    this.errorMessage = err.error
+                }
+            });
     }
 
     delete(name: string, index: number) {
-        this.environmentService.delete(name).subscribe({
-            next: () => {
-                this.editableEnvironments.splice(index, 1);
-                this.environments.splice(index, 1);
-            },
-            error: err => {
-                if (err.status === 409) {
-                    this.errorMessage = this.errorDeleteLastMessage;
-                } else {
-                    this.errorMessage = err.error
+        this.environmentService.delete(name)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.editableEnvironments.splice(index, 1);
+                    this.environments.splice(index, 1);
+                },
+                error: err => {
+                    if (err.status === 409) {
+                        this.errorMessage = this.errorDeleteLastMessage;
+                    } else {
+                        this.errorMessage = err.error
+                    }
                 }
-            }
-        })
+            });
     }
 
     export(env: Environment) {
-        this.environmentService.export(env.name).subscribe({
-            error: err => this.errorMessage = err.error
-        });
+        this.environmentService.export(env.name)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: err => this.errorMessage = err.error
+            });
     }
 
     import(file: File) {
-        this.environmentService.import(file).subscribe({
-            next: env => {
-                this.editableEnvironments.push(env);
-                this.environments.push(env);
-                this.sort();
-            },
-            error: err => this.errorMessage = err.error
-        })
+        this.environmentService.import(file)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: env => {
+                    this.editableEnvironments.push(env);
+                    this.environments.push(env);
+                    this.sort();
+                },
+                error: err => this.errorMessage = err.error
+            });
     }
 
     private sort() {

@@ -8,7 +8,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventManagerService } from '@shared/event-manager.service';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { TestCase } from '@model';
 import { ScenarioService } from '@core/services';
 import { CanDeactivatePage } from '@core/guards';
@@ -53,7 +53,8 @@ export class RawEditionComponent
         '  when: {}\n' +
         '  thens: []\n' +
         '}';
-    private routeParamsSubscription: Subscription;
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(
         private route: ActivatedRoute,
@@ -67,7 +68,7 @@ export class RawEditionComponent
     }
 
     ngOnInit() {
-        this.routeParamsSubscription = this.route.params.subscribe((params) => {
+        this.route.params.subscribe((params) => {
             const duplicate =
                 this.route.snapshot.queryParamMap.get('duplicate');
             if (duplicate) {
@@ -79,7 +80,8 @@ export class RawEditionComponent
     }
 
     ngOnDestroy() {
-        this.routeParamsSubscription.unsubscribe();
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     canDeactivatePage(): boolean {
@@ -99,29 +101,31 @@ export class RawEditionComponent
 
     load(id, duplicate: boolean) {
         if (id != null) {
-            this.scenarioService.findRawTestCase(id).subscribe(
-                (rawScenario) => {
-                    this.testCase = rawScenario;
-                    this.previousTestCase = this.testCase.clone();
-                    this.checkParseError();
+            this.scenarioService.findRawTestCase(id)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe({
+                    next: (rawScenario) => {
+                        this.testCase = rawScenario;
+                        this.previousTestCase = this.testCase.clone();
+                        this.checkParseError();
 
-                    if (duplicate) {
-                        this.previousTestCase.id = null;
-                        this.testCase.id = null;
-                        this.testCase.creationDate = null;
-                        this.testCase.updateDate = null;
-                        this.testCase.author = null;
-                        this.testCase.title = '--COPY-- ' + this.testCase.title;
-                        this.testCase.defaultDataset = null;
-                        this.previousTestCase.title =
-                            '--COPY-- ' + this.previousTestCase.title;
+                        if (duplicate) {
+                            this.previousTestCase.id = null;
+                            this.testCase.id = null;
+                            this.testCase.creationDate = null;
+                            this.testCase.updateDate = null;
+                            this.testCase.author = null;
+                            this.testCase.title = '--COPY-- ' + this.testCase.title;
+                            this.testCase.defaultDataset = null;
+                            this.previousTestCase.title =
+                                '--COPY-- ' + this.previousTestCase.title;
+                        }
+                    },
+                    error: (error) => {
+                        console.log(error);
+                        this.errorMessage = error._body;
                     }
-                },
-                (error) => {
-                    console.log(error);
-                    this.errorMessage = error._body;
-                }
-            );
+                });
         } else {
             this.testCase.title = 'scenario title';
             this.testCase.description = 'scenario description';
@@ -142,21 +146,23 @@ export class RawEditionComponent
 
     saveScenario() {
         this.testCase.content = this.modifiedContent;
-        this.scenarioService.createOrUpdateRawTestCase(this.testCase).subscribe(
-            (response) => {
-                this.modificationsSaved = true;
-                this.router.navigateByUrl(
-                    '/scenario/' + response + '/executions'
-                );
-            },
-            (error) => {
-                console.log(error);
-                if (error.error) {
-                    this.saveErrorMessage = error.error;
+        this.scenarioService.createOrUpdateRawTestCase(this.testCase)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (response) => {
+                    this.modificationsSaved = true;
+                    this.router.navigateByUrl(
+                        '/scenario/' + response + '/executions'
+                    );
+                },
+                error: (error) => {
+                    console.log(error);
+                    if (error.error) {
+                        this.saveErrorMessage = error.error;
+                    }
+                    this.errorMessage = error._body;
                 }
-                this.errorMessage = error._body;
-            }
-        );
+            });
     }
 
     updateTags(event: string) {

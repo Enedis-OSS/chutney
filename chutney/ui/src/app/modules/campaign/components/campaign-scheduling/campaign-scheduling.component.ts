@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Campaign, Dataset, Environment } from '@core/model';
 import { CampaignService, DataSetService, EnvironmentService } from '@core/services';
 import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campaign/campaign-scheduling.model';
@@ -19,13 +19,14 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chutney-campaign-scheduling',
     templateUrl: './campaign-scheduling.component.html',
     styleUrls: ['./campaign-scheduling.component.scss']
 })
-export class CampaignSchedulingComponent implements OnInit {
+export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
     scheduledCampaigns: Array<CampaignScheduling> = [];
     form: FormGroup;
@@ -40,6 +41,8 @@ export class CampaignSchedulingComponent implements OnInit {
     datasetsSelected: Array<{"campaign": Campaign, "dataset": ListItem}> = [];
     datasetDropdownSettings: IDropdownSettings;
     EMPTY_DATASET = {"id": "", "text": ""};
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private campaignSchedulingService: CampaignSchedulingService,
                 private campaignService: CampaignService,
@@ -69,21 +72,27 @@ export class CampaignSchedulingComponent implements OnInit {
     ngOnInit() {
         this.datasetDropdownSettings = {...this.datasetDropdownSettings, singleSelection: true}
 
-        this.environmentService.list().subscribe({
-            next: (res) => this.environments = res,
-            error: (error) => this.errorMessage = 'Cannot get environment list - ' + error
-        });
-
-        this.datasetService.findAll().subscribe((res: Array<Dataset>) => {
-            this.datasets = res.map(dataset => {
-                return {"id": dataset.id, "text": dataset.name}
+        this.environmentService.list()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => this.environments = res,
+                error: (error) => this.errorMessage = 'Cannot get environment list - ' + error
             });
-        });
 
-        this.campaignService.findAllCampaigns().subscribe({
-            next: (res) => this.campaigns = res,
-            error: (error) => this.errorMessage = 'Cannot get campaign list - ' + error
-        });
+        this.datasetService.findAll()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe((res: Array<Dataset>) => {
+                this.datasets = res.map(dataset => {
+                    return {"id": dataset.id, "text": dataset.name}
+                });
+            });
+
+        this.campaignService.findAllCampaigns()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => this.campaigns = res,
+                error: (error) => this.errorMessage = 'Cannot get campaign list - ' + error
+            });
 
         this.loadSchedulingCampaign();
 
@@ -94,6 +103,11 @@ export class CampaignSchedulingComponent implements OnInit {
             frequency: [''],
             environment: ['']
         });
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     create() {
@@ -113,44 +127,48 @@ export class CampaignSchedulingComponent implements OnInit {
 
         const campaignExecutionRequests: CampaignExecutionRequest[] = campaignList.map((campaign, index) => {
             const dataset = this.datasetsSelected[index];  // Assurez-vous que les listes ont la même longueur et que l'index est valide
-        
+
             return {
                 campaignId: campaign.id,
                 campaignTitle: campaign.title,
                 datasetId: dataset.dataset?.id.toString() || "" // On utilise une valeur par défaut (""), au cas où `dataset.dataset?.id` soit `undefined`
             };
         });
-        
+
         const schedulingCampaign: CampaignScheduling = {
-            schedulingDate: dateTime, 
+            schedulingDate: dateTime,
             frequency: frequency,
             environment: environment,
             campaignExecutionRequest: campaignExecutionRequests
         };
 
-        this.campaignSchedulingService.create(schedulingCampaign).subscribe({
-            next: () => {
-                this.loadSchedulingCampaign();
-                this.form.reset();
-            },
-            error: (error) => {
-                this.errorMessage = 'Cannot create - ' + error;
-            }
-        });
+        this.campaignSchedulingService.create(schedulingCampaign)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.loadSchedulingCampaign();
+                    this.form.reset();
+                },
+                error: (error) => {
+                    this.errorMessage = 'Cannot create - ' + error;
+                }
+            });
 
         this.datasetsSelected = [];
         this.submitted = false;
     }
 
     delete(id: number) {
-        this.campaignSchedulingService.delete(id).subscribe({
-            next: () => {
-                this.loadSchedulingCampaign();
-            },
-            error: (error) => {
-                this.errorMessage = 'Cannot delete - ' + error;
-            }
-        });
+        this.campaignSchedulingService.delete(id)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.loadSchedulingCampaign();
+                },
+                error: (error) => {
+                    this.errorMessage = 'Cannot delete - ' + error;
+                }
+            });
     }
 
     selectCampaign(campaign: Campaign) {
@@ -166,14 +184,16 @@ export class CampaignSchedulingComponent implements OnInit {
     }
 
     private loadSchedulingCampaign() {
-        this.campaignSchedulingService.findAll().subscribe({
-            next: (res) => {
-                this.scheduledCampaigns = res;
-            },
-            error: (error) => {
-                this.errorMessage = 'Cannot get scheduled campaigns - ' + error;
-            }
-        });
+        this.campaignSchedulingService.findAll()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.scheduledCampaigns = res;
+                },
+                error: (error) => {
+                    this.errorMessage = 'Cannot get scheduled campaigns - ' + error;
+                }
+            });
     }
 
     selectDataset(toAdd: ListItem, campaign: Campaign) {

@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -20,6 +20,7 @@ import {
 } from '@angular/forms';
 import { KeyValue } from '@model';
 import { FileSaverService } from 'ngx-filesaver';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chutney-forms-data-grid',
@@ -38,15 +39,22 @@ import { FileSaverService } from 'ngx-filesaver';
         }
     ]
 })
-export class FormsDataGridComponent implements ControlValueAccessor {
+export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 
     dataGridForm: FormArray;
     headers: FormArray = this.fb.array([]);
     @Input() enableImportExport: boolean;
 
+    private unsubscribeSub$: Subject<void> = new Subject();
+
     constructor(private fb: FormBuilder,
                 private fileSaverService: FileSaverService) {
         this.dataGridForm = this.fb.array([]);
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     // Columns
@@ -238,7 +246,9 @@ export class FormsDataGridComponent implements ControlValueAccessor {
 
     registerOnChange(fn: any): void {
         this.propagateChange = fn;
-        this.dataGridForm.valueChanges.subscribe(fn);
+        this.dataGridForm.valueChanges
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(fn);
     }
 
     registerOnTouched(fn: any): void {

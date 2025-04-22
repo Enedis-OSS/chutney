@@ -5,16 +5,16 @@
  *
  */
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { VacuumService } from '@core/services';
-import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subscription, switchMap } from 'rxjs';
 
 @Component({
     selector: 'chutney-database-admin',
     templateUrl: './vacuum.component.html'
 })
-export class VacuumComponent {
+export class VacuumComponent implements OnDestroy {
 
     errorMessage: string;
     private dbSize$ = new BehaviorSubject<number>(0);
@@ -22,6 +22,7 @@ export class VacuumComponent {
     vacuumReport: number[];
     vacuumRunning = false;
 
+    private vacuumServiceSubscription: Subscription = null;
 
     constructor(private vacuumService: VacuumService) {
         this.vacuumReport = [];
@@ -34,13 +35,17 @@ export class VacuumComponent {
         );
     }
 
+    ngOnDestroy(): void {
+        this.vacuumServiceSubscription?.unsubscribe();
+    }
+
     refreshDBSize() {
         this.dbSize$.next(0);
     }
 
     launchVacuum() {
         this.vacuumRunning = true;
-        this.vacuumService.compactDatabase()
+        this.vacuumServiceSubscription = this.vacuumService.compactDatabase()
             .subscribe({
                 next: (val: number[]) => {
                     this.vacuumReport = val;
