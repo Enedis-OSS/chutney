@@ -10,7 +10,6 @@ package com.chutneytesting.security.api;
 import com.chutneytesting.security.domain.Authorizations;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/authorizations")
-@CrossOrigin(origins = "*")
 public class AuthorizationController {
 
     private final Authorizations authorizations;
