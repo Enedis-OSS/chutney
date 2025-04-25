@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,6 +63,10 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
@@ -123,10 +128,25 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver, OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter, JwtUtil jwtUtil) throws Exception {
+    @ConfigurationProperties(prefix = "chutney.security.cors")
+    CorsConfiguration corsConfiguration() {
+        return new CorsConfiguration();
+    }
+
+    @Bean
+    UrlBasedCorsConfigurationSource corsConfigurationSource(CorsConfiguration corsConfiguration) {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver, OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter, JwtUtil jwtUtil, CorsConfigurationSource corsConfigurationSource) throws Exception {
         configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
-        http.anonymous(anonymousConfigurer -> anonymousConfigurer
+        http
+            .cors(Customizer.withDefaults())
+            .anonymous(anonymousConfigurer -> anonymousConfigurer
                 .principal(anonymous)
                 .authorities(new ArrayList<>(anonymous.getAuthorities())))
             .authorizeHttpRequests(httpRequest -> {
@@ -148,6 +168,7 @@ public class ChutneyWebSecurityConfig {
                 .failureHandler(new HttpLoginFailureHandler())
             )
             .httpBasic(Customizer.withDefaults())
+            .addFilterBefore(new CorsFilter(corsConfigurationSource), BearerTokenAuthenticationFilter.class)
             .addFilterAfter(oAuth2TokenAuthenticationFilter, BearerTokenAuthenticationFilter.class);
         return http.build();
     }
