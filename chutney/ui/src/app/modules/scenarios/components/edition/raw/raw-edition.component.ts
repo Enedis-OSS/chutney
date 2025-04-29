@@ -68,15 +68,17 @@ export class RawEditionComponent
     }
 
     ngOnInit() {
-        this.route.params.subscribe((params) => {
-            const duplicate =
-                this.route.snapshot.queryParamMap.get('duplicate');
-            if (duplicate) {
-                this.load(params['id'], true);
-            } else {
-                this.load(params['id'], false);
-            }
-        });
+        this.route.params
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe((params) => {
+                const duplicate =
+                    this.route.snapshot.queryParamMap.get('duplicate');
+                if (duplicate) {
+                    this.load(params['id'], true);
+                } else {
+                    this.load(params['id'], false);
+                }
+            });
     }
 
     ngOnDestroy() {

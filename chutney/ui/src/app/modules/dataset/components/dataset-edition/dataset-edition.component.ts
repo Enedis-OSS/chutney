@@ -60,9 +60,11 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
             multiKeyValues: new FormControl()
         });
 
-        this.route.params.subscribe((params) => {
-            this.load(params['id']);
-        });
+        this.route.params
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe((params) => {
+                this.load(params['id']);
+            });
 
         this.initTranslation();
 
