@@ -12,8 +12,8 @@ import { newInstance } from '@shared/tools';
 import { distinct, flatMap } from '@shared/tools/array-utils';
 import { DataSetService } from '@core/services';
 import { Authorization, Dataset } from '@model';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import {ExecutionStatus} from "@core/model/scenario/execution-status";
@@ -35,9 +35,10 @@ export class DatasetListComponent implements OnInit, OnDestroy {
     itemList = [];
     selectedTags: string[] = [];
     selectedItem: any[];
-    urlParams: Subscription;
 
     Authorization = Authorization;
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(
         private router: Router,
@@ -47,30 +48,33 @@ export class DatasetListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.dataSetService.findAll(true).subscribe(
-            (res) => {
-                this.datasets = res;
-                this.initTags();
-                this.applyUriState();
-            },
-            (error) => console.log(error)
-        );
+        this.dataSetService.findAll(true)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.datasets = res;
+                    this.initTags();
+                    this.applyUriState();
+                },
+                error: (error) => console.log(error)
+            });
     }
 
-    ngOnDestroy(): void {
-        if (this.urlParams) {
-            this.urlParams.unsubscribe();
-        }
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     showPreview(dataset: Dataset) {
         if (this.preview == null || this.preview.id !== dataset.id) {
-            this.dataSetService.findById(dataset.id).subscribe(
-                (res) => {
-                    this.preview = res;
-                },
-                (error) => console.log(error)
-            );
+            this.dataSetService.findById(dataset.id)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe({
+                    next: (res) => {
+                        this.preview = res;
+                    },
+                    error: (error) => console.log(error)
+                });
         } else {
             this.preview = null;
         }
@@ -115,8 +119,10 @@ export class DatasetListComponent implements OnInit, OnDestroy {
     }
 
     private applyUriState() {
-        this.urlParams = this.route.queryParams
-            .pipe(map((params: Array<any>) => {
+        this.route.queryParams
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                map((params: Array<any>) => {
                     if (params['text']) {
                         this.dataSetFilter = params['text'];
                     }

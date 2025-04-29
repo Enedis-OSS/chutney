@@ -5,43 +5,50 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AgentNetwork, NetworkConfiguration } from '@model';
 import { AgentNetworkService } from '@core/services';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'chutney-agent-network',
-  templateUrl: './agent-network.component.html',
-  styleUrls: ['./agent-network.component.scss']
+    selector: 'chutney-agent-network',
+    templateUrl: './agent-network.component.html',
+    styleUrls: ['./agent-network.component.scss'],
 })
-export class AgentNetworkComponent implements OnInit {
+export class AgentNetworkComponent implements OnInit, OnDestroy {
+    private agentSubscription: Subscription = null;
+    currentConfiguration = new NetworkConfiguration([]);
+    description: AgentNetwork;
+    errorMessage: any;
+    messages: string;
 
-  currentConfiguration = new NetworkConfiguration([]);
-  description: AgentNetwork;
-  errorMessage: any;
-  messages: string;
+    constructor(private agentService: AgentNetworkService) {}
 
-  constructor(
-    private agentService: AgentNetworkService
-  ) { }
+    ngOnInit(): void {
+        this.loadAll();
+    }
 
-  ngOnInit(): void {
-    this.loadAll();
-  }
+    ngOnDestroy(): void {
+        this.agentSubscription?.unsubscribe();
+    }
 
-  loadAll(): void {
-    this.agentService.getDescription().subscribe(
-      (description) => {this.description = description; },
-      (error) => { this.messages = error.error; }
-    );
-  }
+    loadAll(): void {
+        this.agentSubscription = this.agentService.getDescription().subscribe({
+            next: (description) => {
+                this.description = description;
+            },
+            error: (error) => {
+                this.messages = error.error;
+            }
+        });
+    }
 
-  propagationDone(message: string) {
-    this.messages = message;
-    this.loadAll();
-  }
+    propagationDone(message: string) {
+        this.messages = message;
+        this.loadAll();
+    }
 
-  loadDescription(description: AgentNetwork): void {
-    this.description = description;
-  }
+    loadDescription(description: AgentNetwork): void {
+        this.description = description;
+    }
 }

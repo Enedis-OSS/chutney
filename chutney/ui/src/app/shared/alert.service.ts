@@ -8,6 +8,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -54,17 +55,16 @@ export class AlertService {
   }
 
   private getTranslation() {
-    this.translateService.get('alert.success').subscribe((res: string) => {
-        this.successTitle = res;
-    });
-    this.translateService.get('alert.info').subscribe((res: string) => {
-        this.infoTitle = res;
-    });
-    this.translateService.get('alert.error').subscribe((res: string) => {
-        this.errorTitle = res;
-    });
-    this.translateService.get('alert.warning').subscribe((res: string) => {
-        this.warningTitle = res;
+    forkJoin({
+        success: this.translateService.get('alert.success'),
+        info: this.translateService.get('alert.info'),
+        error: this.translateService.get('alert.error'),
+        warn: this.translateService.get('alert.warning')
+    }).subscribe(res => {
+        this.successTitle = res.success;
+        this.infoTitle = res.info;
+        this.errorTitle = res.error;
+        this.warningTitle = res.warn;
     });
   }
 }

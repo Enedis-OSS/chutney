@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LinkifierService } from '@core/services';
 import { delay } from '@shared/tools';
 import { Linkifier } from '@model';
+import { Subject, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -27,6 +28,8 @@ export class LinkifierComponent implements OnInit {
 
     linkifiers: Array<Linkifier> = [];
 
+    private unsubscribeSub$: Subject<void> = new Subject();
+
     constructor(private fb: FormBuilder,
                 private linkifierService: LinkifierService,
                 private validationService: ValidationService) {
@@ -41,15 +44,22 @@ export class LinkifierComponent implements OnInit {
         this.loadLinkifiers();
     }
 
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     private loadLinkifiers() {
-        this.linkifierService.loadLinkifiers().subscribe(
-            (linkifiers: Array<Linkifier>) => {
-                this.linkifiers = linkifiers;
-            },
-            (error) => {
-                this.notify(error.error, true);
-            }
-        );
+        this.linkifierService.loadLinkifiers()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (linkifiers: Array<Linkifier>) => {
+                    this.linkifiers = linkifiers;
+                },
+                error: (error) => {
+                    this.notify(error.error, true);
+                }
+            });
     }
 
     isValid(): boolean {
@@ -61,28 +71,32 @@ export class LinkifierComponent implements OnInit {
 
     addLinkifier() {
         const linkifier = new Linkifier(this.linkifierForm.value['pattern'], this.linkifierForm.value['link']);
-        this.linkifierService.add(linkifier).subscribe(
-            (res) => {
-                this.notify('Linkifier added', false);
-                this.loadLinkifiers();
-            },
-            (error) => {
-                this.notify(error.error, true);
-            }
-        );
+        this.linkifierService.add(linkifier)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.notify('Linkifier added', false);
+                    this.loadLinkifiers();
+                },
+                error: (error) => {
+                    this.notify(error.error, true);
+                }
+            });
     }
 
     remove(linkifier: Linkifier, i: number) {
         this.linkifiers.splice(i);
-        this.linkifierService.remove(linkifier).subscribe(
-            (res) => {
-                this.notify('Linkifier removed', false);
-                this.loadLinkifiers();
-            },
-            (error) => {
-                this.notify(error.error, true);
-            }
-        );
+        this.linkifierService.remove(linkifier)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.notify('Linkifier removed', false);
+                    this.loadLinkifiers();
+                },
+                error: (error) => {
+                    this.notify(error.error, true);
+                }
+            });
     }
 
     notify(message: string, isErrorNotification: boolean) {

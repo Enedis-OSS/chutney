@@ -5,12 +5,12 @@
  *
  */
 
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 
 import { Authorization, ScenarioIndex, TestCase } from '@model';
 import { JiraPluginService, LoginService, ScenarioService } from '@core/services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatestWith, Observable, of, switchMap, tap } from 'rxjs';
+import { combineLatestWith, forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -25,7 +25,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     templateUrl: './scenario-execution-menu.component.html',
     styleUrls: ['./scenario-execution-menu.component.scss']
 })
-export class ScenarioExecutionMenuComponent implements OnInit, OnChanges {
+export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 
     testCaseId: string;
 
@@ -39,6 +39,8 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges {
     Authorization = Authorization;
     modalRef: BsModalRef;
     rightMenuItems: MenuItem[];
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     executeLastMenuItem = {
         label: 'global.actions.execute.last',
@@ -59,27 +61,37 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges {
         private eventManagerService: EventManagerService) {
     }
 
-
     ngOnInit(): void {
         this.route.params
             .pipe(
                 tap(params => this.testCaseId = params['id']),
-                switchMap(() => this.scenarioService.findScenarioMetadata(this.testCaseId)),
-                combineLatestWith(this.getEnvironments())
-            )
-            .subscribe(([scenarioMetadata, environments]) => {
-                this.testCaseMetadata = scenarioMetadata;
-                this.environments = environments;
-                this.initRightMenu();
-            });
+                switchMap(() =>
+                    forkJoin({
+                        scenarioMetadata: this.scenarioService.findScenarioMetadata(this.testCaseId).pipe(
+                            takeUntil(this.unsubscribeSub$),
+                            tap((scenarioMetadata) => this.testCaseMetadata = scenarioMetadata)
+                        ),
+                        environment: this.getEnvironments().pipe(
+                            takeUntil(this.unsubscribeSub$),
+                            tap((environments) => this.environments = environments)
+                        )
+                    })
+                ),
+                tap(() => this.initRightMenu())
+            ).subscribe();
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['canReplay']) {
             if (!this.rightMenuItems?.find(item => item.label === 'global.actions.execute.last') && this.canReplay) {
-                this.rightMenuItems.splice(0, 0, this.executeLastMenuItem);
+                this.rightMenuItems?.splice(0, 0, this.executeLastMenuItem);
             }
         }
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     replay() {
@@ -104,11 +116,13 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges {
     deleteScenario(id: string) {
         let delete$ = this.scenarioService.delete(id);
 
-        delete$.subscribe(() => {
-            this.removeJiraLink(id);
-            this.router.navigateByUrl('/scenario')
-                .then(null);
-        });
+        delete$
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(() => {
+                this.removeJiraLink(id);
+                this.router.navigateByUrl('/scenario')
+                    .then(null);
+            });
     }
 
     duplicateScenario() {
@@ -117,9 +131,11 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges {
 
     exportScenario() {
         const fileName = `${this.testCaseId}-${this.testCaseMetadata.title}.chutney.hjson`;
-        this.scenarioService.findRawTestCase(this.testCaseId).subscribe((testCase: TestCase) => {
-            this.fileSaverService.saveText(testCase.content, fileName);
-        });
+        this.scenarioService.findRawTestCase(this.testCaseId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe((testCase: TestCase) => {
+                this.fileSaverService.saveText(testCase.content, fileName);
+            });
     }
 
     openModal() {
@@ -137,11 +153,11 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges {
 
 
     private removeJiraLink(id: string) {
-        this.jiraLinkService.removeForScenario(id).subscribe({
-            error: (error) => {
-                console.log(error);
-            }
-        });
+        this.jiraLinkService.removeForScenario(id)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => console.log(error)
+            });
     }
 
     private initRightMenu() {

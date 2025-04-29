@@ -8,10 +8,10 @@
 import { HttpClient } from '@angular/common/http';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '@env/environment';
-import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, of } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, of, Subject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { JwtService } from '@core/services/jwt.service';
 
 
@@ -32,9 +32,9 @@ interface SsoAuthConfig {
 @Injectable({
     providedIn: 'root'
 })
-export class SsoService {
+export class SsoService implements OnDestroy {
 
-
+    private unsubscribeSub$: Subject<void> = new Subject();
     private isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
     public isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
 
@@ -53,37 +53,57 @@ export class SsoService {
         private http: HttpClient,
         private router: Router,
     ) {
-        window.addEventListener('storage', (event) => {
-            if (event.key !== 'access_token' && event.key !== null) {
-                return;
-            }
-            this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
-            if (!this.oauthService.hasValidAccessToken()) {
-                this.navigateToLoginPage();
-            }
-        });
+        this.windowStorageEventHandler = this.windowStorageEventHandler.bind(this);
+        window.addEventListener('storage', this.windowStorageEventHandler);
 
         this.oauthService.events
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe(_ => {
                 this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
             });
         this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
         this.oauthService.events
-            .pipe(filter(e => ['token_received'].includes(e.type)))
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                filter(e => ['token_received'].includes(e.type))
+            )
             .subscribe(e => this.oauthService.loadUserProfile());
 
         this.oauthService.events
-            .pipe(filter(e => ['session_terminated', 'session_error'].includes(e.type)))
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                filter(e => ['session_terminated', 'session_error'].includes(e.type))
+            )
             .subscribe(e => this.navigateToLoginPage());
 
         this.oauthService.setupAutomaticSilentRefresh();
     }
 
+    ngOnDestroy(): void {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+
+        this.isAuthenticatedSubject$.complete();
+        this.isDoneLoadingSubject$.complete();
+
+        window.removeEventListener('storage', this.windowStorageEventHandler);
+    }
+
+    private windowStorageEventHandler(event) {
+        if (event.key !== 'access_token' && event.key !== null) {
+            return;
+        }
+        this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
+        if (!this.oauthService.hasValidAccessToken()) {
+            this.navigateToLoginPage();
+        }
+    }
+
     public canActivateProtectedRoutes$: Observable<boolean> = combineLatest([
         this.isAuthenticated$,
         this.isDoneLoading$
-    ]).pipe(map(values => values.every(b => b)));
+    ]).pipe(takeUntil(this.unsubscribeSub$), map(values => values.every(b => b)));
 
     private navigateToLoginPage() {
         this.router.navigateByUrl('/login');
@@ -137,6 +157,7 @@ export class SsoService {
         const ssoConfigLocalStorage = localStorage.getItem('ssoConfig')
         if (!ssoConfigLocalStorage) {
             return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
+                takeUntil(this.unsubscribeSub$),
                 map(ssoConfig => {
                     if (Object.keys(ssoConfig).length === 0) {
                         throw new Error('SSO error: Missing configuration')

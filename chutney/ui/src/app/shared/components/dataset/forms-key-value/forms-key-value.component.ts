@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -18,6 +18,7 @@ import {
 } from '@angular/forms';
 import { KeyValue } from '@model';
 import { FileSaverService } from 'ngx-filesaver';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chutney-forms-key-value',
@@ -36,17 +37,24 @@ import { FileSaverService } from 'ngx-filesaver';
         }
     ]
 })
-export class FormsKeyValueComponent implements ControlValueAccessor {
+export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
 
     keyValuesForm: FormArray;
     isDisabled: boolean;
     @Input() enableImportExport: boolean = true;
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(
         private fb: FormBuilder,
         private fileSaverService: FileSaverService,
     ) {
         this.keyValuesForm = this.fb.array([]);
+    }
+
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     insertNewKeyValue(i?: number) {
@@ -133,7 +141,9 @@ export class FormsKeyValueComponent implements ControlValueAccessor {
 
     registerOnChange(fn: any): void {
         this.propagateChange = fn;
-        this.keyValuesForm.valueChanges.subscribe(fn);
+        this.keyValuesForm.valueChanges
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(fn);
     }
 
     registerOnTouched(fn: any): void {

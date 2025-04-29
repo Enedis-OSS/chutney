@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RolesService } from '@core/services';
 
 import { delay } from '@shared/tools';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chutney-roles',
@@ -28,6 +29,7 @@ export class RolesComponent implements OnInit {
     private saving: string;
     private saved: string;
     private modifiedRoles: string;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(
         private rolesService: RolesService,
@@ -45,21 +47,28 @@ export class RolesComponent implements OnInit {
         this.loadRoles();
     }
 
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     saveRoles() {
         try {
             const content = JSON.parse(this.modifiedRoles);
             (async () => {
                 this.printMessage(this.saving);
                 await delay(1000);
-                this.rolesService.save(content).subscribe(
-                    res => {
-                        this.printMessage(this.saved);
-                        this.loadRoles();
-                    },
-                    err => {
-                        this.printMessage((err.error || `${err.status} ${err.statusText}`), true);
-                    }
-                );
+                this.rolesService.save(content)
+                    .pipe(takeUntil(this.unsubscribeSub$))
+                    .subscribe({
+                        next: res => {
+                            this.printMessage(this.saved);
+                            this.loadRoles();
+                        },
+                        error: err => {
+                            this.printMessage((err.error || `${err.status} ${err.statusText}`), true);
+                        }
+                    });
             })();
         } catch(e) {
             this.printMessage(e, true);
@@ -71,15 +80,17 @@ export class RolesComponent implements OnInit {
     }
 
     private loadRoles() {
-        this.rolesService.read().subscribe(
-            (res) => {
-                this.rolesContent = JSON.stringify(res, undefined, '\t');
-                //this.rolesAceEditor && this.rolesAceEditor.forceContentChange(this.rolesContent);
-            },
-            (err) => {
-                this.printMessage(err.error || `${err.status} ${err.statusText}`, true);
-            }
-        );
+        this.rolesService.read()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.rolesContent = JSON.stringify(res, undefined, '\t');
+                    //this.rolesAceEditor && this.rolesAceEditor.forceContentChange(this.rolesContent);
+                },
+                error: (err) => {
+                    this.printMessage(err.error || `${err.status} ${err.statusText}`, true);
+                }
+            });
     }
 
     private printMessage(message: string, err: boolean = false) {

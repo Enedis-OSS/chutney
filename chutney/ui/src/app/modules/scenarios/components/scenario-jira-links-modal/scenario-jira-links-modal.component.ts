@@ -5,11 +5,12 @@
  *
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
 import { JiraPluginService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subject, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     templateUrl: './scenario-jira-links-modal.component.html',
     styleUrls: ['./scenario-jira-links-modal.component.scss']
 })
-export class ScenarioJiraLinksModalComponent implements OnInit {
+export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 
     activeModal = inject(NgbActiveModal);
 
@@ -31,6 +32,8 @@ export class ScenarioJiraLinksModalComponent implements OnInit {
     jiraFormGroup: FormGroup;
 
     errorMessage = "";
+
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(
         private jiraPluginService: JiraPluginService,
@@ -47,6 +50,11 @@ export class ScenarioJiraLinksModalComponent implements OnInit {
         this.loadJiraLinks();
     }
 
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     edit() {
         this.isEditable = true;
         if( !this.jiraDatasetList.length ){
@@ -57,15 +65,17 @@ export class ScenarioJiraLinksModalComponent implements OnInit {
     save() {
         let datasetLinks = this.getDatasetLinks();
         let jiraId = this.jiraFormGroup.controls["jiraId"].value;
-        this.jiraPluginService.saveForScenario(new JiraScenarioLinks(jiraId,this.scenario.id,datasetLinks)).subscribe({
-            error: (error) => {
-                this.errorMessage = error.message;
-                return;
-            },
-            complete: () => {
-                this.activeModal.close();
-            }
-        });
+        this.jiraPluginService.saveForScenario(new JiraScenarioLinks(jiraId,this.scenario.id,datasetLinks))
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                error: (error) => {
+                    this.errorMessage = error.message;
+                    return;
+                },
+                complete: () => {
+                    this.activeModal.close();
+                }
+            });
     }
 
     newEntry() {
@@ -86,24 +96,26 @@ export class ScenarioJiraLinksModalComponent implements OnInit {
     }
 
     private loadJiraLinks() {
-        this.jiraPluginService.findByScenarioId(this.scenario.id).subscribe({
-            next: (res) => {
-                this.jiraDatasetList = Object.entries(res.datasetLinks).map(e => new JiraDatasetLinks(e[0],e[1]));
-                this.jiraFormGroup.controls["jiraId"].setValue(res.id);
-                for (let i = 0; i < this.jiraDatasetList.length; i++) {
-                    this.datasetForm.insert(
-                        i,
-                        this.createNewEntry(
-                            this.jiraDatasetList[i]["dataset"],
-                            this.jiraDatasetList[i]["jiraId"]
-                        )
-                    );
+        this.jiraPluginService.findByScenarioId(this.scenario.id)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.jiraDatasetList = Object.entries(res.datasetLinks).map(e => new JiraDatasetLinks(e[0],e[1]));
+                    this.jiraFormGroup.controls["jiraId"].setValue(res.id);
+                    for (let i = 0; i < this.jiraDatasetList.length; i++) {
+                        this.datasetForm.insert(
+                            i,
+                            this.createNewEntry(
+                                this.jiraDatasetList[i]["dataset"],
+                                this.jiraDatasetList[i]["jiraId"]
+                            )
+                        );
+                    }
+                },
+                error: (error) => {
+                    this.errorMessage = error.message;
                 }
-            },
-            error: (error) => {
-                this.errorMessage = error.message;
-            }
-        });
+            });
     }
 
     private createNewEntry(key?: string, value?: string): FormGroup {

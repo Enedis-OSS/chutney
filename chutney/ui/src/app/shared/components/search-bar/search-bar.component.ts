@@ -5,8 +5,8 @@
  *
  */
 
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { EMPTY, Subject } from 'rxjs';
+import { Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
+import { EMPTY, Subject, Subscription } from 'rxjs';
 import { Hit } from '@core/model/search/hit.model';
 import { SearchService } from '@core/services/search.service';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
     templateUrl: './search-bar.component.html',
     styleUrl: './search-bar.component.scss'
 })
-export class SearchBarComponent {
+export class SearchBarComponent implements OnDestroy {
 
     keyword: string;
     isSearchExpanded = false;
@@ -25,6 +25,7 @@ export class SearchBarComponent {
     isMacOS = false;
 
     private searchSubject = new Subject<string>();
+    private searchSubscription: Subscription = null;
 
     constructor(
         private searchService: SearchService,
@@ -34,8 +35,12 @@ export class SearchBarComponent {
         this.setupSearch();
     }
 
+    ngOnDestroy(): void {
+        this.searchSubscription?.unsubscribe();
+    }
+
     private setupSearch(): void {
-        this.searchSubject.pipe(
+        this.searchSubscription = this.searchSubject.pipe(
             debounceTime(200),
             distinctUntilChanged(),
             switchMap(keyword => {
@@ -66,7 +71,7 @@ export class SearchBarComponent {
 
     navigateToDetail(event: MouseEvent, item: any) {
         if (event.ctrlKey || event.metaKey || event.button === 1) {
-            const baseHref = document.getElementsByTagName('base')[0].href; 
+            const baseHref = document.getElementsByTagName('base')[0].href;
             const urlTree = this.router.createUrlTree([item.what, this.sanitizeMark(item.id)]);
             const serializedUrl = this.router.serializeUrl(urlTree);
 

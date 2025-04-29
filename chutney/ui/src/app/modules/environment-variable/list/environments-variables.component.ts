@@ -5,12 +5,12 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Environment, EnvironmentVariable } from '@model';
 import { distinct, match } from '@shared/tools';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EnvironmentService } from '@core/services';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { ValidationService } from '../../../molecules/validation/validation.service';
 
 @Component({
@@ -18,7 +18,7 @@ import { ValidationService } from '../../../molecules/validation/validation.serv
     templateUrl: './environments-variables.component.html',
     styleUrls: ['./environments-variables.component.scss']
 })
-export class EnvironmentsVariablesComponent implements OnInit {
+export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
 
     errorMessage: string = null;
 
@@ -30,6 +30,7 @@ export class EnvironmentsVariablesComponent implements OnInit {
     keyword = '';
     variableEditionForm: FormGroup = null;
 
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private environmentService: EnvironmentService,
                 private validationService: ValidationService) {
@@ -39,6 +40,10 @@ export class EnvironmentsVariablesComponent implements OnInit {
         this.loadVariables();
     }
 
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
 
     filter(env: Environment = null) {
         if (env) {
@@ -89,18 +94,23 @@ export class EnvironmentsVariablesComponent implements OnInit {
         } else {
             action$ = this.environmentService.addVariable(this.values().filter(variable => !!variable.value))
         }
-        action$.subscribe({
-            next: () => {
-                this.variableEditionForm = null;
-                this.loadVariables();
-            },
-            error: (error) => this.errorMessage = error.error
-        })
+        action$
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.variableEditionForm = null;
+                    this.loadVariables();
+                },
+                error: (error) => this.errorMessage = error.error
+            });
     }
 
     delete(variableKey: string) {
         this.environmentService.deleteVariable(variableKey)
-            .pipe(tap(() => this.loadVariables()))
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                tap(() => this.loadVariables())
+            )
             .subscribe();
     }
 
@@ -140,13 +150,15 @@ export class EnvironmentsVariablesComponent implements OnInit {
     }
 
     private loadVariables() {
-        this.environmentService.list().subscribe({
-            next: envs => {
-                this.environments = envs;
-                this.variables = envs.flatMap(env => env.variables).sort(this.variablesSortFunction());
-                this.variablesKeys = distinct(this.variables.map(item => item.key));
-            },
-            error: error => this.errorMessage = error.error
-        });
+        this.environmentService.list()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: envs => {
+                    this.environments = envs;
+                    this.variables = envs.flatMap(env => env.variables).sort(this.variablesSortFunction());
+                    this.variablesKeys = distinct(this.variables.map(item => item.key));
+                },
+                error: error => this.errorMessage = error.error
+            });
     }
 }

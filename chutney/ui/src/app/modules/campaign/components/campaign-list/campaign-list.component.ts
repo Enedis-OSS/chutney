@@ -8,7 +8,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { Subscription, timer } from 'rxjs';
+import { pipe, Subject, Subscription, takeUntil, timer } from 'rxjs';
 
 import { Authorization, Campaign, CampaignExecutionReport, CampaignScheduling, SelectableTags } from '@model';
 import {
@@ -47,6 +47,8 @@ export class CampaignListComponent implements OnInit, OnDestroy {
 
     Authorization = Authorization;
 
+    private unsubscribeSub$: Subject<void> = new Subject();
+
     constructor(private campaignService: CampaignService,
                 private jiraLinkService: JiraPluginService,
                 private jiraPluginConfigurationService: JiraPluginConfigurationService,
@@ -69,22 +71,25 @@ export class CampaignListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.unsubscribeLastCampaignReport();
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     loadAll() {
         this.initJiraPlugin();
-        this.campaignService.findAllCampaigns().subscribe(
-            (res) => {
-                this.campaigns = res;
-                this.applyDefaultState();
-                this.applySavedState();
-                this.applyFilters();
-            },
-            (error) => console.log(error)
-        );
+        this.campaignService.findAllCampaigns()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.campaigns = res;
+                    this.applyDefaultState();
+                    this.applySavedState();
+                    this.applyFilters();
+                },
+                error: (error) => console.log(error)
+        });
 
         this.findLastCampaignReports();
-
         this.loadSchedulingCampaign();
     }
 
@@ -107,14 +112,16 @@ export class CampaignListComponent implements OnInit, OnDestroy {
 
     deleteCampaign(id: number, title: string) {
         if (confirm(this.deletionConfirmationTextPrefix + title + this.deletionConfirmationTextSuffix)) {
-            this.campaignService.delete(id).subscribe(
-                () => {
-                    this.removeJiraLink(id);
-                    this.campaigns.splice(this.getIndexFromId(id), 1);
-                    this.campaigns = this.campaigns.slice();
-                    this.applyFilters();
-                    this.loadSchedulingCampaign();
-                });
+            this.campaignService.delete(id)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe(
+                    () => {
+                        this.removeJiraLink(id);
+                        this.campaigns.splice(this.getIndexFromId(id), 1);
+                        this.campaigns = this.campaigns.slice();
+                        this.applyFilters();
+                        this.loadSchedulingCampaign();
+                    });
         }
     }
 
@@ -213,13 +220,14 @@ export class CampaignListComponent implements OnInit, OnDestroy {
     }
 
     // Jira link //
-
     initJiraPlugin() {
         this.jiraPluginConfigurationService.getUrl()
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((r) => {
                 if (r !== '') {
                     this.jiraUrl = r;
                     this.jiraLinkService.findCampaigns()
+                        .pipe(takeUntil(this.unsubscribeSub$))
                         .subscribe(
                             (result) => {
                                 this.jiraMap = result;
@@ -238,16 +246,18 @@ export class CampaignListComponent implements OnInit, OnDestroy {
     }
 
     private findLastCampaignReports() {
-        this.campaignService.findLastCampaignReports().subscribe(
-            (lastCampaignReports) => {
-                this.lastCampaignReports = lastCampaignReports;
-                if (CampaignService.existRunningCampaignReport(lastCampaignReports)) {
-                    this.unsubscribeLastCampaignReport();
-                    this.lastCampaignReportsSub = timer(5000).subscribe(() => this.findLastCampaignReports());
-                }
-            },
-            (error) => console.log(error)
-        );
+        this.campaignService.findLastCampaignReports()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (lastCampaignReports) => {
+                    this.lastCampaignReports = lastCampaignReports;
+                    if (CampaignService.existRunningCampaignReport(lastCampaignReports)) {
+                        this.unsubscribeLastCampaignReport();
+                        this.lastCampaignReportsSub = timer(5000).subscribe(() => this.findLastCampaignReports());
+                    }
+                },
+                error: (error) => console.log(error)
+            });
     }
 
     private unsubscribeLastCampaignReport() {
@@ -257,20 +267,20 @@ export class CampaignListComponent implements OnInit, OnDestroy {
     }
 
     private removeJiraLink(campaignId: number) {
-        this.jiraLinkService.removeForCampaign(campaignId).subscribe(
-            () => {
-            },
-            (error) => console.log(error)
-        );
+        this.jiraLinkService.removeForCampaign(campaignId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {},
+                error: (error) => console.log(error)
+            });
     }
 
     private loadSchedulingCampaign() {
-        this.campaignSchedulingService.findAll().subscribe(
-            (res) => {
-                this.scheduledCampaigns = res;
-            },
-            (error) => {
-                console.log(error);
+        this.campaignSchedulingService.findAll()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => this.scheduledCampaigns = res,
+                error: (error) => console.log(error)
             });
     }
 

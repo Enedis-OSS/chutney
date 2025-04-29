@@ -5,13 +5,14 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { JiraPluginConfiguration } from '@core/model/jira-plugin-configuration.model';
 import { JiraPluginConfigurationService } from '@core/services/jira-plugin-configuration.service';
 import { TranslateService } from '@ngx-translate/core';
 import { delay } from '@shared/tools';
 import { ValidationService } from '../../../../molecules/validation/validation.service';
+import { Subject, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -19,13 +20,14 @@ import { ValidationService } from '../../../../molecules/validation/validation.s
     templateUrl: './jira.component.html',
     styleUrls: ['./jira.component.scss']
 })
-export class JiraComponent implements OnInit {
+export class JiraComponent implements OnInit, OnDestroy {
 
     configuration: JiraPluginConfiguration = new JiraPluginConfiguration('', '', '', '', '', '');
     configurationForm: FormGroup;
 
     message;
     private savedMessage: string;
+    private unsubscribeSub$: Subject<void> = new Subject();
 
     isErrorNotification: boolean = false;
 
@@ -49,6 +51,11 @@ export class JiraComponent implements OnInit {
         this.initTranslation();
     }
 
+    ngOnDestroy() {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     private initTranslation() {
         this.translate.get('global.actions.done.saved').subscribe((res: string) => {
             this.savedMessage = res;
@@ -56,20 +63,22 @@ export class JiraComponent implements OnInit {
     }
 
     loadConfiguration() {
-        this.configurationService.get().subscribe(
-            (config: JiraPluginConfiguration) => {
-                this.configuration = config;
-                this.configurationForm.controls['url'].patchValue(config.url);
-                this.configurationForm.controls['username'].patchValue(config.username);
-                this.configurationForm.controls['password'].patchValue(config.password);
-                this.configurationForm.controls['urlProxy'].patchValue(config.urlProxy);
-                this.configurationForm.controls['userProxy'].patchValue(config.userProxy);
-                this.configurationForm.controls['passwordProxy'].patchValue(config.passwordProxy);
-            },
-            (error) => {
-                this.notify(error.error, true);
-            }
-        );
+        this.configurationService.get()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (config: JiraPluginConfiguration) => {
+                    this.configuration = config;
+                    this.configurationForm.controls['url'].patchValue(config.url);
+                    this.configurationForm.controls['username'].patchValue(config.username);
+                    this.configurationForm.controls['password'].patchValue(config.password);
+                    this.configurationForm.controls['urlProxy'].patchValue(config.urlProxy);
+                    this.configurationForm.controls['userProxy'].patchValue(config.userProxy);
+                    this.configurationForm.controls['passwordProxy'].patchValue(config.passwordProxy);
+                },
+                error: (error) => {
+                    this.notify(error.error, true);
+                }
+            });
     }
 
     save() {
@@ -81,14 +90,16 @@ export class JiraComponent implements OnInit {
         const passwordProxy = this.configurationForm.value['passwordProxy'] ? this.configurationForm.value['passwordProxy'] : '';
         this.configuration = new JiraPluginConfiguration(url, username, password, urlProxy, userProxy, passwordProxy);
 
-        this.configurationService.save(this.configuration).subscribe(
-            (res) => {
-                this.notify(this.savedMessage, false);
-            },
-            (error) => {
-                this.notify(error.error, true);
-            }
-        );
+        this.configurationService.save(this.configuration)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.notify(this.savedMessage, false);
+                },
+                error: (error) => {
+                    this.notify(error.error, true);
+                }
+            });
     }
 
     notify(message: string, isErrorNotification: boolean) {

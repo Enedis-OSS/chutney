@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { delay } from '@shared/tools';
@@ -30,7 +30,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
 
     activeTab = 'keyValue';
     datasetForm: FormGroup;
-    private routeParamsSubscription: Subscription;
+    private unsubscribeSub$: Subject<void> = new Subject();
     private previousDataSet: Dataset = this.dataset;
     private modificationsSaved = false;
     message;
@@ -60,9 +60,11 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
             multiKeyValues: new FormControl()
         });
 
-        this.routeParamsSubscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
-        });
+        this.route.params
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe((params) => {
+                this.load(params['id']);
+            });
 
         this.initTranslation();
 
@@ -82,16 +84,19 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     }
 
     ngOnDestroy() {
-        this.routeParamsSubscription.unsubscribe();
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     load(id) {
         if (id != null) {
-            this.dataSetService.findById(id).subscribe(
-                (res) => {
-                    this.setCurrentDataSet(res);
-                }
-            );
+            this.dataSetService.findById(id)
+                .pipe(takeUntil(this.unsubscribeSub$))
+                .subscribe(
+                    (res) => {
+                        this.setCurrentDataSet(res);
+                    }
+                );
         }
     }
 
@@ -113,6 +118,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
         const dataset = this.createDataset();
         this.errorDuplicateHeader = false;
         this.dataSetService.save(dataset, this.previousDataSet.id)
+            .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (res) => {
                     this.setCurrentDataSet(res);
@@ -156,12 +162,15 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     }
 
     deleteDataset() {
-        this.dataSetService.delete(this.dataset.id).subscribe(
-            () => {
-                this.modificationsSaved = true;
-                this.router.navigateByUrl('/dataset');
-            },
-            error => console.log(error));
+        this.dataSetService.delete(this.dataset.id)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.modificationsSaved = true;
+                    this.router.navigateByUrl('/dataset');
+                },
+                error: (error) => console.log(error)
+            });
     }
 
     private createDataset() {

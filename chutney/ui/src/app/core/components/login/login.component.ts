@@ -7,11 +7,11 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subscription } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 
 import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'chutney-login',
@@ -24,9 +24,8 @@ export class LoginComponent implements OnDestroy, OnInit {
     password: string;
     action: string;
 
+    private unsubscribeSub$: Subject<void> = new Subject();
     private forwardUrl: string;
-    private paramsSubscription: Subscription;
-    private queryParamsSubscription: Subscription;
     loginService: LoginService
     version = '';
     applicationName = '';
@@ -38,18 +37,18 @@ export class LoginComponent implements OnDestroy, OnInit {
         private ssoService: SsoService
     ) {
         this.loginService = loginService
-        this.paramsSubscription = this.route.params.subscribe(params => {
-            this.action = params['action'];
-        });
-        this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
-            this.forwardUrl = params['url'];
-        });
-        this.infoService.getVersion().subscribe(result => {
-            this.version = result;
-        });
-        this.infoService.getApplicationName().subscribe(result => {
-            this.applicationName = result;
-        });
+        this.route.params
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(params => this.action = params['action']);
+        this.route.queryParams
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(params => this.forwardUrl = params['url']);
+        this.infoService.getVersion()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(result => this.version = result);
+        this.infoService.getApplicationName()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(result => this.applicationName = result);
     }
 
     ngOnInit() {
@@ -59,16 +58,13 @@ export class LoginComponent implements OnDestroy, OnInit {
     }
 
     ngOnDestroy() {
-        if (this.paramsSubscription) {
-            this.paramsSubscription.unsubscribe();
-        }
-        if (this.queryParamsSubscription) {
-            this.queryParamsSubscription.unsubscribe();
-        }
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
     }
 
     login() {
         this.loginService.login(this.username, this.password).pipe(
+            takeUntil(this.unsubscribeSub$),
             catchError((err => {
                     this.loginService.connectionErrorMessage = err.error;
                     this.action = null;
