@@ -206,7 +206,7 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
         if (!execution || !execution.dataset) {
             return ''
         }
-        return this.datasetUtils.getExecutionDatasetName(execution.dataset)
+        return this.datasetUtils.getExecutionDatasetName(execution.dataset.datasetId)
     }
 
     stopScenario() {

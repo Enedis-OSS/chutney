@@ -114,10 +114,7 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
         CampaignExecution campaignExecution = ofNullable(scenarioExecution.campaignExecution())
             .map(ce -> ce.toDomain(campaignJpaRepository.findById(ce.campaignId()).get().title()))
             .orElse(null);
-        ScenarioExecutionReportEntity scenarioExecutionReportEntity = scenarioExecutionReportJpaRepository.findByScenarioExecutionId(scenarioExecution.id());
-        DataSet dataset = ofNullable(scenarioExecutionReportEntity).flatMap(scenarioExecutionReport -> scenarioExecutionReport.toDomain().dataset())
-            .orElse(null);
-        return scenarioExecution.toDomain(campaignExecution, dataset);
+        return scenarioExecution.toDomain(campaignExecution);
     }
 
     @Override
@@ -126,6 +123,7 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
         if (invalidScenarioId(scenarioId)) {
             throw new IllegalStateException("Scenario id is null or empty");
         }
+        //TODO do not retrieve whole campaignExecution object. We already have the ID
         ScenarioExecutionEntity scenarioExecution = ScenarioExecutionEntity.fromDomain(scenarioId, detachedExecution);
         if (detachedExecution.campaignReport().isPresent()) {
             Optional<CampaignExecutionEntity> campaignExecution = campaignExecutionJpaRepository.findById(detachedExecution.campaignReport().get().executionId);

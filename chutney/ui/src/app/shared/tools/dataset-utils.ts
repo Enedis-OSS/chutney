@@ -17,17 +17,16 @@ export class DatasetUtils {
     constructor(private translateService: TranslateService) {}
 
     public getDatasetName(dataset?: Dataset) {
-        if (!dataset) return ''
-        return this.getExecutionDatasetName({datasetId: dataset.id, constants: dataset.uniqueValues, datatable: dataset.multipleValues})
+        if (!dataset) return '';
+        return this.getExecutionDatasetName(dataset.id);
     }
 
-    public getExecutionDatasetName(dataset?: {datasetId?: string, constants?: Array<KeyValue>, datatable?: Array<Array<KeyValue>> }) {
-        if (dataset) {
-            if (dataset?.datasetId) {
-                return dataset?.datasetId
-            } else if ((dataset.constants && (dataset.constants.length > 0)) || (dataset.datatable && (dataset.datatable.length > 0))) {
-                return this.translateService.instant("dataset.customLabel")
-            }
+    public getExecutionDatasetName(datasetId?: string) {
+        if (datasetId) {
+            if (Dataset.CUSTOM_ID === datasetId) {
+                return  this.translateService.instant("dataset.customLabel");
+            } 
+            return datasetId;
         }
         return ''
     }
