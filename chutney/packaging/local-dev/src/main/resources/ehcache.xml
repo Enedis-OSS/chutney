@@ -1,0 +1,18 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+
+    <cache alias="scenario">
+        <heap unit="entries">500</heap> <!-- max 500 entités -->
+        <expiry>
+            <ttl unit="minutes">30</ttl> <!-- expire après 30 minutes -->
+        </expiry>
+    </cache>
+</config>

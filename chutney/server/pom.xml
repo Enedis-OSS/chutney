@@ -26,6 +26,20 @@
         </license>
     </licenses>
     <dependencies>
+        <!-- Hibernate + JCache + Ehcache -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.chutneytesting</groupId>
             <artifactId>server-core</artifactId>
