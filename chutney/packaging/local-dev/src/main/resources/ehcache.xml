@@ -9,10 +9,12 @@
         xmlns='http://www.ehcache.org/v3'
         xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
 
-    <cache alias="scenario">
-        <heap unit="entries">500</heap> <!-- max 500 entités -->
+    <cache alias="com.chutneytesting.scenario.infra.jpa.ScenarioEntity">
         <expiry>
             <ttl unit="minutes">30</ttl> <!-- expire après 30 minutes -->
         </expiry>
+        <resources>
+            <heap>500</heap>
+        </resources>
     </cache>
 </config>

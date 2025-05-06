@@ -11,6 +11,7 @@ import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import jakarta.persistence.criteria.Expression;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;

@@ -27,12 +27,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import java.time.Instant;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name = "SCENARIO")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "scenario")
 public class ScenarioEntity {
 
     private static final GwtScenarioMarshaller marshaller = new GwtScenarioMapper();
