@@ -6,72 +6,124 @@
   -->
 
 <!-- Compact input to open search -->
-<div class="search-compact" (click)="expandSearch()">
-  <i class="fas fa-search search-icon"></i>
-  <input type="text" placeholder="Search or jump to..." class="compact-input" readonly />
-  <span class="shortcut">
-    <i class="fas fa-keyboard"></i>{{ isMacOS ? '⌘' : 'Ctrl' }}+k
-  </span>
+<div (click)="expandSearch()" class="search-compact">
+    <i class="fas fa-search search-icon"></i>
+    <input
+        class="compact-input"
+        placeholder="Search or jump to..."
+        readonly
+        type="text"
+    />
+    <span class="shortcut">
+        <i class="fas fa-keyboard"></i>{{ isMacOS ? "⌘" : "Ctrl" }}+k
+    </span>
 </div>
 
 <!-- Overlay -->
-<div class="search-overlay" *ngIf="isSearchExpanded" (click)="closeSearch()"></div>
+<div
+    (click)="closeSearch()"
+    *ngIf="isSearchExpanded"
+    class="search-overlay"
+></div>
 
 <!-- Expanded search bar -->
-<div class="search-bar" *ngIf="isSearchExpanded">
-  <i class="fas fa-search search-icon"></i>
-  <input #searchInput [(ngModel)]="keyword" (input)="onSearch()" placeholder="Search..." class="search-input" style="width:100%" />
+<div *ngIf="isSearchExpanded" class="search-bar">
+    <i class="fas fa-search search-icon"></i>
+    <input
+        #searchInput
+        (input)="onSearch()"
+        [(ngModel)]="keyword"
+        class="search-input"
+        placeholder="Search..."
+        style="width: 100%"
+    />
 </div>
 
-<div class="search-dropdown" *ngIf="isSearchExpanded">
-  @if (searchResults.length > 0) {
-  <div *ngFor="let category of categorizedResults | keyvalue" class="search-category">
-    <div
-      style="font-weight:bold;  position: sticky; top:0;z-index: 100000;background-color: #2d2d2d;padding-top: 20px;padding-bottom: 11px;">
-      <strong class="mb-0 fs-6 fw-bold">{{ category.key | uppercase }}</strong></div>
-    <table class="search-results-table">
-      <thead>
-        <tr>
-          <th class="fixed-width-1"></th>
-          <th></th>
-          <th class="fixed-width-20"></th>
-          <th class="fixed-width-1"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of category.value" class="search-item" (mousedown)="navigateToDetail($event, item)">
-          @if(category.key !== "dataset") {
-            <td [innerHTML]="item.id"></td>
-          } @else {
-            <td></td>
-          }
-          <td [innerHTML]="item.title"></td>
-          <td>
-            <span *ngFor="let tag of item.tags" class="tag" [ngStyle]="{ 'background-color': getTagColor(tag) }"
-              [innerHTML]="tag">
-            </span>
-          </td>
-          <!-- Tooltip -->
-          <td class="info-column">
-            <div class="tooltip-container" *ngIf="getSearchResults(item) as matches">
-              @if(matches.length > 0){
-                <i class="fas fa-info-circle info-icon"></i>
-                <div class="tooltip-content border border-info">
-                  <ul>
-                    <li *ngFor="let match of matches">
-                      <div class="fw-bold text-center">{{ match.attribute }}</div>
-                      <span [innerHTML]="match.snippet"></span>
-                    </li>
-                  </ul>
+<div *ngIf="isSearchExpanded" class="search-dropdown">
+    <ng-container *ngIf="categorized$ | async as categorized; else noResult">
+        <ng-container *ngIf="(categorized | keyvalue).length > 0; else noResult">
+            <div *ngFor="let category of categorized | keyvalue; trackBy: trackByCategory" class="search-category">
+                <div style="
+                        font-weight: bold;
+                        position: sticky;
+                        top: 0;
+                        z-index: 100000;
+                        background-color: #2d2d2d;
+                        padding-top: 20px;
+                        padding-bottom: 11px;
+                    ">
+                    <strong class="mb-0 fs-6 fw-bold">{{
+                            category.key | uppercase
+                        }}</strong>
                 </div>
-              }
+                <table class="search-results-table">
+                    <thead>
+                    <tr>
+                        <th class="fixed-width-1"></th>
+                        <th></th>
+                        <th class="fixed-width-20"></th>
+                        <th class="fixed-width-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                        (mousedown)="navigateToDetail($event, item)"
+                        *ngFor="let item of category.value"
+                        class="search-item"
+                    >
+                        @if (category.key !== "dataset") {
+                            <td [innerHTML]="item.id"></td>
+                        } @else {
+                            <td></td>
+                        }
+                        <td [innerHTML]="item.title"></td>
+                        <td>
+                                <span
+                                    *ngFor="let tag of item.tags"
+                                    [innerHTML]="tag"
+                                    [ngStyle]="{
+                                        'background-color': item.tagColors[tag],
+                                    }"
+                                    class="tag"
+                                >
+                                </span>
+                        </td>
+                        <td class="info-column">
+                            <div
+                                *ngIf="item.matches as matches"
+                                class="tooltip-container"
+                            >
+                                @if (matches.length > 0) {
+                                    <i class="fas fa-info-circle info-icon"></i>
+                                    <div
+                                        class="tooltip-content border border-info"
+                                    >
+                                        <ul>
+                                            <li *ngFor="let match of matches">
+                                                <div
+                                                    class="fw-bold text-center"
+                                                >
+                                                    {{ match.attribute }}
+                                                </div>
+                                                <span
+                                                    [innerHTML]="match.snippet"
+                                                ></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  } @else {
-  <div class="search-category fs-6 fw-bold no-result">No results found</div>
-  }
+        </ng-container>
+    </ng-container>
+
+    <ng-template #noResult>
+        <div class="search-category fs-6 fw-bold no-result">
+            No results found
+        </div>
+    </ng-template>
 </div>
