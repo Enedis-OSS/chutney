@@ -299,16 +299,22 @@ public class CampaignExecutionEngine {
     }
 
     private void updateJira(Campaign campaign, CampaignExecution campaignExecution, ScenarioExecutionCampaign serc, ExecutionHistory.Execution execution) {
-        try {
-            String datasetId = serc.execution()
-                .dataset()
-                .map(dataset -> ofNullable(dataset.id).orElse(""))
-                .orElse("");
-            jiraXrayEmbeddedApi.updateTestExecution(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, JiraReportMapper.from(execution.report(), objectMapper));
-        } catch (NoJiraConfigurationException e) { // Silent
-        } catch (Exception e) {
-            LOGGER.warn("Update JIRA failed", e);
+        if (isScenarioCompletelyExecuted(serc.status())) {
+            try {
+                String datasetId = serc.execution()
+                    .dataset()
+                    .map(dataset -> ofNullable(dataset.id).orElse(""))
+                    .orElse("");
+                jiraXrayEmbeddedApi.updateTestExecution(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, JiraReportMapper.from(execution.report(), objectMapper));
+            } catch (NoJiraConfigurationException e) { // Silent
+            } catch (Exception e) {
+                LOGGER.warn("Update JIRA failed", e);
+            }
         }
+    }
+
+    private boolean isScenarioCompletelyExecuted(ServerReportStatus status) {
+        return ServerReportStatus.SUCCESS.equals(status) || ServerReportStatus.FAILURE.equals(status);
     }
 
     private ScenarioExecutionCampaign generateNotExecutedScenarioExecutionAndReport(Campaign campaign, TestCaseDataset testCaseDataset, CampaignExecution campaignExecution) {
