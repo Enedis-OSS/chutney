@@ -7,17 +7,19 @@
 
 package com.chutneytesting.scenario.infra.raw;
 
+import static org.hibernate.jpa.HibernateHints.HINT_CACHEABLE;
+
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
-import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
 public interface ScenarioJpaRepository extends JpaRepository<ScenarioEntity, Long>, JpaSpecificationExecutor<ScenarioEntity> {
@@ -25,9 +27,11 @@ public interface ScenarioJpaRepository extends JpaRepository<ScenarioEntity, Lon
     @Query("SELECT s.version FROM SCENARIO s WHERE s.id = :id")
     Optional<Integer> lastVersion(@Param("id") Long id);
 
+    @QueryHints(@QueryHint(name = HINT_CACHEABLE, value = "true"))
     Optional<ScenarioEntity> findByIdAndActivated(Long id, Boolean activated);
 
     List<ScenarioEntity> findByActivated(Boolean activated);
+
     Slice<ScenarioEntity> findByActivated(Boolean activated, Pageable pageable);
 
     @Query("""
@@ -36,6 +40,7 @@ public interface ScenarioJpaRepository extends JpaRepository<ScenarioEntity, Lon
         WHERE s.id = :id
           AND s.activated = :activated
         """)
+    @QueryHints(@QueryHint(name = HINT_CACHEABLE, value = "true"))
     Optional<ScenarioEntity> findMetaDataByIdAndActivated(@Param("id") Long id, @Param("activated") Boolean activated);
 
     @Query("""
@@ -43,8 +48,10 @@ public interface ScenarioJpaRepository extends JpaRepository<ScenarioEntity, Lon
         FROM SCENARIO s
         WHERE s.activated = true
         """)
+    @QueryHints(@QueryHint(name = HINT_CACHEABLE, value = "true"))
     List<ScenarioEntity> findMetaDataByActivatedTrue();
 
+    @QueryHints(@QueryHint(name = HINT_CACHEABLE, value = "true"))
     List<ScenarioEntity> findByActivatedTrueAndDefaultDataset(String defaultDataset);
 
     @Modifying

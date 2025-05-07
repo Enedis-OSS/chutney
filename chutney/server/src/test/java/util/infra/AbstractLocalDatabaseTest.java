@@ -76,6 +76,10 @@ public abstract class AbstractLocalDatabaseTest {
         jdbcTemplate.execute("DELETE FROM CAMPAIGN");
         jdbcTemplate.execute("DELETE FROM SCENARIO");
         clearIndexes();
+
+        // Clean caches
+        entityManager.clear();
+        entityManager.getEntityManagerFactory().getCache().evictAll();
     }
 
     private void clearIndexes() {
