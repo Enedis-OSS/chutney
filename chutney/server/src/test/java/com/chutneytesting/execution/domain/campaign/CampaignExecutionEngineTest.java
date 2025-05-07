@@ -119,7 +119,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_update_jira_xray() {
+    public void should_update_jira_xray_for_completed_execution() {
         // Given
         GwtTestCase notExecutedTestCase = createAndMockExecutedGwtTestCase(30L, NOT_EXECUTED);
         Campaign campaign = createCampaign(List.of(firstTestCase, notExecutedTestCase));
