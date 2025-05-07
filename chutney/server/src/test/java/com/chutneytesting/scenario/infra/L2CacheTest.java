@@ -14,28 +14,50 @@ import com.chutneytesting.scenario.domain.gwt.GwtStep;
 import com.chutneytesting.scenario.domain.gwt.GwtTestCase;
 import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
 import com.chutneytesting.scenario.infra.raw.DatabaseTestCaseRepository;
+import com.chutneytesting.scenario.infra.raw.DatabaseTestCaseRepositoryTest;
 import com.chutneytesting.scenario.infra.raw.ScenarioJpaRepository;
 import com.chutneytesting.server.core.domain.scenario.TestCaseMetadataImpl;
 import java.util.Optional;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import util.infra.AbstractLocalDatabaseTest;
+import util.infra.EnableH2MemTestInfra;
+import util.infra.EnablePostgreSQLTestInfra;
 import util.infra.EnableSQLiteTestInfra;
 
 public class L2CacheTest {
 
     @Nested
+    @EnableH2MemTestInfra
+    class H2 extends AllTests {
+    }
+
+    @Nested
     @EnableSQLiteTestInfra
-    class SQLite extends AbstractLocalDatabaseTest {
+    class SQLite extends AllTests {
+    }
+
+    @Nested
+    @EnablePostgreSQLTestInfra
+    class PostreSQL extends AllTests {
+    }
+
+    abstract class AllTests extends AbstractLocalDatabaseTest {
 
         @Autowired
         private DatabaseTestCaseRepository scenarioRepository;
 
         @Autowired
         private ScenarioJpaRepository scenarioJpaRepository;
+
+        @AfterEach
+        void afterEach() {
+            clearTables();
+        }
 
         @Test
         void with_jpa_interface() {
