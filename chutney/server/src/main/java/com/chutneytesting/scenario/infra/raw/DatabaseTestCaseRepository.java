@@ -57,12 +57,6 @@ public class DatabaseTestCaseRepository implements AggregatedRepository<GwtTestC
             return testCase.id();
         }
         try {
-            // TODO for manual debugging
-            if(testCase.id() != null) {
-                ScenarioEntity scenarioEntity = scenarioJpaRepository.findById(Long.parseLong(testCase.id())).get();
-                System.out.println("In database: id - version: " + scenarioEntity.getId() + " - " + scenarioEntity.getVersion());
-                System.out.println("In testCase: id - version: " + testCase.metadata.version + " - " + testCase.metadata.version);
-            }
             return scenarioJpaRepository.save(ScenarioEntity.fromGwtTestCase(testCase)).getId().toString();
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new ScenarioNotFoundException(testCase.id(), testCase.metadata().version());
