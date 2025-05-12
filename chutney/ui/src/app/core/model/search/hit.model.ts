@@ -12,7 +12,9 @@ export class Hit {
         public description: string,
         public content: string,
         public tags: string[],
-        public what: string
+        public what: string,
+        public tagColors: Record<string, string>,
+        public matches: Array<{ attribute: string; snippet: string }>,
     ) { }
 
     search(searchTerm: string): { attribute: string; snippet: string }[] {
@@ -47,7 +49,7 @@ export class Hit {
 
 
     static fromJson(json: any): Hit {
-        return new Hit(json.id, json.title, json.description, json.content, json.tags, json.what);
+        return new Hit(json.id, json.title, json.description, json.content, json.tags, json.what, json.tagColors, json.matches);
     }
 }
 

@@ -5,68 +5,64 @@
  *
  */
 
-import { Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
-import { EMPTY, Subject, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Observable, Subject, of, shareReplay } from 'rxjs';
 import { Hit } from '@core/model/search/hit.model';
 import { SearchService } from '@core/services/search.service';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+
 @Component({
     selector: 'chutney-search-bar',
     templateUrl: './search-bar.component.html',
-    styleUrl: './search-bar.component.scss'
+    styleUrl: './search-bar.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchBarComponent implements OnDestroy {
+export class SearchBarComponent {
 
-    keyword: string;
+    keyword: string = '';
     isSearchExpanded = false;
-    searchResults: Hit[] = [];
-
     isMacOS = false;
 
     private searchSubject = new Subject<string>();
-    private searchSubscription: Subscription = null;
 
     constructor(
         private searchService: SearchService,
         private router: Router
     ) {
         this.isMacOS = navigator.platform.toUpperCase().includes('MAC');
-        this.setupSearch();
-    }
-
-    ngOnDestroy(): void {
-        this.searchSubscription?.unsubscribe();
-    }
-
-    private setupSearch(): void {
-        this.searchSubscription = this.searchSubject.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            switchMap(keyword => {
-                if (!keyword.trim()) {
-                    this.searchResults = [];
-                    return EMPTY;
-                }
-                return this.searchService.search(keyword);
-            })
-        ).subscribe((results: Hit[]) => {
-            this.searchResults = results;
-        });
     }
 
     onSearch() {
         this.searchSubject.next(this.keyword);
     }
 
-    get categorizedResults() {
-        return this.searchResults.reduce((acc: { [key: string]: Hit[] }, hit: Hit) => {
-            if (!acc[hit.what]) {
-                acc[hit.what] = [];
+    categorized$: Observable<Record<string, Hit[]>> = this.searchSubject.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(keyword => {
+            const term = keyword.trim();
+            if (!term) {
+                return of([] as Hit[]);
             }
-            acc[hit.what].push(hit);
+            return this.searchService.search(term);
+        }),
+        map(results => results.map(hit => {
+            const tagColors: Record<string, string> = {};
+            hit.tags.forEach(tag => tagColors[tag] = this.getTagColor(tag));
+            hit.tagColors = tagColors;
+            hit.matches = hit.search('<mark>');
+            return hit;
+        })),
+        map(results => this.groupBy(results)),
+        shareReplay(1)
+    );
+
+    private groupBy(results: Hit[]): Record<string, Hit[]> {
+        return results.reduce((acc, hit) => {
+            (acc[hit.what] = acc[hit.what] || []).push(hit);
             return acc;
-        }, {});
+        }, {} as Record<string, Hit[]>);
     }
 
     navigateToDetail(event: MouseEvent, item: any) {
@@ -75,7 +71,6 @@ export class SearchBarComponent implements OnDestroy {
             const urlTree = this.router.createUrlTree([item.what, this.sanitizeMark(item.id)]);
             const serializedUrl = this.router.serializeUrl(urlTree);
 
-            // To add manually #...
             const fullUrl = `${baseHref}#${serializedUrl}`;
             window.open(fullUrl, '_blank');
         } else {
@@ -90,8 +85,8 @@ export class SearchBarComponent implements OnDestroy {
     }
 
 
-
     @ViewChild('searchInput') searchInput!: ElementRef;
+
     expandSearch() {
         this.isSearchExpanded = true;
         setTimeout(() => {
@@ -133,8 +128,7 @@ export class SearchBarComponent implements OnDestroy {
         return input.replace(/<\/?mark>/g, '');
     }
 
-    // Get search results for a given Hit
-    getSearchResults(hit: Hit) {
-        return hit.search('<mark>');
+    trackByCategory(_: number, pair: { key: string; value: Hit[] }) {
+        return pair.key;
     }
 }
