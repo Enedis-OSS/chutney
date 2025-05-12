@@ -98,7 +98,12 @@ class TestInfraConfiguration {
             jpaProperties.putAll(Map.of(
                 "hibernate.dialect", "org.hibernate.dialect.H2Dialect",
                 "hibernate.show_sql", "false",
-                "hibernate.use-new-id-generator-mappings", "false"
+                "hibernate.use-new-id-generator-mappings", "false",
+                "hibernate.cache.use_second_level_cache", "true",
+                "hibernate.cache.use_query_cache", "true",
+                "hibernate.region.factory_class", "org.hibernate.cache.jcache.internal.JCacheRegionFactory",
+                "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider",
+                "hibernate.javax.cache.uri", "ehcache.xml"
             ));
             return jpaProperties;
         }
@@ -131,7 +136,12 @@ class TestInfraConfiguration {
             jpaProperties.putAll(Map.of(
                 "hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect",
                 "hibernate.show_sql", "false",
-                "hibernate.use-new-id-generator-mappings", "false"
+                "hibernate.use-new-id-generator-mappings", "false",
+                "hibernate.cache.use_second_level_cache", "true",
+                "hibernate.cache.use_query_cache", "true",
+                "hibernate.region.factory_class", "org.hibernate.cache.jcache.internal.JCacheRegionFactory",
+                "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider",
+                "hibernate.javax.cache.uri", "ehcache.xml"
             ));
             return jpaProperties;
         }
@@ -185,7 +195,12 @@ class TestInfraConfiguration {
             Properties jpaProperties = new Properties();
             jpaProperties.putAll(Map.of(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect",
-                "hibernate.show_sql", "false"
+                "hibernate.show_sql", "false",
+                "hibernate.cache.use_second_level_cache", "true",
+                "hibernate.cache.use_query_cache", "true",
+                "hibernate.region.factory_class", "org.hibernate.cache.jcache.internal.JCacheRegionFactory",
+                "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider",
+                "hibernate.javax.cache.uri", "ehcache.xml"
             ));
             return jpaProperties;
         }
