@@ -6,7 +6,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject, of, shareReplay } from 'rxjs';
 import { Hit } from '@core/model/search/hit.model';
 import { SearchService } from '@core/services/search.service';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operato
 })
 export class SearchBarComponent {
 
-    keyword: string;
+    keyword: string = '';
     isSearchExpanded = false;
     isMacOS = false;
 
@@ -54,7 +54,8 @@ export class SearchBarComponent {
             hit.matches = hit.search('<mark>');
             return hit;
         })),
-        map(results => this.groupBy(results))
+        map(results => this.groupBy(results)),
+        shareReplay(1)
     );
 
     private groupBy(results: Hit[]): Record<string, Hit[]> {
