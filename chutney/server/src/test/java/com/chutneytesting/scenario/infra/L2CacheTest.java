@@ -152,17 +152,5 @@ public class L2CacheTest {
                 );
             scenarioRepository.save(scenario.build());
         }
-
-        private void printQueryCacheStat(Statistics stats) {
-            System.out.println(" - L2 cache Puts : " + stats.getSecondLevelCachePutCount());
-            System.out.println(" - L2 cache Hits : " + stats.getSecondLevelCacheHitCount());
-            System.out.println(" - L2 cache Miss : " + stats.getSecondLevelCacheMissCount());
-            System.out.println(" - Query cache Puts : " + stats.getQueryCachePutCount());
-            System.out.println(" - Query cache Hits : " + stats.getQueryCacheHitCount());
-            System.out.println(" - Query cache Miss : " + stats.getQueryCacheMissCount());
-            System.out.println(" - Query ts cache Puts : " + stats.getUpdateTimestampsCachePutCount());
-            System.out.println(" - Query ts cache Hits : " + stats.getUpdateTimestampsCacheHitCount());
-            System.out.println(" - Query ts cache Miss : " + stats.getUpdateTimestampsCacheMissCount());
-        }
     }
 }

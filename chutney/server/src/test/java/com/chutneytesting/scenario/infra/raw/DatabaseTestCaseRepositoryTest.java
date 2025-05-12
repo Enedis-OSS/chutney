@@ -328,10 +328,6 @@ public class DatabaseTestCaseRepositoryTest {
                 .build();
 
             // When
-            Optional<GwtTestCase> byId = sut.findById(scenarioId);
-            System.out.println("Before save: In database: id - version: " + byId.get().metadata.version + " - " + byId.get().metadata.version);
-            System.out.println("Before save: In testCase: id - version: " + testCase.metadata.version + " - " + testCase.metadata.version);
-
             final String savedScenarioId = sut.save(testCase);
 
             // Then
