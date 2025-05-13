@@ -82,13 +82,17 @@ public class ScenarioExecutionReportEntityTest {
                         "user": "admin"
                     }
             """;
-        ScenarioExecutionReportEntity scenarioExecutionReportEntity = new ScenarioExecutionReportEntity();
+        String expectedDatasetId = "My dataset Id";
+        ScenarioExecutionEntity scenarioExecution = new ScenarioExecutionEntity(null, "1", null, null, null, null, null, null, null, null, null, expectedDatasetId, null, null);
+        ScenarioExecutionReportEntity scenarioExecutionReportEntity = new ScenarioExecutionReportEntity(scenarioExecution, report);
+
 
         // When
-        DataSet dataset = scenarioExecutionReportEntity.getDatasetFromReport(report);
+        DataSet dataset = scenarioExecutionReportEntity.getDatasetFromReport();
 
         // Then
         assertThat(dataset).isNotNull();
+        assertThat(dataset.id).isEqualTo(expectedDatasetId);
         assertThat(dataset.constants).containsEntry("TITI", "TATA");
         assertThat(dataset.constants).containsEntry("TOTO", "TUTU");
         assertThat(dataset.datatable).hasSize(1);
@@ -155,10 +159,11 @@ public class ScenarioExecutionReportEntityTest {
                         "user": "admin"
                     }
             """;
-        ScenarioExecutionReportEntity scenarioExecutionReportEntity = new ScenarioExecutionReportEntity();
+        ScenarioExecutionEntity scenarioExecution = new ScenarioExecutionEntity(null, "1", null, null, null, null, null, null, null, null, null, null, null, null);
+        ScenarioExecutionReportEntity scenarioExecutionReportEntity = new ScenarioExecutionReportEntity(scenarioExecution, report);
 
         // When
-        DataSet dataset = scenarioExecutionReportEntity.getDatasetFromReport(report);
+        DataSet dataset = scenarioExecutionReportEntity.getDatasetFromReport();
 
         // Then
         assertThat(dataset).isNull();

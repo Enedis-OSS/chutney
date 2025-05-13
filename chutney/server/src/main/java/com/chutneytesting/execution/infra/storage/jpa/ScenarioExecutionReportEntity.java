@@ -89,13 +89,13 @@ public class ScenarioExecutionReportEntity {
             .testCaseTitle(scenarioExecution.scenarioTitle())
             .environment(scenarioExecution.environment())
             .user(scenarioExecution.userId())
-            .dataset(ofNullable(getDatasetFromReport(report)))
+            .dataset(ofNullable(getDatasetFromReport()))
             .scenarioId(scenarioExecution.scenarioId())
             .tags(TagListMapper.tagsStringToSet(scenarioExecution.tags()))
             .build();
     }
 
-    protected DataSet getDatasetFromReport(String report) {
+    protected DataSet getDatasetFromReport() {
         try { // TODO unit test \o/
             ScenarioExecutionReport scenarioExecutionReport = ReportObjectMapperConfiguration.reportObjectMapper().readValue(report, ScenarioExecutionReport.class);
             if (scenarioExecutionReport.datasetId == null &&
@@ -107,7 +107,7 @@ public class ScenarioExecutionReportEntity {
                 .withName("")
                 .withConstants(scenarioExecutionReport.constants)
                 .withDatatable(scenarioExecutionReport.datatable)
-                .withId(scenarioExecutionReport.datasetId)
+                .withId(scenarioExecution.datasetId())
                 .build();
         } catch (IOException e) {
             return null;
