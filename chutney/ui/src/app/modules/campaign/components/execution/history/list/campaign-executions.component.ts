@@ -6,7 +6,7 @@
  */
 
 import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
-import { Campaign, CampaignExecutionReport, CampaignReport } from '@model';
+import { Campaign, CampaignExecutionReport, CampaignReport, Dataset } from '@model';
 import { Params } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -87,7 +87,11 @@ export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
     private initFiltersOptions() {
         this.status = [...new Set(this.executions.map(exec => exec.report.status))].map(status => this.toSelectOption(status,  this.translateService.instant(ExecutionStatus.toString(status))));
         this.environments = [...new Set(this.executions.map(exec => exec.report.executionEnvironment))].map(env => this.toSelectOption(env));
-        this.datasets = this.removeDuplicateListItems(this.executions.map(exec => exec.report.dataset).map(dataset => dataset ? this.toSelectOption(dataset.id ? dataset.id : "Custom") : null).filter(ds => ds));
+        this.datasets = this.removeDuplicateListItems(
+            this.executions
+            .map(exec => exec.report.dataset)
+            .map(dataset => dataset ? this.toSelectOption(dataset.id === Dataset.CUSTOM_ID ? Dataset.CUSTOM_LABEL : dataset.id) : null)
+            .filter(ds => ds));
         this.executors = [...new Set(this.executions.map(exec => exec.report.user))].map(user => this.toSelectOption(user));
     }
 

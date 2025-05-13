@@ -127,7 +127,7 @@ export class ScenarioExecutionService {
             contextVariables = parsedJson.contextVariables;
             constants = parsedJson.constants &&  Object.keys(parsedJson.constants).map(key => new KeyValue(key,parsedJson.constants[key]));
             datatable = parsedJson.datatable?.map(line => Object.keys(line).map(key => new KeyValue(key, line[key])))
-            datasetId = parsedJson.datasetId;
+            datasetId = jsonResponse.dataset?.id;
         }
         return new ScenarioExecutionReport(
             jsonResponse.executionId,

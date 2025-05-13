@@ -28,6 +28,7 @@ public class DataSet {
 
     public static Comparator<DataSet> datasetComparator = Comparator.comparing(DataSet::getName, String.CASE_INSENSITIVE_ORDER);
     public static DataSet NO_DATASET = new DataSet(null, null, null, null, null, emptyMap(), emptyList(), emptySet(), emptyMap(), emptySet());
+    public static String CUSTOM_ID = "__CUSTOM__";
 
     public final String id;
     public final String name;

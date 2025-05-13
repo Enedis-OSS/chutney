@@ -382,6 +382,27 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
+        public void should_map_custom_dataset_to_custom_id() {
+            String scenarioId = givenScenarioId();
+
+            ImmutableExecutionHistory.DetachedExecution detachedExecution = ImmutableExecutionHistory.DetachedExecution.builder()
+                .time(LocalDateTime.now())
+                .duration(12L)
+                .status(SUCCESS)
+                .report("report")
+                .testCaseTitle("Fake title")
+                .environment("")
+                .dataset(DataSet.builder().withId(null).withName("").build())
+                .user("")
+                .build();
+
+            sut.store(scenarioId, detachedExecution);
+
+            DataSet dataSet = sut.getExecutions(scenarioId).getFirst().dataset().get();
+            assertThat(dataSet.id).isEqualTo("__CUSTOM__");
+        }
+
+        @Test
         public void should_map_campaign_only_when_executing_from_campaign() {
             // Given
             ScenarioEntity scenarioEntity = givenScenario();
