@@ -142,7 +142,7 @@
                                 'fa-spinner fa-pulse icon-warning': execution.status === ExecutionStatus.RUNNING || execution.status === ExecutionStatus.PAUSED,
                                 'fa-circle-exclamation icon-light': execution.status === ExecutionStatus.STOPPED,
                                 'fa-regular fa-circle text-warning': execution.status === ExecutionStatus.NOT_EXECUTED}"
-                  [ngbTooltip]="ExecutionStatus.toString(execution.status) | translate" placement="right"
+                  [title]="ExecutionStatus.toString(execution.status) | translate" placement="right"
                 ></i>
               </td>
               <td class="text-break">
@@ -165,8 +165,7 @@
                       class="chutney-tag chutney-tag-selected">{{tag}}</span>
                     }
                     <button type="button" class="chutney-tag chutney-tag-selected"
-                      ngbPopover="{{execution.tags.join(' | ')}}" placement="left"
-                      triggers="mouseenter:mouseleave">
+                      title="{{execution.tags.join(' | ')}}">
                       ...
                     </button>
                   </span>
@@ -192,10 +191,11 @@
               <td>
                 <div class="float-end d-flex" *hasAuthorization="[Authorization.SCENARIO_WRITE]">
                   <button class="btn btn-sm btn-primary me-2" (click)="replay(execution, $event)"
-                          [ngbTooltip]="'global.actions.replay' | translate" placement="left">
+                          [title]="'global.actions.replay' | translate" placement="left">
                       <i  class="bi bi-repeat" ></i>
                   </button>
-                  <button class="btn btn-sm btn-primary me-2" (click)="openDeleteModal(execution.executionId, $event)">
+                  <button class="btn btn-sm btn-primary me-2" (click)="openDeleteModal(execution.executionId, $event)"
+                          [title]="'global.actions.delete' | translate">
                       <i  class="bi bi-trash" ></i>
                   </button>
                 </div>

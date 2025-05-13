@@ -17,7 +17,7 @@
                   @if (canViewMenuItem(subItem)) {
                     <div class="menu-item nav-item"
                       >
-                      <a placement="right" container="body" [disableTooltip]="!layoutOptions.toggleSidebar" ngbTooltip="{{subItem.label | translate}}"
+                      <a placement="right" container="body" title="{{!layoutOptions.toggleSidebar ? '' : (subItem.label | translate)}}"
                          [autoClose]="true" [routerLink]="subItem.link" routerLinkActive="active-item" class="menu-link">
                         <i class="menu-icon" [ngClass]="subItem.iconClass"></i>
                         <span class="menu-title">{{subItem.label | translate}}</span>

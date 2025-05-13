@@ -9,8 +9,7 @@
   <button type="button" class="btn {{btnSizeClass ? 'btn-' + btnSizeClass : ''}} btn-{{btnColor ? btnColor : 'danger'}} trash-btn"
     (click)="openModal(template)"
     [attr.disabled]="disabledBoolean(disabled)"
-    ngbTooltip="{{title | translate}}"
-    placement="top" container="body">
+    title="{{title | translate}}">
     <span class="fa {{btnClassIcon}}"></span>
   </button>
 }

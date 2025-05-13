@@ -68,9 +68,8 @@
                   @if (jiraMap.has(campaign.id.toString())) {
                     <a role="button" class="btn btn-sm btn-link me-0"
                       target="_blank" href="{{getJiraLink(campaign.id.toString())}}" rel="noopener noreferrer"
-                      ngbPopover="{{jiraMap.get(campaign.id.toString())}}" placement="left"
-                      (click)="$event.stopPropagation()"
-                      triggers="mouseenter:mouseleave">
+                      title="{{jiraMap.get(campaign.id.toString())}}"
+                      (click)="$event.stopPropagation()">
                       <span class="fab fa-jira" aria-hidden="true">
                       </span>
                     </a>
@@ -87,16 +86,14 @@
                       <span class="badge bg-primary">{{tag}}</span>
                     }
                     <button type="button" class="badge bg-primary"
-                      ngbPopover="{{campaign.tags}}" placement="left"
-                      triggers="mouseenter:mouseleave" container="body">
+                      title="{{campaign.tags}}">
                       ...
                     </button>
                   }
                 </td>
                 <td class="ps-0 w1">
                   <button type="button" class="btn btn-link me-0"
-                    ngbPopover="{{campaign.description}}" placement="left"
-                    triggers="mouseenter:mouseleave">
+                    title="{{campaign.description}}">
                     <span class="fa fa-info-circle" aria-hidden="true"></span>
                   </button>
                 </td>
@@ -150,7 +147,7 @@
                 <td [ngClass]="{'scheduled-campaign-error': scheduledCampaignHasMissingEnv(scheduledCampaign)}" class="text-nowrap">{{scheduledCampaign.schedulingDate | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm'}}</td>
                 <td>
                   @if (scheduledCampaignHasMissingEnv(scheduledCampaign)) {
-                    <span style="color: red;" class="fa fa-triangle-exclamation" ngbTooltip="{{'campaigns.list.error.environment' | translate}}"></span>
+                    <span style="color: red;" class="fa fa-triangle-exclamation" title="{{'campaigns.list.error.environment' | translate}}"></span>
                   }
                 </td>
               </tr>
