@@ -157,8 +157,7 @@
               </td>
               <td class="text-center align-middle">
                 <i class="fa-lg" [ngClass]="statusClass(scenarioReportOutline)"
-                  [ngbTooltip]="ExecutionStatus.toString(scenarioReportOutline.status) | translate"
-                  placement="right">
+                  [title]="ExecutionStatus.toString(scenarioReportOutline.status) | translate">
                 </i>
               </td>
               <td class="align-middle">
@@ -192,8 +191,7 @@
                         class="chutney-tag chutney-tag-selected">{{tag}}</span>
                       }
                       <button type="button" class="chutney-tag chutney-tag-selected"
-                        ngbPopover="{{scenarioReportOutline.tags.join(' | ')}}" placement="left"
-                        triggers="mouseenter:mouseleave">
+                        title="{{scenarioReportOutline.tags.join(' | ')}}">
                         ...
                       </button>
                     </span>
@@ -210,8 +208,8 @@
                   @if (jiraLinkFrom(scenarioReportOutline.scenarioId) !== null) {
                     <a role="button" class="btn btn-sm btn-link m-0" target="_blank"
                       href="{{ jiraLinkFrom(scenarioReportOutline.scenarioId) }}" rel="noopener noreferrer"
-                      ngbPopover="{{ jiraLinkFrom(scenarioReportOutline.scenarioId) }}" placement="left"
-                      (click)="$event.stopPropagation()" triggers="mouseenter:mouseleave">
+                      title="{{ jiraLinkFrom(scenarioReportOutline.scenarioId) }}"
+                      (click)="$event.stopPropagation()">
                       <span class="fab fa-jira" aria-hidden="true">
                       </span>
                     </a>

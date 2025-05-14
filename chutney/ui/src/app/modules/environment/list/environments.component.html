@@ -79,7 +79,7 @@
         <td class="text-end align-middle">
           @if (!editing(i)) {
             <button class="btn btn-sm btn-outline-primary" (click)="editionIndex = i"
-              ngbTooltip="{{'global.actions.edit' | translate}}">
+              title="{{'global.actions.edit' | translate}}">
               <i class="bi bi-pen-fill" ></i>
             </button>
           }
@@ -93,7 +93,7 @@
             </button>
           }
           <button type="button" class="btn btn-sm btn-primary rounded ms-2"
-            ngbTooltip="{{'global.actions.export' | translate}}"
+            title="{{'global.actions.export' | translate}}"
             (click)="export(env)"><i class="bi bi-download"> </i>
           </button>
           <chutney-confirm-dialog [dialogMessage]="('global.confirm.question' | translate) + ' ' + ('global.actions.delete' | translate) + '\n' + env.name"

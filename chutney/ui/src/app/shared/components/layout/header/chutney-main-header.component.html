@@ -17,21 +17,21 @@
         </div>
         <div class="app-header-right">
             <div class="nav">
-                <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.documentation' | translate}}">
+                <div class="nav-item" placement="bottom" title="{{'menu.principal.documentation' | translate}}">
                     <a class="nav-link" href="https://www.chutney-testing.com/" target="_blank"
                        rel="noopener noreferrer">
                         <i class="fa fa-book"></i>
                     </a>
                 </div>
                 @if (false) {
-                    <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.feedback' | translate}}">
+                    <div class="nav-item" placement="bottom" title="{{'menu.principal.feedback' | translate}}">
             <span class="nav-link cursor-pointer">
               <i class="fa fa-lightbulb"></i>
             </span>
                     </div>
                 }
                 @if (false) {
-                    <div class="nav-item" placement="bottom" ngbTooltip="{{'menu.principal.notif' | translate}}">
+                    <div class="nav-item" placement="bottom" title="{{'menu.principal.notif' | translate}}">
             <span class="nav-link">
               <i class="fa fa-bell"></i>
             </span>
@@ -39,7 +39,7 @@
                 }
                 @if (isLight()) {
                     <div class="nav-item" (click)="switchTheme()"
-                         placement="bottom" ngbTooltip="{{'menu.principal.darkMode' | translate}}">
+                         placement="bottom" title="{{'menu.principal.darkMode' | translate}}">
             <span class="nav-link">
               <i class="fa fa-moon"></i>
             </span>
@@ -47,7 +47,7 @@
                 }
                 @if (isDark()) {
                     <div class="nav-item" (click)="switchTheme()"
-                         placement="bottom" ngbTooltip="{{'menu.principal.lightMode' | translate}}">
+                         placement="bottom" title="{{'menu.principal.lightMode' | translate}}">
             <span class="nav-link">
               <i class="fa fa-sun"></i>
             </span>
@@ -55,7 +55,7 @@
                 }
                 @if ((user$ | async); as user) {
                     @if (user?.id) {
-                        <div class="nav-item dropdown" ngbTooltip="{{'menu.principal.profile' | translate}}">
+                        <div class="nav-item dropdown" title="{{'menu.principal.profile' | translate}}">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fa fa-regular fa-user" placement="bottom"></i>
                             </a>

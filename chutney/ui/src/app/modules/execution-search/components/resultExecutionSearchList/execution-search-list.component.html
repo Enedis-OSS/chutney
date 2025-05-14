@@ -126,7 +126,7 @@
                             'fa-spinner fa-pulse icon-warning': execution.status === ExecutionStatus.RUNNING || execution.status === ExecutionStatus.PAUSED,
                             'fa-circle-exclamation icon-light': execution.status === ExecutionStatus.STOPPED,
                             'fa-regular fa-circle text-warning': execution.status === ExecutionStatus.NOT_EXECUTED}"
-              [ngbTooltip]="ExecutionStatus.toString(execution.status) | translate" placement="right"
+              [title]="ExecutionStatus.toString(execution.status) | translate"
             ></i>
           </td>
           <td class="text-break">
@@ -153,8 +153,7 @@
                   class="chutney-tag chutney-tag-selected">{{tag}}</span>
                 }
                 <button type="button" class="chutney-tag chutney-tag-selected"
-                  ngbPopover="{{execution.tags.join(' | ')}}" placement="left"
-                  triggers="mouseenter:mouseleave">
+                  title="{{execution.tags.join(' | ')}}">
                   ...
                 </button>
               </span>

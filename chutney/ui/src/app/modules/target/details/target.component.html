@@ -51,13 +51,13 @@
       <div class="float-end">
         @if (existOn(item.environment)) {
           <button type="button" class="btn btn-primary btn-sm rounded"
-            ngbTooltip="{{'global.actions.export' | translate}}"
+            title="{{'global.actions.export' | translate}}"
             (click)="export(item)"><i class="bi bi-download"> </i>
           </button>
         }
         @if (!existOn(item.environment)) {
           <chutney-import-button
-            ngbTooltip="{{'global.actions.import' | translate}}"
+            title="{{'global.actions.import' | translate}}"
             class="ms-2"
             [label]="null"
             [btnSizeClass]="'sm'"
