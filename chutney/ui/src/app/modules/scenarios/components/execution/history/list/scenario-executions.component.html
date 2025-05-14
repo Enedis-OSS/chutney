@@ -142,8 +142,7 @@
                                 'fa-spinner fa-pulse icon-warning': execution.status === ExecutionStatus.RUNNING || execution.status === ExecutionStatus.PAUSED,
                                 'fa-circle-exclamation icon-light': execution.status === ExecutionStatus.STOPPED,
                                 'fa-regular fa-circle text-warning': execution.status === ExecutionStatus.NOT_EXECUTED}"
-                  [title]="ExecutionStatus.toString(execution.status) | translate" placement="right"
-                ></i>
+                  [title]="ExecutionStatus.toString(execution.status) | translate"></i>
               </td>
               <td class="text-break">
                 <ngb-highlight [result]="execution.error"
@@ -191,7 +190,7 @@
               <td>
                 <div class="float-end d-flex" *hasAuthorization="[Authorization.SCENARIO_WRITE]">
                   <button class="btn btn-sm btn-primary me-2" (click)="replay(execution, $event)"
-                          [title]="'global.actions.replay' | translate" placement="left">
+                          [title]="'global.actions.replay' | translate">
                       <i  class="bi bi-repeat" ></i>
                   </button>
                   <button class="btn btn-sm btn-primary me-2" (click)="openDeleteModal(execution.executionId, $event)"

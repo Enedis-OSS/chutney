@@ -115,7 +115,7 @@
               <td class="status">
                 @if (execution.hasRunning()) {
                   <div class="btn btn-sm position-relative"
-                    [title]="ExecutionStatus.toString(ExecutionStatus.RUNNING) | translate" placement="right">
+                    [title]="ExecutionStatus.toString(ExecutionStatus.RUNNING) | translate">
                     <span class="fa-solid fa-2xl fa-spinner fa-pulse text-warning"></span>
                     <span class="position-absolute top-0 start-75 translate-middle badge border border-warning rounded-circle text-warning">
                       {{ execution.running }}
@@ -123,13 +123,13 @@
                   </div>
                 } @else if (execution.isRunning()) {
                   <div class="btn btn-sm position-relative"
-                       [title]="ExecutionStatus.toString(ExecutionStatus.RUNNING) | translate" placement="right">
+                       [title]="ExecutionStatus.toString(ExecutionStatus.RUNNING) | translate">
                       <span class="fa-solid fa-2xl fa-spinner fa-pulse text-warning"></span>
                   </div>
                 }
                 @if (execution.hasPaused()) {
                   <div class="btn btn-sm position-relative"
-                    [title]="ExecutionStatus.toString(ExecutionStatus.PAUSED) | translate" placement="right">
+                    [title]="ExecutionStatus.toString(ExecutionStatus.PAUSED) | translate">
                     <span class="fa-solid fa-2xl fa-circle-pause text-warning"></span>
                     <span class="position-absolute top-0 start-75 translate-middle badge border border-warning rounded-circle text-warning">
                       {{ execution.pause }}
@@ -138,7 +138,7 @@
                 }
                 @if (execution.hasPassed()) {
                   <div class="btn btn-sm position-relative"
-                    [title]="ExecutionStatus.toString(ExecutionStatus.SUCCESS) | translate" placement="right">
+                    [title]="ExecutionStatus.toString(ExecutionStatus.SUCCESS) | translate">
                     <span class="fa-solid fa-2xl fa-circle-check text-info"></span>
                     <span class="position-absolute top-0 start-75 translate-middle badge border border-info rounded-circle text-info">
                       {{ execution.passed }}
@@ -147,7 +147,7 @@
                 }
                 @if (execution.hasFailed()) {
                   <div class="btn btn-sm position-relative"
-                    [title]="ExecutionStatus.toString(ExecutionStatus.FAILURE) | translate" placement="right">
+                    [title]="ExecutionStatus.toString(ExecutionStatus.FAILURE) | translate">
                     <span class="fa-solid fa-2xl fa-circle-xmark text-danger"></span>
                     <span class="position-absolute top-0 start-75 translate-middle badge border border-danger rounded-circle text-danger">
                       {{ execution.failed }}
@@ -156,7 +156,7 @@
                 }
                 @if (execution.hasStopped()) {
                   <div class="btn btn-sm position-relative"
-                    [title]="ExecutionStatus.toString(ExecutionStatus.STOPPED) | translate" placement="right">
+                    [title]="ExecutionStatus.toString(ExecutionStatus.STOPPED) | translate">
                     <span class="fa-solid fa-2xl fa-circle-stop text-warning"></span>
                     <span class="position-absolute top-0 start-75 translate-middle badge border border-warning rounded-circle text-warning">
                       {{ execution.stopped }}
@@ -165,7 +165,7 @@
                 }
                 @if (execution.hasNotExecuted()) {
                   <div class="btn btn-sm position-relative"
-                    [title]="ExecutionStatus.toString(ExecutionStatus.NOT_EXECUTED) | translate" placement="right">
+                    [title]="ExecutionStatus.toString(ExecutionStatus.NOT_EXECUTED) | translate">
                     <span class="fa-regular fa-2xl fa-circle text-warning"></span>
                     <span class="position-absolute top-0 start-75 translate-middle badge border border-warning rounded-circle text-warning">
                       {{ execution.notexecuted }}
@@ -210,11 +210,3 @@
     </div>
   </div>
 }
-
-
-
-
-
-
-
-
