@@ -18,7 +18,7 @@
         </resources>
     </cache-template>
 
-    <cache alias="com.chutneytesting.scenario.infra.jpa.ScenarioEntity">
+    <cache alias="fr.enedis.chutney.scenario.infra.jpa.ScenarioEntity">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
