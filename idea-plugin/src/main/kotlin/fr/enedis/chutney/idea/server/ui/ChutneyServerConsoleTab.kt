@@ -86,6 +86,6 @@ class ChutneyServerConsoleTab(project: Project, parentDisposable: Disposable) {
         myStatusView = ChutneyServerStatusView(parentDisposable)
         val panel = createContent(myConsoleView, myStatusView)
         tabInfo = TabInfo(panel)
-        tabInfo.text = "Console"
+        tabInfo.setText("Console")
     }
 }

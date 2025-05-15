@@ -13,6 +13,7 @@ import fr.enedis.chutney.idea.server.ChutneyServerSettingsManager
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.Disposer
+import com.intellij.ui.HyperlinkLabel
 import com.intellij.ui.PortField
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.tabs.TabInfo
@@ -104,10 +105,9 @@ class ChutneyServerSettingsTab(parentDisposable: Disposable) {
         }
 
         private fun createHyperlink(): JComponent {
-            return SwingHelper.createWebHyperlink(
-                "Chutney Server Help",
-                "https://localhost:8443/#/home-page"
-            )
+          val hll = HyperlinkLabel("Chutney Server Help")
+          hll.setHyperlinkTarget("https://localhost:8443/#/home-page")
+          return hll
         }
     }
 
@@ -126,7 +126,7 @@ class ChutneyServerSettingsTab(parentDisposable: Disposable) {
         val result = createResultPanel(form)
         result.border = BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP)
         tabInfo = TabInfo(JBScrollPane(result))
-        tabInfo.text = "Settings"
+        tabInfo.setText("Settings")
         settings = ChutneyServerSettingsManager.loadSettings()
         ChutneyServerSettingsManager.addListener(object : ChutneyServerSettingsManager.Listener {
             override fun onChanged(settings: ChutneyServerSettings) {
