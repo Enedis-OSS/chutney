@@ -1,7 +1,7 @@
 #SPDX-FileCopyrightText: 2017-2024 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
-name: "Release to OSSRH"
+name: "Release to Maven Central"
 
 on:
   push:
@@ -24,18 +24,18 @@ jobs:
     with:
       publish-to-github-maven-registry: false
 
-  release-to-OSSRH:
+  release-to-central:
     needs: [ build ]
     uses: ./.github/workflows/build-all-template.yml
     with:
       release: true
-      server-id: ossrh
+      server-id: central
     secrets:
       gpg-private-key: ${{secrets.CHUTNEY_GPG_PRIVATE_KEY}}
       gpg-passphrase: ${{ secrets.CHUTNEY_GPG_PASSPHRASE }}
       gpg-key-id: ${{ secrets.CHUTNEY_GPG_KEY_ID }}
-      maven-username: ${{ secrets.OSSRH_USERNAME }}
-      maven-password: ${{ secrets.OSSRH_PASSWORD }}
+      maven-username: ${{ secrets.MAVEN_USER_TOKEN }}
+      maven-password: ${{ secrets.MAVEN_PASSWORD_TOKEN }}
 
   release-docker:
     needs: [ build ]
