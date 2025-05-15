@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <artifactId>chutney-testing-parent</artifactId>
         <version>3.0.1-SNAPSHOT</version>
     </parent>
@@ -131,7 +131,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>server</artifactId>
                 <version>${project.version}</version>
                 <exclusions>
@@ -142,37 +142,37 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>server-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>environment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>jira</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>action-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>action-impl</artifactId>
                 <version>${project.version}</version>
                 <exclusions>
@@ -187,12 +187,12 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>chutney-junit-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>tools</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -64,8 +64,8 @@ dependencies {
     instrumentationTools()
   }
 
-  implementation(enforcedPlatform("com.chutneytesting:chutney-parent:$chutneyVersion"))
-  implementation("com.chutneytesting", "chutney-kotlin-dsl", chutneyVersion) {
+  implementation(enforcedPlatform("fr.enedis.chutney:chutney-parent:$chutneyVersion"))
+  implementation("fr.enedis.chutney", "chutney-kotlin-dsl", chutneyVersion) {
     isTransitive = false
   }
   // Runtime for kotlin-dsl dependency (server info && Http client)
@@ -94,7 +94,7 @@ dependencies {
     // exclude("org.sl4j") does not exclude
     isTransitive = false // this excludes "org.sl4j"
   }
-  runtimeOnly("com.chutneytesting", "local-api-unsecure", chutneyVersion, ext = "jar") {
+  runtimeOnly("fr.enedis.chutney", "local-api-unsecure", chutneyVersion, ext = "jar") {
     isTransitive = false
   }
 }

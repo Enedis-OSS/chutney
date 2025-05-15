@@ -5,7 +5,7 @@
   ~
 -->
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/function/ClasspathFunctions.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/function/ClasspathFunctions.java){:target="_blank"}"
 
 # resourceContent
 

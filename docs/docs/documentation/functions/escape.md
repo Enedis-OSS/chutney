@@ -5,7 +5,7 @@
   ~
 -->
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/function/EscapeFunctions.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/function/EscapeFunctions.java){:target="_blank"}"
 
 Following functions help you
  * Escape and unescape strings from JSON, HTML, XML and SQL (Usage of [StringEscapeUtils](https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/StringEscapeUtils.html){:target="_blank"}). 

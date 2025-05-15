@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <artifactId>packaging</artifactId>
         <version>3.0.1-SNAPSHOT</version>
     </parent>
@@ -33,12 +33,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.chutneytesting</groupId>
+            <groupId>fr.enedis.chutney</groupId>
             <artifactId>server</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.chutneytesting</groupId>
+            <groupId>fr.enedis.chutney</groupId>
             <artifactId>ui</artifactId>
             <scope>runtime</scope>
         </dependency>

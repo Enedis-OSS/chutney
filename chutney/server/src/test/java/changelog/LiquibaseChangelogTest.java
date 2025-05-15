@@ -10,10 +10,10 @@ package changelog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.chutneytesting.campaign.infra.jpa.CampaignEntity;
-import com.chutneytesting.campaign.infra.jpa.CampaignExecutionEntity;
-import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionEntity;
-import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
+import fr.enedis.chutney.campaign.infra.jpa.CampaignEntity;
+import fr.enedis.chutney.campaign.infra.jpa.CampaignExecutionEntity;
+import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionEntity;
+import fr.enedis.chutney.scenario.infra.jpa.ScenarioEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;

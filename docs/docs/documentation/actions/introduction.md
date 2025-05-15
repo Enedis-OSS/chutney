@@ -7,7 +7,7 @@
 
 <h1>Actions</h1>
 
-[^1]: [Here, you can see the code for all actions.](https://github.com/Enedis-OSS/chutney/tree/main/chutney/action-impl/src/main/java/com/chutneytesting/action)
+[^1]: [Here, you can see the code for all actions.](https://github.com/Enedis-OSS/chutney/tree/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action)
 
 
 Chutney provides a set of capabilities, or `Actions`, you can use in your scenarios.
@@ -38,7 +38,7 @@ In order to use some existing context variables as inputs, you need to use an [e
     * All actions performing a request on a remote service need to know the `Target`. While other action, like validating XML data, don't need a target.  
     Please, refer to actions' configuration for further details.
 
-    * All actions must have a [Logger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/injectable/Logger.java){:target=_blank} class as input. At runtime a [DelagateLogger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/engine/src/main/java/com/chutneytesting/engine/domain/execution/engine/parameterResolver/DelegateLogger.java){:target=_blank} is automatically injected by the execution engine.  
+    * All actions must have a [Logger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/fr/enedis/chutney/action/spi/injectable/Logger.java){:target=_blank} class as input. At runtime a [DelagateLogger](https://github.com/Enedis-OSS/chutney/blob/main/chutney/engine/src/main/java/fr/enedis/chutney/engine/domain/execution/engine/parameterResolver/DelegateLogger.java){:target=_blank} is automatically injected by the execution engine.  
      This logger contains action's logs which be present in the execution report.
 
 ??? info "Special inputs types"

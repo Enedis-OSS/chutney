@@ -7,7 +7,7 @@
 
 <h1>Functions</h1>
 
-[^1]: [Here, you can see the code for all functions.](https://github.com/Enedis-OSS/chutney/tree/main/chutney/action-impl/src/main/java/com/chutneytesting/action/function)
+[^1]: [Here, you can see the code for all functions.](https://github.com/Enedis-OSS/chutney/tree/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/function)
 
 
 Chutney provides a set of procedures, or `Functions`, you can use in your scenarios' expressions.  

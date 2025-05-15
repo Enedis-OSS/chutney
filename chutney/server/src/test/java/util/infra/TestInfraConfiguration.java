@@ -9,13 +9,13 @@ package util.infra;
 
 import static util.infra.AbstractLocalDatabaseTest.DB_CHANGELOG_DB_CHANGELOG_MASTER_XML;
 
-import com.chutneytesting.ServerConfiguration;
-import com.chutneytesting.execution.infra.aop.ExecutionReportIndexingAspect;
-import com.chutneytesting.execution.infra.storage.DatabaseExecutionJpaRepository;
-import com.chutneytesting.execution.infra.storage.index.ExecutionReportIndexRepository;
-import com.chutneytesting.index.infra.LuceneIndexRepository;
-import com.chutneytesting.index.infra.config.IndexConfig;
-import com.chutneytesting.index.infra.config.OnDiskIndexConfig;
+import fr.enedis.chutney.ServerConfiguration;
+import fr.enedis.chutney.execution.infra.aop.ExecutionReportIndexingAspect;
+import fr.enedis.chutney.execution.infra.storage.DatabaseExecutionJpaRepository;
+import fr.enedis.chutney.execution.infra.storage.index.ExecutionReportIndexRepository;
+import fr.enedis.chutney.index.infra.LuceneIndexRepository;
+import fr.enedis.chutney.index.infra.config.IndexConfig;
+import fr.enedis.chutney.index.infra.config.OnDiskIndexConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -290,7 +290,7 @@ class TestInfraConfiguration {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.chutneytesting");
+        factory.setPackagesToScan("fr.enedis.chutney");
         factory.setDataSource(dataSource);
         factory.setJpaProperties(jpaProperties);
         return factory;

@@ -13,7 +13,7 @@
 [![Coverage Status](https://codecov.io/gh/Enedis-OSS/chutney/branch/master/graph/badge.svg)](https://codecov.io/gh/Enedis-OSS/chutney/)
 [![REUSE](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.enedis.chutney/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.enedis.chutney/server)
 [![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney?label=docker)](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -39,10 +39,10 @@ Chutney scenarios are **declarative** written with a **kotlin dsl**. They provid
 
 Chutney is also released as a standalone application including a test execution engine and a web front end to consult test reports.  
 
-Technical details are provided by generic [Actions](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/Action.java) (such as HTTP, AMQP, MongoDB, Kafka, Selenium, etc.)  
+Technical details are provided by generic [Actions](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/fr/enedis/chutney/action/spi/Action.java) (such as HTTP, AMQP, MongoDB, Kafka, Selenium, etc.)  
 Those Actions are extensions, and you can easily develop yours, even proprietary or non-generic one, and include them in your own release.
 
-In addition, Chutney provide SpEL evaluation and extensible [Function](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/com/chutneytesting/action/spi/SpelFunction.java) in order to ease the use of managing scenario data like JSON path or Date comparison.
+In addition, Chutney provide SpEL evaluation and extensible [Function](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/fr/enedis/chutney/action/spi/SpelFunction.java) in order to ease the use of managing scenario data like JSON path or Date comparison.
 
 [Find out more in the documentation !](https://www.chutney-testing.com/)
 
@@ -75,7 +75,7 @@ You can find all the documentation of how to write a scenario [here](https://www
 
 ### Scenario
 
-Here is an example of a scenario written in Kotlin ([source code](https://github.com/Enedis-OSS/chutney/blob/2effe53b2b73fc3b89b6f072b57a02c0e856e0a1/example/src/main/kotlin/com/chutneytesting/demo/spec/swapi.kt#L48))
+Here is an example of a scenario written in Kotlin ([source code](https://github.com/Enedis-OSS/chutney/blob/2effe53b2b73fc3b89b6f072b57a02c0e856e0a1/example/src/main/kotlin/fr/enedis/chutney/demo/spec/swapi.kt#L48))
 
 ```kotlin
   const val TARGET = "SWAPI"
@@ -117,15 +117,15 @@ Here is an example of a scenario written in Kotlin ([source code](https://github
 
 ### Execution report
 #### In Intellij
-When executing the previous scenario from your intellij using a [junit test](https://github.com/Enedis-OSS/chutney/blob/main/example/src/test/kotlin/com/chutneytesting/example/http/SwapiTest.kt), the execution report will be printed in the console.
+When executing the previous scenario from your intellij using a [junit test](https://github.com/Enedis-OSS/chutney/blob/main/example/src/test/kotlin/fr/enedis/chutney/example/http/SwapiTest.kt), the execution report will be printed in the console.
 ![swapi-ide-report.png](docs/docs/img/swapi-ide-report.png)
 
 #### In chutney UI
-After [synchronizing](https://github.com/Enedis-OSS/chutney/blob/main/example/src/main/kotlin/com/chutneytesting/demo/sync/demoServer.kt#L29) the previous scenario with a running chutney server, you can run it from the UI.
+After [synchronizing](https://github.com/Enedis-OSS/chutney/blob/main/example/src/main/kotlin/fr/enedis/chutney/demo/sync/demoServer.kt#L29) the previous scenario with a running chutney server, you can run it from the UI.
 ![swapi-ui-report.png](docs/docs/img/swapi-ui-report.png)
 
 ### More examples
-You can find some other example with http,jms, kafka, rabbit or sql [here](https://github.com/Enedis-OSS/chutney/tree/main/example/src/main/kotlin/com/chutneytesting/example/scenario)
+You can find some other example with http,jms, kafka, rabbit or sql [here](https://github.com/Enedis-OSS/chutney/tree/main/example/src/main/kotlin/fr/enedis/chutney/example/scenario)
 
 -------------
 

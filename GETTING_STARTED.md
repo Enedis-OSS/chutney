@@ -24,7 +24,7 @@ To launch Chutney, two docker images could be used :
 ### Run in local-dev mode manually
 To launch Chutney in _local-dev_ mode, use
 * the classpath of [packaging/local-dev](chutney/packaging/local-dev) module
-* `com.chutneytesting.ServerBootstrap` as main class
+* `fr.enedis.chutney.ServerBootstrap` as main class
 
 ## <a name="code"></a> How to code
 

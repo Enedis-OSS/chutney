@@ -5,8 +5,8 @@
 #
 #
 
-com.chutneytesting.action.selenium.jackson.SeleniumModule
-com.chutneytesting.action.http.jackson.WiremockModule
-com.chutneytesting.action.jakarta.jackson.ActiveMQModule
-com.chutneytesting.action.jms.jackson.BrokerMQModule
-com.chutneytesting.action.kafka.jackson.KafkaModule
+fr.enedis.chutney.action.selenium.jackson.SeleniumModule
+fr.enedis.chutney.action.http.jackson.WiremockModule
+fr.enedis.chutney.action.jakarta.jackson.ActiveMQModule
+fr.enedis.chutney.action.jms.jackson.BrokerMQModule
+fr.enedis.chutney.action.kafka.jackson.KafkaModule

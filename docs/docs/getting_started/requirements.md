@@ -64,7 +64,7 @@ and run them with JUnit5.
 
 Create a Kotlin project with the following dependencies :
 
-* [com.chutneytesting:chutney-kotlin-dsl](https://search.maven.org/artifact/com.chutneytesting/chutney-kotlin-dsl){:target="_blank"}
+* [fr.enedis.chutney:chutney-kotlin-dsl](https://search.maven.org/artifact/fr.enedis.chutney/chutney-kotlin-dsl){:target="_blank"}
 * [org.jetbrains.kotlin:kotlin-stdlib](https://search.maven.org/artifact/org.jetbrains.kotlin/kotlin-stdlib){:target="_blank"}
 * [org.junit.jupiter:junit-jupiter-api](https://search.maven.org/artifact/org.junit.jupiter/junit-jupiter-api){:target="_blank"}
 
@@ -73,7 +73,7 @@ Create a Kotlin project with the following dependencies :
     ``` xml
     <dependencies>
         <dependency>
-            <groupId>com.chutneytesting</groupId>
+            <groupId>fr.enedis.chutney</groupId>
             <artifactId>chutney-kotlin-dsl</artifactId> <!--(1)-->
             <version>3.0.0</version>
         </dependency>
@@ -105,7 +105,7 @@ Create a Kotlin project with the following dependencies :
 
     ``` kotlin
     dependencies {
-        implementation("com.chutneytesting:chutney-kotlin-dsl:3.0.0")
+        implementation("fr.enedis.chutney:chutney-kotlin-dsl:3.0.0")
 
         testImplementation(kotlin("test"))
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")

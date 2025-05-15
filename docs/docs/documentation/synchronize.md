@@ -15,11 +15,11 @@ Follow [this](/documentation/scenario.md/#write-a-scenario) documentation to wri
 To create your scenario on a Chutney server from your IDE,
 
 1. Annotate with @Scenario
-    In order to be included in the synchronization, a scenario must be annotated with [@Scenario](https://github.com/Enedis-OSS/chutney/blob/main/kotlin-dsl/dsl/src/main/kotlin/com/chutneytesting/kotlin/annotations/Scenario.kt){:target=_blank}.
+    In order to be included in the synchronization, a scenario must be annotated with [@Scenario](https://github.com/Enedis-OSS/chutney/blob/main/kotlin-dsl/dsl/src/main/kotlin/fr/enedis/chutney/kotlin/annotations/Scenario.kt){:target=_blank}.
 2. Configure your server info
     ``` kotlin 
-    import com.chutneytesting.kotlin.synchronize.synchronise
-    import com.chutneytesting.kotlin.util.ChutneyServerInfo
+    import fr.enedis.chutney.kotlin.synchronize.synchronise
+    import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
     
     val chutneyLocalServer = ChutneyServerInfo(
         url = "http://localhost:8081", user = "admin", password = "admin",

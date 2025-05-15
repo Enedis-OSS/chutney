@@ -8,18 +8,18 @@
 ??? info "Browse implementations"
 
     - SCP
-        - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/scp/ScpClientImpl.java){:target="_blank"}
-        - [Action - Download](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/ScpDownloadAction.java){:target="_blank"}
-        - [Action - Upload](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/ScpUploadAction.java){:target="_blank"}
+        - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/scp/ScpClientImpl.java){:target="_blank"}
+        - [Action - Download](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/ScpDownloadAction.java){:target="_blank"}
+        - [Action - Upload](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/ScpUploadAction.java){:target="_blank"}
     - SFTP
-        - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sftp/SftpClientImpl.java){:target="_blank"}
-        - [Action - Download](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpDownloadAction.java){:target="_blank"}
-        - [Action - File Info](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpFileInfoAction.java){:target="_blank"}
-        - [Action - List Dir](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpListDirAction.java){:target="_blank"}
-        - [Action - Upload](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpUploadAction.java){:target="_blank"}
+        - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/sftp/SftpClientImpl.java){:target="_blank"}
+        - [Action - Download](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpDownloadAction.java){:target="_blank"}
+        - [Action - File Info](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpFileInfoAction.java){:target="_blank"}
+        - [Action - List Dir](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpListDirAction.java){:target="_blank"}
+        - [Action - Upload](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpUploadAction.java){:target="_blank"}
     - SSH Client
-        - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sshj/SshJClient.java){:target="_blank"}
-        - [Action](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SshClientAction.java){:target="_blank"}
+        - [Client](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/sshj/SshJClient.java){:target="_blank"}
+        - [Action](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SshClientAction.java){:target="_blank"}
 
 !!! note "Target Authentication and proxy"
 
@@ -56,11 +56,11 @@
 
 # SCP
 
-!!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/scp/ScpClientImpl.java){:target="_blank"}"
+!!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/scp/ScpClientImpl.java){:target="_blank"}"
 
 ## Download
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/ScpDownloadAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/ScpDownloadAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -91,7 +91,7 @@ ScpDownloadAction(
 
 ## Upload
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/ScpUploadAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/ScpUploadAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -123,11 +123,11 @@ ScpUploadAction(
 
 # SFTP
 
-!!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sftp/SftpClientImpl.java){:target="_blank"}"
+!!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/sftp/SftpClientImpl.java){:target="_blank"}"
 
 ## Download
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpDownloadAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpDownloadAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -158,7 +158,7 @@ SftpDownloadAction(
 
 ## FileInfo
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpFileInfoAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpFileInfoAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -194,7 +194,7 @@ SftpFileInfoAction(
 
 ## ListDir
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpListDirAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpListDirAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -226,7 +226,7 @@ SftpListDirAction(
 
 ## Upload
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SftpUploadAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SftpUploadAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -257,11 +257,11 @@ SftpUploadAction(
 
 # SSH
 
-!!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sshj/SshJClient.java){:target="_blank"}"
+!!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/sshj/SshJClient.java){:target="_blank"}"
 
 ## Client
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/SshClientAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/SshClientAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -295,7 +295,7 @@ SshClientAction(
 
 ### CommandResult
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sshj/CommandResult.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/sshj/CommandResult.java){:target="_blank"}"
 
 A `CommandResult` represents the output of one command.  
 The following attributes can be used in SpEL :
@@ -311,7 +311,7 @@ The following attributes can be used in SpEL :
 
 ### Command
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/ssh/sshj/Command.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/sshj/Command.java){:target="_blank"}"
 
 The following attributes can be used in SpEL :
 

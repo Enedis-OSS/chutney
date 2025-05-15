@@ -23,7 +23,7 @@ When you need a custom function which is not provided by Chutney, you can implem
 ``` java
     package my.custom.package;
 
-    import com.chutneytesting.action.spi.SpelFunction;
+    import fr.enedis.chutney.action.spi.SpelFunction;
     import org.apache.commons.lang3.StringUtils;
 
     public class MyCustomFunctions {
@@ -63,8 +63,8 @@ When you need a custom function which is not provided by Chutney, you can implem
 Call your custom function from your Kotlin scenario.
 
 ``` kotlin
-    import com.chutneytesting.kotlin.dsl.AssertAction
-    import com.chutneytesting.kotlin.dsl.Scenario
+    import fr.enedis.chutney.kotlin.dsl.AssertAction
+    import fr.enedis.chutney.kotlin.dsl.Scenario
 
     val my_scenario = Scenario(title = "my scenario") {
         When("I test my string sum function") {

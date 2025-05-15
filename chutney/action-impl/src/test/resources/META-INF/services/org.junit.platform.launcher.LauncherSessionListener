@@ -5,4 +5,4 @@
 #
 #
 
-com.chutneytesting.action.JULToSL4JBridgeJUnitSessionListener
+fr.enedis.chutney.action.JULToSL4JBridgeJUnitSessionListener

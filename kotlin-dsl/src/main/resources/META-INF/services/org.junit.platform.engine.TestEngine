@@ -5,4 +5,4 @@
 #
 #
 
-com.chutneytesting.kotlin.junit.engine.ChutneyTestEngine
+fr.enedis.chutney.kotlin.junit.engine.ChutneyTestEngine
