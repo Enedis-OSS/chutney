@@ -6,7 +6,7 @@
   -->
 
 <idea-plugin>
-    <id>com.chutneytesting.idea.chutney-idea-plugin</id>
+    <id>fr.enedis.chutney.idea.chutney-idea-plugin</id>
     <name>Chutney</name>
     <vendor email="support@chutneytesting.com" url="https://github.com/Enedis-OSS/chutney-idea-plugin">ChutneyTesting</vendor>
     <description><![CDATA[
@@ -27,38 +27,38 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <checkinHandlerFactory implementation="com.chutneytesting.idea.vcs.ChutneyCheckinHandlerFactory"/>
+        <checkinHandlerFactory implementation="fr.enedis.chutney.idea.vcs.ChutneyCheckinHandlerFactory"/>
 
-        <!--<fileTypeFactory implementation="com.chutneytesting.idea.ChutneyFileTypeFactory"/>-->
-        <iconProvider order="first" implementation="com.chutneytesting.idea.ChutneyFileIconProvider"/>
+        <!--<fileTypeFactory implementation="fr.enedis.chutney.idea.ChutneyFileTypeFactory"/>-->
+        <iconProvider order="first" implementation="fr.enedis.chutney.idea.ChutneyFileIconProvider"/>
         <psi.referenceContributor order="first" language="JSON"
-                                  implementation="com.chutneytesting.idea.reference.ChutneyJsonReferenceContributor"/>
+                                  implementation="fr.enedis.chutney.idea.reference.ChutneyJsonReferenceContributor"/>
         <completion.contributor order="first" language="JSON"
-                                implementationClass="com.chutneytesting.idea.completion.contributor.ChutneyJsonCompletionContributor"/>
-        <configurationType implementation="com.chutneytesting.idea.runner.ChutneyRunConfigurationType"/>
-        <runConfigurationProducer implementation="com.chutneytesting.idea.runner.ChutneyRunConfigurationProducer"/>
+                                implementationClass="fr.enedis.chutney.idea.completion.contributor.ChutneyJsonCompletionContributor"/>
+        <configurationType implementation="fr.enedis.chutney.idea.runner.ChutneyRunConfigurationType"/>
+        <runConfigurationProducer implementation="fr.enedis.chutney.idea.runner.ChutneyRunConfigurationProducer"/>
         <codeInsight.lineMarkerProvider
-                implementationClass="com.chutneytesting.idea.runner.ChutneyJsonLineMarkerProvider" language="JSON"/>
+                implementationClass="fr.enedis.chutney.idea.runner.ChutneyJsonLineMarkerProvider" language="JSON"/>
         <codeInsight.lineMarkerProvider
-                implementationClass="com.chutneytesting.idea.runner.ChutneyYamlLineMarkerProvider" language="yaml"/>
+                implementationClass="fr.enedis.chutney.idea.runner.ChutneyYamlLineMarkerProvider" language="yaml"/>
 
-        <projectService serviceImplementation="com.chutneytesting.idea.server.ui.ChutneyToolWindowManager"/>
-        <programRunner implementation="com.chutneytesting.idea.runner.ChutneyRunProgramRunner"/>
-        <editorActionHandler action="EditorPaste" implementationClass="com.chutneytesting.idea.insert.PasteHJsonHandler"
+        <projectService serviceImplementation="fr.enedis.chutney.idea.server.ui.ChutneyToolWindowManager"/>
+        <programRunner implementation="fr.enedis.chutney.idea.runner.ChutneyRunProgramRunner"/>
+        <editorActionHandler action="EditorPaste" implementationClass="fr.enedis.chutney.idea.insert.PasteHJsonHandler"
                              order="first"/>
 
         <defaultLiveTemplates file="/liveTemplates/Chutney.xml"/>
-        <lang.foldingBuilder language="JSON" implementationClass="com.chutneytesting.idea.folding.TargetFoldingBuilder"
+        <lang.foldingBuilder language="JSON" implementationClass="fr.enedis.chutney.idea.folding.TargetFoldingBuilder"
                              order="first"/>
         <lang.foldingBuilder language="JSON"
-                             implementationClass="com.chutneytesting.idea.folding.VariableFoldingBuilder"
+                             implementationClass="fr.enedis.chutney.idea.folding.VariableFoldingBuilder"
                              order="first"/>
-        <lang.foldingBuilder language="JSON" implementationClass="com.chutneytesting.idea.folding.StepFoldingBuilder"
+        <lang.foldingBuilder language="JSON" implementationClass="fr.enedis.chutney.idea.folding.StepFoldingBuilder"
                              order="first"/>
-        <editorNotificationProvider implementation="com.chutneytesting.idea.vcs.ChutneyOutdatedVersionNotifier"/>
+        <editorNotificationProvider implementation="fr.enedis.chutney.idea.vcs.ChutneyOutdatedVersionNotifier"/>
         <localInspection
                 language="JSON"
-                implementationClass="com.chutneytesting.idea.codeinsight.ChutneyTargetNotFoundInspection"
+                implementationClass="fr.enedis.chutney.idea.codeinsight.ChutneyTargetNotFoundInspection"
                 displayName="Chutney target notFound"
                 enabledByDefault="true"
                 level="ERROR"
@@ -67,16 +67,16 @@
                                  groupId="tools"
                                  nonDefaultProject="true"
                                  displayName="Chutney"
-                                 instance="com.chutneytesting.idea.settings.ChutneySettingsConfigurable">
+                                 instance="fr.enedis.chutney.idea.settings.ChutneySettingsConfigurable">
         </applicationConfigurable>
-        <applicationService serviceImplementation="com.chutneytesting.idea.settings.ChutneySettings"/>
-        <multiHostInjector implementation="com.chutneytesting.idea.injection.ChutneySpELJsonValueInjector"/>
+        <applicationService serviceImplementation="fr.enedis.chutney.idea.settings.ChutneySettings"/>
+        <multiHostInjector implementation="fr.enedis.chutney.idea.injection.ChutneySpELJsonValueInjector"/>
         <inspectionToolProvider
-                implementation="com.chutneytesting.idea.duplicates.FindDuplicatesInspectionToolProvider"/>
+                implementation="fr.enedis.chutney.idea.duplicates.FindDuplicatesInspectionToolProvider"/>
         <notificationGroup id="Chutney Notifications" displayType="BALLOON"/>
     </extensions>
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="com.chutneytesting.idea.ChutneySchemaProviderFactory"/>
+        <ProviderFactory implementation="fr.enedis.chutney.idea.ChutneySchemaProviderFactory"/>
     </extensions>
 
     <actions>
@@ -85,67 +85,67 @@
             <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="IntroduceParameter"/>
             <separator/>
             <action id="Chutney.refactoring.introduce.property" text="Chutney Property"
-                    class="com.chutneytesting.idea.refactorings.introduce.IntroducePropertyAction"
+                    class="fr.enedis.chutney.idea.refactorings.introduce.IntroducePropertyAction"
                     use-shortcut-of="IntroduceVariable"/>
         </group>
 
         <group id="ChutneyGroup" text="Chutney" icon="/icons/ChutneyAction_16.svg" popup="true">
             <action id="Chutney.GetScenarioFromRemoteServer"
-                    class="com.chutneytesting.idea.actions.GetScenarioFromRemoteServer"
+                    class="fr.enedis.chutney.idea.actions.GetScenarioFromRemoteServer"
                     icon="AllIcons.Plugins.Downloads"
                     text="Get Scenario From Remote Server"
                     description="Get scenario From remote server" popup="true">
             </action>
             <action id="Chutney.UpdateRemoteScenarioFromLocal"
-                    class="com.chutneytesting.idea.actions.UpdateRemoteScenarioFromLocal"
+                    class="fr.enedis.chutney.idea.actions.UpdateRemoteScenarioFromLocal"
                     icon="AllIcons.Vcs.Push"
                     text="Update Remote Scenario from Local"
                     description="Update remote scenario from local">
             </action>
             <action id="Chutney.UpdateLocalScenarioFromRemoteServer"
-                    class="com.chutneytesting.idea.actions.UpdateLocalScenarioFromRemoteServer"
+                    class="fr.enedis.chutney.idea.actions.UpdateLocalScenarioFromRemoteServer"
                     icon="AllIcons.Actions.CheckOut"
                     text="Update Local Scenario from Remote Server"
                     description="Update local scenario from remote server"/>
             <action id="Chutney.AddScenarioToLocalServer"
-                    class="com.chutneytesting.idea.actions.AddScenarioToLocalServer"
+                    class="fr.enedis.chutney.idea.actions.AddScenarioToLocalServer"
                     icon="AllIcons.Actions.Commit"
                     text="Add Scenario to Local Server"
                     description="Add scenario to local server"/>
             <action id="Chutney.AddScenarioToRemoteServer"
-                    class="com.chutneytesting.idea.actions.AddScenarioToRemoteServer"
+                    class="fr.enedis.chutney.idea.actions.AddScenarioToRemoteServer"
                     icon="AllIcons.Actions.Commit"
                     text="Add Scenario to Remote Server"
                     description="Add scenario to local server"/>
             <action id="Chutney.ShowDiffBetweenLocalScenarioFileAndRemote"
-                    class="com.chutneytesting.idea.actions.ShowDiffBetweenLocalScenarioFileAndRemote"
+                    class="fr.enedis.chutney.idea.actions.ShowDiffBetweenLocalScenarioFileAndRemote"
                     icon="AllIcons.Actions.Diff"
                     text="Show Diff Between Local Scenario File and Remote"
                     description="Show diff between local scenario file and remote"/>
             <action id="Chutney.ShowDiffBetweenLocalScenariosFilesAndRemote"
-                    class="com.chutneytesting.idea.actions.ShowDiffBetweenLocalScenariosFilesAndRemote"
+                    class="fr.enedis.chutney.idea.actions.ShowDiffBetweenLocalScenariosFilesAndRemote"
                     icon="AllIcons.Actions.Diff"
                     text="Show Diff Between Local Scenarios Files and Remote in Directory"
                     description="Show diff between local scenarios files and remote in directory"/>
             <action id="Chutney.OpenRemoteScenarioFileInBrowser"
-                    class="com.chutneytesting.idea.actions.OpenRemoteScenarioFileInBrowser"
+                    class="fr.enedis.chutney.idea.actions.OpenRemoteScenarioFileInBrowser"
                     icon="AllIcons.Xml.Browsers.Chrome"
                     text="Open Remote Scenario File in Browser"
                     description="Open remote scenario file in browser"/>
             <action id="Chutney.GetCampaignFromRemoteServer"
-                    class="com.chutneytesting.idea.actions.GetCampaignFromRemoteServer"
+                    class="fr.enedis.chutney.idea.actions.GetCampaignFromRemoteServer"
                     icon="AllIcons.Plugins.Downloads"
                     text="Get Campaign From Remote Server"
                     description="Get campaign from remote server"/>
             <action id="Chutney.CopyScenarioAsKotlinDslAction"
-                    class="com.chutneytesting.idea.actions.CopyScenarioAsKotlinDslAction"
+                    class="fr.enedis.chutney.idea.actions.CopyScenarioAsKotlinDslAction"
                     icon="AllIcons.Plugins.Updated"
                     text="Copy Scenario As Kotlin Dsl Action"
                     description="Copy scenario as kotlin Dsl action"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
-        <group id="ChutneyCampaignsActionGroup" icon="/icons/ChutneyAction_16.svg" class="com.chutneytesting.idea.actions.DynamicActionGroup" popup="true"
+        <group id="ChutneyCampaignsActionGroup" icon="/icons/ChutneyAction_16.svg" class="fr.enedis.chutney.idea.actions.DynamicActionGroup" popup="true"
                text="Chutney Campaigns" description="Chutney campaigns">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
@@ -153,14 +153,14 @@
 
         <group id="ChutneyGenerateCodeGroup">
             <action id="NewChutneyScenarioFileAction" text="Chutney Scenario"
-                    class="com.chutneytesting.idea.actions.NewChutneyScenarioFileAction"/>
+                    class="fr.enedis.chutney.idea.actions.NewChutneyScenarioFileAction"/>
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </group>
 
         <group id="ChutneyToolsMenuGroup" text="Chutney" icon="/icons/ChutneyAction_16.svg" popup="true">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
             <action id="Chutney.OpenChutneyConfigFileAction"
-                    class="com.chutneytesting.idea.actions.OpenChutneyConfigFileAction"
+                    class="fr.enedis.chutney.idea.actions.OpenChutneyConfigFileAction"
                     icon="AllIcons.General.Settings"
                     text="Open Chutney Config File"
                     description="Open chutney config file"/>
@@ -168,7 +168,7 @@
     </actions>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
-      <!--  <scriptDefinitionsProvider implementation="com.chutneytesting.dsl.ScenarioKotlinScriptProvider"/>
+      <!--  <scriptDefinitionsProvider implementation="fr.enedis.chutney.dsl.ScenarioKotlinScriptProvider"/>
 -->
     </extensions>
 </idea-plugin>

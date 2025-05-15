@@ -15,17 +15,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories(
     basePackages = {
-        "com.chutneytesting.scenario.infra",
-        "com.chutneytesting.campaign.infra",
-        "com.chutneytesting.execution.infra.storage"
+        "fr.enedis.chutney.scenario.infra",
+        "fr.enedis.chutney.campaign.infra",
+        "fr.enedis.chutney.execution.infra.storage"
     },
     includeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "^.*JpaRepository$")}
 )
 @ComponentScan(
     basePackages = {
-        "com.chutneytesting.campaign.infra",
-        "com.chutneytesting.scenario.infra",
-        "com.chutneytesting.execution.infra.storage"
+        "fr.enedis.chutney.campaign.infra",
+        "fr.enedis.chutney.scenario.infra",
+        "fr.enedis.chutney.execution.infra.storage"
     }
 )
 @Retention(RetentionPolicy.RUNTIME)

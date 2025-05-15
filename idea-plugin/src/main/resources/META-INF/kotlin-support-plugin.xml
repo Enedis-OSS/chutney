@@ -6,7 +6,7 @@
   -->
 
 <idea-plugin>
-    <id>com.chutneytesting.idea.chutney-idea-plugin.spring</id>
+    <id>fr.enedis.chutney.idea.chutney-idea-plugin.spring</id>
     <name>Chutney Spring SpEL Support</name>
     <version>0.1.0</version>
     <vendor email="support@chutneytesting.com" url="https://github.com/Enedis-OSS/chutney">ChutneyTesting</vendor>
@@ -18,7 +18,7 @@
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="221"/>
     <extensions defaultExtensionNs="com.intellij">
-        <codeInsight.lineMarkerProvider language="kotlin" implementationClass="com.chutneytesting.idea.runner.ChutneyKotlinLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="kotlin" implementationClass="com.chutneytesting.idea.gutter.ChutneyKotlinSynchroniseWithRemoteLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="kotlin" implementationClass="fr.enedis.chutney.idea.runner.ChutneyKotlinLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="kotlin" implementationClass="fr.enedis.chutney.idea.gutter.ChutneyKotlinSynchroniseWithRemoteLineMarkerProvider"/>
     </extensions>
 </idea-plugin>

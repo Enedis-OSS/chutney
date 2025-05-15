@@ -9,14 +9,14 @@ package util.infra;
 
 import static java.time.Instant.now;
 
-import com.chutneytesting.campaign.infra.jpa.CampaignEntity;
-import com.chutneytesting.campaign.infra.jpa.CampaignScenarioEntity;
-import com.chutneytesting.execution.infra.storage.jpa.ScenarioExecutionEntity;
-import com.chutneytesting.index.infra.LuceneIndexRepository;
-import com.chutneytesting.scenario.infra.jpa.ScenarioEntity;
-import com.chutneytesting.scenario.infra.raw.TagListMapper;
-import com.chutneytesting.server.core.domain.execution.report.ServerReportStatus;
-import com.chutneytesting.server.core.domain.scenario.campaign.Campaign;
+import fr.enedis.chutney.campaign.infra.jpa.CampaignEntity;
+import fr.enedis.chutney.campaign.infra.jpa.CampaignScenarioEntity;
+import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionEntity;
+import fr.enedis.chutney.index.infra.LuceneIndexRepository;
+import fr.enedis.chutney.scenario.infra.jpa.ScenarioEntity;
+import fr.enedis.chutney.scenario.infra.raw.TagListMapper;
+import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
+import fr.enedis.chutney.server.core.domain.scenario.campaign.Campaign;
 import jakarta.persistence.EntityManager;
 import java.sql.Connection;
 import java.sql.SQLException;

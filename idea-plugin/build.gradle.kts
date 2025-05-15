@@ -13,7 +13,7 @@ plugins {
   // Kotlin support
   kotlin("jvm") version "2.0.20"
   // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-  id("org.jetbrains.intellij.platform") version "2.0.1"
+  id("org.jetbrains.intellij.platform") version "2.6.0"
 }
 
 configurations.all {
@@ -51,21 +51,19 @@ kotlin {
 
 dependencies {
   intellijPlatform {
-    // Build against the least version supported
-    intellijIdeaUltimate("2023.1")
+    // Build against the lowest version supported
+    intellijIdeaUltimate("2024.2")
 
-    // \o/ Conflict here when building !! => Use Spring bundled plugin transitive dependencies
-    //bundledPlugin("com.intellij.java")
-    //bundledPlugin("org.jetbrains.plugins.yaml")
+    bundledPlugin("com.intellij.java")
+    bundledPlugin("org.jetbrains.plugins.yaml")
     bundledPlugin("com.intellij.spring")
     bundledPlugin("org.jetbrains.kotlin")
 
     pluginVerifier()
-    instrumentationTools()
   }
 
-  implementation(enforcedPlatform("com.chutneytesting:chutney-parent:$chutneyVersion"))
-  implementation("com.chutneytesting", "chutney-kotlin-dsl", chutneyVersion) {
+  implementation(enforcedPlatform("fr.enedis.chutney:chutney-parent:$chutneyVersion"))
+  implementation("fr.enedis.chutney", "chutney-kotlin-dsl", chutneyVersion) {
     isTransitive = false
   }
   // Runtime for kotlin-dsl dependency (server info && Http client)
@@ -94,7 +92,7 @@ dependencies {
     // exclude("org.sl4j") does not exclude
     isTransitive = false // this excludes "org.sl4j"
   }
-  runtimeOnly("com.chutneytesting", "local-api-unsecure", chutneyVersion, ext = "jar") {
+  runtimeOnly("fr.enedis.chutney", "local-api-unsecure", chutneyVersion, ext = "jar") {
     isTransitive = false
   }
 }
@@ -124,9 +122,8 @@ intellijPlatform {
     //freeArgs.add("-offline")
     ides {
       // Check against the last Ultimate version
-      ide(IntelliJPlatformType.IntellijIdeaUltimate, "2024.2.1")
-      // \o/ Can't use recommended, got dependency conflict !!
-      // recommended()
+      ide(IntelliJPlatformType.IntellijIdeaUltimate, "2025.1")
+      recommended()
     }
   }
 }

@@ -112,7 +112,7 @@ jobs:
         run: |
           mvn org.apache.maven.plugins:maven-install-plugin:3.1.1:install-file \
             -Dfile=./chutney/packaging/local-api-unsecure/target/local-api-unsecure-${{steps.get-version.outputs.PROJECT_VERSION}}.jar \
-            -DgroupId=com.chutneytesting \
+            -DgroupId=fr.enedis.chutney \
             -DartifactId=local-api-unsecure \
             -Dversion=${{steps.get-version.outputs.PROJECT_VERSION}} \
             -Dpackaging=jar

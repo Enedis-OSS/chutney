@@ -21,7 +21,7 @@
         <configuration>
             <executable>true</executable>
             <layout>ZIP</layout>
-            <mainClass>com.chutneytesting.ServerBootstrap</mainClass>
+            <mainClass>fr.enedis.chutney.ServerBootstrap</mainClass>
             <finalName>chutney-${project.artifactId}-${chutney.version}</finalName>
         </configuration>
         <executions>
@@ -40,7 +40,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>chutney-parent</artifactId>
                 <version>${chutney.version}</version>
                 <type>pom</type>
@@ -52,12 +52,12 @@
     Add Chutney server and UI as dependencies.  
     ``` xml
     <dependency>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <artifactId>server</artifactId>
         <scope>runtime</scope>
     </dependency>
     <dependency>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <artifactId>ui</artifactId>
         <scope>runtime</scope>
     </dependency>

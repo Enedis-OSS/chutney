@@ -11,12 +11,12 @@ In order to write a scenario, you also need to declare environments and services
 
 ## Declare a target
 
-Under `src/main/kotlin` create a package (ex. `com.chutneytesting.getstart`) and create a Kotlin file (ex. `Environments.kt`) with the following content :
+Under `src/main/kotlin` create a package (ex. `fr.enedis.chutney.getstart`) and create a Kotlin file (ex. `Environments.kt`) with the following content :
 
 ``` kotlin title="Environments.kt"
-package com.chutneytesting.getstart
+package fr.enedis.chutney.getstart
 
-import com.chutneytesting.kotlin.dsl.ChutneyTarget
+import fr.enedis.chutney.kotlin.dsl.ChutneyTarget
 
 val google = ChutneyTarget(
         name = "search_engine",
@@ -69,7 +69,7 @@ Then, create a file `environment.json` with the following content :
     
     ``` kotlin
         import EnvironmentSynchronizeService
-        import com.chutneytesting.kotlin.util.ChutneyServerInfo
+        import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
         
         fun main() {
             val chutneyLocalServer = ChutneyServerInfo(
@@ -97,12 +97,12 @@ Then, create a file `environment.json` with the following content :
 Under `src/main/kotlin`, in the same package or another, create a Kotlin file (ex. `Scenarios.kt`) with the following content :
 
 ``` kotlin title="Scenarios.kt"
-package com.chutneytesting.getstart
+package fr.enedis.chutney.getstart
 
-import com.chutneytesting.kotlin.dsl.HttpGetAction
-import com.chutneytesting.kotlin.dsl.Scenario
-import com.chutneytesting.kotlin.dsl.SuccessAction
-import com.chutneytesting.kotlin.dsl.spEL
+import fr.enedis.chutney.kotlin.dsl.HttpGetAction
+import fr.enedis.chutney.kotlin.dsl.Scenario
+import fr.enedis.chutney.kotlin.dsl.SuccessAction
+import fr.enedis.chutney.kotlin.dsl.spEL
 
 val search_scenario = Scenario(title = "Search documents") {
     When("I visit a search engine") {

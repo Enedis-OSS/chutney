@@ -13,13 +13,13 @@ This module aims to provide :
 
 ## Examples
 
-All examples are defined in package **com.chutneytesting.example**.
+All examples are defined in package **fr.enedis.chutney.example**.
 
 The scenarios defined are executed in test directory.
 
 ## Demo
 
-All code for demo is defined in package **com.chutneytesting.demo**.
+All code for demo is defined in package **fr.enedis.chutney.demo**.
 
 No tests are written for this.
 It defined some Chutney objects who will be synchronized to the demo Chutney instance.

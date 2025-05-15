@@ -5,7 +5,7 @@
 #
 #
 
-com.chutneytesting.kotlin.junit.engine.execution.ConsoleLogScenarioReportExecutionListener
-com.chutneytesting.kotlin.junit.engine.execution.ConsoleLogStepReportExecutionListener
-com.chutneytesting.kotlin.junit.engine.execution.FileWriterScenarioReportExecutionListener
-com.chutneytesting.kotlin.junit.engine.execution.SiteGeneratorExecutionListener
+fr.enedis.chutney.kotlin.junit.engine.execution.ConsoleLogScenarioReportExecutionListener
+fr.enedis.chutney.kotlin.junit.engine.execution.ConsoleLogStepReportExecutionListener
+fr.enedis.chutney.kotlin.junit.engine.execution.FileWriterScenarioReportExecutionListener
+fr.enedis.chutney.kotlin.junit.engine.execution.SiteGeneratorExecutionListener

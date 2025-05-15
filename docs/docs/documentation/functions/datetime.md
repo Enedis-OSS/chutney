@@ -5,7 +5,7 @@
   ~
 -->
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/function/DateTimeFunctions.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/function/DateTimeFunctions.java){:target="_blank"}"
 
 Following functions help you write and shorten SpEL when you need to handle time, date and duration values.
 

@@ -5,7 +5,7 @@
   ~
 -->
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/groovy/GroovyAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/groovy/GroovyAction.java){:target="_blank"}"
 
 This action executes a [Groovy](https://groovy-lang.org/documentation.html){:target="_blank"} script.
 
@@ -27,9 +27,9 @@ Example:
 === "Kotlin"
     ``` kotlin
 
-    import com.chutneytesting.kotlin.dsl.AssertAction
-    import com.chutneytesting.kotlin.dsl.GroovyAction
-    import com.chutneytesting.kotlin.dsl.Scenario
+    import fr.enedis.chutney.kotlin.dsl.AssertAction
+    import fr.enedis.chutney.kotlin.dsl.GroovyAction
+    import fr.enedis.chutney.kotlin.dsl.Scenario
 
     val my_groovy_scenario = Scenario(title = "my groovy scenario") {
         When("I run my script") {

@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <artifactId>chutney-testing-parent</artifactId>
         <version>3.0.1-SNAPSHOT</version>
     </parent>
@@ -47,7 +47,7 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.chutneytesting</groupId>
+                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>chutney-parent</artifactId>
                 <version>${chutney.version}</version>
                 <type>pom</type>
@@ -62,12 +62,12 @@
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.chutneytesting</groupId>
+            <groupId>fr.enedis.chutney</groupId>
             <artifactId>chutney-kotlin-dsl</artifactId>
         </dependency>
 
         <dependency>  <!-- Here to be sure that oci image is built before testing -->
-            <groupId>com.chutneytesting</groupId>
+            <groupId>fr.enedis.chutney</groupId>
             <artifactId>local-dev</artifactId>
             <version>${chutney.version}</version>
             <scope>test</scope>
@@ -187,7 +187,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.chutneytesting.kotlin.execution.report.SiteGeneratorMain</mainClass>
+                            <mainClass>fr.enedis.chutney.kotlin.execution.report.SiteGeneratorMain</mainClass>
                         </configuration>
                     </execution>
                 </executions>

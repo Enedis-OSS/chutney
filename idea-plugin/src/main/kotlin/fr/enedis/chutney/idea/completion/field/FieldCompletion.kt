@@ -1,0 +1,43 @@
+/*
+ * SPDX-FileCopyrightText: 2017-2024 Enedis
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+
+package fr.enedis.chutney.idea.completion.field
+
+import fr.enedis.chutney.idea.completion.CompletionHelper
+import fr.enedis.chutney.idea.completion.field.model.Field
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.InsertHandler
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+
+abstract class FieldCompletion(
+    protected val completionHelper: CompletionHelper,
+    val completionResultSet: CompletionResultSet
+) {
+    abstract fun fill()
+    fun addUnique(field: Field) {
+        if (completionHelper.isUniqueKey(field.name)) {
+            completionResultSet.addElement(create(field, completionHelper.createInsertFieldHandler(field)))
+        }
+    }
+
+    private fun create(field: Field): LookupElementBuilder {
+        var lookupElementBuilder = LookupElementBuilder.create(field, field.name)
+        if (field.isRequired) {
+            lookupElementBuilder = lookupElementBuilder.bold()
+        }
+        return lookupElementBuilder
+    }
+
+    private fun create(
+        field: Field,
+        insertHandler: InsertHandler<LookupElement>
+    ): LookupElementBuilder {
+        return create(field).withInsertHandler(insertHandler)
+    }
+
+}

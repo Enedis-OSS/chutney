@@ -6,7 +6,7 @@
   -->
 
 <idea-plugin>
-    <id>com.chutneytesting.idea.chutney-idea-plugin.spring</id>
+    <id>fr.enedis.chutney.idea.chutney-idea-plugin.spring</id>
     <name>Chutney Spring SpEL Support</name>
     <version>0.1.0</version>
     <vendor email="support@chutneytesting.com" url="https://github.com/Enedis-OSS/chutney">ChutneyTesting</vendor>
@@ -19,6 +19,6 @@
     <idea-version since-build="221"/>
     <extensions defaultExtensionNs="com.intellij">
         <spring.el.contexts
-                implementation="com.chutneytesting.idea.extensions.SpringELPredefinedChutneyVariablesExtension"/>
+                implementation="fr.enedis.chutney.idea.extensions.SpringELPredefinedChutneyVariablesExtension"/>
     </extensions>
 </idea-plugin>

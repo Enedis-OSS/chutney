@@ -14,9 +14,9 @@
     ``` java
     package my.custom.package
 
-    import com.chutneytesting.action.spi.Action;
-    import com.chutneytesting.action.spi.injectable.Input;
-    import com.chutneytesting.action.spi.injectable.Logger;
+    import fr.enedis.chutney.action.spi.Action;
+    import fr.enedis.chutney.action.spi.injectable.Input;
+    import fr.enedis.chutney.action.spi.injectable.Logger;
 
     public class CustomAction implements Action {
 
@@ -47,10 +47,10 @@
     ``` java
     package my.custom.package
 
-    import com.chutneytesting.action.spi.Action;
-    import com.chutneytesting.action.spi.injectable.Input;
-    import com.chutneytesting.action.spi.injectable.Logger;
-    import com.chutneytesting.action.spi.injectable.Target
+    import fr.enedis.chutney.action.spi.Action;
+    import fr.enedis.chutney.action.spi.injectable.Input;
+    import fr.enedis.chutney.action.spi.injectable.Logger;
+    import fr.enedis.chutney.action.spi.injectable.Target
 
     public class CustomAction2 implements Action {
 

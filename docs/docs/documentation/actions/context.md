@@ -7,12 +7,12 @@
 
 ??? info "Browse implementations"
 
-    - [Context Put](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/ContextPutAction.java){:target="_blank}
-    - [Debug](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/DebugAction.java){:target="_blank"}
-    - [Sleep](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/SleepAction.java){:target="_blank"}
-    - [Final](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/FinalAction.java){:target="_blank"}
-    - [Fail](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/FailAction.java){:target="_blank"}
-    - [Success](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/SuccessAction.java){:target="_blank"}
+    - [Context Put](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/ContextPutAction.java){:target="_blank}
+    - [Debug](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/DebugAction.java){:target="_blank"}
+    - [Sleep](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/SleepAction.java){:target="_blank"}
+    - [Final](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/FinalAction.java){:target="_blank"}
+    - [Fail](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/FailAction.java){:target="_blank"}
+    - [Success](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/SuccessAction.java){:target="_blank"}
 
 
 A context action is a special case of action in Chutney, providing technical support :
@@ -23,7 +23,7 @@ A context action is a special case of action in Chutney, providing technical sup
 
 # Context Put
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/ContextPutAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/ContextPutAction.java){:target="_blank"}"
 
 Take a list of named values and put them into the execution context (i.e. create a variable for scenario [expressions](/documentation/actions/introduction.md/#expressions)).
 === "Inputs"
@@ -49,7 +49,7 @@ Take a list of named values and put them into the execution context (i.e. create
 
 # Debug
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/DebugAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/DebugAction.java){:target="_blank"}"
 
 Log the execution context variables.
 
@@ -72,7 +72,7 @@ Log the execution context variables.
 
 # Sleep
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/SleepAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/SleepAction.java){:target="_blank"}"
 
 Wait for a given time.
 
@@ -95,7 +95,7 @@ Wait for a given time.
 
 # Final
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/FinalAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/FinalAction.java){:target="_blank"}"
 
 Define a [teardown](/documentation/actions/introduction.md/#teardown) action, which will be executed at the end of scenario execution.
 
@@ -135,7 +135,7 @@ Define a [teardown](/documentation/actions/introduction.md/#teardown) action, wh
 
 # Fail
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/FailAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/FailAction.java){:target="_blank"}"
 
 Just fail.
 
@@ -154,7 +154,7 @@ Just fail.
 
 # Success
 
-!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/context/SuccessAction.java){:target="_blank"}"
+!!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/context/SuccessAction.java){:target="_blank"}"
 
 Just pass.
 

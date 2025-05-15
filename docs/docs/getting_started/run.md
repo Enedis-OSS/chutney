@@ -30,10 +30,10 @@ When using the JUnit5 engine, we recommend you to use JSON files to [declare you
 Create a Kotlin file (ex. `Junit5SearchFeat.kt`) with the following content :
 
 ``` kotlin title="SearchFeat.kt"
-package com.chutneytesting.getstart
+package fr.enedis.chutney.getstart
 
-import com.chutneytesting.kotlin.dsl.ChutneyScenario
-import com.chutneytesting.kotlin.annotations.ChutneyTest
+import fr.enedis.chutney.kotlin.dsl.ChutneyScenario
+import fr.enedis.chutney.kotlin.annotations.ChutneyTest
 
 class Junit5SearchFeat {
 
@@ -47,12 +47,12 @@ class Junit5SearchFeat {
 
 # Chutney Launcher
 
-Under `src/test/kotlin` create a package (ex. `com.chutneytesting.getstart`) and create a Kotlin file (ex. `SearchFeat.kt`) with the following content :
+Under `src/test/kotlin` create a package (ex. `fr.enedis.chutney.getstart`) and create a Kotlin file (ex. `SearchFeat.kt`) with the following content :
 
 ``` kotlin title="SearchFeat.kt"
-package com.chutneytesting.getstart
+package fr.enedis.chutney.getstart
 
-import com.chutneytesting.kotlin.launcher.Launcher
+import fr.enedis.chutney.kotlin.launcher.Launcher
 import org.junit.jupiter.api.Test
 
 class SearchFeat {

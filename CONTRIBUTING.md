@@ -375,7 +375,7 @@ In order to effectively release artifacts :
 - Under left menu "Build Promotion" -> "Staging Repositories"
 - Select the repository and click on "Close"
 - After the checks are done, refresh and click on "Release"
-- Wait a few hours to see it on [central](https://central.sonatype.dev/namespace/com.chutneytesting)
+- Wait a few hours to see it on [central](https://central.sonatype.dev/namespace/fr.enedis.chutney)
 
 #### Prepare next development
 
@@ -424,7 +424,7 @@ Create a new maven module with _chutney-parent_ as parent.
 And name your module such as _chutney-task-\[task-name\]_
   ```xml
   <parent>
-      <groupId>com.chutneytesting</groupId>
+      <groupId>fr.enedis.chutney</groupId>
       <artifactId>chutney-parent</artifactId>
   </parent>
   ```
@@ -435,18 +435,18 @@ And name your module such as _chutney-task-\[task-name\]_
 
   ```xml
   <dependency>
-      <groupId>com.chutneytesting</groupId>
+      <groupId>fr.enedis.chutney</groupId>
       <artifactId>action-spi</artifactId>
   </dependency>
   ```
 
 
-* Create a class which implements `com.chutneytesting.action.spi.Task` interface
+* Create a class which implements `fr.enedis.chutney.action.spi.Task` interface
 * Name your task in CamelCase. It will be converted in spinal-case such as `camel-case` for use in
   when writing scenarios and to tell the engine which task to pick for execution
 
-* Create a constructor with your task parameters annotated with `com.chutneytesting.action.spi.injectable.Input`
-    * You can also use `com.chutneytesting.action.spi.injectable.Target` and `com.chutneytesting.action.spi.injectable.Logger`
+* Create a constructor with your task parameters annotated with `fr.enedis.chutney.action.spi.injectable.Input`
+    * You can also use `fr.enedis.chutney.action.spi.injectable.Target` and `fr.enedis.chutney.action.spi.injectable.Logger`
 
 * Override the `execute()` method
     * This is where your task logic starts
@@ -454,7 +454,7 @@ And name your module such as _chutney-task-\[task-name\]_
 * Feel free to decoupled your code and add any other classes, entities and services up to your needs
 
 * Add a file `META-INF/extension/chutney.tasks`
-    * Add the canonical class name of your Task implementation, ex. `com.chutneytesting.action.implementation.http.HttpClientTask`
+    * Add the canonical class name of your Task implementation, ex. `fr.enedis.chutney.action.implementation.http.HttpClientTask`
     * If you have multiple `Task` implementations, add them one by line
 
 * When you are done, in order to use your newly created task, add it as a dependency to your _packaging_ module and build it

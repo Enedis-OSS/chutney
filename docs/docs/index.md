@@ -6,7 +6,7 @@
 -->
 
 [![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml){:target="_blank"}
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.chutneytesting/server){:target="_blank"}
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.enedis.chutney/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.enedis.chutney/server){:target="_blank"}
 [![GitHub release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases/latest){:target="_blank"}
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 

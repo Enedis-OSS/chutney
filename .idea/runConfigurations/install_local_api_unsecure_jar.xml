@@ -19,11 +19,12 @@
           <option name="goals">
             <list>
               <option value="org.apache.maven.plugins:maven-install-plugin:3.1.1:install-file" />
-              <option value="-Dfile=packaging/local-api-unsecure/target/chutney-local-api-unsecure-${project.version}.jar" />
-              <option value="-DgroupId=com.chutneytesting" />
+              <option value="-Dfile=packaging/local-api-unsecure/target/local-api-unsecure-${project.version}.jar" />
+              <option value="-DgroupId=fr.enedis.chutney" />
               <option value="-DartifactId=local-api-unsecure" />
               <option value="-Dversion=${projec.version}" />
               <option value="-Dpackaging=jar" />
+              <option value="-Dmaven.install.skip=false" />
             </list>
           </option>
           <option name="multimoduleDir" />

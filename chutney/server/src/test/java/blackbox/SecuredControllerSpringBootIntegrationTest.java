@@ -21,14 +21,14 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.chutneytesting.ServerConfiguration;
-import com.chutneytesting.security.api.UserDto;
-import com.chutneytesting.security.domain.Authorizations;
-import com.chutneytesting.security.infra.jwt.JwtUtil;
-import com.chutneytesting.server.core.domain.security.Role;
-import com.chutneytesting.server.core.domain.security.User;
-import com.chutneytesting.server.core.domain.security.UserRoles;
-import com.chutneytesting.tools.file.FileUtils;
+import fr.enedis.chutney.ServerConfiguration;
+import fr.enedis.chutney.security.api.UserDto;
+import fr.enedis.chutney.security.domain.Authorizations;
+import fr.enedis.chutney.security.infra.jwt.JwtUtil;
+import fr.enedis.chutney.server.core.domain.security.Role;
+import fr.enedis.chutney.server.core.domain.security.User;
+import fr.enedis.chutney.server.core.domain.security.UserRoles;
+import fr.enedis.chutney.tools.file.FileUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;

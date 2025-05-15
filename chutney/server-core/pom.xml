@@ -13,7 +13,7 @@
 
     <parent>
         <artifactId>chutney-parent</artifactId>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <version>3.0.1-SNAPSHOT</version>
     </parent>
 

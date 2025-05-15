@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.chutneytesting</groupId>
+        <groupId>fr.enedis.chutney</groupId>
         <artifactId>chutney-parent</artifactId>
         <version>3.0.1-SNAPSHOT</version>
     </parent>

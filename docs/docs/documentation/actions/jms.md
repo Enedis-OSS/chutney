@@ -9,15 +9,15 @@
 
     === "JMS"
 
-        - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsSenderAction.java){:target="_blank"}
-        - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsListenerAction.java){:target="_blank"}
-        - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsCleanQueueAction.java){:target="_blank"}
+        - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jms/JmsSenderAction.java){:target="_blank"}
+        - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jms/JmsListenerAction.java){:target="_blank"}
+        - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jms/JmsCleanQueueAction.java){:target="_blank"}
 
     === "Jakarta"
 
-        - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaSenderAction.java){:target="_blank"}
-        - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaListenerAction.java){:target="_blank"}
-        - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaCleanQueueAction.java){:target="_blank"}
+        - [Sender](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jakarta/JakartaSenderAction.java){:target="_blank"}
+        - [Listener](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jakarta/JakartaListenerAction.java){:target="_blank"}
+        - [Clean queue](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jakarta/JakartaCleanQueueAction.java){:target="_blank"}
 
 !!! note "Define a jms or jakarta target"
 
@@ -57,7 +57,7 @@
 
 # Sender
 
-!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsSenderAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaSenderAction.java){:target="_blank"} implementation"
+!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jms/JmsSenderAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jakarta/JakartaSenderAction.java){:target="_blank"} implementation"
 
 === "Inputs"
 
@@ -98,7 +98,7 @@
     ```
 
 # Listener
-!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsListenerAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaListenerAction.java){:target="_blank"} implementation"
+!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jms/JmsListenerAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jakarta/JakartaListenerAction.java){:target="_blank"} implementation"
 
 *  **Only works on TextMessage**
 * `selector` used as message filter in **createConsumer** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createConsumer-javax.jms.Destination-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createConsumer(jakarta.jms.Destination,java.lang.String)){:target="_blank"}) or in **createBrowser** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createBrowser-javax.jms.Queue-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createBrowser(jakarta.jms.Queue,java.lang.String)){:target="_blank"})
@@ -148,7 +148,7 @@
     ```
 
 # Clean Queue
-!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jms/JmsCleanQueueAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/com/chutneytesting/action/jakarta/JakartaCleanQueueAction.java){:target="_blank"} implementation"
+!!! info "Browse [JMS](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jms/JmsCleanQueueAction.java){:target="_blank"} or [Jakarta](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/jakarta/JakartaCleanQueueAction.java){:target="_blank"} implementation"
 
 * `selector` used as message filter in **createConsumer** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createConsumer-javax.jms.Destination-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createConsumer(jakarta.jms.Destination,java.lang.String)){:target="_blank"}) or in **createBrowser** ([JMS](https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createBrowser-javax.jms.Queue-java.lang.String-){:target="_blank"} / [Jakarta](https://jakarta.ee/specifications/messaging/3.1/apidocs/jakarta.messaging/jakarta/jms/session#createBrowser(jakarta.jms.Queue,java.lang.String)){:target="_blank"})
 * `bodySelector` verify in `browserMaxDepth` messages on the queue if it contains `bodySelector` characters **(only works on TextMessage)**

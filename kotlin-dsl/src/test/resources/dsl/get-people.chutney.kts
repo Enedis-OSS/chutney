@@ -5,12 +5,12 @@
 */
 
 
-import com.chutneytesting.kotlin.dsl.ContextPutAction
-import com.chutneytesting.kotlin.dsl.HttpGetAction
-import com.chutneytesting.kotlin.dsl.JsonAssertAction
-import com.chutneytesting.kotlin.dsl.RetryTimeOutStrategy
-import com.chutneytesting.kotlin.dsl.Scenario
-import com.chutneytesting.kotlin.dsl.elEval
+import fr.enedis.chutney.kotlin.dsl.ContextPutAction
+import fr.enedis.chutney.kotlin.dsl.HttpGetAction
+import fr.enedis.chutney.kotlin.dsl.JsonAssertAction
+import fr.enedis.chutney.kotlin.dsl.RetryTimeOutStrategy
+import fr.enedis.chutney.kotlin.dsl.Scenario
+import fr.enedis.chutney.kotlin.dsl.elEval
 
 Scenario(title = "swapi GET people record") {
     Given("I set get people service api endpoint") {
