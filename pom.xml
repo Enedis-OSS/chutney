@@ -408,6 +408,13 @@
             <configuration>
               <publishingServerId>central</publishingServerId>
               <autoPublish>true</autoPublish>
+              <excludeArtifacts>
+                <excludeArtifact>local-api-unsecure</excludeArtifact>
+                <excludeArtifact>acceptance-tests</excludeArtifact>
+                <excludeArtifact>local-dev</excludeArtifact>
+                <excludeArtifact>example</excludeArtifact>
+                <excludeArtifact>packaging</excludeArtifact>
+              </excludeArtifacts>
             </configuration>
           </plugin>
         </plugins>
