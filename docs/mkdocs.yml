@@ -2,7 +2,7 @@
 #SPDX-License-Identifier: Apache-2.0
 
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
-site_name: ''
+site_name: 'Chutney'
 site_url: https://www.chutney-testing.com/
 site_description: Opinionated test tool for Specification by Example
 site_author: Chutney Testing Team
@@ -81,7 +81,7 @@ extra_css:
 theme:
   name: material
   favicon: img/favicon.ico
-  logo: img/logo.svg
+  logo: img/logo.png
   language: en
   font:
     text: Ubuntu

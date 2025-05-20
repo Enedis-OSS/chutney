@@ -5,7 +5,7 @@
   ~
   -->
 
-# Chutney
+# <img src="docs/docs/img/logo.png" width="50" style="vertical-align:bottom"/>  Chutney
 ## Spice up your spec , Better `taste` your app !
 
 [![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml)
