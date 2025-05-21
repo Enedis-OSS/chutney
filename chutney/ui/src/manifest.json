@@ -3,7 +3,7 @@
   "short_name": "Chutney",
   "icons": [
       {
-          "src": "assets/logo/logo-circle.png",
+          "src": "assets/img/logo.png",
           "sizes": "141x140",
           "type": "image/png"
       }
