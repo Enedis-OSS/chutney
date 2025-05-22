@@ -38,7 +38,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
 
     Authorization = Authorization;
     modalRef: BsModalRef;
-    rightMenuItems: MenuItem[];
+    rightMenuItems: MenuItem[] = [];
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
@@ -65,6 +65,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
         this.route.params
             .pipe(
                 tap(params => this.testCaseId = params['id']),
+                tap(() => this.initRightMenu()),
                 switchMap(() =>
                     forkJoin({
                         scenarioMetadata: this.scenarioService.findScenarioMetadata(this.testCaseId).pipe(
@@ -76,8 +77,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
                             tap((environments) => this.environments = environments)
                         )
                     })
-                ),
-                tap(() => this.initRightMenu())
+                )
             ).subscribe();
     }
 

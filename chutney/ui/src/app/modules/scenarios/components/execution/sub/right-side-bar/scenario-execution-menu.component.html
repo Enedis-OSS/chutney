@@ -5,9 +5,7 @@
   ~
   -->
 
-@if (rightMenuItems) {
-  <chutney-chutney-right-menu [menuItems]="rightMenuItems"></chutney-chutney-right-menu>
-}
+<chutney-chutney-right-menu [menuItems]="rightMenuItems"></chutney-chutney-right-menu>
 
 <ng-template #delete_modal>
   <div class="modal-body text-center">
@@ -17,4 +15,3 @@
     (click)="decline()">{{'global.confirm.no' | translate}}</button>
   </div>
 </ng-template>
-
