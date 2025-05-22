@@ -13,6 +13,7 @@ import static fr.enedis.chutney.dataset.api.DataSetMapper.fromExecutionDatasetDt
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportMapper;
 import fr.enedis.chutney.dataset.api.ExecutionDatasetDto;
+import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.execution.api.report.surefire.SurefireCampaignExecutionReportBuilder;
 import fr.enedis.chutney.execution.api.report.surefire.SurefireScenarioExecutionReportBuilder;
 import fr.enedis.chutney.execution.domain.campaign.CampaignExecutionEngine;
@@ -47,16 +48,19 @@ public class CampaignExecutionUiController {
     private final SurefireCampaignExecutionReportBuilder surefireCampaignExecutionReportBuilder;
     private final SpringUserService userService;
     private final CampaignExecutionApiMapper campaignExecutionApiMapper;
+    private final DataSetRepository datasetRepository;
 
     public CampaignExecutionUiController(
         CampaignExecutionEngine campaignExecutionEngine,
         SurefireScenarioExecutionReportBuilder surefireScenarioExecutionReportBuilder,
         SpringUserService userService,
-        CampaignExecutionApiMapper campaignExecutionApiMapper) {
+        CampaignExecutionApiMapper campaignExecutionApiMapper,
+        DataSetRepository datasetRepository) {
         this.campaignExecutionEngine = campaignExecutionEngine;
         this.surefireCampaignExecutionReportBuilder = new SurefireCampaignExecutionReportBuilder(surefireScenarioExecutionReportBuilder);
         this.userService = userService;
         this.campaignExecutionApiMapper = campaignExecutionApiMapper;
+        this.datasetRepository = datasetRepository;
     }
 
 
@@ -106,12 +110,12 @@ public class CampaignExecutionUiController {
     @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
     @PostMapping(path = {"/byID/{campaignId}", "/byID/{campaignId}/{env}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportDto executeCampaignById(
-            @PathVariable("campaignId") Long campaignId,
-            @PathVariable("env") Optional<String> environment,
-            @RequestBody ExecutionDatasetDto dataset
+        @PathVariable("campaignId") Long campaignId,
+        @PathVariable("env") Optional<String> environment,
+        @RequestBody ExecutionDatasetDto dataset
     ) {
         String userId = userService.currentUser().getId();
-        DataSet ds = fromExecutionDatasetDto(dataset);
+        DataSet ds = fromExecutionDatasetDto(dataset, datasetRepository::findById);
         CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId);
         return toDto(report);
     }

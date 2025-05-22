@@ -12,7 +12,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
-import org.springframework.util.CollectionUtils;
+import java.util.function.Function;
 
 public class DataSetMapper {
 
@@ -24,13 +24,15 @@ public class DataSetMapper {
         if (dataSet.id != null) datasetBuilder.id(dataSet.id);
         if (dataSet.name != null) datasetBuilder.name(dataSet.name);
         if (dataSet.constants != null) datasetBuilder.constants(KeyValue.fromMap(dataSet.constants));
-        if (dataSet.datatable != null) datasetBuilder.datatable(dataSet.datatable.stream().map(KeyValue::fromMap).toList());
+        if (dataSet.datatable != null)
+            datasetBuilder.datatable(dataSet.datatable.stream().map(KeyValue::fromMap).toList());
         if (dataSet.tags != null) datasetBuilder.tags(dataSet.tags);
         if (dataSet.description != null) datasetBuilder.description(dataSet.description);
         if (dataSet.creationDate != null) datasetBuilder.lastUpdated(dataSet.creationDate);
         if (dataSet.campaignUsage != null) datasetBuilder.campaignUsage(dataSet.campaignUsage);
         if (dataSet.scenarioUsage != null) datasetBuilder.scenarioUsage(dataSet.scenarioUsage);
-        if (dataSet.scenarioInCampaignUsage != null) datasetBuilder.scenarioInCampaignUsage(dataSet.scenarioInCampaignUsage);
+        if (dataSet.scenarioInCampaignUsage != null)
+            datasetBuilder.scenarioInCampaignUsage(dataSet.scenarioInCampaignUsage);
         return datasetBuilder.build();
     }
 
@@ -46,13 +48,12 @@ public class DataSetMapper {
             .build();
     }
 
-    public static DataSet fromExecutionDatasetDto(ExecutionDatasetDto dto) {
+    public static DataSet fromExecutionDatasetDto(ExecutionDatasetDto dto, Function<String, DataSet> findById) {
         if (dto == null) {
             return null;
-        }
-        else if (dto.getId() == null &&
-            CollectionUtils.isEmpty(dto.getConstants()) &&
-            CollectionUtils.isEmpty(dto.getDatatable())) {
+        } else if (dto.getId() != null && !dto.getId().equals(DataSet.CUSTOM_ID)) {
+            return findById.apply(dto.getId());
+        } else if (dto.isEmpty()) {
             return null;
         }
         return DataSet.builder()

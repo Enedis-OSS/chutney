@@ -7,10 +7,12 @@
 
 package fr.enedis.chutney.execution.api;
 
-import static java.util.Optional.ofNullable;
+import static fr.enedis.chutney.dataset.api.DataSetMapper.fromExecutionDatasetDto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.dataset.api.ExecutionDatasetDto;
-import fr.enedis.chutney.dataset.api.KeyValue;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.environment.api.environment.EmbeddedEnvironmentApi;
 import fr.enedis.chutney.execution.domain.GwtScenarioMarshaller;
@@ -27,12 +29,10 @@ import fr.enedis.chutney.server.core.domain.scenario.ScenarioNotFoundException;
 import fr.enedis.chutney.server.core.domain.scenario.TestCase;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseRepository;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
 import java.io.IOException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -184,18 +184,9 @@ public class ScenarioExecutionUiController {
     }
 
     private DataSet getDataSet(ExecutionDatasetDto dataset, TestCase testCase) {
-        if (dataset == null) {
-            return getDataSetFromTestCase(testCase);
-        } else if (dataset.getId() != null) {
-            return datasetRepository.findById(dataset.getId());
-        } else if (dataset.getConstants() != null || dataset.getDatatable() != null) {
-            return DataSet.builder()
-                .withName("")
-                .withConstants(KeyValue.toMap(dataset.getConstants()))
-                .withDatatable(ofNullable(dataset.getDatatable()).map(datatable -> datatable.stream().map(KeyValue::toMap).toList()).orElse(null))
-                .build();
-        }
-        return getDataSetFromTestCase(testCase);
+        return Optional.ofNullable(
+            fromExecutionDatasetDto(dataset, datasetRepository::findById)
+        ).orElseGet(() -> this.getDataSetFromTestCase(testCase));
     }
 
     // TODO - Use Spring serialization
