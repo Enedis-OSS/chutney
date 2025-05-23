@@ -12,7 +12,7 @@
   <parent>
     <groupId>fr.enedis.chutney</groupId>
     <artifactId>chutney-testing-parent</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.1.1</version>
   </parent>
 
   <artifactId>acceptance-tests</artifactId>
