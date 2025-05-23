@@ -82,7 +82,7 @@ class DataSetMapperTest {
     }
 
     @Test
-    public void should_build_dataset_with_every_field() {
+    public void build_dataset_with_every_field() {
         DataSet dataSet = DataSet.builder()
             .withName("dataset")
             .withId("id")
@@ -114,7 +114,7 @@ class DataSetMapperTest {
     }
 
     @Test
-    public void should_build_dataset_from_NO_DATASET() {
+    public void build_dataset_from_NO_DATASET() {
         DataSet dataSet = DataSet.NO_DATASET;
 
         DataSetDto datasetDto = DataSetMapper.toDto(dataSet);
@@ -123,20 +123,69 @@ class DataSetMapperTest {
     }
 
     @Test
-    public void should_build_dataset_from_execution_dataset() {
+    public void build_dataset_from_execution_dataset() {
         ExecutionDatasetDto executionDatasetDto = new ExecutionDatasetDto()
             .setConstants(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build()))
-            .setDatatable(List.of(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build())))
-            .setId("dataset");
+            .setDatatable(List.of(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build())));
 
-        DataSet dataset = DataSetMapper.fromExecutionDatasetDto(executionDatasetDto);
+        DataSet dataset = DataSetMapper.fromExecutionDatasetDto(executionDatasetDto, id -> DataSet.NO_DATASET);
 
         assertThat(dataset).isNotNull();
         assertThat(dataset.constants).containsKey("TOTO");
         assertThat(dataset.constants).containsValue("TUTU");
         assertThat(dataset.datatable.getFirst()).containsKey("TOTO");
         assertThat(dataset.datatable.getFirst()).containsValue("TUTU");
+        assertThat(dataset.id).isNull();
+        assertThat(dataset.name).isEqualTo("");
+    }
+
+    @Test
+    public void get_dataset_from_execution_dataset_id() {
+        ExecutionDatasetDto executionDatasetDto = new ExecutionDatasetDto()
+            .setConstants(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build()))
+            .setDatatable(List.of(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build())))
+            .setId("dataset");
+
+        DataSet getDS = DataSet.builder()
+            .withConstants(Map.of("TATA", "TITI"))
+            .withDatatable(List.of(Map.of("TATA", "TITI")))
+            .withId("dataset")
+            .withName("dataset")
+            .build();
+
+        DataSet dataset = DataSetMapper.fromExecutionDatasetDto(executionDatasetDto, id -> getDS);
+
+        assertThat(dataset).isNotNull();
+        assertThat(dataset.constants).containsKey("TATA");
+        assertThat(dataset.constants).containsValue("TITI");
+        assertThat(dataset.datatable.getFirst()).containsKey("TATA");
+        assertThat(dataset.datatable.getFirst()).containsValue("TITI");
         assertThat(dataset.id).isEqualTo("dataset");
+        assertThat(dataset.name).isEqualTo("dataset");
+    }
+
+    @Test
+    public void build_dataset_from_execution_dataset_when_custom_id() {
+        ExecutionDatasetDto executionDatasetDto = new ExecutionDatasetDto()
+            .setConstants(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build()))
+            .setDatatable(List.of(List.of(ImmutableKeyValue.builder().key("TOTO").value("TUTU").build())))
+            .setId(DataSet.CUSTOM_ID);
+
+        DataSet getDS = DataSet.builder()
+            .withConstants(Map.of("TATA", "TITI"))
+            .withDatatable(List.of(Map.of("TATA", "TITI")))
+            .withId("dataset")
+            .withName("dataset")
+            .build();
+
+        DataSet dataset = DataSetMapper.fromExecutionDatasetDto(executionDatasetDto, id -> getDS);
+
+        assertThat(dataset).isNotNull();
+        assertThat(dataset.constants).containsKey("TOTO");
+        assertThat(dataset.constants).containsValue("TUTU");
+        assertThat(dataset.datatable.getFirst()).containsKey("TOTO");
+        assertThat(dataset.datatable.getFirst()).containsValue("TUTU");
+        assertThat(dataset.id).isEqualTo(DataSet.CUSTOM_ID);
         assertThat(dataset.name).isEqualTo("");
     }
 

@@ -9,7 +9,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, Template
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { combineLatest, identity, Observable, of, Subject, timer } from 'rxjs';
-import { catchError, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -65,10 +65,12 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
 
     ngOnInit(): void {
         this.environments$()
-            .pipe(takeUntil(this.unsubscribeSub$))
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                tap(() => this.initRightMenu())
+            )
             .subscribe(environments => {
                 this.environments = environments;
-                this.initRightMenu();
             });
     }
 

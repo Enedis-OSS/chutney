@@ -54,7 +54,8 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
                         scenario: this.loadScenario(),
                         scenarioExecutions: this.loadScenarioExecutions().pipe(tap(() => this.onQueryParamsChange()))
                     })
-                )
+                ),
+                takeUntil(this.unsubscribeSub$)
             ).subscribe({
                 error: (error) => this.error = error.error
             });

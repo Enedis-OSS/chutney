@@ -10,6 +10,7 @@ package fr.enedis.chutney.dataset.api;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExecutionDatasetDto {
@@ -44,5 +45,9 @@ public class ExecutionDatasetDto {
     public ExecutionDatasetDto setDatatable(List<List<KeyValue>> datatable) {
         this.datatable = datatable;
         return this;
+    }
+
+    public boolean isEmpty() {
+        return CollectionUtils.isEmpty(constants) && CollectionUtils.isEmpty(datatable);
     }
 }
