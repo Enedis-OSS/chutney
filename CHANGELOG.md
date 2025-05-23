@@ -7,6 +7,15 @@
 
 # Changelog
 
+## [3.1.1](https://github.com/chutney-testing/chutney/tree/3.1.1)
+### 🚀 Implemented enhancements:
+* Change logo by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/140
+### 🐛 Fixed bugs:
+* Fixes scenario execution/replay by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/143
+* Cannot replay a scenario execution which had a custom dataset by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/143
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.1.0...3.1.1
+
 ## [3.1.0](https://github.com/chutney-testing/chutney/tree/3.1.0)
 ### 🚀 Implemented enhancements:
 * Add URL encode/decode and duration between functions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/116
