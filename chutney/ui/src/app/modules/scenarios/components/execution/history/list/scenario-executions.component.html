@@ -188,12 +188,14 @@
                 <ngb-highlight [result]="execution.user" [term]="filtersForm.get('keyword').value"></ngb-highlight>
               </td>
               <td>
-                <div class="float-end d-flex" *hasAuthorization="[Authorization.SCENARIO_WRITE]">
-                  <button class="btn btn-sm btn-primary me-2" (click)="replay(execution, $event)"
+                <div class="float-end d-flex">
+                  <button class="btn btn-sm btn-outline-primary me-2" *hasAuthorization="[Authorization.SCENARIO_EXECUTE]"
+                          (click)="replay(execution, $event)"
                           [title]="'global.actions.replay' | translate">
                       <i  class="bi bi-repeat" ></i>
                   </button>
-                  <button class="btn btn-sm btn-primary me-2" (click)="openDeleteModal(execution.executionId, $event)"
+                  <button class="btn btn-sm btn-outline-danger me-2" *hasAuthorization="[Authorization.SCENARIO_WRITE]"
+                          (click)="openDeleteModal(execution.executionId, $event)"
                           [title]="'global.actions.delete' | translate">
                       <i  class="bi bi-trash" ></i>
                   </button>
