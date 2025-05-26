@@ -388,4 +388,25 @@ class ForEachStrategyTest {
         assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().name).isEqualTo("0 0 0 - level 3 - level1.0 level2.0 level3.0");
         assertThat(result.steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.getFirst().steps.get(1).name).isEqualTo("0 0 1 - level 3 - level1.0 level2.0 level3.1");
     }
+
+    @Test
+    public void should_not_duplicate_lines() {
+        // G
+        final TestEngine testEngine = new ExecutionConfiguration().embeddedTestEngine();
+        ExecutionRequestDto requestDto = Jsons.loadJsonFromClasspath("scenarios_examples/forEachStrategy/iteration_with_retry.json", ExecutionRequestDto.class);
+
+        // W
+        StepExecutionReportDto result = testEngine.execute(requestDto);
+
+        // T
+        assertThat(result).hasFieldOrPropertyWithValue("status", FAILURE);
+
+        var retryStep = result.steps.getFirst();
+        assertThat(retryStep.steps).hasSize(1);
+        assertThat(retryStep.steps.getFirst().steps).hasSize(2);
+        assertThat(retryStep.steps.getFirst().steps.getFirst().steps).isEmpty();
+        assertThat(retryStep.steps.getFirst().steps.getFirst().status).isEqualTo(FAILURE);
+        assertThat(retryStep.steps.getFirst().steps.getLast().steps).isEmpty();
+        assertThat(retryStep.steps.getFirst().steps.getLast().status).isEqualTo(FAILURE);
+    }
 }

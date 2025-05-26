@@ -43,6 +43,15 @@ public class ForEachStrategy implements StepExecutionStrategy {
             () -> new IllegalArgumentException("Strategy definition cannot be empty")
         );
 
+        if (step.isForStrategyApplied()) {
+            step.subSteps().forEach(
+                s ->DefaultStepExecutionStrategy.instance.execute(scenarioExecution, s, scenarioContext, localContext, strategies)
+            );
+            return step.status();
+        } else {
+            step.setIsForStrategyApplied(true);
+        }
+
         List<Map<String, Object>> dataset = getDataset(step, scenarioContext, strategyDefinition, step.dataEvaluator());
         final String indexName = (String) Optional.ofNullable(strategyDefinition.strategyProperties.get("index")).orElse("i");
         step.beginExecution(scenarioExecution);
