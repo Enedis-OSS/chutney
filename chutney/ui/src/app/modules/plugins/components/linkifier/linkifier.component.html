@@ -38,8 +38,8 @@
       </div>
 
       <div class="box2">
-        <button type="submit" [disabled]="!isValid()" class="btn btn-success" (click)="addLinkifier()">
-          Add
+        <button type="submit" [disabled]="!isValid()" class="btn btn-primary" (click)="addLinkifier()">
+          {{ 'global.actions.add' | translate }}
           <span class="fa fa-check"></span>
         </button>
       </div>
