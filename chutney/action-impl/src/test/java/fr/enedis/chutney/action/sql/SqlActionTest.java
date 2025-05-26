@@ -61,7 +61,7 @@ public class SqlActionTest {
     public void should_output_only_one_result_when_single_statement() {
         // Given
         ActionsConfiguration configuration = new TestActionsConfiguration();
-        Action action = new SqlAction(sqlTarget, logger, configuration, Collections.singletonList("select * from users"), 2);
+        Action action = new SqlAction(sqlTarget, logger, configuration, Collections.singletonList("select * from users"), 2, 0);
 
         // When
         ActionExecutionResult result = action.execute();
@@ -89,7 +89,7 @@ public class SqlActionTest {
     public void should_provide_affectedRows_when_single_statement() {
         // Given
         ActionsConfiguration configuration = new TestActionsConfiguration();
-        Action action = new SqlAction(sqlTarget, logger, configuration, Collections.singletonList("UPDATE USERS SET NAME = 'toto' WHERE ID = 1"), 5);
+        Action action = new SqlAction(sqlTarget, logger, configuration, Collections.singletonList("UPDATE USERS SET NAME = 'toto' WHERE ID = 1"), 5, 0);
 
         // When
         ActionExecutionResult result = action.execute();
@@ -102,7 +102,7 @@ public class SqlActionTest {
     public void should_output_only_many_results_when_multi_statements() {
         // Given
         ActionsConfiguration configuration = new TestActionsConfiguration();
-        Action action = new SqlAction(sqlTarget, logger, configuration, Lists.newArrayList("select * from users where id = 1", "select * from users where id = 2") , 2);
+        Action action = new SqlAction(sqlTarget, logger, configuration, Lists.newArrayList("select * from users where id = 1", "select * from users where id = 2") , 2, 0);
 
         // When
         ActionExecutionResult result = action.execute();
@@ -137,7 +137,7 @@ public class SqlActionTest {
     public void should_be_non_sensitive_to_header_case_or_spaces() {
         // Given
         ActionsConfiguration configuration = new TestActionsConfiguration();
-        Action action = new SqlAction(sqlTarget, logger, configuration, Lists.newArrayList("select * from users"), 2);
+        Action action = new SqlAction(sqlTarget, logger, configuration, Lists.newArrayList("select * from users"), 2, 0);
 
         // When
         ActionExecutionResult result = action.execute();

@@ -33,22 +33,28 @@ import org.apache.commons.lang3.StringUtils;
 
 public class SqlAction implements Action {
 
-    public static final String CONFIGURABLE_NB_LOGGED_ROW = "chutney.actions.sql.max-logged-rows";
+    private static final String CONFIGURABLE_NB_LOGGED_ROW = "chutney.actions.sql.max-logged-rows";
     private static final Integer DEFAULT_NB_LOGGED_ROW = 30;
+
+    private static final String CONFIGURABLE_MINIMUM_MEMORY_PERCENTAGE_REQUIRED = "chutney.actions.sql.minimum-memory-percentage-required";
+    private static final Integer MINIMUM_MEMORY_PERCENTAGE_REQUIRED = 0;
 
     private final Target target;
     private final Logger logger;
     private final List<String> statements;
     private final Integer nbLoggedRow;
+    private final Integer minimumMemoryPercentageRequired;
 
     private final DefaultSqlClientFactory clientFactory = new DefaultSqlClientFactory();
 
-    public SqlAction(Target target, Logger logger, ActionsConfiguration configuration, @Input("statements") List<String> statements, @Input("nbLoggedRow") Integer nbLoggedRow) {
+    public SqlAction(Target target, Logger logger, ActionsConfiguration configuration, @Input("statements") List<String> statements, @Input("nbLoggedRow") Integer nbLoggedRow, @Input("minimumMemoryPercentageRequired") Integer minimumMemoryPercentageRequired) {
         this.target = target;
         this.logger = logger;
         this.statements = statements;
         this.nbLoggedRow = ofNullable(nbLoggedRow)
             .orElse(configuration.getInteger(CONFIGURABLE_NB_LOGGED_ROW, DEFAULT_NB_LOGGED_ROW));
+        this.minimumMemoryPercentageRequired = ofNullable(minimumMemoryPercentageRequired)
+            .orElse(configuration.getInteger(CONFIGURABLE_MINIMUM_MEMORY_PERCENTAGE_REQUIRED, MINIMUM_MEMORY_PERCENTAGE_REQUIRED));
     }
 
     @Override
@@ -64,7 +70,7 @@ public class SqlAction implements Action {
 
     @Override
     public ActionExecutionResult execute() {
-        SqlClient sqlClient = clientFactory.create(target);
+        SqlClient sqlClient = clientFactory.create(target, minimumMemoryPercentageRequired);
         try {
             var records = new ArrayList<Records>();
             Map<String, Object> outputs = new HashMap<>();

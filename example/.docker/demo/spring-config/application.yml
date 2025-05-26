@@ -100,3 +100,4 @@ chutney:
   actions:
     sql:
       max-logged-rows: 30
+      minimum-memory-percentage-required: 0

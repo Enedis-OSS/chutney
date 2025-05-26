@@ -158,11 +158,11 @@ public class SqlClientTest {
         @Test
         public void should_prevent_out_of_memory() {
             try (MockedStatic<ChutneyMemoryInfo> chutneyMemoryInfoMockedStatic = Mockito.mockStatic(ChutneyMemoryInfo.class)) {
-                chutneyMemoryInfoMockedStatic.when(ChutneyMemoryInfo::hasEnoughAvailableMemory).thenReturn(true, true, false);
+                chutneyMemoryInfoMockedStatic.when(() -> ChutneyMemoryInfo.hasEnoughAvailableMemory(5)).thenReturn(true, true, false);
                 chutneyMemoryInfoMockedStatic.when(ChutneyMemoryInfo::usedMemory).thenReturn(42L * 1024 * 1024);
                 chutneyMemoryInfoMockedStatic.when(ChutneyMemoryInfo::maxMemory).thenReturn(1337L * 1024 * 1024);
 
-                SqlClient sqlClient = new DefaultSqlClientFactory().create(sqlTarget);
+                SqlClient sqlClient = new DefaultSqlClientFactory().create(sqlTarget,5);
 
                 Exception exception = assertThrows(NotEnoughMemoryException.class, () -> sqlClient.execute("select * from users"));
                 assertThat(exception.getMessage()).isEqualTo("Running step was stopped to prevent application crash. 42MB memory used of 1337MB max.\n" +

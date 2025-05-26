@@ -54,11 +54,14 @@
 
 === "Inputs"
 
-    | Required | Name          | Type          | Default | Note                                              |
-    |:--------:|:--------------|:--------------|:-------:|:--------------------------------------------------|
-    |    *     | `target`      | String        |         |                                                   |
-    |    *     | `statements`  | List<String\> |         |                                                   |
-    |          | `nbLoggedRow` | Integer       |   30    | Maximum number of rows to log in execution report |
+    | Required | Name                               | Type          | Default | Note                                                                |
+    |:--------:|:-----------------------------------|:--------------|:-------:|:--------------------------------------------------------------------|
+    |    *     | `target`                           | String        |         |                                                                     |
+    |    *     | `statements`                       | List<String\> |         |                                                                     |
+    |          | `nbLoggedRow`                      | Integer       |   30    | Maximum number of rows to log in execution report                   |
+    |          | `minimumMemoryPercentageRequired`  | Integer       |   0     | Minimum memory percentage required before executing the statement   |
+
+
 
 === "Outputs"
 
@@ -129,17 +132,19 @@ SqlAction(
         "SELECT * FROM movies WHERE rating > 85" // (1)
     ),
     nbLoggedRow = 5, // (2)
+    minimumMemoryPercentageRequired = 3, // (3)
     outputs = mapOf(
-        "numberOfBest" to "rows.count()".spEL(), // (3)
-        "bestMoviesTitles" to "rows.get(\"TITLE\")".spEL() // (4)
+        "numberOfBest" to "rows.count()".spEL(), // (4)
+        "bestMoviesTitles" to "rows.get(\"TITLE\")".spEL() // (5)
     )
 )
 ```
 
 1. `statements` has only one entry, so outputs `rows` and `firstRow` are available but `recordResult` is not
 2. Will locally override configuration `chutney.actions.sql.max-logged-rows`
-3. Expected result is 2
-4. Expected result is ["Grave of the Fireflies", "My Neighbor Totoro"]
+3. Will locally override configuration `chutney.actions.sql.minimum-memory-percentage-required`
+4. Expected result is 2 
+5. 5 Expected result is ["Grave of the Fireflies", "My Neighbor Totoro"]
 
 
 # Outputs for many statements
