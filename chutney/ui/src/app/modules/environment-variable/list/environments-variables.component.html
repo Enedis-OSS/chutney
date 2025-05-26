@@ -26,7 +26,8 @@
   <div class="btn-group" role="group">
     <button type="button" class="btn btn-primary me-3 rounded"
       (click)="initVariableEdition()"
-      [disabled]="variableEditionForm">{{ 'global.actions.add' | translate }}
+      [disabled]="variableEditionForm">
+      <span class="fa fa-plus" aria-hidden="true"></span>{{ 'global.actions.add' | translate }}
     </button>
   </div>
 </div>
@@ -124,11 +125,12 @@
         </td>
         <td class="w5 align-bottom">
           <div class="d-flex flex-row justify-content-end">
-            <button class="btn btn-sm btn-outline-primary me-2 " (click)="variableEditionForm = null">
+            <button class="btn btn-sm btn-outline-primary me-2 " (click)="variableEditionForm = null"
+                title="{{ 'global.actions.cancel' | translate}}">
               <i class="bi bi-x"></i>
             </button>
             <button class="btn btn-sm btn-primary" (click)="submitEdition()"
-              [disabled]="variableEditionForm.invalid">
+              [disabled]="variableEditionForm.invalid" title="{{ 'global.actions.save' | translate}}">
               <i class="bi  bi-check"></i>
             </button>
           </div>
