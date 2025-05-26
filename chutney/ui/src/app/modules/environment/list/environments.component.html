@@ -18,7 +18,8 @@
     <button type="button" class="btn btn-primary rounded me-2"
       (click)="enableAdd()"
       [disabled]="environment">
-        <span class="fa fa-plus" aria-hidden="true"></span>{{ 'global.actions.add' | translate }}
+        <span class="fa fa-plus" aria-hidden="true"></span>
+        {{ 'global.actions.add' | translate }}
     </button>
     <chutney-import-button (submitEvent)="import($event)" [btnColor]="'primary'"></chutney-import-button>
   </div>
