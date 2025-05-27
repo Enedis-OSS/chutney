@@ -34,7 +34,7 @@
               <div class="input-group">
                 <input id="calendar" class="form-control" placeholder="yyyy-mm-dd"
                   name="dp" formControlName="date" ngbDatepicker #d="ngbDatepicker">
-                <button class="btn btn-success bi bi-calendar-event" (click)="d.toggle()"
+                <button class="btn btn-primary bi bi-calendar-event" (click)="d.toggle()"
                 type="button"></button>
               </div>
 
@@ -133,7 +133,7 @@
         }
       </div>
     </div>
-      <button type="submit" [disabled]="submitted && form.invalid" class="btn btn-success my-3"
+      <button type="submit" [disabled]="submitted && form.invalid" class="btn btn-primary my-3"
         (click)="create()">
         <span class="fa fa-floppy-disk"></span>&nbsp;
         <span>{{ 'global.actions.record' | translate }}</span>
@@ -160,9 +160,9 @@
           <tbody>
             @for (scheduledCampaign of scheduledCampaigns; track scheduledCampaign.id) {
               <tr>
-                <td>#{{ scheduledCampaign.id }}</td>
-                <td>{{ scheduledCampaign.schedulingDate | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm' }}</td>
-                <td>
+                <td class="align-middle">#{{ scheduledCampaign.id }}</td>
+                <td class="align-middle">{{ scheduledCampaign.schedulingDate | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm' }}</td>
+                <td class="align-middle">
                   @for (campaignExecutionRequest of scheduledCampaign.campaignExecutionRequest; track campaignExecutionRequest; let i = $index) {
                     <div>
                       <span>{{ (i + 1) }} - {{ campaignExecutionRequest.campaignTitle }}
@@ -173,17 +173,17 @@
                     </div>
                   }
                 </td>
-                <td>
+                <td class="align-middle">
                   @if (scheduledCampaign.environment !== undefined) {
                     <span>{{ scheduledCampaign.environment }}</span>
                   }
                 </td>
-                <td>
+                <td class="align-middle">
                   @if (scheduledCampaign.frequency !== undefined) {
                     <span>{{ scheduledCampaign.frequency }}</span>
                   }
                 </td>
-              <td>
+              <td class="align-middle">
                 <button type="button" class="btn btn-outline-danger btn-sm float-end"
                   (click)="delete(scheduledCampaign.id)">
                   <span class="fa fa-trash"></span>

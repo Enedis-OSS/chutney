@@ -44,8 +44,8 @@
           </ng-template>
         <thead>
           <tr class="mb-1 text-center">
-            <th scope="col" class="w10">&nbsp;</th>
-            <th scope="col" class="w25">Name</th>
+            <th scope="col" class="w5">&nbsp;</th>
+            <th scope="col" class="w30">Name</th>
             <th scope="col" class="w10">Tags</th>
             <th scope="col" class="w25">Description</th>
             <th scope="col" class="w15">Usage <span class="fa-solid fa fa-circle-info" [ngbTooltip]="usageInfo"></span></th>
@@ -57,13 +57,15 @@
             <tr
               (click)="showPreview(dataset)"
               class="cursor-pointer text-center">
-              <td class="align-items-center">
+              <td>
+                <div class="d-flex align-items-start">
                 <button *hasAuthorization="[Authorization.DATASET_WRITE]"
                   type="button" class="btn btn-primary btn-sm"
+                  title="{{ 'global.actions.edit' | translate}}"
                   [routerLink]="['/dataset', dataset.id, 'edition']">
-                  <span class="fa fa-pencil-alt"
-                  aria-hidden="true"></span> {{ 'global.actions.edit' | translate }}
+                  <span class="fa fa-pencil-alt" aria-hidden="true"></span>
                 </button>
+            </div>
               </td>
               <td class="pt-2 text-break"><span>{{dataset.name}}</span></td>
               <td class="pt-2">
@@ -100,7 +102,7 @@
                   @if (dataset.scenarioUsage.length > 0) {
                       <div class="btn btn-sm position-relative"
                            [ngbTooltip]="scenarioUsage" placement="top">
-                          <span class="fa-solid fa-2xl fa fa-film text-info"></span>
+                          <span class="fa-solid fa-xl fa fa-film text-info"></span>
                           <span class="position-absolute top-0 start-75 translate-middle badge border border-info rounded-circle text-info">
                           {{ dataset.scenarioUsage.length }}
                         </span>
@@ -116,7 +118,7 @@
                   @if (dataset.campaignUsage.length > 0) {
                       <div class="btn btn-sm position-relative"
                            [ngbTooltip]="campaignUsage" placement="top">
-                          <span class="fa-solid fa-2xl fa fa-clock text-success"></span>
+                          <span class="fa-solid fa-xl fa fa-clock text-success"></span>
                           <span class="position-absolute top-0 start-75 translate-middle badge border border-success rounded-circle text-success">
                           {{ dataset.campaignUsage.length }}
                         </span>
@@ -137,7 +139,7 @@
                   @if (Object.keys(dataset.scenarioInCampaignUsage).length > 0) {
                       <div class="btn btn-sm position-relative"
                            [ngbTooltip]="scenarioInCampaignUsage" placement="top">
-                          <span class="fa-solid fa-2xl fa-scroll text-warning"></span>
+                          <span class="fa-solid fa-xl fa-scroll text-warning"></span>
                           <span class="position-absolute top-0 start-75 translate-middle badge border border-warning rounded-circle text-warning">
                           {{ Object.values(dataset.scenarioInCampaignUsage).flat().length }}
                         </span>

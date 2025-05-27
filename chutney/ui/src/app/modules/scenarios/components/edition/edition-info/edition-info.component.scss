@@ -21,12 +21,12 @@
 
     .popover-arrow {
         &::after {
-            border-bottom-color: var(--bs-primary);
+            border-bottom-color: var(--bs-info);
         }
     }
 
     .popover-body {
-        background-color: var(--bs-primary);
+        background-color: var(--bs-info);
         color: var(--bs-white);
         border-radius: 0.5rem;
     }

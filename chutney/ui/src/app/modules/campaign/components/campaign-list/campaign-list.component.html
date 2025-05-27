@@ -97,14 +97,16 @@
                     <span class="fa fa-info-circle" aria-hidden="true"></span>
                   </button>
                 </td>
-                <td class="ps-0 w2" *hasAuthorization="[Authorization.CAMPAIGN_WRITE]">
-                  <button type="button" class="btn btn-light" (click)="editCampaign(campaign)">
+                <td class="ps-0 w2 align-middle" *hasAuthorization="[Authorization.CAMPAIGN_WRITE]">
+                  <button type="button" class="btn btn-sm btn-outline-primary" (click)="editCampaign(campaign)"
+                          title="{{ 'global.actions.edit' | translate }}">
                     <span class="fa fa-pencil-alt"></span>
                   </button>
                 </td>
-                <td class="ps-0 w2" *hasAuthorization="[Authorization.CAMPAIGN_WRITE]">
-                  <button type="button" class="btn btn-outline-danger"
-                    (click)="deleteCampaign(campaign.id, campaign.title)">
+                <td class="ps-0 w2 align-middle" *hasAuthorization="[Authorization.CAMPAIGN_WRITE]">
+                  <button type="button" class="btn btn-sm btn-outline-danger"
+                          title="{{ 'global.actions.delete' | translate }}"
+                          (click)="deleteCampaign(campaign.id, campaign.title)">
                     <span class="fa fa-trash"></span>
                   </button>
                 </td>

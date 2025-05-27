@@ -14,11 +14,11 @@
         </h4>
       </div>
       <div>
-        <button type="submit" [disabled]="submitted && campaignForm.invalid" class="btn btn-success m-2">
+        <button type="submit" [disabled]="submitted && campaignForm.invalid" class="btn btn-primary m-2">
           <span class="fa fa-check"></span>&nbsp;
           <span>{{ 'global.actions.record' | translate }}</span>
         </button>
-        <button type="button" class="btn btn-secondary m-2" (click)="clear()">
+        <button type="button" class="btn btn-light m-2" (click)="clear()">
           <span class="fa fa-times"></span>&nbsp;
           <span>{{ 'global.actions.cancel' | translate }}</span>
         </button>
@@ -150,12 +150,12 @@
               <th colspan="2">
                 {{ 'campaigns.edition.scenarios.title' | translate }}
               </th>
-              <th></th>
+              <th class="w5"></th>
             </thead>
             <tbody dragula="DRAGGABLE" [(dragulaModel)]="scenariosToAdd">
               @for (scenario of scenariosToAdd; track scenario) {
                 <tr class="cursor">
-                  <td>
+                  <td class="w5">
                     <div class="text-nowrap">{{scenario?.scenarioId.id}}</div>
                   </td>
                   <td class="d-flex flex-column">
@@ -197,9 +197,9 @@
                     </div>
                   </td>
                   <td class="p-0">
-                    <button type="button" class="btn btn-outline-primary btn-sm me-2"
+                    <button type="button" class="btn btn-outline-primary btn-sm me-2 float-end"
                             (click)="removeScenario(scenario)">
-                      <span class="fa fa-arrow-circle-right"></span>
+                        <span class="fa fa-arrow-circle-right"></span>
                     </button>
                   </td>
                 </tr>
@@ -232,7 +232,7 @@
               @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd | withoutScenario:jiraScenariosToExclude; track scenario.id) {
                 <tr>
                   <td class="w-3">
-                    <button type="button" class="btn btn-outline-success btn-sm"
+                    <button type="button" class="btn btn-outline-primary btn-sm"
                       (click)="addScenario(scenario)">
                       <span class="fa fa-arrow-circle-left"></span>
                     </button>

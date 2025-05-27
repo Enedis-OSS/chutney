@@ -29,11 +29,11 @@
     </div>
 
     <div class="box2">
-      <button type="button" [disabled]="!isValid()" (click)="save()" class="btn btn-success m-2">
+      <button type="button" [disabled]="!isValid()" (click)="save()" class="btn btn-primary m-2">
         <span class="fa fa-check"></span>&nbsp;
         <span>{{ 'global.actions.record' | translate }}</span>
       </button>
-      <button type="button" class="btn btn-secondary m-2" (click)="cancel()">
+      <button type="button" class="btn btn-light m-2" (click)="cancel()">
         <span class="fa fa-times"></span>&nbsp;
         <span>{{ 'global.actions.cancel' | translate }}</span>
       </button>

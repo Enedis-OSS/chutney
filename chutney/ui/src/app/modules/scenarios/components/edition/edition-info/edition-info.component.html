@@ -23,11 +23,11 @@
       }
     </div>
   </ng-template>
-  <button type="button" class="btn me-0"
-    [ngClass]="editions && editions.length > 0 ? 'btn-warning edition-btn-anim' : 'btn-info'"
+  <button type="button" class="btn border me-0"
+    [ngClass]="editions && editions.length > 0 ? 'text-warning edition-btn-anim' : 'text-info'"
     [ngbPopover]="editionsInfo" placement="bottom"
     triggers="mouseenter:mouseleave">
-    <span class="fa fa-pen-square" aria-hidden="true"></span>
+    <span class="fa fa-pen" aria-hidden="true"></span>
   </button>
 }
 

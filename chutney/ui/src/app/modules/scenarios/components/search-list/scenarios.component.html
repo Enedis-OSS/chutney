@@ -8,8 +8,8 @@
 <div *hasAuthorization="[Authorization.SCENARIO_WRITE]"
      class="create-scenario-wrapper"
 >
-    <div class="create-scenario bg-primary">
-        <button type="button" class="btn btn-xs" title="{{ 'scenarios.search.create.form' | translate }}"
+    <div class="create-scenario">
+        <button type="button" class="btn btn-sm border text-primary" title="{{ 'scenarios.search.create.form' | translate }}"
                 (click)="createNewScenario()">
             <span class="fa fa-pencil-alt fa-2x"></span>
         </button>
@@ -165,14 +165,20 @@
                         </td>
                         <td>
                             <div class="float-end">
-                                <button type="button" class="btn bnt-xs pe-1" [routerLink]="['/scenario', scenario.id, 'executions']" [queryParams]="{open: 'last', active: 'last'}" (click)="$event.stopPropagation()" >
+                                <button type="button" class="btn btn-sm px-1"
+                                        title="{{ 'global.actions.show' | translate }}"
+                                        [routerLink]="['/scenario', scenario.id, 'executions']" [queryParams]="{open: 'last', active: 'last'}"
+                                        (click)="$event.stopPropagation()" >
                                     <span  class="fa fa-eye"></span>
                                 </button>
-                                <button type="button" class="btn bnt-xs px-1"  routerLink="{{'/scenario/' + scenario.id + '/raw-edition'}}" (click)="$event.stopPropagation()">
+                                <button type="button" class="btn btn-sm px-1"
+                                        title="{{ 'global.actions.edit' | translate }}"
+                                        routerLink="{{'/scenario/' + scenario.id + '/raw-edition'}}"
+                                        (click)="$event.stopPropagation()">
                                     <span  class="fa fa-edit"></span>
                                 </button>
                                 @if ( jiraUrl !== '') {
-                                    <button type="button" class="btn bnt-xs px-1"  (click)="showScenarioJiraLinks(scenario)">
+                                    <button type="button" class="btn btn-sm px-1"  (click)="showScenarioJiraLinks(scenario)">
                                         <span  class="fab fa-jira"></span>
                                     </button>
                                 }
