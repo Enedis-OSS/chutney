@@ -251,6 +251,14 @@ public class Step {
         return dataEvaluator;
     }
 
+    public Boolean isForStrategyApplied() {
+        return this.state.isForStrategyApplied();
+    }
+
+    public void setIsForStrategyApplied(Boolean isForStrategyApplied) {
+        this.state.setIsForStrategyApplied(isForStrategyApplied);
+    }
+
     public boolean isParentStep() {
         return !steps.isEmpty();
     }
