@@ -39,30 +39,29 @@ public class SqlClient {
 
     private final HikariDataSource dataSource;
     private final int maxFetchSize;
+    private final int minimumMemoryPercentageRequired;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlClient.class);
 
-
-    public SqlClient(HikariDataSource dataSource, int maxFetchSize) {
+    public SqlClient(HikariDataSource dataSource, int maxFetchSize, int minimumMemoryPercentageRequired) {
         this.dataSource = dataSource;
         this.maxFetchSize = maxFetchSize;
+        this.minimumMemoryPercentageRequired = minimumMemoryPercentageRequired;
     }
 
     public Records execute(String query) throws SQLException {
-        final Records records;
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
             try (final Statement statement = connection.createStatement()) {
                 statement.setFetchSize(maxFetchSize);
                 statement.execute(query);
-                records = StatementConverter.createRecords(statement);
+                var converter = new StatementConverter(minimumMemoryPercentageRequired);
+                return converter.createRecords(statement);
             }
         } finally {
             silentClose(connection);
         }
-
-        return records;
     }
 
     public void closeDatasource() {
@@ -85,7 +84,13 @@ public class SqlClient {
 
     private static class StatementConverter {
 
-        private static Records createRecords(Statement statement) throws SQLException {
+        private final int minimumMemoryPercentageRequired;
+
+        private StatementConverter(int minimumMemoryPercentageRequired) {
+            this.minimumMemoryPercentageRequired = minimumMemoryPercentageRequired;
+        }
+
+        private Records createRecords(Statement statement) throws SQLException {
             final int affectedRows = statement.getUpdateCount();
             List<Column> columns = Collections.emptyList();
             List<Row> rows = Collections.emptyList();
@@ -102,11 +107,11 @@ public class SqlClient {
             return new Records(affectedRows, columns, rows);
         }
 
-        private static boolean isSelectQuery(int affectedRows) {
+        private boolean isSelectQuery(int affectedRows) {
             return affectedRows == -1;
         }
 
-        private static List<Column> createHeaders(ResultSetMetaData md, int columnCount) throws SQLException {
+        private List<Column> createHeaders(ResultSetMetaData md, int columnCount) throws SQLException {
             final var headers = new ArrayList<Column>(columnCount);
             int j = 0;
             for (int i = 1; i <= columnCount; i++) {
@@ -115,7 +120,7 @@ public class SqlClient {
             return headers;
         }
 
-        private static List<Row> createRows(ResultSet rs, List<Column> columns, int columnCount) throws SQLException {
+        private List<Row> createRows(ResultSet rs, List<Column> columns, int columnCount) throws SQLException {
             final var rows = new ArrayList<Row>();
             int j = 0;
             while (rs.next()) {
@@ -123,7 +128,7 @@ public class SqlClient {
                     throw new NonOptimizedQueryException();
                 }
 
-                if (!hasEnoughAvailableMemory()) {
+                if (minimumMemoryPercentageRequired > 0 && !hasEnoughAvailableMemory(minimumMemoryPercentageRequired)) {
                     throw new NotEnoughMemoryException(usedMemory(), maxMemory(), "Query fetched " + rows.size() + " rows");
                 }
 
@@ -137,7 +142,7 @@ public class SqlClient {
             return rows;
         }
 
-        private static Object boxed(ResultSet rs, int i) throws SQLException {
+        private Object boxed(ResultSet rs, int i) throws SQLException {
             Object o = rs.getObject(i);
             Class<?> type = o == null ? Object.class : o.getClass();
             if (isPrimitiveOrWrapper(type) || isJDBCNumericType(type) || isJDBCDateType(type)) {
@@ -150,7 +155,7 @@ public class SqlClient {
             return String.valueOf(rs.getString(i));
         }
 
-        private static boolean isJDBCNumericType(Class<?> type) {
+        private boolean isJDBCNumericType(Class<?> type) {
             return type.equals(BigDecimal.class) || // NUMERIC
                 type.equals(Byte.class) ||          // TINYINT
                 type.equals(Short.class) ||         // SMALLINT
@@ -159,7 +164,7 @@ public class SqlClient {
                 type.equals(Double.class);          // DOUBLE
         }
 
-        private static boolean isJDBCDateType(Class<?> type) {
+        private boolean isJDBCDateType(Class<?> type) {
             return type.equals(Date.class) ||       // DATE
                 type.equals(Time.class) ||          // TIME
                 type.equals(Timestamp.class) ||     // TIMESTAMP
@@ -170,7 +175,7 @@ public class SqlClient {
                 type.equals(Duration.class);        // INTERVAL
         }
 
-        private static String readBlob(Blob blob) {
+        private String readBlob(Blob blob) {
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); InputStream inputStream = blob.getBinaryStream()) {
                 byte[] buffer = new byte[4096];
                 int bytesRead;
@@ -189,6 +194,5 @@ public class SqlClient {
                 }
             }
         }
-
     }
 }

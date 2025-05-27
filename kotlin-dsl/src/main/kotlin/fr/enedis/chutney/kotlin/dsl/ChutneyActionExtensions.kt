@@ -1125,6 +1125,7 @@ fun ChutneyStepBuilder.SqlAction(
     statements: List<String>,
     outputs: Map<String, Any> = mapOf(),
     nbLoggedRow: Int? = null,
+    minimumMemoryPercentageRequired: Int? = null,
     validations: Map<String, Any> = mapOf(),
     strategy: Strategy? = null
 ) {
@@ -1133,7 +1134,8 @@ fun ChutneyStepBuilder.SqlAction(
         target = target,
         inputs = listOf(
             "statements" to statements,
-            "nbLoggedRow" to nbLoggedRow
+            "nbLoggedRow" to nbLoggedRow,
+            "minimumMemoryPercentageRequired" to minimumMemoryPercentageRequired
         ).notEmptyToMap(),
         outputs = outputs,
         validations = validations

@@ -12,6 +12,9 @@ import fr.enedis.chutney.action.spi.injectable.Target;
 
 public interface SqlClientFactory {
 
-    SqlClient create(Target target);
+    SqlClient create(Target target, int memoryLimitAvailable);
 
+    default SqlClient create(Target target) {
+        return create(target, 0);
+    }
 }
