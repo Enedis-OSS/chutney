@@ -5,11 +5,12 @@
  *
  */
 
+package fr.enedis.chutney.kotlin.synchronize
+
 import fr.enedis.chutney.environment.domain.EnvironmentService
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingEnvironmentException
 import fr.enedis.chutney.environment.infra.JsonFilesEnvironmentRepository
 import fr.enedis.chutney.kotlin.execution.CHUTNEY_ENV_ROOT_PATH_DEFAULT
-import fr.enedis.chutney.kotlin.synchronize.ChutneyServerServiceImpl
 import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 
 /**

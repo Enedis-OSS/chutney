@@ -7,12 +7,11 @@
 
 package fr.enedis.chutney.kotlin.synchronize
 
-import EnvironmentSynchronizeService
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import fr.enedis.chutney.environment.domain.Target
 import fr.enedis.chutney.environment.infra.JsonFilesEnvironmentRepository
 import fr.enedis.chutney.kotlin.HttpTestBase
 import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
-import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
