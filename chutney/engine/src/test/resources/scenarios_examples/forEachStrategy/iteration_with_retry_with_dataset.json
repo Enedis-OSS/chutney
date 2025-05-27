@@ -7,14 +7,21 @@
                 "steps": [
                     {
                         "name": "substep for <i>",
-                        "type": "fail",
+                        "type": "success",
                         "inputs": {},
+                        "validations": {
+                            "isOne": "${(1 + #key) == 1}"
+                        },
                         "strategy": {
                             "type": "for",
                             "parameters": {
                                 "dataset": [
-                                    {},
-                                    {}
+                                    {
+                                        "key": 0
+                                    },
+                                    {
+                                        "key": 1
+                                    }
                                 ],
                                 "index": "i"
                             }
@@ -24,8 +31,8 @@
                 "strategy": {
                     "type": "retry-with-timeout",
                     "parameters": {
-                        "timeOut": "1 s",
-                        "retryDelay": "100 ms"
+                        "timeOut": "2 s",
+                        "retryDelay": "200 ms"
                     }
                 }
             }

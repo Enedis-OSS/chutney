@@ -390,7 +390,7 @@ class ForEachStrategyTest {
     }
 
     @Test
-    public void should_not_duplicate_lines() {
+    public void should_apply_for_strategy_once_when_in_retry() {
         // G
         final TestEngine testEngine = new ExecutionConfiguration().embeddedTestEngine();
         ExecutionRequestDto requestDto = Jsons.loadJsonFromClasspath("scenarios_examples/forEachStrategy/iteration_with_retry.json", ExecutionRequestDto.class);
@@ -406,6 +406,30 @@ class ForEachStrategyTest {
         assertThat(retryStep.steps.getFirst().steps).hasSize(2);
         assertThat(retryStep.steps.getFirst().steps.getFirst().steps).isEmpty();
         assertThat(retryStep.steps.getFirst().steps.getFirst().status).isEqualTo(FAILURE);
+        assertThat(retryStep.steps.getFirst().steps.getLast().steps).isEmpty();
+        assertThat(retryStep.steps.getFirst().steps.getLast().status).isEqualTo(FAILURE);
+    }
+
+    @Test
+    public void dataset_values_should_be_injected_when_in_retry() {
+        // G
+        final TestEngine testEngine = new ExecutionConfiguration().embeddedTestEngine();
+        ExecutionRequestDto requestDto = Jsons.loadJsonFromClasspath("scenarios_examples/forEachStrategy/iteration_with_retry_with_dataset.json", ExecutionRequestDto.class);
+
+        // W
+        StepExecutionReportDto result = testEngine.execute(requestDto);
+
+        // T
+        assertThat(result).hasFieldOrPropertyWithValue("status", FAILURE);
+
+        var retryStep = result.steps.getFirst();
+        assertThat(retryStep.steps).hasSize(1);
+        assertThat(retryStep.steps.getFirst().steps).hasSize(2);
+        assertThat(retryStep.steps.getFirst().steps.getFirst().steps).isEmpty();
+        assertThat(retryStep.steps.getFirst().steps.getFirst().name).isEqualTo("substep for 0");
+        assertThat(retryStep.steps.getFirst().steps.getLast().name).isEqualTo("substep for 1");
+        assertThat(retryStep.steps.getFirst().steps.getFirst().status).isEqualTo(SUCCESS);
+        assertThat(retryStep.steps.getFirst().steps.getFirst().errors).isEmpty();
         assertThat(retryStep.steps.getFirst().steps.getLast().steps).isEmpty();
         assertThat(retryStep.steps.getFirst().steps.getLast().status).isEqualTo(FAILURE);
     }
