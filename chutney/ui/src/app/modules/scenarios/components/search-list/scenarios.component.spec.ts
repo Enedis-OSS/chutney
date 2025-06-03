@@ -6,7 +6,7 @@
  */
 
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScenariosComponent } from './scenarios.component';
 import { SharedModule } from '@shared/shared.module';
@@ -28,6 +28,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { OAuthService } from "angular-oauth2-oidc";
 import { AlertService } from '@shared';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 function getScenarios(html: HTMLElement) {
     return html.querySelectorAll('.scenario-title');
@@ -59,31 +60,30 @@ describe('ScenariosComponent', () => {
         jiraPluginService.findCampaigns.and.returnValue(EMPTY);
         activatedRouteStub = new ActivatedRouteStub();
         TestBed.configureTestingModule({
-            imports: [
-                RouterModule.forRoot([]),
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-                MoleculesModule,
-                SharedModule,
-                MomentModule,
-                NgbModule,
-                NgMultiSelectDropDownModule.forRoot()
-            ],
-            declarations: [
-                ScenariosComponent
-            ],
-            providers: [
-                NgbPopoverConfig,
-                {provide: ScenarioService, useValue: scenarioService},
-                {provide: OAuthService, useValue: oAuthService},
-                {provide: AlertService, useValue: alertService},
-                {provide: JiraPluginService, useValue: jiraPluginService},
-                {provide: JiraPluginConfigurationService, useValue: jiraPluginConfigurationService},
-                {provide: ActivatedRoute, useValue: activatedRouteStub},
-                {provide: DROPDOWN_SETTINGS, useClass: DropdownSettings}
-            ],
-            schemas:[NO_ERRORS_SCHEMA],
-        }).compileComponents();
+    declarations: [
+        ScenariosComponent
+    ],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+        MoleculesModule,
+        SharedModule,
+        MomentModule,
+        NgbModule,
+        NgMultiSelectDropDownModule.forRoot()],
+    providers: [
+        NgbPopoverConfig,
+        { provide: ScenarioService, useValue: scenarioService },
+        { provide: OAuthService, useValue: oAuthService },
+        { provide: AlertService, useValue: alertService },
+        { provide: JiraPluginService, useValue: jiraPluginService },
+        { provide: JiraPluginConfigurationService, useValue: jiraPluginConfigurationService },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
     }));
 
     it('should create the component ScenariosComponent with three scenarios', waitForAsync(() => {
