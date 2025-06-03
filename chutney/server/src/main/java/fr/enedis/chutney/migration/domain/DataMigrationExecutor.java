@@ -10,11 +10,16 @@ package fr.enedis.chutney.migration.domain;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataMigrationExecutor implements CommandLineRunner {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataMigrationExecutor.class);
 
     private final List<DataMigrator> dataMigrators;
     private final ExecutorService executorService;
@@ -27,7 +32,20 @@ public class DataMigrationExecutor implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        LOGGER.info("Start data migration");
         dataMigrators.forEach(dataMigrator -> executorService.submit(dataMigrator::migrate));
-        executorService.shutdown();
+        awaitTerminationAfterShutdown(executorService);
+        LOGGER.info("End data migration");
+    }
+
+    public void awaitTerminationAfterShutdown(ExecutorService threadPool) {
+        threadPool.shutdown();
+        try {
+            if (!threadPool.awaitTermination(1, TimeUnit.HOURS)) {
+                threadPool.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            threadPool.shutdownNow();
+        }
     }
 }
