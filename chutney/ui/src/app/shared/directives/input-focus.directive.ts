@@ -8,8 +8,9 @@
 import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
 
 @Directive({
-    selector : '[chutneyFocusOnShow]'
-  })
+    selector: '[chutneyFocusOnShow]',
+    standalone: false
+})
 export class InputFocusDirective implements OnInit {
     constructor(public renderer: Renderer2, public elementRef: ElementRef) {}
 

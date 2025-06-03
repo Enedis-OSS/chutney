@@ -11,7 +11,8 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'chutney-plugin-configuration',
     templateUrl: './plugin-configuration.component.html',
-    styleUrls: ['./plugin-configuration.component.scss']
+    styleUrls: ['./plugin-configuration.component.scss'],
+    standalone: false
 })
 export class PluginConfigurationComponent {
 

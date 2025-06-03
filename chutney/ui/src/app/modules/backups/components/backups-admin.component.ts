@@ -16,7 +16,8 @@ import { FileSaverService } from 'ngx-filesaver';
 @Component({
     selector: 'chutney-backups-admin',
     templateUrl: './backups-admin.component.html',
-    styleUrls: ['./backups-admin.component.scss']
+    styleUrls: ['./backups-admin.component.scss'],
+    standalone: false
 })
 export class BackupsAdminComponent implements OnInit, OnDestroy {
 

@@ -24,7 +24,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'chutney-campaign-scheduling',
     templateUrl: './campaign-scheduling.component.html',
-    styleUrls: ['./campaign-scheduling.component.scss']
+    styleUrls: ['./campaign-scheduling.component.scss'],
+    standalone: false
 })
 export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 

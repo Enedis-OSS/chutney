@@ -18,7 +18,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'chutney-config-jira',
     templateUrl: './jira.component.html',
-    styleUrls: ['./jira.component.scss']
+    styleUrls: ['./jira.component.scss'],
+    standalone: false
 })
 export class JiraComponent implements OnInit, OnDestroy {
 

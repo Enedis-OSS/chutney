@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
     selector: 'chutney-network-graph',
     templateUrl: './network-graph.component.html',
     styleUrls: ['./network-graph.component.scss'],
+    standalone: false
 })
 export class NetworkGraphComponent implements OnDestroy {
     private serviceSubscription: Subscription = null;

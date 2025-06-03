@@ -14,7 +14,8 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'chutney-dataset-selection',
     templateUrl: './dataset-selection.component.html',
-    styleUrls: ['./dataset-selection.component.scss']
+    styleUrls: ['./dataset-selection.component.scss'],
+    standalone: false
 })
 export class DatasetSelectionComponent implements OnInit, OnDestroy {
 

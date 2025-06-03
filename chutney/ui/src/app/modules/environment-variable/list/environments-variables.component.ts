@@ -16,7 +16,8 @@ import { ValidationService } from '../../../molecules/validation/validation.serv
 @Component({
     selector: 'chutney-environments-variables',
     templateUrl: './environments-variables.component.html',
-    styleUrls: ['./environments-variables.component.scss']
+    styleUrls: ['./environments-variables.component.scss'],
+    standalone: false
 })
 export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
 

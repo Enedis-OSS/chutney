@@ -8,8 +8,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-selector: 'chutney-button',
-template: `
+    selector: 'chutney-button',
+    template: `
     <button class="{{level}}" [disabled]="disabled">
       @if (iconClass) {
         <span class="fa {{iconClass}}"></span>
@@ -17,7 +17,8 @@ template: `
       {{model}}
     </button>
     `,
-styleUrls: ['./button.component.scss']
+    styleUrls: ['./button.component.scss'],
+    standalone: false
 })
 export class ButtonComponent {
 

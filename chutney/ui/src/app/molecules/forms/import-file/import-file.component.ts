@@ -10,7 +10,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 @Component({
     selector: 'chutney-import-file',
     templateUrl: './import-file.component.html',
-    styleUrls: ['./import-file.component.scss']
+    styleUrls: ['./import-file.component.scss'],
+    standalone: false
 })
 export class ImportFileComponent implements OnInit {
 

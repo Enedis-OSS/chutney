@@ -8,9 +8,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'chutney-forms-editable-text-area',
-  templateUrl: './editable-text-area.component.html',
-  styleUrls: ['./editable-text-area.component.scss']
+    selector: 'chutney-forms-editable-text-area',
+    templateUrl: './editable-text-area.component.html',
+    styleUrls: ['./editable-text-area.component.scss'],
+    standalone: false
 })
 export class EditableTextAreaComponent {
 

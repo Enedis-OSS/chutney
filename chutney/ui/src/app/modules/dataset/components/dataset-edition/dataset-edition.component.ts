@@ -22,7 +22,8 @@ import { Dataset, KeyValue } from '@model';
 @Component({
     selector: 'chutney-dataset-edition',
     templateUrl: './dataset-edition.component.html',
-    styleUrls: ['./dataset-edition.component.scss']
+    styleUrls: ['./dataset-edition.component.scss'],
+    standalone: false
 })
 export class DatasetEditionComponent extends CanDeactivatePage implements OnInit, OnDestroy, AfterViewInit {
 

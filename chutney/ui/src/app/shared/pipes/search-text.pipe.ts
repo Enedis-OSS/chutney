@@ -9,7 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { filterOnTextContent } from '@shared/tools';
 
 @Pipe({
-    name: 'searchTextPipe'
+    name: 'searchTextPipe',
+    standalone: false
 })
 export class SearchTextPipe implements PipeTransform {
 

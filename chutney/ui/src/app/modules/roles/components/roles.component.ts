@@ -16,7 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'chutney-roles',
     templateUrl: './roles.component.html',
-    styleUrls: ['./roles.component.scss']
+    styleUrls: ['./roles.component.scss'],
+    standalone: false
 })
 export class RolesComponent implements OnInit {
 

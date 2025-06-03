@@ -14,7 +14,8 @@ import { disabledBoolean } from '@shared/tools/bool-utils';
 @Component({
     selector: 'chutney-confirm-dialog',
     templateUrl: './confirm-dialog.component.html',
-    styleUrls: ['./confirm-dialog.component.scss']
+    styleUrls: ['./confirm-dialog.component.scss'],
+    standalone: false
 })
 export class ConfirmDialogComponent {
 

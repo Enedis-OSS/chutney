@@ -15,7 +15,8 @@ import { Observable, Subject, takeUntil, zip } from 'rxjs';
 @Component({
     selector: 'chutney-target',
     templateUrl: './target.component.html',
-    styleUrls: ['./target.component.scss']
+    styleUrls: ['./target.component.scss'],
+    standalone: false
 })
 export class TargetComponent implements OnInit, OnDestroy {
     targets: Target[] = [];

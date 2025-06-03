@@ -12,7 +12,8 @@ import { BehaviorSubject, map, Observable, Subscription, switchMap } from 'rxjs'
 
 @Component({
     selector: 'chutney-database-admin',
-    templateUrl: './vacuum.component.html'
+    templateUrl: './vacuum.component.html',
+    standalone: false
 })
 export class VacuumComponent implements OnDestroy {
 
