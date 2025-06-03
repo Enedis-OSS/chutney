@@ -1,0 +1,44 @@
+{
+    "scenario": {
+        "name": "Test for + retry",
+        "steps": [
+            {
+                "name": "step retry",
+                "steps": [
+                    {
+                        "name": "substep for <i>",
+                        "type": "success",
+                        "inputs": {},
+                        "validations": {
+                            "isOne": "${(1 + #key) == 1}"
+                        },
+                        "strategy": {
+                            "type": "for",
+                            "parameters": {
+                                "dataset": [
+                                    {
+                                        "key": 0
+                                    },
+                                    {
+                                        "key": 1
+                                    }
+                                ],
+                                "index": "i"
+                            }
+                        }
+                    }
+                ],
+                "strategy": {
+                    "type": "retry-with-timeout",
+                    "parameters": {
+                        "timeOut": "2 s",
+                        "retryDelay": "200 ms"
+                    }
+                }
+            }
+        ]
+    },
+    "environment": {
+        "name": "env"
+    }
+}

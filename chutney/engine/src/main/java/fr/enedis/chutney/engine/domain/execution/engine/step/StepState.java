@@ -34,6 +34,7 @@ public class StepState {
     private final List<String> errors = new ArrayList<>();
     private final List<String> informations = new ArrayList<>();
     private String name;
+    private Boolean isForStrategyApplied = false;
 
     public StepState(String name) {
         this.name = name;
@@ -139,5 +140,13 @@ public class StepState {
 
     private List<String> filterNullAndEmptyMessage(List<String> messages) {
         return newArrayList(messages).stream().filter(StringUtils::isNotEmpty).toList();
+    }
+
+    public Boolean isForStrategyApplied() {
+        return isForStrategyApplied;
+    }
+
+    public void setIsForStrategyApplied(Boolean isForStrategyApplied) {
+        this.isForStrategyApplied = isForStrategyApplied;
     }
 }
