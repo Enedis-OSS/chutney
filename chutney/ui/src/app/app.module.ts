@@ -9,7 +9,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // External libs
@@ -30,50 +30,43 @@ import { themeInitializer } from '@core/initializer/theme.initializer';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { SsoService } from "@core/services/sso.service";
 
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    // Core
-    BrowserModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    AppRoutingModule,
-    CoreModule,
-    // External libs
-    FormsModule,
-    HttpClientModule,
-    DragulaModule.forRoot(),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      },
-      missingTranslationHandler: { provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler }
-    }),
-    ToastrModule.forRoot({
-      timeOut: 10000,
-      positionClass: 'toast-top-full-width',
-      preventDuplicates: true,
-    }),
-    ModalModule.forRoot(),
-    NgbModule,
-    // Internal common
-    SharedModule,
-    OAuthModule.forRoot()
-  ],
-  providers: [BsModalService,
-      {
-          provide: APP_INITIALIZER,
-          useFactory: themeInitializer,
-          deps: [ThemeService],
-          multi: true
-      }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent
+    ],
+    bootstrap: [AppComponent], imports: [
+        // Core
+        BrowserModule,
+        BrowserAnimationsModule,
+        CommonModule,
+        AppRoutingModule,
+        CoreModule,
+        // External libs
+        FormsModule,
+        DragulaModule.forRoot(),
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            },
+            missingTranslationHandler: { provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler }
+        }),
+        ToastrModule.forRoot({
+            timeOut: 10000,
+            positionClass: 'toast-top-full-width',
+            preventDuplicates: true,
+        }),
+        ModalModule.forRoot(),
+        NgbModule,
+        // Internal common
+        SharedModule,
+        OAuthModule.forRoot()], providers: [BsModalService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: themeInitializer,
+            deps: [ThemeService],
+            multi: true
+        }, provideHttpClient(withInterceptorsFromDi())] })
 export class ChutneyAppModule {
     constructor(private ssoOpenIdConnectService: SsoService) {
         this.ssoOpenIdConnectService.fetchSsoConfig()
