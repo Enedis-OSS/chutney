@@ -9,7 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { stringify } from 'lossless-json'
 
 @Pipe({
-  name: 'stringify'
+    name: 'stringify',
+    standalone: false
 })
 export class StringifyPipe implements PipeTransform {
 

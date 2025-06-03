@@ -16,7 +16,8 @@ import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operato
     selector: 'chutney-search-bar',
     templateUrl: './search-bar.component.html',
     styleUrl: './search-bar.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SearchBarComponent {
 

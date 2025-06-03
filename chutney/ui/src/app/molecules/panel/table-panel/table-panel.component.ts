@@ -11,9 +11,10 @@ import { PaginationInstance } from 'ngx-pagination';
 import { Table } from '@model';
 
 @Component({
-  selector: 'chutney-table-panel',
-  templateUrl: './table-panel.component.html',
-  styleUrls: ['./table-panel.component.scss']
+    selector: 'chutney-table-panel',
+    templateUrl: './table-panel.component.html',
+    styleUrls: ['./table-panel.component.scss'],
+    standalone: false
 })
 export class TablePanelComponent {
 

@@ -11,7 +11,8 @@ import { Execution } from '@core/model';
 @Component({
     selector: 'chutney-report-preview',
     templateUrl: './report-preview.component.html',
-    styleUrls: ['./report-preview.component.scss']
+    styleUrls: ['./report-preview.component.scss'],
+    standalone: false
 })
 export class ReportPreviewComponent {
 

@@ -10,7 +10,8 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 @Component({
     selector: 'chutney-environment-combo',
     templateUrl: './environment-combo.component.html',
-    styleUrls: ['./environment-combo.component.scss']
+    styleUrls: ['./environment-combo.component.scss'],
+    standalone: false
 })
 export class EnvironmentComboComponent implements OnChanges {
 

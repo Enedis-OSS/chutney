@@ -20,7 +20,8 @@ import { MultiSelectComponent } from 'ng-multiselect-dropdown';
 @Component({
     selector: 'execution-search-report-list',
     templateUrl: './execution-search-list.component.html',
-    styleUrls: ['./execution-search-list.component.scss']
+    styleUrls: ['./execution-search-list.component.scss'],
+    standalone: false
 })
 export class ExecutionSearchListComponent
     implements OnChanges, OnDestroy

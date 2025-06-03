@@ -23,7 +23,8 @@ import { DatasetUtils } from "@shared/tools/dataset-utils";
 @Component({
     selector: 'chutney-scenario-executions',
     templateUrl: './scenario-executions.component.html',
-    styleUrls: ['./scenario-executions.component.scss']
+    styleUrls: ['./scenario-executions.component.scss'],
+    standalone: false
 })
 export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     ExecutionStatus = ExecutionStatus;

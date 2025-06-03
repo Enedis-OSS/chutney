@@ -10,7 +10,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { containsAll } from '@shared/tools/array-utils';
 
 @Pipe({
-    name: 'scenarioCampaignSearch'
+    name: 'scenarioCampaignSearch',
+    standalone: false
 })
 export class ScenarioCampaignSearchPipe implements PipeTransform {
 

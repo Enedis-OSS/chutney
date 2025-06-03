@@ -9,7 +9,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { escapeHtml } from '@shared/tools/string-utils';
 import { parse, stringify } from 'lossless-json';
 
-@Pipe({ name: 'prettyPrint' })
+@Pipe({
+    name: 'prettyPrint',
+    standalone: false
+})
 export class PrettyPrintPipe implements PipeTransform {
     transform(value, escapeHtml: boolean = false): string {
         if (value instanceof Array) {

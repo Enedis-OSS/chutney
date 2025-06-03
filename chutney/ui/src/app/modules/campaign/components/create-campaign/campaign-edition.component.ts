@@ -30,7 +30,8 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'chutney-campaign-edition',
     templateUrl: './campaign-edition.component.html',
-    styleUrls: ['./campaign-edition.component.scss']
+    styleUrls: ['./campaign-edition.component.scss'],
+    standalone: false
 })
 export class CampaignEditionComponent implements OnInit, OnDestroy {
 

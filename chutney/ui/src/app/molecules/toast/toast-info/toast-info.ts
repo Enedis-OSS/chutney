@@ -9,9 +9,10 @@ import { Component, Input } from '@angular/core';
 
 
 @Component({
-  selector: 'chutney-toast-info',
-  templateUrl: './toast-info.html',
-  styleUrls: ['./toast-info.scss']
+    selector: 'chutney-toast-info',
+    templateUrl: './toast-info.html',
+    styleUrls: ['./toast-info.scss'],
+    standalone: false
 })
 export class ToastInfoComponent {
 

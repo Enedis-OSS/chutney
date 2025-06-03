@@ -9,7 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ScenarioIndex } from '@model';
 
 @Pipe({
-    name: 'withoutScenario'
+    name: 'withoutScenario',
+    standalone: false
 })
 export class WithoutScenarioPipe implements PipeTransform {
 

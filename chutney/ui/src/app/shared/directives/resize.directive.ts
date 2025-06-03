@@ -10,6 +10,7 @@ import { BehaviorSubject, fromEvent, Observable, Subscription } from 'rxjs';
 
 @Directive({
     selector: '[resize]',
+    standalone: false
 })
 export class ResizeDirective implements OnInit, OnDestroy {
 
