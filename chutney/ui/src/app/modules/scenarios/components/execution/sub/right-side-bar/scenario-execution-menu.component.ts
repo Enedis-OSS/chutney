@@ -82,16 +82,18 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['canReplay']) {
-            if (!this.rightMenuItems?.find(item => item.label === 'global.actions.execute.last') && this.canReplay) {
-                this.rightMenuItems?.splice(0, 0, this.executeLastMenuItem);
-            }
-        }
+        this.addReplayButtonIfNecessary();
     }
 
     ngOnDestroy() {
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
+    }
+
+    private addReplayButtonIfNecessary() {
+        if (!this.rightMenuItems?.find(item => item.label === 'global.actions.execute.last') && this.canReplay) {
+            this.rightMenuItems?.splice(0, 0, this.executeLastMenuItem);
+        }
     }
 
     replay() {
@@ -161,7 +163,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
     }
 
     private initRightMenu() {
-        const rightMenuItems: any[] = [
+        this.rightMenuItems = [
             {
                 label: 'global.actions.execute',
                 click: this.executeScenario.bind(this),
@@ -193,8 +195,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
                 iconClass: 'fa fa-file-code'
             }
         ];
-
-        this.rightMenuItems = rightMenuItems;
+        this.addReplayButtonIfNecessary();
     }
 
     private getEnvironments(): Observable<Array<string>> {

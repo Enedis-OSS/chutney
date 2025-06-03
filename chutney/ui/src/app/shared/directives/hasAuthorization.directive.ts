@@ -13,6 +13,9 @@ import { LoginService } from '@core/services';
     selector : '[hasAuthorization]'
   })
 export class HasAuthorizationDirective {
+
+    private hasApplied = false;
+
     constructor(
         private templateRef: TemplateRef<any>,
         private viewContainer: ViewContainerRef,
@@ -25,12 +28,16 @@ export class HasAuthorizationDirective {
         const not: boolean = a['not'] || false;
 
         const hasAuthorization = this.loginService.hasAuthorization(authorizations, user);
-        if ((not && !hasAuthorization) || (!not && hasAuthorization)) {
-            // Add template to DOM
+        const condition = (not && !hasAuthorization) || (!not && hasAuthorization)
+
+        if (condition && !this.hasApplied) {
+            // Add to DOM
             this.viewContainer.createEmbeddedView(this.templateRef);
-        } else {
-            // Remove template from DOM
+            this.hasApplied = true;
+        } else if(!condition && this.hasApplied) {
+            // Remove from DOM
             this.viewContainer.clear();
+            this.hasApplied = false;
         }
     }
 }
