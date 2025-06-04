@@ -7,6 +7,27 @@
 
 # Changelog
 
+## [3.1.2](https://github.com/chutney-testing/chutney/tree/3.1.2)
+### 🚀 Implemented enhancements:
+* SQL Action: Parametrize minimumMemoryPercentageRequired by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/149
+### 🐛 Fixed bugs:
+* Duplicate steps when retry + for strategy by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/148
+* Directive hasAuthorization to not re insert view by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/162
+### 🔧 Technical enhancements:
+* UI clean by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/146
+* Fix package declaration in DSL by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/150
+### 👒 Dependencies:
+* Bump org.codehaus.mojo:exec-maven-plugin from 3.5.0 to 3.5.1 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/152
+* Bump org.testcontainers:testcontainers-bom from 1.20.6 to 1.21.1 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/154
+* Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.2 to 3.5.3 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/160
+* Bump org.springframework.boot:spring-boot-maven-plugin from 3.3.5 to 3.5.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/159
+* Bump com.hierynomus:sshj from 0.39.0 to 0.40.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/158
+* Bump commons-io:commons-io from 2.17.0 to 2.19.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/156
+* Bump springboot.version from 3.4.5 to 3.5.0 in /chutney by @dependabot in https://github.com/Enedis-OSS/chutney/pull/157
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.1.1...3.1.2
+
 ## [3.1.1](https://github.com/chutney-testing/chutney/tree/3.1.1)
 ### 🚀 Implemented enhancements:
 * Change logo by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/140
