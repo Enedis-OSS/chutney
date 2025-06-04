@@ -14,9 +14,10 @@
     <parent>
         <artifactId>chutney-parent</artifactId>
         <groupId>fr.enedis.chutney</groupId>
-        <version>3.1.2-SNAPSHOT</version>
+        <version>3.1.2</version>
     </parent>
 
+    <name>server-core</name>
     <artifactId>server-core</artifactId>
 
     <licenses>

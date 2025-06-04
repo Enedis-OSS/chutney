@@ -14,9 +14,10 @@
     <parent>
         <groupId>fr.enedis.chutney</groupId>
         <artifactId>chutney-parent</artifactId>
-        <version>3.1.2-SNAPSHOT</version>
+        <version>3.1.2</version>
     </parent>
 
+    <name>ui</name>
     <artifactId>ui</artifactId>
 
     <packaging>jar</packaging>
