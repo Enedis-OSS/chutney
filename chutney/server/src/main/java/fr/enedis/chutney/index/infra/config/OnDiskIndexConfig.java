@@ -34,16 +34,22 @@ public class OnDiskIndexConfig implements IndexConfig {
     private final Analyzer analyzer;
 
     public OnDiskIndexConfig(String indexDir, String indexName) {
-        Path path;
+        Path path = Paths.get(indexDir, indexName);
+        analyzer = new CustemChutneyAnalyzer();
+        indexDirectory = initFromPath(path);
+        indexWriter = buildIndexWriter(path, indexName);
+    }
+
+    private Directory initFromPath(Path path) {
         try {
-            path = Paths.get(indexDir, indexName);
             initFolder(path);
-            indexDirectory = FSDirectory.open(path);
-            analyzer = new CustemChutneyAnalyzer();
+            return FSDirectory.open(path);
         } catch (IOException e) {
             throw new RuntimeException("Couldn't open index directory", e);
         }
+    }
 
+    private IndexWriter buildIndexWriter(Path path, String indexName) {
         IndexWriter tmpIndexWriter;
         try {
             tmpIndexWriter = new IndexWriter(indexDirectory, getIndexWriterConfig());
@@ -51,11 +57,11 @@ public class OnDiskIndexConfig implements IndexConfig {
         } catch (IOException e) {
             throw new RuntimeException("Couldn't build index writer", e);
         } catch (IllegalArgumentException iae) {
-            var cie = Arrays.stream(iae.getSuppressed())
+            var suppressedCorruptIndexException = Arrays.stream(iae.getSuppressed())
                 .filter(e -> e instanceof CorruptIndexException)
                 .findAny();
-            if (cie.isPresent()) {
-                LOGGER.warn("Index corrupted... Clean index {} for re-indexing", indexName, cie.get());
+            if (suppressedCorruptIndexException.isPresent()) {
+                LOGGER.warn("Index corrupted... Clean index {} for re-indexing", indexName, suppressedCorruptIndexException.get());
                 cleanFolder(path);
                 try {
                     tmpIndexWriter = new IndexWriter(indexDirectory, getIndexWriterConfig());
@@ -67,7 +73,7 @@ public class OnDiskIndexConfig implements IndexConfig {
                 throw new RuntimeException("Couldn't build index writer", iae);
             }
         }
-        indexWriter = tmpIndexWriter;
+        return tmpIndexWriter;
     }
 
     private IndexWriterConfig getIndexWriterConfig() {

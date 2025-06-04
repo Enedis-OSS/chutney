@@ -14,18 +14,24 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DataMigrationExecutor implements CommandLineRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataMigrationExecutor.class);
 
+    private final Long indexingTtlValue;
+    private final TimeUnit indexingTtlUnit;
     private final List<DataMigrator> dataMigrators;
     private final ExecutorService executorService;
 
 
-    public DataMigrationExecutor(List<DataMigrator> dataMigrators) {
+    public DataMigrationExecutor(
+        Long indexingTtlValue,
+        String indexingTtlUnit,
+        List<DataMigrator> dataMigrators
+    ) {
+        this.indexingTtlValue = indexingTtlValue;
+        this.indexingTtlUnit = TimeUnit.valueOf(indexingTtlUnit);
         this.dataMigrators = dataMigrators;
         executorService = Executors.newFixedThreadPool(dataMigrators.size());
     }
@@ -41,7 +47,7 @@ public class DataMigrationExecutor implements CommandLineRunner {
     public void awaitTerminationAfterShutdown(ExecutorService threadPool) {
         threadPool.shutdown();
         try {
-            if (!threadPool.awaitTermination(1, TimeUnit.HOURS)) {
+            if (!threadPool.awaitTermination(indexingTtlValue, indexingTtlUnit)) {
                 threadPool.shutdownNow();
             }
         } catch (InterruptedException ex) {
