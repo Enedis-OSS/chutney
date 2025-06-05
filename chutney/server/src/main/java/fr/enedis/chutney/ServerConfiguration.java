@@ -14,10 +14,15 @@ import static fr.enedis.chutney.ServerConfigurationValues.ENGINE_EXECUTOR_POOL_S
 import static fr.enedis.chutney.ServerConfigurationValues.ENGINE_REPORTER_PUBLISHER_TTL_SPRING_VALUE;
 import static fr.enedis.chutney.ServerConfigurationValues.EXECUTION_ASYNC_PUBLISHER_DEBOUNCE_SPRING_VALUE;
 import static fr.enedis.chutney.ServerConfigurationValues.EXECUTION_ASYNC_PUBLISHER_TTL_SPRING_VALUE;
+import static fr.enedis.chutney.ServerConfigurationValues.INDEXING_TTL_UNIT_SPRING_VALUE;
+import static fr.enedis.chutney.ServerConfigurationValues.INDEXING_TTL_VALUE_SPRING_VALUE;
 import static fr.enedis.chutney.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 import static fr.enedis.chutney.ServerConfigurationValues.TASK_SQL_NB_LOGGED_ROW;
 import static fr.enedis.chutney.ServerConfigurationValues.TASK_SQL_NB_LOGGED_ROW_SPRING_VALUE;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.action.api.EmbeddedActionEngine;
 import fr.enedis.chutney.campaign.domain.CampaignEnvironmentUpdateHandler;
 import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
@@ -34,6 +39,8 @@ import fr.enedis.chutney.index.infra.LuceneIndexRepository;
 import fr.enedis.chutney.index.infra.config.IndexConfig;
 import fr.enedis.chutney.index.infra.config.OnDiskIndexConfig;
 import fr.enedis.chutney.jira.api.JiraXrayEmbeddedApi;
+import fr.enedis.chutney.migration.domain.DataMigrationExecutor;
+import fr.enedis.chutney.migration.domain.DataMigrator;
 import fr.enedis.chutney.scenario.infra.TestCaseRepositoryAggregator;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.domain.Authorizations;
@@ -43,14 +50,12 @@ import fr.enedis.chutney.server.core.domain.execution.ServerTestEngine;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.state.ExecutionStateRepository;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Clock;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import liquibase.integration.spring.SpringLiquibase;
@@ -233,6 +238,15 @@ public class ServerConfiguration {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
             .findAndRegisterModules();
+    }
+
+    @Bean
+    public DataMigrationExecutor dataMigrationExecutor(
+        @Value(INDEXING_TTL_VALUE_SPRING_VALUE) long indexingTtlValue,
+        @Value(INDEXING_TTL_UNIT_SPRING_VALUE) String indexingTtlUnit,
+        List<DataMigrator> dataMigrators
+    ) {
+        return new DataMigrationExecutor(indexingTtlValue, indexingTtlUnit, dataMigrators);
     }
 
     @Bean

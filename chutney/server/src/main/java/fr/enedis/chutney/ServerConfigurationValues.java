@@ -32,6 +32,8 @@ public final class ServerConfigurationValues {
     public static final String LOCAL_AGENT_DEFAULT_HOSTNAME_SPRING_VALUE = "${chutney.server.agent.hostname:#{null}}";
     public static final String EDITIONS_TTL_VALUE_SPRING_VALUE = "${chutney.server.editions.ttl.value:6}";
     public static final String EDITIONS_TTL_UNIT_SPRING_VALUE = "${chutney.server.editions.ttl.unit:HOURS}";
+    public static final String INDEXING_TTL_VALUE_SPRING_VALUE = "${chutney.server.indexes.build.time.ttl.value:6}";
+    public static final String INDEXING_TTL_UNIT_SPRING_VALUE = "${chutney.server.indexes.build.time.ttl.unit:HOURS}";
     public static final String TASK_SQL_NB_LOGGED_ROW = "chutney.actions.sql.max-logged-rows";
     public static final String TASK_SQL_NB_LOGGED_ROW_SPRING_VALUE = "${" + TASK_SQL_NB_LOGGED_ROW + ":30}";
 }

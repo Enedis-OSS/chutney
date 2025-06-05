@@ -61,8 +61,12 @@ chutney:
   server:
     editions:
       ttl:
-        value: 2
-        unit: SECONDS
+        value: 10
+        unit: MINUTES
+    indexes.build.time:
+      ttl:
+        value: 1
+        unit: HOURS
     execution:
       async:
         publisher:
