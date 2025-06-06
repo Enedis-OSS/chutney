@@ -9,7 +9,6 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
-import { DragulaService } from 'ng2-dragula';
 
 import { Campaign, CampaignScenario, Dataset, JiraScenario, ScenarioIndex } from '@model';
 import {
@@ -72,7 +71,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
-        private dragulaService: DragulaService,
+       // private dragulaService: DragulaService,
         private environmentService: EnvironmentService,
         private datasetService: DataSetService,
         private translate: TranslateService,
@@ -107,7 +106,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.dragulaService.destroy(this.DRAGGABLE);
+        //this.dragulaService.destroy(this.DRAGGABLE);
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
     }

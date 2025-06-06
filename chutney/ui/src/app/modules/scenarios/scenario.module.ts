@@ -26,7 +26,7 @@ import {
 } from './components/execution/history/scenario-executions-history.component';
 import { MoleculesModule } from '../../molecules/molecules.module';
 import { RawEditionComponent } from './components/edition/raw/raw-edition.component';
-import { DragulaModule } from 'ng2-dragula';
+
 import {
     ScenarioCampaignsComponent
 } from '@modules/scenarios/components/sub/scenario-campaigns/scenario-campaigns.component';
@@ -64,7 +64,6 @@ const ROUTES = [
         NgbModule,
         NgMultiSelectDropDownModule.forRoot(),
         TranslateModule,
-        DragulaModule.forRoot(),
         FileSaverModule,
         MonacoEditorModule,
         // Internal common

@@ -14,7 +14,6 @@ import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { DragulaModule } from 'ng2-dragula';
 
 import { SharedModule } from '@shared/shared.module';
 import { MoleculesModule } from '../../molecules/molecules.module';
@@ -45,7 +44,6 @@ const ROUTES = [
         NgbModule,
         MomentModule,
         TranslateModule,
-        DragulaModule.forRoot(),
         NgMultiSelectDropDownModule.forRoot(),
         MoleculesModule
     ],
