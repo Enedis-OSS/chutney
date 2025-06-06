@@ -1,7 +1,14 @@
 {
-    "*": {
-        "target": "https://localhost:8443",
-        "secure": false,
-        "loglevel": "debug"
-    }
+  "/api": {
+    "target": "https://localhost:8443",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/actuator": {
+    "target": "https://localhost:8443",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
 }

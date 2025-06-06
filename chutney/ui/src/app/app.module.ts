@@ -17,7 +17,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { ToastrModule } from 'ngx-toastr';
-import { DragulaModule } from 'ng2-dragula';
 // Internal common
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -42,7 +41,6 @@ import { SsoService } from "@core/services/sso.service";
         CoreModule,
         // External libs
         FormsModule,
-        DragulaModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

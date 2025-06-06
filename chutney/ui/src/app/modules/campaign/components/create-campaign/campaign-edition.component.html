@@ -152,7 +152,7 @@
               </th>
               <th class="w5"></th>
             </thead>
-            <tbody dragula="DRAGGABLE" [(dragulaModel)]="scenariosToAdd">
+            <tbody > <!-- dragula="DRAGGABLE" [(dragulaModel)]="scenariosToAdd" -->
               @for (scenario of scenariosToAdd; track scenario) {
                 <tr class="cursor">
                   <td class="w5">
