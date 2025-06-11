@@ -63,3 +63,5 @@
   animation-direction: $animation_direction;
   animation-fill-mode: $animation_fill_mode;
 }
+
+@forward 'mixins';
