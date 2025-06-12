@@ -9,7 +9,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
-
+import {
+    CdkDragDrop,
+    moveItemInArray,
+  } from '@angular/cdk/drag-drop';
 import { Campaign, CampaignScenario, Dataset, JiraScenario, ScenarioIndex } from '@model';
 import {
     CampaignService,
@@ -30,7 +33,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'chutney-campaign-edition',
     templateUrl: './campaign-edition.component.html',
     styleUrls: ['./campaign-edition.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CampaignEditionComponent implements OnInit, OnDestroy {
 
@@ -46,8 +49,6 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     error: boolean = false;
 
     private unsubscribeSub$: Subject<void> = new Subject();
-
-    DRAGGABLE = 'DRAGGABLE';
 
     environments: Array<string>;
     selectedEnvironment: string;
@@ -71,7 +72,6 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
-       // private dragulaService: DragulaService,
         private environmentService: EnvironmentService,
         private datasetService: DataSetService,
         private translate: TranslateService,
@@ -106,9 +106,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        //this.dragulaService.destroy(this.DRAGGABLE);
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
+    }
+
+    drop(event: CdkDragDrop<Array<{"scenarioId": ScenarioIndex, "dataset": ListItem}>>) {
+        moveItemInArray(this.scenariosToAdd, event.previousIndex, event.currentIndex);
     }
 
     onItemSelect(item: any) {

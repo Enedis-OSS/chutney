@@ -152,9 +152,9 @@
               </th>
               <th class="w5"></th>
             </thead>
-            <tbody > <!-- dragula="DRAGGABLE" [(dragulaModel)]="scenariosToAdd" -->
+            <tbody cdkDropList class="example-list" (cdkDropListDropped)="drop($event)"> 
               @for (scenario of scenariosToAdd; track scenario) {
-                <tr class="cursor">
+                <tr class="cursor" cdkDrag>
                   <td class="w5">
                     <div class="text-nowrap">{{scenario?.scenarioId.id}}</div>
                   </td>
