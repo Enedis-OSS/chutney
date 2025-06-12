@@ -30,6 +30,11 @@ import {
     CampaignExecutionMenuComponent
 } from './components/execution/sub/right-side-bar/campaign-execution-menu.component';
 
+import {
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDropList,
+  } from '@angular/cdk/drag-drop';
 const ROUTES = [
     ...CampaignRoute
 ];
@@ -45,7 +50,10 @@ const ROUTES = [
         MomentModule,
         TranslateModule,
         NgMultiSelectDropDownModule.forRoot(),
-        MoleculesModule
+        MoleculesModule,
+        CdkDropList, 
+        CdkDrag, 
+        CdkDragPlaceholder
     ],
     declarations: [
         CampaignListComponent,
