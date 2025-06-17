@@ -20,6 +20,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 import fr.enedis.chutney.campaign.infra.CampaignExecutionDBRepository;
 import fr.enedis.chutney.campaign.infra.jpa.CampaignEntity;
 import fr.enedis.chutney.execution.domain.campaign.CampaignExecutionNotFoundException;
@@ -40,9 +43,6 @@ import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReport
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecutionReportBuilder;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,6 +60,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.CannotAcquireLockException;
@@ -360,7 +362,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
-        public void should_truncate_report_info_and_error_on_save_or_update() {
+        public void truncate_report_info_and_error_on_save_or_update() {
             String scenarioId = givenScenarioId();
             final String tooLongString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede.";
 
@@ -382,7 +384,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
-        public void should_map_custom_dataset_to_custom_id() {
+        public void map_custom_dataset_to_custom_id() {
             String scenarioId = givenScenarioId();
 
             ImmutableExecutionHistory.DetachedExecution detachedExecution = ImmutableExecutionHistory.DetachedExecution.builder()
@@ -403,7 +405,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
-        public void should_map_campaign_only_when_executing_from_campaign() {
+        public void map_campaign_only_when_executing_from_campaign() {
             // Given
             ScenarioEntity scenarioEntity = givenScenario();
             CampaignEntity campaign = givenCampaign(scenarioEntity);
@@ -439,7 +441,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
-        public void should_retrieve_scenario_execution_summary() {
+        public void retrieve_scenario_execution_summary() {
             // Given
             ScenarioEntity scenarioEntity = givenScenario();
             CampaignEntity campaign = givenCampaign(scenarioEntity);
@@ -477,26 +479,35 @@ public class DatabaseExecutionHistoryRepositoryTest {
         void deletes_executions_by_ids() {
             String scenarioId = givenScenarioId();
             Execution exec1 = sut.store(scenarioId, buildDetachedExecution(SUCCESS, "exec1", ""));
-            Execution exec2 = sut.store(scenarioId, buildDetachedExecution(SUCCESS, "exec2", ""));
+            Execution exec2 = sut.store(scenarioId, buildDetachedExecution(FAILURE, "exec2", ""));
+            Execution exec3 = sut.store(scenarioId, buildDetachedExecution(RUNNING, "exec3", ""));
+            Execution exec4 = sut.store(scenarioId, buildDetachedExecution(PAUSED, "exec4", ""));
 
-            sut.deleteExecutions(Set.of(exec1.executionId(), exec2.executionId()));
+            var report = sut.deleteExecutions(Set.of(exec1.executionId(), exec2.executionId(), exec3.executionId(), exec4.executionId()));
 
+            assertThat(report.campaignsExecutionsIds()).isEmpty();
+            assertThat(report.scenariosExecutionsIds()).hasSize(2);
             List.of(exec1.executionId(), exec2.executionId()).forEach(executionId -> assertThatThrownBy(() ->
                 sut.getExecutionSummary(executionId)
             ).isInstanceOf(ReportNotFoundException.class));
+
+            List.of(exec3.executionId(), exec4.executionId()).forEach(executionId ->
+                assertThat(sut.getExecutionSummary(executionId).executionId()).isEqualTo(executionId)
+            );
         }
 
         @Nested
         @NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.OVERRIDE)
-        @DisplayName("Delete associated campaign execution when scenario execution is the only one left")
+        @DisplayName("Delete associated finished campaign execution when scenario execution is the only one left")
         class scenarioExecutionDelete {
 
-            @Test
-            void campaign_execution_with_only_one_scenario_execution() {
+            @ParameterizedTest
+            @EnumSource(ServerReportStatus.class)
+            void campaign_execution_with_only_one_scenario_execution(ServerReportStatus executionStatus) {
                 // GIVEN
                 ScenarioEntity scenarioEntity = givenScenario();
                 CampaignEntity campaign = givenCampaign(scenarioEntity);
-                ScenarioExecutionEntity scenarioExecutionOne = givenScenarioExecution(scenarioEntity.getId(), FAILURE);
+                ScenarioExecutionEntity scenarioExecutionOne = givenScenarioExecution(scenarioEntity.getId(), executionStatus);
                 ScenarioExecutionCampaign scenarioExecutionOneReport = new ScenarioExecutionCampaign(scenarioEntity.getId().toString(), scenarioEntity.getTitle(), scenarioExecutionOne.toDomain());
 
                 Long campaignExecutionId = campaignExecutionDBRepository.generateCampaignExecutionId(campaign.id(), "env");
@@ -507,15 +518,24 @@ public class DatabaseExecutionHistoryRepositoryTest {
                     .environment("env")
                     .addScenarioExecutionReport(scenarioExecutionOneReport)
                     .userId("user")
+                    .status(executionStatus)
                     .build();
                 campaignExecutionDBRepository.saveCampaignExecution(campaign.id(), campaignExecution);
 
                 // WHEN
-                sut.deleteExecutions(Set.of(scenarioExecutionOne.toDomain().executionId()));
+                var report = sut.deleteExecutions(Set.of(scenarioExecutionOne.toDomain().executionId()));
 
                 // THEN
-                assertThatThrownBy(() -> campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId))
-                    .isInstanceOf(CampaignExecutionNotFoundException.class);
+                if (executionStatus.isFinal()) {
+                    assertThat(report.campaignsExecutionsIds()).hasSize(1);
+                    assertThat(report.scenariosExecutionsIds()).hasSize(1);
+                    assertThatThrownBy(() -> campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId))
+                        .isInstanceOf(CampaignExecutionNotFoundException.class);
+                } else {
+                    assertThat(report.campaignsExecutionsIds()).isEmpty();
+                    assertThat(report.scenariosExecutionsIds()).isEmpty();
+                    assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId)).isNotNull();
+                }
             }
 
             @Test
@@ -543,13 +563,15 @@ public class DatabaseExecutionHistoryRepositoryTest {
                 campaignExecutionDBRepository.saveCampaignExecution(campaign.id(), campaignExecution);
 
                 // WHEN
-                sut.deleteExecutions(Set.of(scenarioExecutionOne.id()));
+                var report = sut.deleteExecutions(Set.of(scenarioExecutionOne.id()));
 
                 // THEN
+                assertThat(report.campaignsExecutionsIds()).isEmpty();
+                assertThat(report.scenariosExecutionsIds()).hasSize(1);
                 List.of(scenarioExecutionOne.id()).forEach(executionId -> assertThatThrownBy(() -> sut.getExecutionSummary(executionId))
                     .isInstanceOf(ReportNotFoundException.class));
 
-                assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports().size()).isEqualTo(1);
+                assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports()).hasSize(1);
                 assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(scenarioExecutionTwo.id());
 
             }
