@@ -196,6 +196,7 @@
                   </button>
                   <button class="btn btn-sm btn-outline-danger me-2" *hasAuthorization="[Authorization.SCENARIO_WRITE]"
                           (click)="openDeleteModal(execution.executionId, $event)"
+                          [attr.disabled]="(execution.status === ExecutionStatus.RUNNING || execution.status === ExecutionStatus.PAUSED) ? '' : null"
                           [title]="'global.actions.delete' | translate">
                       <i  class="bi bi-trash" ></i>
                   </button>
