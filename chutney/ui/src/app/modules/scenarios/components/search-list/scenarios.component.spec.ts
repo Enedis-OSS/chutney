@@ -104,7 +104,7 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should filter the list of scenario',() => {
+    it('should filter the list of scenario', waitForAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.detectChanges();
         fixture.whenStable().then(() => {
@@ -118,9 +118,9 @@ describe('ScenariosComponent', () => {
             expect(scenarios.length).toBe(1);
             expect(scenarios[0].textContent).toBe('another scenario');
         });
-    });
+    }));
 
-    it('should apply filters from the URL', () => {
+    it('should apply filters from the URL',  waitForAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         activatedRouteStub.setParamMap({ text: 'title', orderBy: 'title', reverseOrder: 'true'});
         fixture.detectChanges();
@@ -136,7 +136,7 @@ describe('ScenariosComponent', () => {
             expect(scenarios[1].textContent).toBe('title1');
             expect(fixture.componentInstance.scenarios.length).toBe(3);
         });
-    });
+    }));
 
 });
 
