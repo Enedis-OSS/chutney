@@ -11,7 +11,7 @@ SPDX-License-Identifier: Apache-2.0
       <option name="DIRENV_ENABLED" value="false" />
       <option name="DIRENV_TRUSTED" value="false" />
     </extension>
-    <option name="PACKAGE_NAME" value="com.chutneytesting" />
+    <option name="PACKAGE_NAME" value="fr.enedis.chutney" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="package" />

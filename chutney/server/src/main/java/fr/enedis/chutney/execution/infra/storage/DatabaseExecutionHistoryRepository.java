@@ -10,26 +10,29 @@ package fr.enedis.chutney.execution.infra.storage;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.campaign.infra.CampaignExecutionJpaRepository;
 import fr.enedis.chutney.campaign.infra.CampaignJpaRepository;
 import fr.enedis.chutney.campaign.infra.jpa.CampaignExecutionEntity;
+import fr.enedis.chutney.execution.infra.storage.index.ExecutionReportIndexRepository;
 import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionEntity;
 import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionReportEntity;
-import fr.enedis.chutney.execution.infra.storage.index.ExecutionReportIndexRepository;
+import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.DetachedExecution;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.Execution;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
+import fr.enedis.chutney.server.core.domain.execution.history.PurgeReport;
 import fr.enedis.chutney.server.core.domain.execution.report.ReportNotFoundException;
 import fr.enedis.chutney.server.core.domain.execution.report.ScenarioExecutionReport;
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReportCore;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseRepository;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -203,15 +206,26 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
 
     @Override
     @Transactional
-    public void deleteExecutions(Set<Long> executionsIds) {
-        Set<Long> campaignExecutionsIds = getCampaignExecutionsWithOnlyOneScenarioExecution(executionsIds);
+    public PurgeReport deleteExecutions(Set<Long> executionsIds) {
+        var finalScenariosExecutions = executionsIds.stream()
+            .map(this::getExecutionSummary)
+            .filter(executionSummary -> executionSummary.status().isFinal())
+            .collect(toUnmodifiableSet());
 
-        campaignExecutionJpaRepository.deleteAllByIdInBatch(campaignExecutionsIds);
-        scenarioExecutionReportJpaRepository.deleteAllById(executionsIds);
-        scenarioExecutionsJpaRepository.deleteAllByIdInBatch(executionsIds);
+        var toDeleteScenariosExecutionsIds = finalScenariosExecutions.stream()
+            .map(ExecutionHistory.Attached::executionId)
+            .collect(toUnmodifiableSet());
+
+        var toDeleteCampaignsExecutionsIds = getCampaignExecutionsToDelete(toDeleteScenariosExecutionsIds);
+
+        campaignExecutionJpaRepository.deleteAllByIdInBatch(toDeleteCampaignsExecutionsIds);
+        scenarioExecutionReportJpaRepository.deleteAllById(toDeleteScenariosExecutionsIds);
+        scenarioExecutionsJpaRepository.deleteAllByIdInBatch(toDeleteScenariosExecutionsIds);
+
+        return new PurgeReport(toDeleteScenariosExecutionsIds, toDeleteCampaignsExecutionsIds);
     }
 
-    private Set<Long> getCampaignExecutionsWithOnlyOneScenarioExecution(Set<Long> executionsIds) {
+    private Set<Long> getCampaignExecutionsToDelete(Set<Long> executionsIds) {
         return executionsIds.stream()
             .map(this::getExecutionSummary)
             .map(ExecutionSummary::campaignReport)

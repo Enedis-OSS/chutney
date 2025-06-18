@@ -21,6 +21,7 @@ import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
+import fr.enedis.chutney.server.core.domain.execution.history.PurgeReport;
 import fr.enedis.chutney.server.core.domain.execution.history.PurgeService;
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;

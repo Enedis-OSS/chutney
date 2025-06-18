@@ -7,12 +7,13 @@
 
 package fr.enedis.chutney.execution.api;
 
+import fr.enedis.chutney.server.core.domain.execution.RunningScenarioExecutionDeleteException;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
 import java.util.List;
-import java.util.Set;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +51,7 @@ class ScenarioExecutionHistoryController {
             && execution.dataset().get().id == null
             && (execution.dataset().get().datatable == null || execution.dataset().get().datatable.isEmpty())
             && (execution.dataset().get().constants == null || execution.dataset().get().constants.isEmpty())) {
-          return ImmutableExecutionHistory.Execution.copyOf(execution).withDataset(Optional.empty());
+            return ImmutableExecutionHistory.Execution.copyOf(execution).withDataset(Optional.empty());
         }
         return execution;
     }
@@ -58,6 +59,9 @@ class ScenarioExecutionHistoryController {
     @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
     @DeleteMapping(path = "/api/ui/scenario/execution/{executionId}")
     public void deleteExecution(@PathVariable("executionId") Long executionId) {
-        executionHistoryRepository.deleteExecutions(Set.of(executionId));
+        var report = executionHistoryRepository.deleteExecutions(Set.of(executionId));
+        if (report.scenariosExecutionsIds().isEmpty()) {
+            throw new RunningScenarioExecutionDeleteException(executionId);
+        }
     }
 }

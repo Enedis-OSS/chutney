@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 public enum ServerReportStatus {
-    SUCCESS, WARN, FAILURE, NOT_EXECUTED, STOPPED, PAUSED, RUNNING, EXECUTED;
+    SUCCESS, WARN, FAILURE, NOT_EXECUTED, STOPPED, PAUSED, RUNNING;
 
     private static final Ordering<ServerReportStatus> EXECUTION_STATUS_STATUS_ORDERING = Ordering.explicit(PAUSED, RUNNING, STOPPED, FAILURE, WARN, NOT_EXECUTED, SUCCESS);
 

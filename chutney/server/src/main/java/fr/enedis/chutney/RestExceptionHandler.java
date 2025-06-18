@@ -22,6 +22,7 @@ import fr.enedis.chutney.security.domain.CurrentUserNotFoundException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
 import fr.enedis.chutney.server.core.domain.execution.FailedExecutionAttempt;
+import fr.enedis.chutney.server.core.domain.execution.RunningScenarioExecutionDeleteException;
 import fr.enedis.chutney.server.core.domain.execution.ScenarioConversionException;
 import fr.enedis.chutney.server.core.domain.execution.ScenarioNotRunningException;
 import fr.enedis.chutney.server.core.domain.execution.report.ReportNotFoundException;
@@ -101,7 +102,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         CampaignAlreadyRunningException.class,
         DataSetAlreadyExistException.class,
         SingleEnvironmentException.class,
-        CampaignEmptyExecutionException.class
+        CampaignEmptyExecutionException.class,
+        RunningScenarioExecutionDeleteException.class
     })
     protected ResponseEntity<Object> conflict(RuntimeException ex, WebRequest request) {
         return handleExceptionInternalWithExceptionMessageAsBody(ex, HttpStatus.CONFLICT, request);
