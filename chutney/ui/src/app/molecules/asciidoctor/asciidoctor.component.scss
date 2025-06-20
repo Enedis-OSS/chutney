@@ -5,6 +5,8 @@
  *
  */
 
+ @use 'global/asciidoctor' as *;
+
 .asciidoc-container > #toc.toc {
   border: none!important;
   top: 137px;
@@ -22,5 +24,4 @@
 
 .asciidoc-container {
   padding: 25px;
-  @import 'global/asciidoctor';
 }

@@ -13,7 +13,10 @@ import { Pipe, PipeTransform } from '@angular/core';
  * To order by title in desc order :
  * *ngFor="let scenario of (scenarios |  sortByField : 'title' : true)">
  */
-@Pipe({ name: 'sortByField' })
+@Pipe({
+    name: 'sortByField',
+    standalone: false
+})
 export class SortByFieldPipe implements PipeTransform {
 
   transform(array: any[], field: string, reverse: boolean): any[] {

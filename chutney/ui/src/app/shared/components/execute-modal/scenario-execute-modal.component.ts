@@ -18,7 +18,8 @@ import { firstValueFrom, Observable, of, Subject } from "rxjs";
 @Component({
     selector: 'scenario-execute-modal',
     templateUrl: './scenario-execute-modal.component.html',
-    styleUrls: ['./scenario-execute-modal.component.scss']
+    styleUrls: ['./scenario-execute-modal.component.scss'],
+    standalone: false
 })
 export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 

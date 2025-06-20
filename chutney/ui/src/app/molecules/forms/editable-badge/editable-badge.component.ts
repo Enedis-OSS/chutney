@@ -8,9 +8,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'chutney-forms-editable-badge',
-  templateUrl: './editable-badge.component.html',
-  styleUrls: ['./editable-badge.component.scss']
+    selector: 'chutney-forms-editable-badge',
+    templateUrl: './editable-badge.component.html',
+    styleUrls: ['./editable-badge.component.scss'],
+    standalone: false
 })
 export class EditableBadgeComponent {
 

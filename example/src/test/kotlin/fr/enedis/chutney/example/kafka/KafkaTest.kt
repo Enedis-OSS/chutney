@@ -13,12 +13,12 @@ import fr.enedis.chutney.kotlin.launcher.Launcher
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.utility.DockerImageName
 
 
 class KafkaTest {
-    private val kafkaContainer = KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"))
+    private val kafkaContainer = ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"))
 
     @BeforeEach
     fun setUp() {
@@ -35,7 +35,7 @@ class KafkaTest {
         val env = Environment("Global", "") {
             Target {
                 Name("target")
-                Url(kafkaContainer.bootstrapServers)
+                Url("tcp://${kafkaContainer.bootstrapServers}")
                 Properties("auto.offset.reset" to "earliest")
             }
         }

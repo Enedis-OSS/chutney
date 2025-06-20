@@ -9,7 +9,7 @@ import { TranslateLoader, TranslateModule, TranslatePipe, TranslateService } fro
 import { EventEmitter, Injectable, NgModule, Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-const TRANSLATIONS_EN = require('src/assets/i18n/en.json');
+import TRANSLATIONS_EN from 'src/assets/i18n/en.json';
 
 export class FakeLoader implements TranslateLoader {
     getTranslation(lang: string): Observable<any> {

@@ -16,7 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'scenarioJiraLinks-modal',
     templateUrl: './scenario-jira-links-modal.component.html',
-    styleUrls: ['./scenario-jira-links-modal.component.scss']
+    styleUrls: ['./scenario-jira-links-modal.component.scss'],
+    standalone: false
 })
 export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 

@@ -5,6 +5,8 @@
  *
  */
 
+//@forward 'mixins';
+
 @mixin box-shadow($offsetX: 0, $offsetY: 0, $blur: 0, $spread: 0, $color: rgba(0, 0, 0, 0), $inset: false) {
     @if $inset {
         -webkit-box-shadow:inset $offsetX $offsetY $blur $spread $color;

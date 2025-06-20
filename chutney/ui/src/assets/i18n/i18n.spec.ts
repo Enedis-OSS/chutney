@@ -7,13 +7,13 @@
 
 import { pairwise } from '@shared/tools';
 
-const TRANSLATIONS = [];
-['en', 'fr'].forEach(lang => {
-    let t = {};
-    t['lang'] = lang;
-    t['obj'] = require(`src/assets/i18n/${lang}.json`);
-    TRANSLATIONS.push(t);
-});
+import en from 'src/assets/i18n/en.json';
+import fr from 'src/assets/i18n/fr.json';
+
+const TRANSLATIONS = [
+    { lang: 'en', obj: en },
+    { lang: 'fr', obj: fr }
+  ];
 
 describe('i18n', () => {
 

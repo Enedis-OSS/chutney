@@ -9,7 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { intersection } from '@shared/tools/array-utils';
 
 @Pipe({
-    name: 'componentSearch'
+    name: 'componentSearch',
+    standalone: false
 })
 export class ComponentSearchPipe implements PipeTransform {
 

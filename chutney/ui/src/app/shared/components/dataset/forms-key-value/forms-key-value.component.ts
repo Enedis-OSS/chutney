@@ -35,7 +35,8 @@ import { Subject, takeUntil } from 'rxjs';
             useExisting: forwardRef(() => FormsKeyValueComponent),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
 

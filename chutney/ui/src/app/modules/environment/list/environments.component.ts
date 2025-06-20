@@ -16,7 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'chutney-environments',
     templateUrl: './environments.component.html',
-    styleUrls: ['./environments.component.scss']
+    styleUrls: ['./environments.component.scss'],
+    standalone: false
 })
 export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
 

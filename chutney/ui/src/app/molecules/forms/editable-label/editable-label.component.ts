@@ -8,9 +8,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'chutney-forms-editable-label',
-  templateUrl: './editable-label.component.html',
-  styleUrls: ['./editable-label.component.scss']
+    selector: 'chutney-forms-editable-label',
+    templateUrl: './editable-label.component.html',
+    styleUrls: ['./editable-label.component.scss'],
+    standalone: false
 })
 export class EditableLabelComponent {
 

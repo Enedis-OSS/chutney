@@ -10,7 +10,6 @@
             "executionSearch": "Recherche rapport",
             "documentation": "Doc.",
             "component": "Composants",
-            "backups": "Sauvegardes",
             "variable": "Variable",
             "envVariable": "Variables",
             "vacuum": "Vacuum",
@@ -395,15 +394,6 @@
                 "usernameProxy": "Utilisateur proxy",
                 "passwordProxy": "Mot de passe proxy",
                 "configurationJira": "Configuration Jira"
-            }
-        },
-        "backups": {
-            "table": {
-                "time.title": "Date de création",
-                "agents.title": "Agents",
-                "environments.title": "Environnements",
-                "orient.title": "Composants",
-                "jiralinks.title": "Liens Jira"
             }
         },
         "previewReport": {

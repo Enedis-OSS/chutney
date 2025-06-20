@@ -24,7 +24,8 @@ import { DatasetUtils } from "@shared/tools/dataset-utils";
 @Component({
     selector: 'chutney-campaign-executions',
     templateUrl: './campaign-executions.component.html',
-    styleUrls: ['./campaign-executions.component.scss']
+    styleUrls: ['./campaign-executions.component.scss'],
+    standalone: false
 })
 export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
 

@@ -10,7 +10,8 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'chutney-authoring-info',
     templateUrl: './authoring-info.component.html',
-    styleUrls: ['./authoring-info.component.scss']
+    styleUrls: ['./authoring-info.component.scss'],
+    standalone: false
 })
 export class AuthoringInfoComponent {
     @Input() testCase;

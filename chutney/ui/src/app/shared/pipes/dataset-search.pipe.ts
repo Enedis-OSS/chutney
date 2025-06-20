@@ -10,7 +10,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { containsAll } from '@shared/tools/array-utils';
 
 @Pipe({
-    name: 'dataSetSearch'
+    name: 'dataSetSearch',
+    standalone: false
 })
 export class DataSetSearchPipe implements PipeTransform {
 
