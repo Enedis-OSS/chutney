@@ -6,7 +6,6 @@
  */
 
 export * from './agent-network.service';
-export * from './backups.service';
 export * from './campaign.service';
 export * from './campaign-scheduling.service';
 export * from './execution-search.service';

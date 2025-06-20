@@ -91,12 +91,6 @@ export const appRoutes: Routes = [
                 data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
             },
             {
-                path: 'backups',
-                loadChildren: () => import('./modules/backups/backups.module').then(m => m.BackupsModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
                 path: 'roles',
                 loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule),
                 canActivate: [authGuard],
