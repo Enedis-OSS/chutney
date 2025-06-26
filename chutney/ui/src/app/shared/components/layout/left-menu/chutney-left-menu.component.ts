@@ -15,7 +15,8 @@ import { FeatureService } from '@core/feature/feature.service';
 @Component({
     selector: 'chutney-chutney-left-menu',
     templateUrl: './chutney-left-menu.component.html',
-    styleUrls: ['./chutney-left-menu.component.scss']
+    styleUrls: ['./chutney-left-menu.component.scss'],
+    standalone: false
 })
 export class ChutneyLeftMenuComponent implements OnInit {
     public menuItems = allMenuItems;

@@ -23,8 +23,10 @@
             "outputPath": "dist/chutney",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.chutney.json",
+            "tsConfig": "tsconfig.chutney.json",
+            "polyfills": [
+              "zone.js"
+            ],
             "assets": [
               "src/assets",
               "src/manifest.json",
@@ -92,7 +94,7 @@
           "options": {
             "proxyConfig": "proxy.conf.json",
             "ssl": true,
-            "buildTarget": "chutney:build"
+            "buildTarget": "chutney:build",
           },
           "configurations": {
             "production": {
@@ -114,56 +116,30 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/assets/style"
               ]
             },
-            "styles": [
-              "src/assets/style/style.scss"
-            ],
-            "scripts": [
-              "node_modules/@asciidoctor/core/dist/browser/asciidoctor.min.js"
-            ],
+            "inlineStyleLanguage": "scss",
             "assets": [
               "src/assets",
               "src/manifest.json",
               "src/favicon.ico",
               { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "/assets/monaco/" }
+            ],
+            "styles": [
+               "src/assets/style/style.scss"
+            ],
+            "scripts": [
             ]
           }
-        },
-          "storybook": {
-              "builder": "@storybook/angular:start-storybook",
-              "options": {
-                  "browserTarget": "chutney:build",
-                  "port": 6006,
-                  "styles": [
-                      "src/assets/style/style.scss",
-                      "src/assets/style/themes/theme.flatly.scss"
-                  ]
-              }
-          },
-          "storybook-darkly": {
-              "builder": "@storybook/angular:start-storybook",
-              "options": {
-                  "browserTarget": "chutney:build",
-                  "port": 6007,
-                  "styles": [
-                      "src/assets/style/style.scss",
-                      "src/assets/style/themes/theme.darkly.scss"
-                  ]
-              }
-          },
-          "build-storybook": {
-              "builder": "@storybook/angular:build-storybook",
-              "options": {
-                  "browserTarget": "chutney:build"
-              }
-          }
+        }
       }
     }
   },

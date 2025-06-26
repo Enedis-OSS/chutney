@@ -26,7 +26,7 @@ import {
 } from './components/execution/history/scenario-executions-history.component';
 import { MoleculesModule } from '../../molecules/molecules.module';
 import { RawEditionComponent } from './components/edition/raw/raw-edition.component';
-import { DragulaModule } from 'ng2-dragula';
+
 import {
     ScenarioCampaignsComponent
 } from '@modules/scenarios/components/sub/scenario-campaigns/scenario-campaigns.component';
@@ -44,7 +44,7 @@ import { ReportPreviewComponent } from './components/execution/preview/report-pr
 import { RxFor } from '@rx-angular/template/for';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ScenarioJiraLinksModalComponent } from './components/scenario-jira-links-modal/scenario-jira-links-modal.component';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { FloatLabelModule } from 'primeng/floatlabel';
 
 const ROUTES = [
@@ -64,15 +64,14 @@ const ROUTES = [
         NgbModule,
         NgMultiSelectDropDownModule.forRoot(),
         TranslateModule,
-        DragulaModule.forRoot(),
         FileSaverModule,
         MonacoEditorModule,
         // Internal common
         SharedModule,
         MoleculesModule,
-        DropdownModule,
+        SelectModule,
         FloatLabelModule,
-        RxFor
+        RxFor,
     ],
     declarations: [
         ScenariosComponent,
@@ -89,7 +88,7 @@ const ROUTES = [
     ],
     providers: [
         DateFormatPipe,
-        ScenarioExecutionService
+        ScenarioExecutionService,
     ]
 })
 export class ScenarioModule {

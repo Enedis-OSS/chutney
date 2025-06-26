@@ -13,7 +13,8 @@ import { ValidationService } from '../../validation/validation.service';
 @Component({
     selector: 'chutney-property-table-panel',
     templateUrl: './property-table-panel.component.html',
-    styleUrls: ['./property-table-panel.component.scss']
+    styleUrls: ['./property-table-panel.component.scss'],
+    standalone: false
 })
 export class PropertyTablePanelComponent {
 

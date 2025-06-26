@@ -8,9 +8,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'chutney-collapsible-panel',
-  templateUrl: './collapsible-panel.component.html',
-  styleUrls: ['./collapsible-panel.component.scss']
+    selector: 'chutney-collapsible-panel',
+    templateUrl: './collapsible-panel.component.html',
+    styleUrls: ['./collapsible-panel.component.scss'],
+    standalone: false
 })
 export class CollapsiblePanelComponent {
 

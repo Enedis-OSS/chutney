@@ -9,7 +9,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoginComponent } from './components/login/login.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,26 +20,19 @@ import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.intercept
 import { authAppInitializerFactory } from '@core/services/auth.app.initializer.factory';
 import { SsoService } from '@core/services/sso.service';
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         LoginComponent,
         ParentComponent,
-    ],
-    imports: [
-        CommonModule,
+    ], imports: [CommonModule,
         FormsModule,
-        HttpClientModule,
         RouterModule,
         SharedModule,
-        TranslateModule
-    ],
-    providers: [
-        {provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [SsoService], multi: true},
-        {provide: DROPDOWN_SETTINGS, useClass: DropdownSettings},
-        {provide: HTTP_INTERCEPTORS, useClass: OAuth2ContentTypeInterceptor, multi: true },
-        {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-        {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
-    ]
-
-})
+        TranslateModule], providers: [
+        { provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [SsoService], multi: true },
+        { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
+        { provide: HTTP_INTERCEPTORS, useClass: OAuth2ContentTypeInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class CoreModule { }

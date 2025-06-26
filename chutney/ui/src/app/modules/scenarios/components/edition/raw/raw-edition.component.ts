@@ -18,6 +18,7 @@ import { HjsonParserService } from '@shared/hjson-parser/hjson-parser.service';
     selector: 'chutney-raw-edition',
     templateUrl: './raw-edition.component.html',
     styleUrls: ['./raw-edition.component.scss'],
+    standalone: false
 })
 export class RawEditionComponent
     extends CanDeactivatePage

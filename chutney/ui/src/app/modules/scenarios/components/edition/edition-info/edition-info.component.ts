@@ -14,7 +14,8 @@ import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'chutney-edition-info',
     templateUrl: './edition-info.component.html',
-    styleUrls: ['./edition-info.component.scss']
+    styleUrls: ['./edition-info.component.scss'],
+    standalone: false
 })
 export class EditionInfoComponent implements OnChanges, OnDestroy {
     @Input() testCase;

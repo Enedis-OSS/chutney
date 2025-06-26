@@ -32,7 +32,8 @@ import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/sc
 @Component({
     selector: 'chutney-scenarios',
     templateUrl: './scenarios.component.html',
-    styleUrls: ['./scenarios.component.scss']
+    styleUrls: ['./scenarios.component.scss'],
+    standalone: false
 })
 export class ScenariosComponent implements OnInit, OnDestroy {
 

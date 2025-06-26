@@ -15,7 +15,8 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'chutney-targets',
     templateUrl: './targets.component.html',
-    styleUrls: ['./targets.component.scss']
+    styleUrls: ['./targets.component.scss'],
+    standalone: false
 })
 export class TargetsComponent implements OnInit, OnDestroy {
 

@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
     selector: 'chutney-agent-network',
     templateUrl: './agent-network.component.html',
     styleUrls: ['./agent-network.component.scss'],
+    standalone: false
 })
 export class AgentNetworkComponent implements OnInit, OnDestroy {
     private agentSubscription: Subscription = null;

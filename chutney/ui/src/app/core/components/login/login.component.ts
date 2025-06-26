@@ -17,6 +17,7 @@ import { catchError, takeUntil } from 'rxjs/operators';
     selector: 'chutney-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent implements OnDestroy, OnInit {
 

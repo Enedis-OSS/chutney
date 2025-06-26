@@ -31,7 +31,8 @@ import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
 @Component({
     selector: 'chutney-campaign-execution',
     templateUrl: './campaign-execution.component.html',
-    styleUrls: ['./campaign-execution.component.scss']
+    styleUrls: ['./campaign-execution.component.scss'],
+    standalone: false
 })
 export class CampaignExecutionComponent implements OnInit, OnDestroy {
 

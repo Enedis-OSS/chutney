@@ -14,7 +14,8 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'chutney-scenario-campaigns',
     templateUrl: './scenario-campaigns.component.html',
-    styleUrls: ['./scenario-campaigns.component.scss']
+    styleUrls: ['./scenario-campaigns.component.scss'],
+    standalone: false
 })
 export class ScenarioCampaignsComponent implements OnChanges, OnDestroy {
 

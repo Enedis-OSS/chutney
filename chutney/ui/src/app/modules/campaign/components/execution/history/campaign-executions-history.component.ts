@@ -19,7 +19,8 @@ import { EventManagerService } from '@shared';
 @Component({
     selector: 'chutney-campaign-executions-history',
     templateUrl: './campaign-executions-history.component.html',
-    styleUrls: ['./campaign-executions-history.component.scss']
+    styleUrls: ['./campaign-executions-history.component.scss'],
+    standalone: false
 })
 export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
 
