@@ -50,7 +50,7 @@ import { ChutneyLeftMenuComponent } from '@shared/components/layout/left-menu/ch
 import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
 import { DistinctPipe } from './pipes/distinct.pipe';
 import { ScenarioExecuteModalComponent } from './components/execute-modal/scenario-execute-modal.component';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
 import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
@@ -68,7 +68,7 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         NgbModule,
         NgbTooltipModule,
         NgbDropdownModule,
-        DropdownModule,
+        SelectModule,
         FloatLabelModule,
         TypeaheadModule.forRoot(),
     ],

@@ -17,16 +17,16 @@
   @if (environments.length > 1) {
   <div class="row mt-4">
     <p-floatLabel>
-      <p-dropdown [options]="environments" [(ngModel)]="selectedEnv" placeholder="" styleClass="w-100"
-        inputId="env-selection"></p-dropdown>
-      <label for="env-selection">{{ "scenarios.execution.history.env" | translate }}</label>
+      <p-select [options]="environments" [(ngModel)]="selectedEnv" placeholder="" inputId="env-selection" class="w-100"></p-select>
+      <label for="env-selection" class="p-2">{{ "scenarios.execution.history.env" | translate }}</label>
     </p-floatLabel>
   </div>
   }
 
   <div class="row mt-4">
     <p-floatLabel>
-      <p-dropdown
+      <p-select
+        class="w-100"
         [options]="filteredDatasets"
         [(ngModel)]="selectedDataset"
         (ngModelChange)="selectedDatasetChanged()"
@@ -36,7 +36,7 @@
         [emptyMessage]=" 'global.msg.empty' | translate "
         placeholder=""
         (onChange)="this.getDatasetDetails()"
-        inputId="dataset-selection" styleClass="w-100">
+        inputId="dataset-selection">
         <ng-template pTemplate="selectedItem" let-selectedDataset>
           <div class="d-flex justify-content-between">
             <span class="option-label">{{ selectedDataset.name }} </span>
@@ -55,7 +55,7 @@
           </div>
         </ng-template>
         <ng-template let-dataset pTemplate="item">
-          <div>
+          <div class="w-100">
             <span class="option-label">{{ dataset.name }}</span>
             <div class="float-end">
               @for (tag of dataset.tags; track $index) {
@@ -67,14 +67,14 @@
         <ng-template pTemplate="filter" let-options="options">
           <div class="flex gap-1">
             <div class="p-inputgroup" (click)="$event.stopPropagation()">
-              <input type="text" role="searchbox" autocomplete="off" class="p-dropdown-filter p-inputtext p-component"
+              <input type="text" role="searchbox" autocomplete="off" class="p-select-filter p-inputtext p-component"
                 [(ngModel)]="filterValue" (keyup)="datasetFilter($event)" />
               <span class="p-inputgroup-addon"><i class="fa-solid fa-magnifying-glass"></i></span>
             </div>
           </div>
         </ng-template>
-      </p-dropdown>
-      <label for="dataset-selection">{{ "scenarios.execution.history.dataset" | translate }}</label>
+      </p-select>
+      <label for="dataset-selection" class="p-2">{{ "scenarios.execution.history.dataset" | translate }}</label>
     </p-floatLabel>
   </div>
 

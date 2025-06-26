@@ -28,11 +28,15 @@ import { DefaultMissingTranslationHandler, HttpLoaderFactory } from '@core/initi
 import { themeInitializer } from '@core/initializer/theme.initializer';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { SsoService } from "@core/services/sso.service";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 @NgModule({ declarations: [
         AppComponent
     ],
-    bootstrap: [AppComponent], imports: [
+    bootstrap: [AppComponent], 
+    imports: [
         // Core
         BrowserModule,
         BrowserAnimationsModule,
@@ -58,13 +62,23 @@ import { SsoService } from "@core/services/sso.service";
         NgbModule,
         // Internal common
         SharedModule,
-        OAuthModule.forRoot()], providers: [BsModalService,
+        OAuthModule.forRoot()
+    ], providers: [
+        BsModalService,
         {
             provide: APP_INITIALIZER,
             useFactory: themeInitializer,
             deps: [ThemeService],
             multi: true
-        }, provideHttpClient(withInterceptorsFromDi())] })
+        }, 
+        provideHttpClient(withInterceptorsFromDi()),
+        provideAnimationsAsync(),
+        providePrimeNG({
+            theme: {
+                preset: Aura,
+            }
+        })
+    ] })
 export class ChutneyAppModule {
     constructor(private ssoOpenIdConnectService: SsoService) {
         this.ssoOpenIdConnectService.fetchSsoConfig()
