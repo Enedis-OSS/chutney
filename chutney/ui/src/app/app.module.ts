@@ -32,10 +32,11 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent
     ],
-    bootstrap: [AppComponent], 
+    bootstrap: [AppComponent],
     imports: [
         // Core
         BrowserModule,
@@ -70,15 +71,19 @@ import Aura from '@primeng/themes/aura';
             useFactory: themeInitializer,
             deps: [ThemeService],
             multi: true
-        }, 
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideAnimationsAsync(),
         providePrimeNG({
             theme: {
                 preset: Aura,
+                options: {
+                    darkModeSelector: false || 'none'
+                }
             }
         })
-    ] })
+    ]
+})
 export class ChutneyAppModule {
     constructor(private ssoOpenIdConnectService: SsoService) {
         this.ssoOpenIdConnectService.fetchSsoConfig()
