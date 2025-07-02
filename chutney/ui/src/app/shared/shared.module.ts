@@ -52,6 +52,8 @@ import { DistinctPipe } from './pipes/distinct.pipe';
 import { ScenarioExecuteModalComponent } from './components/execute-modal/scenario-execute-modal.component';
 import { SelectModule } from 'primeng/select';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
 import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -70,6 +72,8 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         NgbDropdownModule,
         SelectModule,
         FloatLabelModule,
+        InputGroupModule,
+        InputGroupAddonModule,
         TypeaheadModule.forRoot(),
     ],
     declarations: [

@@ -44,8 +44,6 @@ import { ReportPreviewComponent } from './components/execution/preview/report-pr
 import { RxFor } from '@rx-angular/template/for';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ScenarioJiraLinksModalComponent } from './components/scenario-jira-links-modal/scenario-jira-links-modal.component';
-import { SelectModule } from 'primeng/select';
-import { FloatLabelModule } from 'primeng/floatlabel';
 
 const ROUTES = [
     ...scenarioRoute
@@ -69,8 +67,6 @@ const ROUTES = [
         // Internal common
         SharedModule,
         MoleculesModule,
-        SelectModule,
-        FloatLabelModule,
         RxFor,
     ],
     declarations: [

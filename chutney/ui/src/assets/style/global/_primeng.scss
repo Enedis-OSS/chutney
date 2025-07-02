@@ -1,0 +1,18 @@
+/*!
+ * SPDX-FileCopyrightText: 2017-2024 Enedis
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+
+p-floatlabel {
+    --p-floatlabel-focus-color: var(--p-floatlabel-color)
+}
+
+p-select {
+    --p-select-focus-border-color: var(--p-select-border-color);
+    --p-select-option-selected-focus-background: lch(from var(--p-select-option-focus-background) calc(l*0.9) c h);
+    --p-select-option-selected-focus-color: lch(from var(--p-select-option-focus-color) calc(l*0.9) c h);
+    --p-select-option-selected-background: lch(from var(--p-select-option-focus-background) calc(l*0.9) c h);
+    --p-select-option-selected-color: lch(from var(--p-select-option-focus-color) calc(l*0.9) c h);
+}

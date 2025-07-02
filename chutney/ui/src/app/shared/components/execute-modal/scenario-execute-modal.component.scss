@@ -5,7 +5,7 @@
  *
  */
 
-th > span, th > button{
+th > span, th > button {
     background-color: transparent !important;
 }
 
@@ -13,10 +13,8 @@ th > span, th > button{
     white-space: normal !important;
 }
 
-.p-floatlabel:has(input:focus) label, .p-floatlabel:has(input:-webkit-autofill) label, .p-floatlabel:has(textarea:focus) label, .p-floatlabel:has(.p-inputwrapper-focus) label {
-  color: var(--p-floatlabel-color);
-}
-
-.p-select:not(.p-disabled).p-focus {
-  border-color: var(--p-select-border-color);
+p-select {
+    .btn-sm, .btn-group-sm > .btn {
+        line-height: initial;
+    }
 }
