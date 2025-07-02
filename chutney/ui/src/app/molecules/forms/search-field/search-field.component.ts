@@ -8,9 +8,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-  selector: 'chutney-forms-search-field',
-  templateUrl: './search-field.component.html',
-  styleUrls: ['./search-field.component.scss']
+    selector: 'chutney-forms-search-field',
+    templateUrl: './search-field.component.html',
+    styleUrls: ['./search-field.component.scss'],
+    standalone: false
 })
 export class SearchFieldComponent implements OnInit {
 

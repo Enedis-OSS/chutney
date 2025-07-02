@@ -14,7 +14,8 @@ import * as moment from 'moment';
 @Component({
     selector: 'chutney-main',
     templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+    styleUrl: './app.component.scss',
+    standalone: false
 })
 export class AppComponent {
 

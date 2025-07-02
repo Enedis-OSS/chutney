@@ -19,7 +19,8 @@ import { AlertService, EventManagerService } from '@shared';
 @Component({
     selector: 'chutney-scenario-executions-history',
     templateUrl: './scenario-executions-history.component.html',
-    styleUrls: ['./scenario-executions-history.component.scss']
+    styleUrls: ['./scenario-executions-history.component.scss'],
+    standalone: false
 })
 export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
 

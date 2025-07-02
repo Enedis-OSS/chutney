@@ -21,7 +21,8 @@ import {ExecutionStatus} from "@core/model/scenario/execution-status";
 @Component({
     selector: 'chutney-dataset-list',
     templateUrl: './dataset-list.component.html',
-    styleUrls: ['./dataset-list.component.scss']
+    styleUrls: ['./dataset-list.component.scss'],
+    standalone: false
 })
 export class DatasetListComponent implements OnInit, OnDestroy {
 

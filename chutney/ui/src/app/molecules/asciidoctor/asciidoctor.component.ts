@@ -10,10 +10,11 @@ import AsciidocConverter from '../../../assets/js/asciidoctor-converter';
 import { HighLightJService } from '@shared/highlight/highlight.service';
 
 @Component({
-  selector: 'chutney-asciidoctor',
-  templateUrl: './asciidoctor.component.html',
-  styleUrls: ['./asciidoctor.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'chutney-asciidoctor',
+    templateUrl: './asciidoctor.component.html',
+    styleUrls: ['./asciidoctor.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class AsciiDoctorComponent implements OnInit, OnChanges {
 

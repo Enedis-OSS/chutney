@@ -37,7 +37,8 @@ import { Subject, takeUntil } from 'rxjs';
             useExisting: forwardRef(() => FormsDataGridComponent),
             multi: true
         }
-    ]
+    ],
+    standalone: false
 })
 export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 

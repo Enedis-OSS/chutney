@@ -15,7 +15,8 @@ import { interval, Subscription } from 'rxjs';
 @Component({
     selector: 'chutney-metrics',
     templateUrl: './metrics.component.html',
-    styleUrls: ['./metrics.component.scss']
+    styleUrls: ['./metrics.component.scss'],
+    standalone: false
 })
 export class MetricsComponent implements OnInit, OnDestroy {
 

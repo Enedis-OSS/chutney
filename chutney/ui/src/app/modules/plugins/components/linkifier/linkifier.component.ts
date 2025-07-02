@@ -17,7 +17,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'chutney-config-linkifier',
     templateUrl: './linkifier.component.html',
-    styleUrls: ['./linkifier.component.scss']
+    styleUrls: ['./linkifier.component.scss'],
+    standalone: false
 })
 export class LinkifierComponent implements OnInit {
 

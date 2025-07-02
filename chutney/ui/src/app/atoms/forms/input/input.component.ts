@@ -8,8 +8,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-selector: 'chutney-forms-input',
-template: `
+    selector: 'chutney-forms-input',
+    template: `
     <input
         id="{{id}}"
         name="{{id}}"
@@ -21,7 +21,8 @@ template: `
         [ngClass]="{'invalid': !validate(model)}"
     />
 `,
-styleUrls: ['./input.component.scss']
+    styleUrls: ['./input.component.scss'],
+    standalone: false
 })
 export class InputComponent {
 

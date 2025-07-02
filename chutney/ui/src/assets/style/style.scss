@@ -6,11 +6,11 @@
  */
 
 @import "global/hljs-overide.scss";
-@import "global/dragula.scss";
 @import 'global/alias';
 @import 'global/tags';
 @import 'global/select';
 @import 'global/icons';
+@import 'global/primeng';
 
 @import 'ngx-toastr/toastr';
 $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
@@ -22,5 +22,3 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import 'highlight.js/styles/foundation.css';
 @import "layout/layout";
 @import "global/scenario-report.scss";
-@import "primeng/resources/themes/lara-light-blue/theme.css";
-@import "primeng/resources/primeng.css";

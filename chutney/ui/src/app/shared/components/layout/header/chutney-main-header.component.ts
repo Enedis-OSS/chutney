@@ -15,7 +15,8 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
 @Component({
     selector: 'chutney-chutney-main-header',
     templateUrl: './chutney-main-header.component.html',
-    styleUrls: ['./chutney-main-header.component.scss']
+    styleUrls: ['./chutney-main-header.component.scss'],
+    standalone: false
 })
 export class ChutneyMainHeaderComponent{
 

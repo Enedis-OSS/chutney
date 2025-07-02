@@ -9,7 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { SafeHtml, SafeValue } from '@angular/platform-browser';
 
 @Pipe({
-    name: 'thumbnail'
+    name: 'thumbnail',
+    standalone: false
 })
 export class ThumbnailPipe implements PipeTransform {
 

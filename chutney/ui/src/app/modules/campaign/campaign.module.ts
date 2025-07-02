@@ -14,7 +14,6 @@ import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { DragulaModule } from 'ng2-dragula';
 
 import { SharedModule } from '@shared/shared.module';
 import { MoleculesModule } from '../../molecules/molecules.module';
@@ -31,6 +30,11 @@ import {
     CampaignExecutionMenuComponent
 } from './components/execution/sub/right-side-bar/campaign-execution-menu.component';
 
+import {
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDropList,
+  } from '@angular/cdk/drag-drop';
 const ROUTES = [
     ...CampaignRoute
 ];
@@ -45,9 +49,11 @@ const ROUTES = [
         NgbModule,
         MomentModule,
         TranslateModule,
-        DragulaModule.forRoot(),
         NgMultiSelectDropDownModule.forRoot(),
-        MoleculesModule
+        MoleculesModule,
+        CdkDropList, 
+        CdkDrag, 
+        CdkDragPlaceholder
     ],
     declarations: [
         CampaignListComponent,

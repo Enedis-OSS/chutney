@@ -15,67 +15,75 @@
   }
 
   @if (environments.length > 1) {
-  <div class="row mt-4">
-    <p-floatLabel>
-      <p-dropdown [options]="environments" [(ngModel)]="selectedEnv" placeholder="" styleClass="w-100"
-        inputId="env-selection"></p-dropdown>
-      <label for="env-selection">{{ "scenarios.execution.history.env" | translate }}</label>
-    </p-floatLabel>
+  <div class="row px-2 mt-3">
+      <p-floatLabel>
+          <p-select [options]="environments" [(ngModel)]="selectedEnv"
+                    [showClear]="true" variant="filled" class="p-0 w-100"></p-select>
+          <label for="env-selection" class="p-2">{{ "scenarios.execution.history.env" | translate }}</label>
+
+      </p-floatLabel>
   </div>
   }
 
-  <div class="row mt-4">
-    <p-floatLabel>
-      <p-dropdown
-        [options]="filteredDatasets"
-        [(ngModel)]="selectedDataset"
-        (ngModelChange)="selectedDatasetChanged()"
-        optionLabel="name"
-        [filter]="true"
-        [showClear]="true"
-        [emptyMessage]=" 'global.msg.empty' | translate "
-        placeholder=""
-        (onChange)="this.getDatasetDetails()"
-        inputId="dataset-selection" styleClass="w-100">
-        <ng-template pTemplate="selectedItem" let-selectedDataset>
-          <div class="d-flex justify-content-between">
-            <span class="option-label">{{ selectedDataset.name }} </span>
-            <div class="d-flex flex-row">
-              @if ( datasetDetails?.uniqueValues.length ) {
-                <div class="px-1 my-auto">
-                  <p-button class="bi bi-eye-fill" (click)="this.showHideDataset($event)" [rounded]="true" [text]="true" severity="secondary" />
+  <div class="row px-2 mt-3">
+      <p-floatLabel>
+            <p-select
+            class="p-0 w-100"
+            [options]="filteredDatasets"
+            [(ngModel)]="selectedDataset"
+            (ngModelChange)="selectedDatasetChanged()"
+            optionLabel="name"
+            variant="filled"
+            [filter]="true"
+            [showClear]="true"
+            [emptyMessage]=" 'global.msg.empty' | translate "
+            (onChange)="this.getDatasetDetails()"
+            inputId="dataset-selection">
+            <ng-template pTemplate="selectedItem" let-selectedDataset>
+              <div class="d-flex justify-content-between me-3">
+                <span class="option-label">{{ selectedDataset.name }} </span>
+                <div class="d-flex flex-row">
+                  @if ( datasetDetails?.uniqueValues.length ) {
+                    <button type="button" class="btn btn-sm btn-outline-primary border-0" data-bs-toggle="button"
+                            title="{{'global.actions.show' | translate}}"
+                            (click)="this.showHideDataset($event)">
+                        <span class="fa-regular fa-fw fa-eye"></span>
+                    </button>
+                  }
+                  @if ( createDataset != selectedDataset ) {
+                    <button type="button" class="btn btn-sm btn-outline-primary border-0" data-bs-toggle="button"
+                            title="{{'global.actions.edit' | translate}}"
+                            (click)="this.editDataset($event, selectedDataset)">
+                        <span class="fa fa-fw fa-pencil-alt"></span>
+                    </button>
+                  }
                 </div>
-              }
-              @if ( createDataset != selectedDataset ) {
-                <div class="ms-1 px-1 my-auto">
-                  <p-button class="bi bi-pencil-fill" (click)="this.editDataset($event, selectedDataset)" [rounded]="true" [text]="true" severity="secondary" />
+              </div>
+            </ng-template>
+            <ng-template let-dataset pTemplate="item">
+              <div class="w-100">
+                <span class="option-label">{{ dataset.name }}</span>
+                <div class="float-end">
+                  @for (tag of dataset.tags; track $index) {
+                  <span class="chutney-tag chutney-tag-selected">{{ tag }}</span>
+                  }
                 </div>
-              }
-            </div>
-          </div>
-        </ng-template>
-        <ng-template let-dataset pTemplate="item">
-          <div>
-            <span class="option-label">{{ dataset.name }}</span>
-            <div class="float-end">
-              @for (tag of dataset.tags; track $index) {
-              <span class="chutney-tag chutney-tag-selected">{{ tag }}</span>
-              }
-            </div>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="filter" let-options="options">
-          <div class="flex gap-1">
-            <div class="p-inputgroup" (click)="$event.stopPropagation()">
-              <input type="text" role="searchbox" autocomplete="off" class="p-dropdown-filter p-inputtext p-component"
-                [(ngModel)]="filterValue" (keyup)="datasetFilter($event)" />
-              <span class="p-inputgroup-addon"><i class="fa-solid fa-magnifying-glass"></i></span>
-            </div>
-          </div>
-        </ng-template>
-      </p-dropdown>
-      <label for="dataset-selection">{{ "scenarios.execution.history.dataset" | translate }}</label>
-    </p-floatLabel>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="filter" let-options="options">
+              <div class="flex gap-1">
+                  <p-inputgroup (click)="$event.stopPropagation()">
+                      <input type="text" role="searchbox" autocomplete="off" class="p-select-filter p-inputtext p-component form-control"
+                             [(ngModel)]="filterValue" (keyup)="datasetFilter($event)" />
+                      <p-inputgroup-addon>
+                          <span class="p-inputgroup-addon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                      </p-inputgroup-addon>
+                  </p-inputgroup>
+              </div>
+            </ng-template>
+          </p-select>
+          <label for="dataset-selection" class="p-2">{{ "scenarios.execution.history.dataset" | translate }}</label>
+      </p-floatLabel>
   </div>
 
   <div [ngbCollapse]="isCollapsed" class="my-2">

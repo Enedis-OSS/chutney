@@ -8,7 +8,8 @@
 import { Directive, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[implementation-host]',
+    selector: '[implementation-host]',
+    standalone: false
 })
 export class ImplementationHostDirective {
   constructor(public viewContainerRef: ViewContainerRef) { }

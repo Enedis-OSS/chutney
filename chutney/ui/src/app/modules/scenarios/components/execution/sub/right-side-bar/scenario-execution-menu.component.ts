@@ -23,7 +23,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
     selector: 'chutney-scenario-execution-menu',
     templateUrl: './scenario-execution-menu.component.html',
-    styleUrls: ['./scenario-execution-menu.component.scss']
+    styleUrls: ['./scenario-execution-menu.component.scss'],
+    standalone: false
 })
 export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 

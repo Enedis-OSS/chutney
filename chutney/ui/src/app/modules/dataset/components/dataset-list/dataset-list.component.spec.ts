@@ -6,7 +6,7 @@
  */
 
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
@@ -24,6 +24,7 @@ import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settin
 import { RouterModule } from '@angular/router';
 import { OAuthService } from "angular-oauth2-oidc";
 import { AlertService } from '@shared';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DatasetListComponent', () => {
 
@@ -37,28 +38,27 @@ describe('DatasetListComponent', () => {
     TestBed.resetTestingModule();
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientTestingModule,
+    declarations: [
+        DatasetListComponent
+    ],
+    imports: [RouterModule.forRoot([]),
         TranslateModule.forRoot(),
         MoleculesModule,
         SharedModule,
         MomentModule,
         NgbModule,
-          NgMultiSelectDropDownModule.forRoot(),
+        NgMultiSelectDropDownModule.forRoot(),
         FormsModule,
-        ReactiveFormsModule,
-      ],
-      declarations: [
-        DatasetListComponent
-      ],
-      providers: [
+        ReactiveFormsModule],
+    providers: [
         { provide: DataSetService, useValue: dataSetService },
         { provide: AlertService, useValue: alertService },
         { provide: OAuthService, useValue: oAuthService },
-        {provide: DROPDOWN_SETTINGS, useClass: DropdownSettings}
-      ]
-    }).compileComponents();
+        { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
   }));
 
   it('should create the component DatasetListComponent', () => {

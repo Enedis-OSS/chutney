@@ -35,7 +35,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (metric of metrics; track metric.name) {
+        @for (metric of metrics; track (metric.name + metric.tags)) {
           <tr>
             <td>{{metric.name}}</td>
             <td>{{metric.tags}}</td>

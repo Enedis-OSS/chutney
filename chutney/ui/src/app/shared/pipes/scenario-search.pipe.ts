@@ -10,7 +10,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { intersection } from '@shared/tools/array-utils';
 
 @Pipe({
-    name: 'scenarioSearch'
+    name: 'scenarioSearch',
+    standalone: false
 })
 export class ScenarioSearchPipe implements PipeTransform {
 

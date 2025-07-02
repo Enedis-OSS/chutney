@@ -12,7 +12,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
     selector: 'chutney-database-admin',
-    templateUrl: './execution-search.component.html'
+    templateUrl: './execution-search.component.html',
+    standalone: false
 })
 export class ExecutionSearchComponent implements OnDestroy {
 

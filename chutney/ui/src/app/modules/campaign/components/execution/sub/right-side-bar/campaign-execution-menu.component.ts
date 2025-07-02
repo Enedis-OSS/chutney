@@ -28,7 +28,8 @@ import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/
 @Component({
     selector: 'chutney-campaign-execution-menu',
     templateUrl: './campaign-execution-menu.component.html',
-    styleUrls: ['./campaign-execution-menu.component.scss']
+    styleUrls: ['./campaign-execution-menu.component.scss'],
+    standalone: false
 })
 export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 

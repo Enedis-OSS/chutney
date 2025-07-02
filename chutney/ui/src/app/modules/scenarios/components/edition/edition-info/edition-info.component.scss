@@ -5,8 +5,7 @@
  *
  */
 
-@import 'global/mixins';
-@import 'global/animations';
+@use 'global/animations' as *;
 
 :host ::ng-deep {
 

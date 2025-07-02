@@ -9,9 +9,10 @@ import { Component, Input, OnChanges } from '@angular/core';
 
 
 @Component({
-  selector: 'chutney-execution-badge',
-  templateUrl: './execution-badge.component.html',
-  styleUrls: ['./execution-badge.component.scss']
+    selector: 'chutney-execution-badge',
+    templateUrl: './execution-badge.component.html',
+    styleUrls: ['./execution-badge.component.scss'],
+    standalone: false
 })
 export class ExecutionBadgeComponent implements OnChanges {
 

@@ -8,13 +8,14 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-selector: 'chutney-link',
-template: `
+    selector: 'chutney-link',
+    template: `
     <a class="chutney-link" >
         {{model}}
     </a>
 `,
-styleUrls: ['./link.component.scss']
+    styleUrls: ['./link.component.scss'],
+    standalone: false
 })
 export class LinkComponent {
 

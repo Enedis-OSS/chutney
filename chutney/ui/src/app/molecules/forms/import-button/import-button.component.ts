@@ -12,7 +12,8 @@ import { FormControl } from '@angular/forms';
 @Component({
     selector: 'chutney-import-button',
     templateUrl: './import-button.component.html',
-    styleUrls: ['./import-button.component.scss']
+    styleUrls: ['./import-button.component.scss'],
+    standalone: false
 })
 export class ImportButtonComponent implements OnInit {
 

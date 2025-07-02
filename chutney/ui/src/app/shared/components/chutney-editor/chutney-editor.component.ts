@@ -24,7 +24,8 @@ import 'ace-builds/webpack-resolver';
 @Component({
     selector: 'chutney-editor',
     templateUrl: './chutney-editor.component.html',
-    styleUrls: ['./chutney-editor.component.scss']
+    styleUrls: ['./chutney-editor.component.scss'],
+    standalone: false
 })
 export class ChutneyEditorComponent implements OnInit, AfterViewInit, OnChanges {
 

@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
     selector: 'chutney-agent-network-configuration',
     templateUrl: './agent-network-configuration.component.html',
     styleUrls: ['./agent-network-configuration.component.scss'],
+    standalone: false
 })
 export class AgentNetworkConfigurationComponent implements OnDestroy {
     @Input() currentConfiguration: NetworkConfiguration;

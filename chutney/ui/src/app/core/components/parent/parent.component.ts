@@ -13,7 +13,8 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
 @Component({
     selector: 'chutney-parent',
     templateUrl: './parent.component.html',
-    styleUrls: ['./parent.component.scss']
+    styleUrls: ['./parent.component.scss'],
+    standalone: false
 })
 export class ParentComponent implements OnInit, OnDestroy {
 

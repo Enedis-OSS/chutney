@@ -8,7 +8,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'distinct'
+    name: 'distinct',
+    standalone: false
 })
 export class DistinctPipe implements PipeTransform {
 

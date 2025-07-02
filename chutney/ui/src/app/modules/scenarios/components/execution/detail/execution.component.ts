@@ -54,13 +54,14 @@ import { DatasetUtils } from "@shared/tools/dataset-utils";
             provide: NGX_MONACO_EDITOR_CONFIG,
             useValue: {
                 defaultOptions: {
-                    // readOnly: true
+                // readOnly: true
                 }
             }
         }
     ],
     templateUrl: './execution.component.html',
-    styleUrls: ['./execution.component.scss']
+    styleUrls: ['./execution.component.scss'],
+    standalone: false
 })
 export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
     @Input() execution: Execution;
