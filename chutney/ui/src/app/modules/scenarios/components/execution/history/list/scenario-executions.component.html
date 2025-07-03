@@ -189,6 +189,7 @@
               </td>
               <td>
                 <div class="float-end d-flex">
+                    @if (!(execution.status === ExecutionStatus.RUNNING || execution.status === ExecutionStatus.PAUSED)) {
                   <button class="btn btn-sm btn-outline-primary me-2" *hasAuthorization="[Authorization.SCENARIO_EXECUTE]"
                           (click)="replay(execution, $event)"
                           [title]="'global.actions.replay' | translate">
@@ -199,6 +200,7 @@
                           [title]="'global.actions.delete' | translate">
                       <i  class="bi bi-trash" ></i>
                   </button>
+                    }
                 </div>
               </td>
             </tr>

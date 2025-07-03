@@ -58,5 +58,5 @@ public interface ExecutionHistoryRepository {
 
     List<ExecutionSummary> getExecutionsWithStatus(ServerReportStatus status);
 
-    void deleteExecutions(Set<Long> executionsIds);
+    PurgeReport deleteExecutions(Set<Long> executionsIds);
 }

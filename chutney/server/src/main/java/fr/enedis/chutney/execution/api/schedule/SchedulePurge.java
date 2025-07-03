@@ -12,8 +12,8 @@ import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_RETRY_
 import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_TIMEOUT_SPRING_VALUE;
 import static java.util.Optional.empty;
 
+import fr.enedis.chutney.server.core.domain.execution.history.PurgeReport;
 import fr.enedis.chutney.server.core.domain.execution.history.PurgeService;
-import fr.enedis.chutney.server.core.domain.execution.history.PurgeService.PurgeReport;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -34,9 +34,9 @@ public class SchedulePurge {
     private final Integer maxRetries;
 
     /**
-     * @param purgeService  The purge service implementation to use
-     * @param timeout       The timeout in seconds allowed to execute purge and all its potentials retries
-     * @param maxRetries    The maximum retries to attempt in order to have a purge without exception
+     * @param purgeService The purge service implementation to use
+     * @param timeout      The timeout in seconds allowed to execute purge and all its potentials retries
+     * @param maxRetries   The maximum retries to attempt in order to have a purge without exception
      */
     public SchedulePurge(
         PurgeService purgeService,

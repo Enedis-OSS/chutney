@@ -24,7 +24,7 @@ import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory.ExecutionSummary;
-import fr.enedis.chutney.server.core.domain.execution.history.PurgeService.PurgeReport;
+import fr.enedis.chutney.server.core.domain.execution.history.PurgeReport;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseRepository;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignBuilder;
@@ -903,6 +903,7 @@ public class PurgeServiceTest {
                 // The four scenario's executions are not deleted
                 assertThat(report.scenariosExecutionsIds()).isEmpty();
             }
+
             @Test
             void purge_only_executions_oldest_than_max_date() {
                 // Given
