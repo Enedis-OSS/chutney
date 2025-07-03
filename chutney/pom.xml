@@ -282,6 +282,13 @@
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
                 <version>${liquibase.version}</version>
+                <exclusions>
+                    <!-- loadData feature not used -->
+                    <exclusion>
+                        <groupId>com.opencsv</groupId>
+                        <artifactId>opencsv</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.lucene</groupId>
