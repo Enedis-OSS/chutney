@@ -11,7 +11,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
 import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip, repeat } from 'rxjs';
 import { ScenarioService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { AlertService, EventManagerService } from '@shared';
@@ -33,6 +33,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     private tabFilters: Params = {};
     scenario: GwtTestCase;
     error: string;
+    private refreshSubscription: Subscription;
     private unsubscribeSub$: Subject<void> = new Subject();
     private readonly LAST_ID = 'last';
 
@@ -65,6 +66,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
+        this.unsubscribeRefresh();
     }
 
     private onQueryParamsChange() {
@@ -85,7 +87,8 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
                     executions?.forEach(e => e.tags.sort());
                     this.executions = executions;
                     this.canReplay = executions.length > 0;
-                })
+                }),
+                tap(() => this.checkForRefresh())
             );
     }
 
@@ -284,11 +287,35 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
                         this.executions.unshift(executionSummary);
                         this.canReplay = true;
                     }),
+                tap(() => this.checkForRefresh()),
                 catchError(error => {
                     this.error = error.error;
                     return throwError(() => error);
                 })
             )
+    }
+
+    private checkForRefresh() {
+        if (this.executions.find(e => e.isRunning())) {
+            if (!this.isRefreshActive()) {
+                this.refreshSubscription = this.loadScenarioExecutions().pipe(
+                    delay(5000),
+                    repeat()
+                ).subscribe();
+            }
+        } else {
+            this.unsubscribeRefresh();
+        }
+    }
+
+    private isRefreshActive(): boolean {
+        return this.refreshSubscription && !this.refreshSubscription.closed;
+    }
+
+    private unsubscribeRefresh() {
+        if (this.isRefreshActive()) {
+            this.refreshSubscription.unsubscribe();
+        }
     }
 
     getActiveTab() {

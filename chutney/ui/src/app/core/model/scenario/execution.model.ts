@@ -53,6 +53,10 @@ export class Execution {
     );
   }
 
+  isRunning() {
+      return ExecutionStatus.RUNNING === this.status;
+  }
+
   private static getDataset(jsonDataset: any) {
       if (!jsonDataset) {
           return null;
