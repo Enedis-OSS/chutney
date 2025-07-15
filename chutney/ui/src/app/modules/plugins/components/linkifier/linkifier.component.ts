@@ -12,7 +12,7 @@ import { LinkifierService } from '@core/services';
 import { delay } from '@shared/tools';
 import { Linkifier } from '@model';
 import { Subject, takeUntil } from 'rxjs';
-
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-config-linkifier',
@@ -25,6 +25,8 @@ export class LinkifierComponent implements OnInit {
     linkifierForm: FormGroup;
 
     message;
+    private savedMessage: string;
+    private deletedMessage: string;
     isErrorNotification: boolean = false;
 
     linkifiers: Array<Linkifier> = [];
@@ -32,6 +34,7 @@ export class LinkifierComponent implements OnInit {
     private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private fb: FormBuilder,
+                private translate: TranslateService,
                 private linkifierService: LinkifierService,
                 private validationService: ValidationService) {
     }
@@ -43,11 +46,21 @@ export class LinkifierComponent implements OnInit {
         });
 
         this.loadLinkifiers();
+        this.initTranslation();
     }
 
     ngOnDestroy() {
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
+    }
+
+    private initTranslation() {
+        this.translate.get('global.actions.done.saved').subscribe((res: string) => {
+            this.savedMessage = res;
+        });
+        this.translate.get('global.actions.done.deleted').subscribe((res: string) => {
+            this.deletedMessage = res;
+        });
     }
 
     private loadLinkifiers() {
@@ -76,7 +89,7 @@ export class LinkifierComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (res) => {
-                    this.notify('Linkifier added', false);
+                    this.notify(this.savedMessage, false);
                     this.loadLinkifiers();
                 },
                 error: (error) => {
@@ -91,7 +104,7 @@ export class LinkifierComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (res) => {
-                    this.notify('Linkifier removed', false);
+                    this.notify(this.deletedMessage, false);
                     this.loadLinkifiers();
                 },
                 error: (error) => {

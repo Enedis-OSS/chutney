@@ -483,7 +483,8 @@
             "help": "Aide",
             "select": "Sélectionner",
             "done": {
-                "saved": "Sauvegarde réalisée"
+                "saved": "Sauvegarde réalisée",
+                "deleted": "Supression réalisée"
             },
             "refresh": "Rafraîchir"
         },
