@@ -28,6 +28,7 @@ export class JiraComponent implements OnInit, OnDestroy {
 
     message;
     private savedMessage: string;
+    private deletedMessage: string;
     private unsubscribeSub$: Subject<void> = new Subject();
 
     isErrorNotification: boolean = false;
@@ -60,6 +61,9 @@ export class JiraComponent implements OnInit, OnDestroy {
     private initTranslation() {
         this.translate.get('global.actions.done.saved').subscribe((res: string) => {
             this.savedMessage = res;
+        });
+        this.translate.get('global.actions.done.deleted').subscribe((res: string) => {
+            this.deletedMessage = res;
         });
     }
 
@@ -96,6 +100,25 @@ export class JiraComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.notify(this.savedMessage, false);
+                },
+                error: (error) => {
+                    this.notify(error.error, true);
+                }
+            });
+    }
+
+    delete() {
+        this.configurationService.delete()
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.notify(this.deletedMessage, false);
+                    this.configurationForm.controls['url'].patchValue('');
+                    this.configurationForm.controls['username'].patchValue('');
+                    this.configurationForm.controls['password'].patchValue('');
+                    this.configurationForm.controls['urlProxy'].patchValue('');
+                    this.configurationForm.controls['userProxy'].patchValue('');
+                    this.configurationForm.controls['passwordProxy'].patchValue('');
                 },
                 error: (error) => {
                     this.notify(error.error, true);

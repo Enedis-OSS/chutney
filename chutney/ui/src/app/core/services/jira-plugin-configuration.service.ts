@@ -33,4 +33,8 @@ export class JiraPluginConfigurationService {
     public save(configuration: JiraPluginConfiguration): Observable<String> {
         return this.http.post(environment.backend + this.url, configuration, {responseType: 'text'});
     }
+
+    public delete(): Observable<Object> {
+        return this.http.delete(environment.backend + this.url);
+    }
 }

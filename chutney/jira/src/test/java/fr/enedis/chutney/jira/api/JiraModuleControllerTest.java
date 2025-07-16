@@ -241,6 +241,21 @@ class JiraModuleControllerTest {
     }
 
     @Test
+    void deleteConfiguration() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/ui/jira/v1/configuration"))
+            .andExpect(MockMvcResultMatchers.status().is(204));
+
+        JiraServerConfiguration expected = jiraRepository.loadServerConfiguration();
+        assertThat(expected).isNotNull();
+        assertThat(expected.url()).isEmpty();
+        assertThat(expected.username()).isEmpty();
+        assertThat(expected.password()).isEmpty();
+        assertThat(expected.urlProxy()).isEmpty();
+        assertThat(expected.userProxy()).isEmpty();
+        assertThat(expected.passwordProxy()).isEmpty();
+    }
+
+    @Test
     void updateStatus() throws Exception {
         JiraDto dto = ImmutableJiraDto.builder().chutneyId("3").id("").executionStatus(PASS.value).build();
 

@@ -16,9 +16,6 @@ public interface JiraRepository {
 
     Map<String, String> getAllLinkedCampaigns();
 
-    /**
-     * @return key chutney id, value jira id
-     */
     Map<String, String> getAllLinkedScenarios();
 
     Map<String, Map<String, String>> getAllLinkedScenariosWithDataset();
@@ -46,4 +43,6 @@ public interface JiraRepository {
     JiraServerConfiguration loadServerConfiguration();
 
     void saveServerConfiguration(JiraServerConfiguration jiraServerConfiguration);
+
+    void deleteServerConfiguration();
 }
