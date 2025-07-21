@@ -27,8 +27,8 @@ export class JiraPluginService {
     constructor(private http: HttpClient) {
     }
 
-    public findScenarios(): Observable<Map<string, string>> {
-        return this.http.get<any>(environment.backend + this.scenarioUrl )
+    public findScenarios(): Observable<Map<string, JiraScenarioLinks>> {
+        return this.http.get<any>(environment.backend + this.scenarioUrl)
         .pipe(map((res: Object) => new Map(Object.entries(res))));
     }
 

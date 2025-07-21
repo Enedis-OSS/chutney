@@ -19,12 +19,22 @@
       }
 
     <form [formGroup]="jiraFormGroup">
-        <div class="row mb-2">
+        <div class="row mb-2 me-2">
             <div class="col-6">
                 <span>{{ 'menu.principal.jiraId' | translate}} :</span>
             </div>
             <div class="col-6">
-                <input type="text" [readonly]="!isEditable" class="form-control" formControlName="jiraId" id="jiraId" />
+                @if ( isEditable ) {
+                    <input type="text" class="form-control" formControlName="jiraId" id="jiraId" />
+                } @else {
+                    <span>{{ jiraFormGroup.controls["jiraId"].value }}</span>
+                    @if (jiraFormGroup.controls["jiraId"].value.length > 0) {
+                    <a target="_blank" [href]="getJiraLink(jiraFormGroup.controls['jiraId'].value)"
+                        (click)="$event.stopPropagation()" class="float-end">
+                        <span class="fab fa-jira" aria-hidden="true"></span>
+                    </a>
+                    }
+                }
             </div>
         </div>
         <table class="table table-sm table-striped table-hover">
@@ -35,56 +45,61 @@
                     @if ( isEditable ) {
                     <button type="button" class="btn btn-sm" (click)="newEntry()"><span
                             class="fa fa-plus"></span></button>
-                    } @else {
-                    <button type="button" class="btn btn-sm" (click)="edit()"><span
-                            class="fa fa-edit"></span></button>
                     }
                 </th>
             </thead>
             <tbody>
                 @if ( isEditable ) {
-                @for (datasetJiraId of datasetForm.controls; track datasetJiraId; let i = $index) {
-                <tr [formGroup]="datasetForm" >
-                    <ng-container [formGroupName]="i">
-                        <td>
-                            <chutney-dataset-selection
-                                [selectedDatasetId]="datasetJiraId.controls['datasetId'].value"
-                                (selectionEvent)="selectDataset($event,i)">
-                            </chutney-dataset-selection>
-                            <input type="text" class="form-control" [id]="'datasetId-' + i" formControlName="datasetId" hidden >
-                        </td>
-                        <td><input type="text" class="form-control" [id]="'jiraId-' + i" formControlName="jiraId" />
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-sm" (click)="deleteEntry(i)"><span class="fa fa-trash"
-                                    style="color: red;"></span></button>
-                        </td>
-                    </ng-container>
-                </tr>
-                }
+                    @for (datasetJiraId of datasetForm.controls; track datasetJiraId; let i = $index) {
+                    <tr [formGroup]="datasetForm" >
+                        <ng-container [formGroupName]="i">
+                            <td>
+                                <chutney-dataset-selection
+                                    [selectedDatasetId]="datasetJiraId.controls['datasetId'].value"
+                                    (selectionEvent)="selectDataset($event,i)">
+                                </chutney-dataset-selection>
+                                <input type="text" class="form-control" [id]="'datasetId-' + i" formControlName="datasetId" hidden >
+                            </td>
+                            <td><input type="text" class="form-control" [id]="'jiraId-' + i" formControlName="jiraId" />
+                            </td>
+                            <td class="align-middle">
+                                <button type="button" class="btn btn-sm text-danger" (click)="deleteEntry(i)">
+                                    <span class="fa fa-trash"></span>
+                                </button>
+                            </td>
+                        </ng-container>
+                    </tr>
+                    }
                 } @else {
-                @for (datasetJiraId of jiraDatasetList; track datasetJiraId.dataset; let i = $index) {
-                <tr>
-                    <td>{{ datasetJiraId.dataset }}</td>
-                    <td>{{ datasetJiraId.jiraId }}</td>
-                    <td>
-                        <a target="_blank" [href]="getJiraLink(datasetJiraId.jiraId)" rel="noopener noreferrer"
-                            (click)="$event.stopPropagation()" triggers="mouseenter:mouseleave">
-                            <span class="fab fa-jira" aria-hidden="true"></span>
-                        </a>
-                    </td>
-                </tr>
-                }
+                    @for (datasetJiraId of jiraDatasetList; track datasetJiraId.dataset; let i = $index) {
+                    <tr>
+                        <td>{{ datasetJiraId.dataset }}</td>
+                        <td>{{ datasetJiraId.jiraId }}</td>
+                        <td>
+                            <a target="_blank" [href]="getJiraLink(datasetJiraId.jiraId)" rel="noopener noreferrer"
+                                (click)="$event.stopPropagation()" triggers="mouseenter:mouseleave">
+                                <span class="fab fa-jira" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    }
                 }
             </tbody>
         </table>
     </form>
 
 </div>
-@if ( isEditable ) {
 <div class="modal-footer">
-    <button type="button" class="btn btn-light"
-        (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
-    <button type="button" class="btn btn-primary" (click)="save()">{{ "global.actions.save" | translate }}</button>
+    @if ( isEditable ) {
+    <button type="button" class="btn btn-light" (click)="edit(false)">
+        {{ "global.actions.cancel" | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save()">
+        {{ "global.actions.save" | translate }}
+    </button>
+    } @else {
+    <button type="button" class="btn btn-primary" (click)="edit()">
+        {{ "global.actions.edit" | translate }}
+    </button>
+    }
 </div>
-}

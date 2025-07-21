@@ -152,7 +152,7 @@
               </th>
               <th class="w5"></th>
             </thead>
-            <tbody cdkDropList class="example-list" (cdkDropListDropped)="drop($event)"> 
+            <tbody cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
               @for (scenario of scenariosToAdd; track scenario) {
                 <tr class="cursor" cdkDrag>
                   <td class="w5">
@@ -161,25 +161,6 @@
                   <td class="d-flex flex-column">
                     <div class="d-flex flex-columns mb-2">
                       <div class="scenario-title-cell">{{scenario?.scenarioId.title}}</div>
-                      <div class="p-0">
-                        @if (jiraMap.has(scenario.id)) {
-                          <span
-                            [ngClass]="getJiraLastExecutionStatusClass(scenario.scenarioId.id)" class="badge">
-                            {{getJiraLastExecutionStatus(scenario.scenarioId.id)}}
-                          </span>
-                        }
-                      </div>
-                      <div class="p-0">
-                        @if (jiraMap.has(scenario.id)) {
-                          <a  role="button" class="btn btn-sm btn-link me-0"
-                            target="_blank" href="{{getJiraLink(scenario.scenarioId.id)}}" rel="noopener noreferrer"
-                            ngbPopover="{{jiraMap.get(scenario.scenarioId.id)}}" placement="left" (click)="$event.stopPropagation()"
-                            triggers="mouseenter:mouseleave">
-                            <span class="fab fa-jira" aria-hidden="true">
-                            </span>
-                          </a>
-                        }
-                      </div>
                     </div>
                     <div class="pe-5">
                       @if (datasets.length > 0) {
@@ -229,7 +210,7 @@
               </th>
             </thead>
             <tbody>
-              @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd | withoutScenario:jiraScenariosToExclude; track scenario.id) {
+              @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd | withoutScenario:jiraScenariosToExclude; track trackViewedScenarios($index, scenario)) {
                 <tr>
                   <td class="w-3">
                     <button type="button" class="btn btn-outline-primary btn-sm"
@@ -237,32 +218,30 @@
                       <span class="fa fa-arrow-circle-left"></span>
                     </button>
                   </td>
-                  <td class="text-nowrap w-10">{{scenario?.id}}</td>
-                  <td class="scenario-title-cell w-70">{{scenario?.title}}</td>
+                  <td class="text-nowrap w-10">{{ scenario?.id }}</td>
+                  <td class="scenario-title-cell w-70">{{ scenario?.title }}</td>
                   <td class="w-15">
                     @for (tag of scenario.tags; track $index) {
                       <span>
-                        <span class="chutney-tag chutney-tag-selected">{{tag}}</span>
+                        <span class="chutney-tag chutney-tag-selected">{{ tag }}</span>
                       </span>
                     }
                   </td>
                   <td class="p-0">
-                    @if (jiraMap.has(scenario.id)) {
-                      <span
-                        [ngClass]="getJiraLastExecutionStatusClass(scenario.id)" class="badge">
-                        {{getJiraLastExecutionStatus(scenario.id)}}
+                    @if (jiraLinks.has(scenario.id)) {
+                      <span [ngClass]="getJiraLastExecutionStatusClass(scenario.id)" class="badge">
+                        {{ getJiraLastExecutionStatus(scenario.id) }}
                       </span>
                     }
                   </td>
                   <td class="p-0">
-                    @if (jiraMap.has(scenario.id)) {
-                      <a role="button" class="btn btn-sm btn-link me-0"
-                        target="_blank" href="{{getJiraLink(scenario.id)}}" rel="noopener noreferrer"
-                        ngbPopover="{{jiraMap.get(scenario.id)}}" placement="left" (click)="$event.stopPropagation()"
-                        triggers="mouseenter:mouseleave">
-                        <span class="fab fa-jira" aria-hidden="true">
-                        </span>
-                      </a>
+                    @if (jiraUrl !== '') {
+                        <button type="button" class="btn btn-sm btn-link me-0"
+                            [ngClass]="!hasJiraLinks(scenario) ? 'opacity-50' : ''"
+                            [title]="jiraLinksTitleContent(scenario)"
+                            (click)="showScenarioJiraLinks(scenario)">
+                            <span  class="fab fa-jira" aria-hidden="true"></span>
+                        </button>
                     }
                   </td>
                 </tr>

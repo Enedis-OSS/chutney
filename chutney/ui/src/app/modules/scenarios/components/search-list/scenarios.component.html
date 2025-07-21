@@ -117,7 +117,7 @@
             </tr>
             </thead>
             <tbody>
-                @for (scenario of viewedScenarios; track scenario.id) {
+                @for (scenario of viewedScenarios; track trackViewedScenarios($index, scenario)) {
                     <tr>
                         <td class="text-center text-nowrap">
                             <span>{{scenario.id}}</span>
@@ -177,8 +177,11 @@
                                         (click)="$event.stopPropagation()">
                                     <span  class="fa fa-edit"></span>
                                 </button>
-                                @if ( jiraUrl !== '') {
-                                    <button type="button" class="btn btn-sm px-1"  (click)="showScenarioJiraLinks(scenario)">
+                                @if (jiraUrl !== '') {
+                                    <button type="button" class="btn btn-sm px-1"
+                                        [ngClass]="!hasJiraLinks(scenario) ? 'opacity-50' : ''"
+                                        [title]="jiraLinksTitleContent(scenario)"
+                                        (click)="showScenarioJiraLinks(scenario)">
                                         <span  class="fab fa-jira"></span>
                                     </button>
                                 }
