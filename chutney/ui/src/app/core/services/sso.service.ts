@@ -154,26 +154,20 @@ export class SsoService implements OnDestroy {
     }
 
     fetchSsoConfig() {
-        const ssoConfigLocalStorage = localStorage.getItem('ssoConfig')
-        if (!ssoConfigLocalStorage) {
-            return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
-                takeUntil(this.unsubscribeSub$),
-                map(ssoConfig => {
-                    if (Object.keys(ssoConfig).length === 0) {
-                        throw new Error('SSO error: Missing configuration')
-                    }
+        return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
+            takeUntil(this.unsubscribeSub$),
+            map(ssoConfig => {
+                if (Object.keys(ssoConfig).length === 0) {
+                    localStorage.removeItem('ssoConfig')
+                    return null
+                } else {
                     this.ssoConfig = ssoConfig
                     this.enableSso = true
                     localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig))
                     return this.getAuthConfigFromSsoAuthConfig(ssoConfig)
-                }),
-            )
-        } else {
-            this.enableSso = true
-            this.ssoConfig = JSON.parse(ssoConfigLocalStorage) as SsoAuthConfig
-            const ssoAuthConfig = this.getAuthConfigFromSsoAuthConfig(this.ssoConfig)
-            return of(ssoAuthConfig)
-        }
+                }
+            }),
+        )
     }
 
     private getAuthConfigFromSsoAuthConfig(ssoConfig: SsoAuthConfig) {
