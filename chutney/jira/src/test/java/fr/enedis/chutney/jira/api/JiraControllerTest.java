@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-class JiraModuleControllerTest {
+class JiraControllerTest {
 
     private JiraRepository jiraRepository;
     private MockMvc mockMvc;
@@ -65,8 +65,8 @@ class JiraModuleControllerTest {
         jiraRepository.saveForScenario("3", "SCE-3");
         jiraRepository.saveDatasetForScenario("2", Map.of("dataset_1", "JIRA-02"));
 
-        JiraModuleController jiraModuleController = new JiraModuleController(jiraRepository, jiraXrayService);
-        mockMvc = MockMvcBuilders.standaloneSetup(jiraModuleController).build();
+        JiraController jiraController = new JiraController(jiraRepository, jiraXrayService);
+        mockMvc = MockMvcBuilders.standaloneSetup(jiraController).build();
     }
 
     @Test

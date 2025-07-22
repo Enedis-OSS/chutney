@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(JiraModuleController.BASE_URL)
-public class JiraModuleController {
+@RequestMapping(JiraController.BASE_URL)
+public class JiraController {
 
     public static final String BASE_URL = "/api/ui/jira/v1/";
     public static final String BASE_SCENARIO_URL = "scenario";
@@ -45,7 +45,7 @@ public class JiraModuleController {
     private final JiraRepository jiraRepository;
     private final JiraXrayService jiraXrayService;
 
-    public JiraModuleController(JiraRepository jiraRepository, JiraXrayService jiraXrayService) {
+    public JiraController(JiraRepository jiraRepository, JiraXrayService jiraXrayService) {
         this.jiraRepository = jiraRepository;
         this.jiraXrayService = jiraXrayService;
     }
@@ -201,8 +201,8 @@ public class JiraModuleController {
     @PreAuthorize("hasAuthority('ADMIN_ACCESS')")
     @DeleteMapping(path = BASE_CONFIGURATION_URL)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveConfiguration() {
-        jiraRepository.deleteServerConfiguration();
+    public void cleanConfiguration() {
+        jiraRepository.cleanServerConfiguration();
     }
 
     @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")

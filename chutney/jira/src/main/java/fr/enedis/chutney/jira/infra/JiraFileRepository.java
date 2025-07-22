@@ -142,7 +142,7 @@ public class JiraFileRepository implements JiraRepository {
     }
 
     @Override
-    public void deleteServerConfiguration() {
+    public void cleanServerConfiguration() {
         Path resolvedFilePath = storeFolderPath.resolve(CONFIGURATION_FILE);
         doSave(resolvedFilePath, new JiraTargetConfigurationDto());
     }

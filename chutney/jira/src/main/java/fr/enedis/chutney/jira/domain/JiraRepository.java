@@ -44,5 +44,5 @@ public interface JiraRepository {
 
     void saveServerConfiguration(JiraServerConfiguration jiraServerConfiguration);
 
-    void deleteServerConfiguration();
+    void cleanServerConfiguration();
 }

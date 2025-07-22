@@ -113,12 +113,7 @@ export class JiraComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.notify(this.deletedMessage, false);
-                    this.configurationForm.controls['url'].patchValue('');
-                    this.configurationForm.controls['username'].patchValue('');
-                    this.configurationForm.controls['password'].patchValue('');
-                    this.configurationForm.controls['urlProxy'].patchValue('');
-                    this.configurationForm.controls['userProxy'].patchValue('');
-                    this.configurationForm.controls['passwordProxy'].patchValue('');
+                    this.configurationForm.reset();
                 },
                 error: (error) => {
                     this.notify(error.error, true);
