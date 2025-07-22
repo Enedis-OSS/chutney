@@ -12,11 +12,10 @@ import { newInstance } from '@shared/tools';
 import { distinct, flatMap } from '@shared/tools/array-utils';
 import { DataSetService } from '@core/services';
 import { Authorization, Dataset } from '@model';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import {ExecutionStatus} from "@core/model/scenario/execution-status";
 
 @Component({
     selector: 'chutney-dataset-list',
@@ -98,15 +97,18 @@ export class DatasetListComponent implements OnInit, OnDestroy {
     onItemSelect(item: any) {
         this.selectedTags.push(item.text);
         this.selectedTags = newInstance(this.selectedTags);
+        this.applyFiltersToRoute();
     }
 
     onItemDeSelect(item: any) {
         this.selectedTags.splice(this.selectedTags.indexOf(item.text), 1);
         this.selectedTags = newInstance(this.selectedTags);
+        this.applyFiltersToRoute();
     }
 
     onItemDeSelectAll() {
         this.selectedTags = newInstance([]);
+        this.applyFiltersToRoute();
     }
 
     applyFiltersToRoute() {
