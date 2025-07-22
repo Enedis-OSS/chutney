@@ -10,7 +10,7 @@
     <legend class="w-auto px-3 mb-0 float-none">
       <span>Navigation Patterns </span>
     </legend>
-    <div [ngClass]="isErrorNotification ? 'bg-danger' : 'bg-info'" class="notification text-center text-white">
+    <div [ngClass]="isErrorNotification ? 'bg-danger' : 'bg-info'" class="text-center text-white">
       @if (message) {
         <strong>{{ message }}</strong>
       }
@@ -37,10 +37,9 @@
         </div>
       </div>
 
-      <div class="box2">
+      <div class="w-100 mt-4 mb-1 mx-1">
         <button type="submit" [disabled]="!isValid()" class="btn btn-primary" (click)="addLinkifier()">
           {{ 'global.actions.add' | translate }}
-          <span class="fa fa-check"></span>
         </button>
       </div>
 

@@ -5,17 +5,17 @@
   ~
   -->
 
-<div [ngClass]="isErrorNotification ? 'bg-danger' : 'bg-info'" class="notification text-center text-white">
-  @if (message) {
-    <strong>{{ message }}</strong>
-  }
-</div>
 
 <div [formGroup]="configurationForm" class="mb-4">
   <fieldset class="w99 border p-2">
-    <legend class="w-auto ps-3 pe-3 mb-0 float-none">
+    <legend class="w-auto px-3 mb-0 float-none">
       <span>{{'admin.plugins.jira.configurationJira' | translate}}</span>
     </legend>
+    <div [ngClass]="isErrorNotification ? 'bg-danger' : 'bg-info'" class="text-center text-white">
+      @if (message) {
+        <strong>{{ message }}</strong>
+      }
+    </div>
 
     <div>
       <div class="row m-1">
@@ -59,10 +59,12 @@
       </div>
     </div>
 
-    <div class="box2">
+    <div class="w-100 mt-4 mb-1 mx-1">
       <button type="button" [disabled]="!isValid()" class="btn btn-primary" (click)="save()">
-        {{'global.actions.done.saved' | translate}}
-        <span class="fa fa-check"></span>
+        {{'global.actions.save' | translate}}
+      </button>
+      <button type="button" class="btn btn-outline-primary float-end me-1" (click)="delete()">
+        {{'global.actions.delete' | translate}}
       </button>
     </div>
   </fieldset>

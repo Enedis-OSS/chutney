@@ -483,7 +483,8 @@
             "help": "Help",
             "select": "Select",
             "done": {
-                "saved": "Saved"
+                "saved": "Saved",
+                "deleted": "Deleted"
             },
             "refresh": "Refresh"
         },

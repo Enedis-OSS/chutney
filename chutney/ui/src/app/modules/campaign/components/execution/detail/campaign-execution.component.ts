@@ -111,15 +111,11 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy {
     }
 
     private jiraTestExecutionScenarios$(): Observable<JiraTestExecutionScenarios> {
-        return this.jiraLinkService.findByCampaignId(this.campaignId).pipe(
-            switchMap((jiraId) => { // TODO - Why this condition ? don't understand it !!
-                if (jiraId) {
-                    return this.jiraLinkService.findTestExecScenariosByCampaignExecution(this.report.report.executionId);
-                } else {
-                    return of(new JiraTestExecutionScenarios(null, []));
-                }
-            })
-        );
+        if (this.jiraUrl != null) {
+            return this.jiraLinkService.findTestExecScenariosByCampaignExecution(this.report.report.executionId);
+        } else {
+            return of(new JiraTestExecutionScenarios(null, []));
+        }
     }
 
     xrayStatuses(): Array<string> {

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,11 +28,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(JiraModuleController.BASE_URL)
-public class JiraModuleController {
+@RequestMapping(JiraController.BASE_URL)
+public class JiraController {
 
     public static final String BASE_URL = "/api/ui/jira/v1/";
     public static final String BASE_SCENARIO_URL = "scenario";
@@ -43,7 +45,7 @@ public class JiraModuleController {
     private final JiraRepository jiraRepository;
     private final JiraXrayService jiraXrayService;
 
-    public JiraModuleController(JiraRepository jiraRepository, JiraXrayService jiraXrayService) {
+    public JiraController(JiraRepository jiraRepository, JiraXrayService jiraXrayService) {
         this.jiraRepository = jiraRepository;
         this.jiraXrayService = jiraXrayService;
     }
@@ -194,6 +196,13 @@ public class JiraModuleController {
                 jiraConfigurationDto.passwordProxy().orElse(null)
             )
         );
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN_ACCESS')")
+    @DeleteMapping(path = BASE_CONFIGURATION_URL)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void cleanConfiguration() {
+        jiraRepository.cleanServerConfiguration();
     }
 
     @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")

@@ -9,12 +9,12 @@ package fr.enedis.chutney.jira.infra;
 
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
-import fr.enedis.chutney.jira.domain.JiraRepository;
-import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import fr.enedis.chutney.jira.domain.JiraRepository;
+import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -139,6 +139,12 @@ public class JiraFileRepository implements JiraRepository {
         );
         Path resolvedFilePath = storeFolderPath.resolve(CONFIGURATION_FILE);
         doSave(resolvedFilePath, jiraTargetConfigurationDto);
+    }
+
+    @Override
+    public void cleanServerConfiguration() {
+        Path resolvedFilePath = storeFolderPath.resolve(CONFIGURATION_FILE);
+        doSave(resolvedFilePath, new JiraTargetConfigurationDto());
     }
 
     private JiraTargetConfigurationDto doLoadServerConfiguration() {
