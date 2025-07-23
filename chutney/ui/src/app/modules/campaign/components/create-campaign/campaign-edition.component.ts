@@ -265,7 +265,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     hasJiraLinks(scenario: ScenarioIndex): boolean {
         let jiraLinks = this.jiraLinks.get(scenario.id);
         return jiraLinks != null && (
-            (jiraLinks.id != null && jiraLinks.id.length > 0) || (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0)
+            (jiraLinks.id?.length > 0) || (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0)
         );
     }
 
@@ -274,7 +274,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         const jiraLinks = this.jiraLinks.get(scenario.id);
         if (jiraLinks != null) {
             const jiraId = jiraLinks.id;
-            if (jiraId != null && jiraId.length > 0) {
+            if (jiraId?.length > 0) {
                 titleContent += `\n\n${jiraId}`;
             }
             if (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0) {
