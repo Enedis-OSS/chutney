@@ -13,7 +13,7 @@ import {
     CdkDragDrop,
     moveItemInArray,
   } from '@angular/cdk/drag-drop';
-import { Campaign, CampaignScenario, Dataset, JiraScenario, ScenarioIndex } from '@model';
+import { Campaign, CampaignScenario, Dataset, JiraScenario, JiraScenarioLinks, ScenarioIndex } from '@model';
 import {
     CampaignService,
     DataSetService,
@@ -28,6 +28,8 @@ import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { TranslateService } from '@ngx-translate/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ScenarioJiraLinksModalComponent } from '@modules/scenarios/components/scenario-jira-links-modal/scenario-jira-links-modal.component';
 
 @Component({
     selector: 'chutney-campaign-edition',
@@ -59,10 +61,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     jiraSelectedTags: string[] = [];
     datasetId: string;
     jiraId: string;
-    jiraMap: Map<string, string> = new Map();
+    jiraLinks: Map<string, JiraScenarioLinks> = new Map();
     jiraUrl = '';
     jiraScenarios: JiraScenario[] = [];
     jiraScenariosToExclude: Array<ScenarioIndex> = [];
+
+    private jiraEditText: string = '';
 
     constructor(
         private campaignService: CampaignService,
@@ -74,7 +78,8 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private environmentService: EnvironmentService,
         private datasetService: DataSetService,
-        private translate: TranslateService,
+        private translateService: TranslateService,
+        private modalService: NgbModal,
         @Inject(DROPDOWN_SETTINGS) public dropdownSettings: IDropdownSettings
     ) {
         this.campaignForm = this.formBuilder.group({
@@ -97,6 +102,8 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
 
         this.submitted = false;
         this.loadEnvironment();
+        this.initJiraPlugin();
+        this.initTranslations();
         this.loadAllScenarios();
         this.datasetService.findAll().subscribe((res: Array<Dataset>) => {
             this.datasets = res.map(dataset => {
@@ -160,7 +167,6 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                         this.selectedEnvironment = this.campaign.environment;
                         this.setCampaignScenarios();
                         this.datasetId = this.campaign.datasetId;
-                        this.initJiraPlugin();
                     },
                     error: (error) => {
                         this.errorMessage = error._body;
@@ -209,7 +215,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
             });
     }
 
-    loadJiraLink() {
+    private loadJiraLink() {
         this.jiraLinkService.findByCampaignId(this.campaign.id)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
@@ -223,7 +229,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
             });
     }
 
-    initJiraPlugin() {
+    private initJiraPlugin() {
         this.jiraPluginConfigurationService.getUrl()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((r) => {
@@ -234,15 +240,52 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                         .pipe(takeUntil(this.unsubscribeSub$))
                         .subscribe(
                             (result) => {
-                                this.jiraMap = result;
+                                this.jiraLinks = result;
                             }
                         );
                 }
             });
     }
 
-    getJiraLink(id: string) {
-        return this.jiraUrl + '/browse/' + this.jiraMap.get(id);
+    private initTranslations() {
+        this.translateService.get('scenarios.jira.edit').subscribe(s => {
+            this.jiraEditText = s;
+        });
+    }
+
+    showScenarioJiraLinks(scenario: ScenarioIndex) {
+        const modalRef = this.modalService.open(ScenarioJiraLinksModalComponent, { size: 'lg' });
+        modalRef.componentInstance.scenario = scenario;
+        modalRef.componentInstance.jiraUrl = this.jiraUrl;
+        modalRef.closed.subscribe(
+            res => this.jiraLinks.set(scenario.id, res)
+        );
+    }
+
+    hasJiraLinks(scenario: ScenarioIndex): boolean {
+        let jiraLinks = this.jiraLinks.get(scenario.id);
+        return jiraLinks != null && (
+            (jiraLinks.id?.length > 0) || (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0)
+        );
+    }
+
+    jiraLinksTitleContent(scenario: ScenarioIndex): string {
+        var titleContent = this.jiraEditText;
+        const jiraLinks = this.jiraLinks.get(scenario.id);
+        if (jiraLinks != null) {
+            const jiraId = jiraLinks.id;
+            if (jiraId?.length > 0) {
+                titleContent += `\n\n${jiraId}`;
+            }
+            if (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0) {
+                titleContent += `\n\n${Object.keys(jiraLinks.datasetLinks).map(key => `${key}     ${jiraLinks.datasetLinks[key]}`).join('\n')}`;
+            }
+        }
+        return titleContent;
+    }
+
+    trackViewedScenarios(index: number, scenario: ScenarioIndex) {
+        return parseInt(scenario.id) * (this.hasJiraLinks(scenario) ? -1 : 1);
     }
 
     getJiraLastExecutionStatus(id: string) {
@@ -304,7 +347,6 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
             this.jiraScenariosToExclude = this.scenarios.filter((item) => {
                 let jiraTagFilter = false;
                 if (this.jiraSelectedTags.length > 0) {
-
                     jiraTagFilter = (this.jiraScenarios.find(s => item.id === s.chutneyId &&
                         this.jiraSelectedTags.includes(s.executionStatus))) === undefined;
                 }
@@ -378,7 +420,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                     scenarioId: scenario.scenarioId.id,
                     datasetId: scenario.dataset ? scenario.dataset.id : "NULL"
                 }
-                this.translate.get(messageKey, messageParams).subscribe((msg: string) => {
+                this.translateService.get(messageKey, messageParams).subscribe((msg: string) => {
                     this.errorMessage = msg
                 });
                 break;

@@ -56,9 +56,9 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
         this.unsubscribeSub$.complete();
     }
 
-    edit() {
-        this.isEditable = true;
-        if( !this.jiraDatasetList.length ){
+    edit(active: boolean = true) {
+        this.isEditable = active;
+        if(active && !this.jiraDatasetList.length) {
             this.newEntry();
         }
     }
@@ -66,7 +66,8 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
     save() {
         let datasetLinks = this.getDatasetLinks();
         let jiraId = this.jiraFormGroup.controls["jiraId"].value;
-        this.jiraPluginService.saveForScenario(new JiraScenarioLinks(jiraId,this.scenario.id,datasetLinks))
+        var jiraLinks = new JiraScenarioLinks(jiraId, this.scenario.id, datasetLinks);
+        this.jiraPluginService.saveForScenario(jiraLinks)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 error: (error) => {
@@ -74,7 +75,7 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
                     return;
                 },
                 complete: () => {
-                    this.activeModal.close();
+                    this.activeModal.close(jiraLinks);
                 }
             });
     }

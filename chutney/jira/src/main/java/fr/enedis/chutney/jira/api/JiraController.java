@@ -7,12 +7,15 @@
 
 package fr.enedis.chutney.jira.api;
 
+import static java.util.Collections.emptyMap;
+
 import fr.enedis.chutney.jira.domain.JiraRepository;
 import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import fr.enedis.chutney.jira.domain.JiraXrayService;
 import fr.enedis.chutney.jira.xrayapi.XrayTestExecTest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,8 +55,22 @@ public class JiraController {
 
     @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_WRITE')")
     @GetMapping(path = BASE_SCENARIO_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> getLinkedScenarios() {
-        return jiraRepository.getAllLinkedScenarios();
+    public Map<String, JiraScenarioLinksDto> getLinkedScenarios() {
+        var linkedScenarios = jiraRepository.getAllLinkedScenarios();
+        var linkedScenariosWithDataset = jiraRepository.getAllLinkedScenariosWithDataset();
+        var scenarios = new HashSet<String>();
+        scenarios.addAll(linkedScenarios.keySet());
+        scenarios.addAll(linkedScenariosWithDataset.keySet());
+        Map<String, JiraScenarioLinksDto> result = new HashMap<>();
+        for (String scenarioId : scenarios) {
+            ImmutableJiraScenarioLinksDto jiraScenarioLinksDto = ImmutableJiraScenarioLinksDto.builder()
+                .id(linkedScenarios.get(scenarioId))
+                .chutneyId(scenarioId)
+                .datasetLinks(linkedScenariosWithDataset.getOrDefault(scenarioId, emptyMap()))
+                .build();
+            result.put(jiraScenarioLinksDto.chutneyId(), jiraScenarioLinksDto);
+        }
+        return result;
     }
 
     @PreAuthorize("hasAuthority('CAMPAIGN_READ')")

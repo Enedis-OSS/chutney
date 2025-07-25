@@ -7,9 +7,12 @@
 
 package fr.enedis.chutney.jira.api;
 
+import static java.util.Collections.emptyMap;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -18,9 +21,13 @@ import org.immutables.value.Value;
 @Value.Style(jdkOnly = true)
 public interface JiraScenarioLinksDto {
 
+    @Nullable
     String id();
 
     String chutneyId();
 
-    Map<String, String> datasetLinks();
+    @Value.Default
+    default Map<String, String> datasetLinks() {
+        return emptyMap();
+    }
 }

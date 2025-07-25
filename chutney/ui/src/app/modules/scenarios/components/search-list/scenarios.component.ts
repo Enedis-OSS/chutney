@@ -20,7 +20,7 @@ import {
 } from '@shared/tools/array-utils';
 import { StateService } from '@shared/state/state.service';
 import { JiraPluginConfigurationService, JiraPluginService, ScenarioService } from '@core/services';
-import { Authorization, ScenarioIndex } from '@model';
+import { Authorization, JiraScenarioLinks, ScenarioIndex } from '@model';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { TranslateService } from '@ngx-translate/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -50,8 +50,9 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     status: ListItem[] = [];
     selectedStatus = [];
     // Jira
-    jiraMap: Map<string, string> = new Map();
+    jiraLinks: Map<string, JiraScenarioLinks> = new Map();
     jiraUrl = '';
+    private jiraEditText: string = '';
     // Order
     orderBy = 'lastExecution';
     reverseOrder = false;
@@ -74,6 +75,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.initJiraPlugin();
+        this.initTranslations();
         this.fetchAndUpdateScenario()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe(res => {
@@ -138,7 +140,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     }
 
     // Jira link //
-    initJiraPlugin() {
+    private initJiraPlugin() {
         this.jiraPluginConfigurationService.getUrl()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((url) => {
@@ -148,21 +150,52 @@ export class ScenariosComponent implements OnInit, OnDestroy {
                         .pipe(takeUntil(this.unsubscribeSub$))
                         .subscribe(
                             (result) => {
-                                this.jiraMap = result;
+                                this.jiraLinks = result;
                             }
                         );
                 }
             });
     }
 
-    getJiraLink(id: string) {
-        return this.jiraUrl + '/browse/' + this.jiraMap.get(id);
+    private initTranslations() {
+        this.translateService.get('scenarios.jira.edit').subscribe(s => {
+            this.jiraEditText = s;
+        });
     }
 
     showScenarioJiraLinks(scenario: ScenarioIndex) {
         const modalRef = this.modalService.open(ScenarioJiraLinksModalComponent, { size: 'lg' });
         modalRef.componentInstance.scenario = scenario;
         modalRef.componentInstance.jiraUrl = this.jiraUrl;
+        modalRef.closed.subscribe(
+            res => this.jiraLinks.set(scenario.id, res)
+        );
+    }
+
+    hasJiraLinks(scenario: ScenarioIndex): boolean {
+        let jiraLinks = this.jiraLinks.get(scenario.id);
+        return jiraLinks != null && (
+            (jiraLinks.id != null && jiraLinks.id.length > 0) || (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0)
+        );
+    }
+
+    jiraLinksTitleContent(scenario: ScenarioIndex): string {
+        var titleContent = this.jiraEditText;
+        const jiraLinks = this.jiraLinks.get(scenario.id);
+        if (jiraLinks != null) {
+            const jiraId = jiraLinks.id;
+            if (jiraId != null && jiraId.length > 0) {
+                titleContent += `\n\n${jiraId}`;
+            }
+            if (jiraLinks.datasetLinks != null && Object.keys(jiraLinks.datasetLinks).length > 0) {
+                titleContent += `\n\n${Object.keys(jiraLinks.datasetLinks).map(key => `${key}     ${jiraLinks.datasetLinks[key]}`).join('\n')}`;
+            }
+        }
+        return titleContent;
+    }
+
+    trackViewedScenarios(index: number, scenario: ScenarioIndex) {
+        return parseInt(scenario.id) * (this.hasJiraLinks(scenario) ? -1 : 1);
     }
 
     private subscribeForScenarios() {
@@ -279,9 +312,9 @@ export class ScenariosComponent implements OnInit, OnDestroy {
 
     private localFilter(scenarios: Array<ScenarioIndex>) {
         const scenariosWithJiraId = scenarios.map(sce => {
-            const jiraId = this.jiraMap.get(sce.id);
-            if (jiraId) {
-                sce.jiraId = jiraId;
+            const jiraLinks = this.jiraLinks.get(sce.id);
+            if (jiraLinks) {
+                sce.jiraId = [ jiraLinks.id ].concat(Object.values(jiraLinks.datasetLinks));
             }
             return sce;
         });

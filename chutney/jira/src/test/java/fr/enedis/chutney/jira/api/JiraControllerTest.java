@@ -19,6 +19,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.jira.domain.JiraRepository;
 import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import fr.enedis.chutney.jira.domain.JiraXrayApi;
@@ -26,8 +28,6 @@ import fr.enedis.chutney.jira.domain.JiraXrayClientFactory;
 import fr.enedis.chutney.jira.domain.JiraXrayService;
 import fr.enedis.chutney.jira.infra.JiraFileRepository;
 import fr.enedis.chutney.jira.xrayapi.XrayTestExecTest;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -64,6 +64,7 @@ class JiraControllerTest {
         jiraRepository.saveForScenario("2", "SCE-2");
         jiraRepository.saveForScenario("3", "SCE-3");
         jiraRepository.saveDatasetForScenario("2", Map.of("dataset_1", "JIRA-02"));
+        jiraRepository.saveDatasetForScenario("4", Map.of("dataset_1", "JIRA-04"));
 
         JiraController jiraController = new JiraController(jiraRepository, jiraXrayService);
         mockMvc = MockMvcBuilders.standaloneSetup(jiraController).build();
@@ -81,11 +82,22 @@ class JiraControllerTest {
 
     @Test
     void getLinkedScenarios() {
-        Map<String, String> map = getJiraController("/api/ui/jira/v1/scenario", new TypeReference<>() {
+        Map<String, JiraScenarioLinksDto> map = getJiraController("/api/ui/jira/v1/scenario", new TypeReference<>() {
         });
 
-        assertThat(map).hasSize(3);
-        assertThat(map).containsOnly(entry("1", "SCE-1"), entry("2", "SCE-2"), entry("3", "SCE-3"));
+        assertThat(map).hasSize(4);
+        assertThat(map.get("1")).isEqualTo(
+            ImmutableJiraScenarioLinksDto.builder().chutneyId("1").id("SCE-1").build()
+        );
+        assertThat(map.get("2")).isEqualTo(
+            ImmutableJiraScenarioLinksDto.builder().chutneyId("2").id("SCE-2").datasetLinks(Map.of("dataset_1", "JIRA-02")).build()
+        );
+        assertThat(map.get("3")).isEqualTo(
+            ImmutableJiraScenarioLinksDto.builder().chutneyId("3").id("SCE-3").build()
+        );
+        assertThat(map.get("4")).isEqualTo(
+            ImmutableJiraScenarioLinksDto.builder().chutneyId("4").datasetLinks(Map.of("dataset_1", "JIRA-04")).build()
+        );
     }
 
     @Test

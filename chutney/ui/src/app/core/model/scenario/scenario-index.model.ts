@@ -23,7 +23,7 @@ export class ScenarioIndex {
         public author?: string,
         public tags: Array<string> = [],
         public executions?: Array<Execution>,
-        public jiraId?: string
+        public jiraId?: Array<string>,
     ) {
         this.status = this.findStatus();
         this.lastExecution = this.lastTimeExec();
