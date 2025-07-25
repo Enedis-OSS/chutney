@@ -10,7 +10,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, Template
 import { Authorization, ScenarioIndex, TestCase } from '@model';
 import { JiraPluginService, LoginService, ScenarioService } from '@core/services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatestWith, forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -18,7 +18,7 @@ import { EventManagerService } from '@shared';
 import { MenuItem } from '@shared/components/layout/menuItem';
 import { EnvironmentService } from '@core/services/environment.service';
 import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/scenario-execute-modal.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'chutney-scenario-execution-menu',
@@ -49,6 +49,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
         iconClass: 'fa fa-play',
         authorizations: [Authorization.SCENARIO_EXECUTE]
     };
+    private executionModal: NgbModalRef;
 
     constructor(private environmentService: EnvironmentService,
         private fileSaverService: FileSaverService,
@@ -89,6 +90,7 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
     ngOnDestroy() {
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
+        this.executionModal && this.executionModal.close();
     }
 
     private addReplayButtonIfNecessary() {
@@ -105,15 +107,9 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
         const executeCallback = (env: string, dataset: string) => {
             this.eventManagerService.broadcast({ name: 'execute', env: env, dataset: dataset});
         }
-        let modalSize: "lg" | "xl" = "lg"
-        const changeModalSize = (size: "lg" | "xl") => {
-            modalSize = size;
-            modalRef.update({size: modalSize})
-        }
-        const modalRef = this.ngbModalService.open(ScenarioExecuteModalComponent, { centered: true, size: modalSize });
-        modalRef.componentInstance.environments = this.environments;
-        modalRef.componentInstance.executeCallback = executeCallback;
-        modalRef.componentInstance.changeModalSize = changeModalSize;
+        this.executionModal = this.ngbModalService.open(ScenarioExecuteModalComponent, { centered: true, size: 'lg' });
+        this.executionModal.componentInstance.environments = this.environments;
+        this.executionModal.componentInstance.executeCallback = executeCallback;
     }
 
     deleteScenario(id: string) {
