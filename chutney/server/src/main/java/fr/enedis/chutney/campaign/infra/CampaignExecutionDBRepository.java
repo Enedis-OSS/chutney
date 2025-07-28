@@ -19,6 +19,7 @@ import fr.enedis.chutney.campaign.infra.jpa.CampaignExecutionEntity;
 import fr.enedis.chutney.execution.domain.campaign.CampaignExecutionNotFoundException;
 import fr.enedis.chutney.execution.infra.storage.DatabaseExecutionJpaRepository;
 import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionEntity;
+import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,11 +141,11 @@ public class CampaignExecutionDBRepository implements CampaignExecutionRepositor
 
     @Override
     @Transactional
-    public Long generateCampaignExecutionId(Long campaignId, String environment) {
+    public Long generateCampaignExecutionId(Long campaignId, String environment, DataSet dataset) {
         notNull(campaignId, "Campaign ID cannot be null");
         notBlank(environment, "Environment cannot be null or empty");
 
-        CampaignExecutionEntity newExecution = new CampaignExecutionEntity(campaignId, environment);
+        CampaignExecutionEntity newExecution = new CampaignExecutionEntity(campaignId, environment, dataset);
         campaignExecutionJpaRepository.save(newExecution);
         return newExecution.id();
     }

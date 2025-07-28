@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.execution.infra.storage.jpa;
 
+import static fr.enedis.chutney.execution.infra.execution.DatasetEntityMapper.getDataset;
 import static fr.enedis.chutney.server.core.domain.dataset.DataSet.CUSTOM_ID;
 import static java.util.Optional.ofNullable;
 
@@ -29,7 +30,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Version;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity(name = "SCENARIO_EXECUTIONS")
@@ -219,11 +219,6 @@ public class ScenarioExecutionEntity {
     }
 
     public ExecutionHistory.ExecutionSummary toDomain(CampaignExecution campaignReport) {
-        Optional<DataSet> scenarioDataset = ofNullable(datasetId)
-            .map(id -> DataSet.builder()
-                .withId(datasetId)
-                .withName("")
-                .build());
         return ImmutableExecutionHistory.ExecutionSummary.builder()
             .executionId(id)
             .time(Instant.ofEpochMilli(executionTime).atZone(ZoneId.systemDefault()).toLocalDateTime())
@@ -233,7 +228,7 @@ public class ScenarioExecutionEntity {
             .error(ofNullable(error))
             .testCaseTitle(scenarioTitle)
             .environment(environment)
-            .dataset(scenarioDataset)
+            .dataset(ofNullable(getDataset(datasetId, null, null)))
             .user(userId)
             .campaignReport(ofNullable(campaignReport))
             .scenarioId(scenarioId)

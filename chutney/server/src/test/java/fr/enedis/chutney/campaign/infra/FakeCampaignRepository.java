@@ -11,13 +11,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.assertj.core.util.Lists.newArrayList;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
 import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
+import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.Campaign;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -113,7 +114,7 @@ public class FakeCampaignRepository implements CampaignRepository, CampaignExecu
     }
 
     @Override
-    public Long generateCampaignExecutionId(Long campaignId, String environment) {
+    public Long generateCampaignExecutionId(Long campaignId, String environment, DataSet dataset) {
         return new Random(100).nextLong();
     }
 

@@ -10,7 +10,9 @@ package fr.enedis.chutney.campaign.infra.jpa;
 import static fr.enedis.chutney.execution.infra.execution.DatasetEntityMapper.datasetConstantsToString;
 import static fr.enedis.chutney.execution.infra.execution.DatasetEntityMapper.datasetDatatableToString;
 import static fr.enedis.chutney.execution.infra.execution.DatasetEntityMapper.getDataset;
+import static fr.enedis.chutney.server.core.domain.dataset.DataSet.CUSTOM_ID;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
 
 import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionEntity;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
@@ -28,7 +30,6 @@ import jakarta.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity(name = "CAMPAIGN_EXECUTIONS")
 public class CampaignExecutionEntity {
@@ -68,22 +69,18 @@ public class CampaignExecutionEntity {
     public CampaignExecutionEntity() {
     }
 
-    public CampaignExecutionEntity(Long campaignId, String environment) {
-        this(null, campaignId, null, null, environment, null, null, null);
+    public CampaignExecutionEntity(Long campaignId, String environment, DataSet dataset) {
+        this(null, campaignId, null, null, environment, null, dataset, null);
     }
 
-    public CampaignExecutionEntity(Long id, Long campaignId, List<ScenarioExecutionEntity> scenarioExecutions, Boolean partial, String environment, String userId, DataSet dataset, Integer version) {
+    private CampaignExecutionEntity(Long id, Long campaignId, List<ScenarioExecutionEntity> scenarioExecutions, Boolean partial, String environment, String userId, DataSet dataset, Integer version) {
         this.id = id;
         this.campaignId = campaignId;
         this.scenarioExecutions = scenarioExecutions;
         this.partial = ofNullable(partial).orElse(false);
         this.environment = environment;
         this.userId = userId;
-        if (dataset != null) {
-            this.datasetId = dataset.id;
-            this.datasetConstants = datasetConstantsToString(dataset.constants);
-            this.datasetDatatable = datasetDatatableToString(dataset.datatable);
-        }
+        computeDataset(dataset);
         this.version = version;
     }
 
@@ -99,28 +96,30 @@ public class CampaignExecutionEntity {
         return scenarioExecutions;
     }
 
-    public String environment() { return environment;}
+    public String environment() {
+        return environment;
+    }
 
     public void updateFromDomain(CampaignExecution report, Iterable<ScenarioExecutionEntity> scenarioExecutions) {
         partial = report.partialExecution;
         environment = report.executionEnvironment;
         userId = report.userId;
-        if (report.dataset != null) {
-            datasetId = report.dataset.id;
-            datasetConstants = datasetConstantsToString(report.dataset.constants);
-            datasetDatatable = datasetDatatableToString(report.dataset.datatable);
-        }
-        this.scenarioExecutions.clear();
-        scenarioExecutions.forEach(se -> {
-            se.forCampaignExecution(this);
-            this.scenarioExecutions.add(se);
+        computeDataset(report.dataset);
+        ofNullable(this.scenarioExecutions).ifPresent(see -> {
+            see.clear();
+            scenarioExecutions.forEach(se -> {
+                se.forCampaignExecution(this);
+                see.add(se);
+            });
         });
     }
 
     public CampaignExecution toDomain(String campaignTitle) {
-        List<ScenarioExecutionCampaign> scenarioExecutionReports = scenarioExecutions.stream()
-            .map(se -> new ScenarioExecutionCampaign(se.scenarioId(), se.scenarioTitle(), se.toDomain()))
-            .collect(Collectors.toCollection(ArrayList::new));
+        List<ScenarioExecutionCampaign> scenarioExecutionReports = ofNullable(scenarioExecutions).map(see ->
+            see.stream()
+                .map(se -> new ScenarioExecutionCampaign(se.scenarioId(), se.scenarioTitle(), se.toDomain()))
+                .collect(toCollection(ArrayList::new))
+        ).orElseGet(ArrayList::new);
 
         CampaignExecutionReportBuilder campaignExecutionReportBuilder = CampaignExecutionReportBuilder.builder()
             .executionId(id)
@@ -138,5 +137,19 @@ public class CampaignExecutionEntity {
         }
 
         return campaignExecutionReportBuilder.build();
+    }
+
+    private void computeDataset(DataSet dataset) {
+        ofNullable(dataset).ifPresent(ds -> {
+            this.datasetId = mapDataset(ds);
+            this.datasetConstants = datasetConstantsToString(ds.constants);
+            this.datasetDatatable = datasetDatatableToString(ds.datatable);
+        });
+    }
+
+    private static String mapDataset(DataSet dataset) {
+        if (dataset.id != null) return dataset.id;
+        if (dataset.name != null && dataset.name.isEmpty()) return CUSTOM_ID;
+        return null;
     }
 }

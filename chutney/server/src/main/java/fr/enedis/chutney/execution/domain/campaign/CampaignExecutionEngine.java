@@ -13,6 +13,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Optional.ofNullable;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
 import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
@@ -38,8 +40,6 @@ import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecutionR
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.TestCaseDataset;
 import fr.enedis.chutney.tools.Try;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -190,7 +190,7 @@ public class CampaignExecutionEngine {
     CampaignExecution executeScenarioInCampaign(List<ScenarioExecutionCampaign> failedExecutions, Campaign campaign, String userId, DataSet dataset) {
         verifyHasScenarios(campaign);
         verifyNotAlreadyRunning(campaign);
-        Long executionId = campaignExecutionRepository.generateCampaignExecutionId(campaign.id, campaign.executionEnvironment());
+        Long executionId = campaignExecutionRepository.generateCampaignExecutionId(campaign.id, campaign.executionEnvironment(), dataset);
 
         CampaignExecution campaignExecution = CampaignExecutionReportBuilder.builder()
             .executionId(executionId)
@@ -353,7 +353,7 @@ public class CampaignExecutionEngine {
                 .map(datasetId -> DataSet.builder().withId(datasetId).withName("").build())
                 .or(() -> ofNullable(campaignExecution.dataset))
                 .map(ds -> {
-                    if (ds.id != null) {
+                    if (ds.id != null && !ds.id.equals(DataSet.CUSTOM_ID)) {
                         return datasetRepository.findById(ds.id);
                     }
                     return DataSet

@@ -10,7 +10,7 @@ package fr.enedis.chutney.dataset.infra;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import java.time.Instant;
 
-public class DatasetMapper {
+class DatasetMapper {
 
     public static DatasetDto toDto(DataSet dataSet) {
         return new DatasetDto(
