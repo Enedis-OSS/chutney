@@ -7,6 +7,9 @@
 
 import { PrettyPrintPipe } from './prettyPrint.pipe';
 
+const escapedLessThanSign = '&lt;';
+const escapedGreaterThanSign = '&gt;';
+
 describe('PrettyPrintPipe', () => {
     let pipe: PrettyPrintPipe;
 
@@ -24,7 +27,7 @@ describe('PrettyPrintPipe', () => {
     });
 
     it('should return a pretty array for an array of JSON strings', () => {
-        const input = ['{"a":1}', '{"b":2}'];
+        const input = ['{"a": 1}', '{"b": 2 }'];
         const result = pipe.transform(input);
         expect(result).toBe(`[
 {
@@ -36,10 +39,23 @@ describe('PrettyPrintPipe', () => {
 ]`);
     });
 
+    it('should return a pretty array for an array of JSON strings that contains numbers as strings', () => {
+        const input = ['{"a": "1"}', '{"b": "2" }'];
+        const result = pipe.transform(input);
+        expect(result).toBe(`[
+{
+  "a": "1"
+},
+{
+  "b": "2"
+}
+]`);
+    });
+
     it('should return escaped HTML when escapeHtml is true', () => {
         const input = '<script>alert("XSS")</script>';
         const result = pipe.transform(input, true);
-        expect(result.trim()).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
+        expect(result.trim()).toBe(`${escapedLessThanSign}script${escapedGreaterThanSign}alert(&quot;XSS&quot;)${escapedLessThanSign}/script${escapedGreaterThanSign}`);
     });
 
     it('should return an <img> tag for base64 image data', () => {
@@ -51,7 +67,7 @@ describe('PrettyPrintPipe', () => {
     it('should return a download link for other base64 data', () => {
         const input = 'data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9';
         const result = pipe.transform(input);
-        expect(result).toBe('<a href="data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9" >download information data</a>');
+        expect(result).toBe('<a href="data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9">download information data</a>');
     });
 
     it('should format XML content', () => {
@@ -60,6 +76,53 @@ describe('PrettyPrintPipe', () => {
         expect(result).toContain('<note>');
         expect(result).toContain('<to>User</to>');
         expect(result).toContain('<from>Dev</from>');
+    });
+
+    it('should format and escape XML content', () => {
+        const xml = '<note><to>User</to><from>Dev</from></note>';
+        const result = pipe.transform(xml, true);
+        expect(result).toContain(`${escapedLessThanSign}note${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}to${escapedGreaterThanSign}User${escapedLessThanSign}/to${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}from${escapedGreaterThanSign}Dev${escapedLessThanSign}/from${escapedGreaterThanSign}`);
+    });
+
+    it('should format and escape XML inside json ', () => {
+        const xml = '<note><to>User</to><from>Dev</from></note>';
+        const json = `
+                      {
+                      "note": "${xml}"
+                      }
+                      `
+        const result = pipe.transform(json, true);
+        expect(result).toContain(`${escapedLessThanSign}note${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}to${escapedGreaterThanSign}User${escapedLessThanSign}/to${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}from${escapedGreaterThanSign}Dev${escapedLessThanSign}/from${escapedGreaterThanSign}`);
+    });
+
+    it('should format and escape XML inside json inside array ', () => {
+        const xml = '<note><to>User</to><from>Dev</from></note>';
+        const array = `[
+                          {
+                          "note": "${xml}"
+                          }
+                      ]
+                      `
+        const result = pipe.transform(array, true);
+        expect(result).toContain(`${escapedLessThanSign}note${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}to${escapedGreaterThanSign}User${escapedLessThanSign}/to${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}from${escapedGreaterThanSign}Dev${escapedLessThanSign}/from${escapedGreaterThanSign}`);
+    });
+
+    it('should format and escape XML inside array ', () => {
+        const xml = '<note><to>User</to><from>Dev</from></note>';
+        const array = `[
+                         "${xml}"
+                      ]
+                      `
+        const result = pipe.transform(array, true);
+        expect(result).toContain(`${escapedLessThanSign}note${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}to${escapedGreaterThanSign}User${escapedLessThanSign}/to${escapedGreaterThanSign}`);
+        expect(result).toContain(`${escapedLessThanSign}from${escapedGreaterThanSign}Dev${escapedLessThanSign}/from${escapedGreaterThanSign}`);
     });
 
     it('should return empty string for null or undefined', () => {

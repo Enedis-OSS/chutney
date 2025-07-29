@@ -95,10 +95,11 @@
             "step": {
                 "inputs": "Entrées",
                 "outputs": "Sorties",
-                "inferr": "Logs",
+                "inferr": "Journaux",
                 "actions": {
                     "copy": "Copier la valeur",
                     "edit": "Editer la valeur",
+                    "view": "Voir la valeur",
                     "collapse.all": "Tout replier",
                     "expand.all": "Tout déplier",
                     "select.root": "Tout voir",
