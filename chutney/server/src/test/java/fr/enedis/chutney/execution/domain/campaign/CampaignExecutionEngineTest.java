@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static util.WaitUtils.awaitDuring;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
 import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
@@ -53,7 +54,6 @@ import fr.enedis.chutney.server.core.domain.scenario.campaign.Campaign;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecutionReportBuilder;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +70,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.stubbing.Answer;
 import org.springframework.core.task.support.ExecutorServiceAdapter;
@@ -119,7 +121,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_update_jira_xray_for_completed_execution() {
+    public void update_jira_xray_for_completed_execution() {
         // Given
         GwtTestCase notExecutedTestCase = createAndMockExecutedGwtTestCase(30L, NOT_EXECUTED);
         Campaign campaign = createCampaign(List.of(firstTestCase, notExecutedTestCase));
@@ -133,7 +135,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_scenarios_in_sequence_and_store_reports_in_campaign_report_when_executed() {
+    public void execute_scenarios_in_sequence_and_store_reports_in_campaign_report_when_executed() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
@@ -157,7 +159,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_partially_scenarios_requested() {
+    public void execute_partially_scenarios_requested() {
         // Given
         Campaign campaign = createCampaign(List.of(createGwtTestCase("not executed test case"), secondTestCase));
 
@@ -181,7 +183,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_stop_execution_of_scenarios_when_requested() {
+    public void stop_execution_of_scenarios_when_requested() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
@@ -230,7 +232,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_retry_failed_scenario() {
+    public void retry_failed_scenario() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase), true);
 
@@ -245,7 +247,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_scenario_in_parallel() {
+    public void execute_scenario_in_parallel() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase), true, false);
 
@@ -268,14 +270,14 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_throw_when_no_campaign_found_on_execute_by_id() {
+    public void throw_when_no_campaign_found_on_execute_by_id() {
         when(campaignRepository.findById(anyLong())).thenReturn(null);
         assertThatThrownBy(() -> sut.executeById(generateId(), ""))
             .isInstanceOf(CampaignNotFoundException.class);
     }
 
     @Test
-    public void should_throw_when_campaign_already_running_on_the_same_env() {
+    public void throw_when_campaign_already_running_on_the_same_env() {
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
         CampaignExecution mockReport = CampaignExecutionReportBuilder.builder()
@@ -291,7 +293,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_throw_when_campaign_is_empty() {
+    public void throw_when_campaign_is_empty() {
         Campaign campaign = createCampaign();
 
         // When
@@ -300,7 +302,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_throw_when_replay_is_empty() {
+    public void throw_when_replay_is_empty() {
         when(campaignExecutionRepository.getCampaignExecutionById(1L)).thenReturn(
             CampaignExecutionReportBuilder.builder()
                 .addScenarioExecutionReport(
@@ -314,7 +316,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_campaign_in_parallel_on_two_different_envs() {
+    public void execute_campaign_in_parallel_on_two_different_envs() {
         String otherEnv = "otherEnv";
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
@@ -329,7 +331,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_generate_campaign_execution_id_when_executed() {
+    public void generate_campaign_execution_id_when_executed() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
@@ -344,12 +346,31 @@ public class CampaignExecutionEngineTest {
         verify(campaignRepository).findById(campaign.id);
         verify(campaignRepository).findByName(campaign.title);
 
-        verify(campaignExecutionRepository, times(2)).generateCampaignExecutionId(campaign.id, campaign.executionEnvironment());
+        verify(campaignExecutionRepository, times(2)).generateCampaignExecutionId(campaign.id, campaign.executionEnvironment(), null);
     }
 
+    @Test
+    public void generate_campaign_execution_id_when_executed_with_dataset() {
+        // Given
+        Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
+
+        when(campaignRepository.findByName(campaign.title)).thenReturn(singletonList(campaign));
+        when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
+
+        // When
+        DataSet dataset = DataSet.builder().withId("datasetId").withName("").build();
+        sut.executeById(campaign.id, "", dataset, "");
+        sut.executeByName(campaign.title, null, dataset, "");
+
+        // Then
+        verify(campaignRepository).findById(campaign.id);
+        verify(campaignRepository).findByName(campaign.title);
+
+        verify(campaignExecutionRepository, times(2)).generateCampaignExecutionId(campaign.id, campaign.executionEnvironment(), dataset);
+    }
 
     @Test
-    public void should_return_last_existing_campaign_execution_for_existing_campaign() {
+    public void return_last_existing_campaign_execution_for_existing_campaign() {
         // Given
         Campaign campaign = createCampaign();
         CampaignExecution campaignExecution = CampaignExecutionReportBuilder.builder()
@@ -357,7 +378,6 @@ public class CampaignExecutionEngineTest {
             .campaignId(campaign.id)
             .environment(campaign.executionEnvironment())
             .build();
-
 
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
         when(campaignExecutionRepository.getLastExecution(campaign.id)).thenReturn(campaignExecution);
@@ -373,7 +393,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_throw_exception_when_campaign_does_not_exists() {
+    public void throw_exception_when_campaign_does_not_exists() {
         // Given
         Campaign campaign = createCampaign();
 
@@ -387,7 +407,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_campaign_with_given_environment_when_executed_by_id() {
+    public void execute_campaign_with_given_environment_when_executed_by_id() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
@@ -403,7 +423,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_campaign_with_given_dataset_when_executed_by_id() {
+    public void execute_campaign_with_given_dataset_when_executed_by_id() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
@@ -419,7 +439,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_campaign_with_given_environment_when_executed_by_name() {
+    public void execute_campaign_with_given_environment_when_executed_by_name() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
         when(campaignRepository.findByName(anyString())).thenReturn(singletonList(campaign));
@@ -435,7 +455,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_campaign_with_given_dataset_when_executed_by_name() {
+    public void execute_campaign_with_given_dataset_when_executed_by_name() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
         when(campaignRepository.findByName(anyString())).thenReturn(singletonList(campaign));
@@ -452,7 +472,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_retrieve_current_campaign_execution_on_a_given_env() {
+    public void retrieve_current_campaign_execution_on_a_given_env() {
         String env = "env";
         CampaignExecution report = CampaignExecutionReportBuilder.builder()
             .executionId(1L)
@@ -481,19 +501,19 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_throw_when_stop_unknown_campaign_execution() {
+    public void throw_when_stop_unknown_campaign_execution() {
         assertThatThrownBy(() -> sut.stopExecution(generateId()))
             .isInstanceOf(CampaignExecutionNotFoundException.class);
     }
 
     @Test
-    public void should_throw_when_execute_unknown_campaign_execution() {
+    public void throw_when_execute_unknown_campaign_execution() {
         assertThatThrownBy(() -> sut.executeById(generateId(), ""))
             .isInstanceOf(CampaignNotFoundException.class);
     }
 
     @Test
-    public void should_use_campaign_default_dataset_before_execution_when_scenario_in_campaign_does_not_define_dataset() {
+    public void use_campaign_default_dataset_before_execution_when_scenario_in_campaign_does_not_define_dataset() {
         // Given
         TestCase gwtTestCase = GwtTestCase.builder()
             .withMetadata(
@@ -525,7 +545,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_use_scenario_dataset_over_campaign_default_dataset_before_execution_when_scenario_in_campaign_defines_dataset() {
+    public void use_scenario_dataset_over_campaign_default_dataset_before_execution_when_scenario_in_campaign_defines_dataset() {
         // Given
         TestCase gwtTestCase = GwtTestCase.builder()
             .withMetadata(
@@ -558,7 +578,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_not_use_scenario_default_dataset_when_campaign_nor_scenario_in_campaign_do_not_define_dataset() {
+    public void not_use_scenario_default_dataset_when_campaign_nor_scenario_in_campaign_do_not_define_dataset() {
         // Given
         TestCase gwtTestCase = GwtTestCase.builder()
             .withMetadata(
@@ -587,8 +607,10 @@ public class CampaignExecutionEngineTest {
         assertThat(executionRequest.tags).containsExactly("TAG");
     }
 
-    @Test
-    public void should_execute_by_id_with_inline_dataset() {
+    @ParameterizedTest
+    @ValueSource(strings = "__CUSTOM__") // DataSet.CUSTOM_ID
+    @NullSource
+    public void execute_by_id_with_inline_dataset(String datasetId) {
         // Given
         Long campaignId = 1L;
         String env = "env";
@@ -596,25 +618,31 @@ public class CampaignExecutionEngineTest {
         Campaign campaign = new Campaign(1L, "campaign1", null, scenarios, env, false, false, "UNKNOWN", List.of("TAG"));
         var datatable = List.of(Map.of("HEADER", "VALUE"));
         var constants = Map.of("HEADER", "VALUE");
-        DataSet dataSet = DataSet.builder().withName("").withDatatable(datatable).withConstants(constants).build();
+        DataSet dataSet = DataSet.builder().withId(datasetId).withName("").withDatatable(datatable).withConstants(constants).build();
         when(campaignRepository.findById(eq(1L))).thenReturn(campaign);
 
         // When
         CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER");
 
         // Then
-        assertThat(campaignExecution.dataset).isNotNull();
-        assertThat(campaignExecution.dataset.id).isNull();
-        assertThat(campaignExecution.dataset.constants).isEqualTo(constants);
-        assertThat(campaignExecution.dataset.datatable).isEqualTo(datatable);
-        assertThat(campaignExecution.scenarioExecutionReports()).isNotEmpty();
-        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset()).isPresent();
-        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset().get().constants).isEqualTo(constants);
-        assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().dataset().get().datatable).isEqualTo(datatable);
+        assertThat(campaignExecution.dataset).satisfies(ds -> {
+            assertThat(ds).isNotNull();
+            assertThat(ds.id).isEqualTo(datasetId);
+            assertThat(ds.constants).isEqualTo(constants);
+            assertThat(ds.datatable).isEqualTo(datatable);
+        });
+        assertThat(campaignExecution.scenarioExecutionReports()).satisfies(report -> {
+            assertThat(report).isNotEmpty();
+            assertThat(report.getFirst().execution().dataset()).satisfies(ds -> {
+                assertThat(ds).isPresent();
+                assertThat(ds.get().constants).isEqualTo(constants);
+                assertThat(ds.get().datatable).isEqualTo(datatable);
+            });
+        });
     }
 
     @Test
-    public void should_execute_by_id_with_known_dataset() {
+    public void execute_by_id_with_known_dataset() {
         // Given
         Long campaignId = 1L;
         String env = "env";
@@ -638,7 +666,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_by_id_with_default_dataset() {
+    public void execute_by_id_with_default_dataset() {
         // Given
         Long campaignId = 1L;
         String env = "env";
@@ -660,7 +688,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void should_execute_by_id_without_any_dataset() {
+    public void execute_by_id_without_any_dataset() {
         // Given
         Long campaignId = 1L;
         String env = "env";
@@ -681,7 +709,7 @@ public class CampaignExecutionEngineTest {
         "123, DEV, dataset123, user123",
         "123, DEV, , user123"
     })
-    @DisplayName("Should not pass dataset empty if not defined in scheduling")
+    @DisplayName("Does not pass dataset empty if not defined in scheduling")
     void testExecuteScheduledCampaign(Long campaignId, String environment, String datasetId, String userId) {
         //Given
         DataSet dataset = DataSet.builder().withName("A").withId("A").build();
@@ -758,7 +786,7 @@ public class CampaignExecutionEngineTest {
         return createCampaign(testCases, false, retryAuto);
     }
 
-    private Campaign createCampaign(List<TestCase> testCases,  boolean parallelRun, boolean retryAuto) {
+    private Campaign createCampaign(List<TestCase> testCases, boolean parallelRun, boolean retryAuto) {
         var scenarios = testCases.stream().map(tc -> new Campaign.CampaignScenario(tc.id(), null)).toList();
         return new Campaign(1L, "campaign1", null, scenarios, "env", parallelRun, retryAuto, null, List.of("TAG"));
     }

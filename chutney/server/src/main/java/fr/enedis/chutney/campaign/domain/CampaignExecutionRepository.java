@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.campaign.domain;
 
+import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,11 @@ public interface CampaignExecutionRepository {
 
     List<CampaignExecution> getLastExecutions(Long numberOfExecution);
 
-    Long generateCampaignExecutionId(Long campaignId, String environment);
+    default Long generateCampaignExecutionId(Long campaignId, String environment) {
+        return generateCampaignExecutionId(campaignId, environment, null);
+    }
+
+    Long generateCampaignExecutionId(Long campaignId, String environment, DataSet dataset);
 
     List<CampaignExecution> getExecutionHistory(Long campaignId);
 
