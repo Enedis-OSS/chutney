@@ -2,110 +2,109 @@
  * SPDX-FileCopyrightText: 2017-2024 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
- *
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { escapeHtml } from '@shared/tools/string-utils';
-import { parse, stringify } from 'lossless-json';
+import { isLosslessNumber, parse, stringify } from 'lossless-json';
 
 @Pipe({
     name: 'prettyPrint',
     standalone: false
 })
 export class PrettyPrintPipe implements PipeTransform {
-    transform(value, escapeHtml: boolean = false): string {
-        if (value instanceof Array) {
-            return (
-                '[\n' +
-                value.map((v) => this.beautify(v, escapeHtml)).join(',\n') +
-                '\n]'
-            );
-        } else if (value != null){
-            return this.beautify(value, escapeHtml);
+    transform(value: any, escapeHtmlFlag: boolean = false): string {
+        if (Array.isArray(value)) {
+            return this.formatArray(value, escapeHtmlFlag);
         }
-        return '';
+        return value != null ? this.format(value, escapeHtmlFlag) : '';
     }
 
-    beautify = (content: string, escapeHtmlP: boolean = false) => {
-        let r = content;
+    private formatArray(array: any[], escapeHtmlFlag: boolean): string {
+        return `[\n${array.map(item => this.format(item, escapeHtmlFlag)).join(',\n')}\n]`;
+    }
+
+    private format(content: any, escapeHtmlFlag: boolean = false): string {
+        let result: any;
         try {
-            let json = parse(content);
-            if (typeof json === 'string') {
-                content = json;
-                throw new Error('');
-            } else if (Array.isArray(json)) {
-                return (
-                    '[\n' +
-                    json
-                        .map((v) => this.beautify(stringify(v)))
-                        .join(',\n') +
-                    '\n]'
-                );
+            const parsed = parse(content);
+            if (typeof parsed === 'string') {
+                content = parsed;
+                result = this.formatPrimitives(content, escapeHtmlFlag);
+            } else if (isLosslessNumber(parsed)) {
+                result = content.valueOf();
+            } else if (Array.isArray(parsed)) {
+                result = this.formatArray(parsed.map(item => stringify(item)), escapeHtmlFlag);
+            } else {
+                result = this.formatObject(parsed, escapeHtmlFlag);
             }
-            return stringify(json, null, '  ');
-        } catch (error) {
-            if (content.startsWith('data:image')) {
-                return '<img src="' + content + '" />';
-            }
-            if (content.startsWith('data:')) {
-                return (
-                    '<a href="' + content + '" >download information data</a>'
-                );
-            }
-            if (content.startsWith('<') || content.includes('<?xml')) {
-                r = this.formatXml(content, '  ');
-            }
+        } catch {
+            result = this.formatPrimitives(content, escapeHtmlFlag);
         }
 
-        return escapeHtmlP ? escapeHtml(r) : r;
-    };
+        return result;
+    }
 
-    formatXml = (input, indent) => {
-        indent = indent || '\t'; //you can set/define other ident than tabs
 
-        //PART 1: Add \n where necessary
+    private formatObject(obj: Record<string, any>, escapeHtmlFlag: boolean): string {
+        const beautified = Object.fromEntries(
+            Object.entries(obj).map(([key, value]) => [key, this.format(value, escapeHtmlFlag)])
+        );
+        return stringify(beautified, null, '  ');
+    }
+
+
+    private formatPrimitives(content: any, escapeHtmlFlag: boolean): any {
+        let result: any;
+        if (typeof content === 'string') {
+            result = this.formatString(content, escapeHtmlFlag);
+        } else if (isLosslessNumber(content)) {
+            result = content.valueOf();
+        } else {
+            result = content;
+        }
+        return result;
+
+    }
+
+    private formatString(content: string, escapeHtmlFlag: boolean): string {
+        let result = content;
+        if (content.startsWith('data:image')) {
+            result = `<img src="${content}" />`;
+        } else if (content.startsWith('data:')) {
+            result = `<a href="${content}">download information data</a>`;
+        } else if (content.startsWith('<') || content.includes('<?xml')) {
+            result = this.formatXml(content, '  ');
+        }
+
+        return escapeHtmlFlag ? escapeHtml(result) : result;
+    }
+
+    private formatXml(input: string, indent: string = '\t'): string {
         const xmlString = input
-            .replace(/(<([a-zA-Z]+\b)[^>]*>)(?!<\/\2>|[\w\s])/g, '$1\n') //add \n after tag if not followed by the closing tag of pair or text node
-            .replace(/(<\/[a-zA-Z]+[^>]*>)/g, '$1\n') //add \n after closing tag
-            .replace(/>\s+(.+?)\s+<(?!\/)/g, '>\n$1\n<') //add \n between sets of angled brackets and text node between them
-            .replace(/>(.+?)<([a-zA-Z])/g, '>\n$1\n<$2') //add \n between angled brackets and text node between them
-            .replace(/\?></, '?>\n<'); //detect a header of XML
+            .replace(/(<([a-zA-Z]+\b)[^>]*>)(?!<\/\2>|[\w\s])/g, '$1\n')
+            .replace(/(<\/[a-zA-Z]+[^>]*>)/g, '$1\n')
+            .replace(/>\s+(.+?)\s+<(?!\/)/g, '>\n$1\n<')
+            .replace(/>(.+?)<([a-zA-Z])/g, '>\n$1\n<$2')
+            .replace(/\?></, '?>\n<');
 
-        const xmlArr = xmlString.split('\n'); //split it into an array (for analise each line separately)
+        const xmlLines = xmlString.split('\n');
+        let tabs = '';
+        let start = /^<\?xml/.test(xmlLines[0]) ? 1 : 0;
 
-        //PART 2: indent each line appropriately
-        let tabs = ''; //store the current indentation
-        let start = 0; //starting line
+        for (let i = start; i < xmlLines.length; i++) {
+            const line = xmlLines[i].trim();
 
-        if (/^<[?]xml/.test(xmlArr[0])) start++; //if the first line is a header, ignore it
-
-        for (
-            let i = start;
-            i < xmlArr.length;
-            i++ //for each line
-        ) {
-            const line = xmlArr[i].replace(/^\s+|\s+$/g, ''); //trim it (just in case)
-
-            if (/^<[/]/.test(line)) {
-                //if the line is a closing tag
-                tabs = tabs.replace(indent, ''); //remove one indent from the store
-                xmlArr[i] = tabs + line; //add the tabs at the beginning of the line
-            } else if (/<.*>.*<\/.*>|<.*[^>]\/>/.test(line)) {
-                //if the line contains an entire node
-                //leave the store as is
-                xmlArr[i] = tabs + line; //add the tabs at the beginning of the line
-            } else if (/<.*>/.test(line)) {
-                //if the line starts with an opening tag and does not contain an entire node
-                xmlArr[i] = tabs + line; //add the tabs at the beginning of the line
-                tabs += indent; //and add one indent to the store
-            } //if the line contain a text node
-            else {
-                xmlArr[i] = tabs + line; // add the tabs at the beginning of the line
+            if (/^<\/.*/.test(line)) {
+                tabs = tabs.slice(0, -indent.length);
+            } else if (/^<.*>.*<\/.*>|<.*[^>]*\/>/.test(line)) {
+                // No change to tabs
+            } else if (/^<.*>/.test(line)) {
+                tabs += indent;
             }
+            xmlLines[i] = tabs + line;
         }
 
-        //PART 3: return formatted string (source)
-        return xmlArr.join('\n'); //rejoin the array to a string and return it
-    };
+        return xmlLines.join('\n');
+    }
 }

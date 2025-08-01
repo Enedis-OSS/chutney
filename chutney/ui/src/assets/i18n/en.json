@@ -99,6 +99,7 @@
                 "actions": {
                     "copy": "Copy value",
                     "edit": "Edit value",
+                    "view": "View value",
                     "collapse.all": "Collapse all",
                     "expand.all": "Expand all",
                     "select.root": "See all steps",
