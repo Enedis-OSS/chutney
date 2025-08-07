@@ -7,7 +7,7 @@
 
 # Changelog
 
-## [3.2.0](https://github.com/chutney-testing/chutney/tree/3.2.0)
+## [3.2.0](https://github.com/Enedis-OSS/chutney/tree/3.2.0)
 ### 🚀 Implemented enhancements:
 * Refresh scenario executions when running ones exist by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/183
 * Scenarios jira links - Clean list and update modal by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/187
@@ -37,7 +37,7 @@
 
 **Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.1.2...3.2.0
 
-## [3.1.2](https://github.com/chutney-testing/chutney/tree/3.1.2)
+## [3.1.2](https://github.com/Enedis-OSS/chutney/tree/3.1.2)
 ### 🚀 Implemented enhancements:
 * SQL Action: Parametrize minimumMemoryPercentageRequired by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/149
 ### 🐛 Fixed bugs:
@@ -58,7 +58,7 @@
 
 **Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.1.1...3.1.2
 
-## [3.1.1](https://github.com/chutney-testing/chutney/tree/3.1.1)
+## [3.1.1](https://github.com/Enedis-OSS/chutney/tree/3.1.1)
 ### 🚀 Implemented enhancements:
 * Change logo by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/140
 ### 🐛 Fixed bugs:
@@ -67,7 +67,7 @@
 
 **Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.1.0...3.1.1
 
-## [3.1.0](https://github.com/chutney-testing/chutney/tree/3.1.0)
+## [3.1.0](https://github.com/Enedis-OSS/chutney/tree/3.1.0)
 ### 🚀 Implemented enhancements:
 * Add URL encode/decode and duration between functions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/116
 * XML asserts: Guard against null value for placeholder asserts and soft assert for multiple expectations by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/118
@@ -97,7 +97,7 @@
 **Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.0.0.4...3.1.0
 
 
-## [3.0.0.4](https://github.com/chutney-testing/chutney/tree/3.0.0.4)
+## [3.0.0.4](https://github.com/Enedis-OSS/chutney/tree/3.0.0.4)
 ## What's Changed
 ### 🚀 Implemented enhancements:
 * Kafka publish / consume - Allow serialization config by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/74
@@ -132,7 +132,7 @@
 
 **Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/before_3.0.0.3...3.0.0.4
 
-## [3.0.0.3](https://github.com/chutney-testing/chutney/tree/3.0.0.3)
+## [3.0.0.3](https://github.com/Enedis-OSS/chutney/tree/3.0.0.3)
 ## What's Changed
 ### 🐛 Fixed bugs:
 * Allow null body in HttpPostAction by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/62
