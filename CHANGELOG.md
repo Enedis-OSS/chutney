@@ -7,6 +7,36 @@
 
 # Changelog
 
+## [3.2.0](https://github.com/chutney-testing/chutney/tree/3.2.0)
+### 🚀 Implemented enhancements:
+* Refresh scenario executions when running ones exist by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/183
+* Scenarios jira links - Clean list and update modal by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/187
+### 🐛 Fixed bugs:
+* Do not allow running scenario execution deletion by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/169
+* SSO - Remove local storage if no config by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/182
+* Keep dataset filters on page reload by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/186
+* JIRA : Campaign execution link + Clean plugins page by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/185
+* Close execution modal on scenarios exec page exit by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/189
+* Hande campaign execution custom dataset by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/190
+* Fix tasks inputs/outputs pretty print on exec report by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/191
+### 🔧 Technical enhancements:
+* Improve lucene indexation by @dependabot[bot], @boddissattva and @nbrouand in https://github.com/Enedis-OSS/chutney/pull/153
+* Upgrade to angular 19.2.14 by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/167
+### 👒 Dependencies:
+* chore(deps): Bump org.immutables:value from 2.10.0 to 2.11.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/171
+* chore(deps): Bump org.apache.commons:commons-text from 1.12.0 to 1.13.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/172
+* chore(deps): Bump org.codehaus.mojo:build-helper-maven-plugin from 3.6.0 to 3.6.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/180
+* chore(deps-dev): Bump com.oracle.database.jdbc:ojdbc11 from 23.6.0.24.10 to 23.8.0.25.04 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/179
+* chore(deps): Bump org.sonatype.central:central-publishing-maven-plugin from 0.7.0 to 0.8.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/178
+* chore(deps): Bump com.google.errorprone:error_prone_annotations from 2.21.1 to 2.39.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/174
+* chore(deps-dev): Bump jqwik.version from 1.9.1 to 1.9.3 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/176
+* chore(deps): Bump org.checkerframework:checker-qual from 3.37.0 to 3.49.5 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/175
+* chore(deps): Bump org.liquibase:liquibase-core from 4.31.1 to 4.32.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/177
+* chore(deps): Bump com.github.erosb:everit-json-schema from 1.14.1 to 1.14.6 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/173
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.1.2...3.2.0
+
 ## [3.1.2](https://github.com/chutney-testing/chutney/tree/3.1.2)
 ### 🚀 Implemented enhancements:
 * SQL Action: Parametrize minimumMemoryPercentageRequired by @nbrouand in https://github.com/Enedis-OSS/chutney/pull/149
