@@ -7,6 +7,21 @@
 
 # Changelog
 
+## [3.2.1](https://github.com/Enedis-OSS/chutney/tree/3.2.1)
+### 🐛 Fixed bugs:
+* fix(ui): fix execution modal size change when selecting a dataset by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/204
+### 👒 Dependencies:
+* chore(deps): Bump org.testcontainers:testcontainers-bom from 1.21.1 to 1.21.3 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/193
+* chore(deps): Bump org.apache.maven.plugins:maven-clean-plugin from 3.4.1 to 3.5.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/195
+* chore(deps): Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.7 to 3.2.8 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/196
+* chore(deps): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.5.0 to 3.6.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/197
+* chore(deps): Bump org.bouncycastle:bcprov-jdk18on from 1.80 to 1.81 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/200
+* chore(deps): Bump org.wiremock:wiremock-standalone from 3.12.1 to 3.13.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/201
+* chore(deps-dev): Bump com.oracle.database.jdbc:ojdbc11 from 23.8.0.25.04 to 23.9.0.25.07 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/192
+* chore(deps): Bump springboot.version from 3.5.0 to 3.5.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/194
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.2.0...3.2.1
+
 ## [3.2.0](https://github.com/Enedis-OSS/chutney/tree/3.2.0)
 ### 🚀 Implemented enhancements:
 * Refresh scenario executions when running ones exist by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/183
