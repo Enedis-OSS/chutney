@@ -5,14 +5,14 @@
  *
  */
 
-import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
-import { Dataset, KeyValue } from "@core/model";
-import { DataSetService, EnvironmentService } from "@core/services";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { catchError, takeUntil } from "rxjs/operators";
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { firstValueFrom, Observable, of, Subject } from "rxjs";
+import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Dataset, KeyValue } from '@core/model';
+import { DataSetService, EnvironmentService } from '@core/services';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { catchError, takeUntil } from 'rxjs/operators';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { firstValueFrom, Observable, of, Subject } from 'rxjs';
 
 
 @Component({
@@ -42,7 +42,6 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
 
     @Input() executeCallback: (env: string, dataset: Dataset) => void;
-    @Input() changeModalSize: (size: "lg" | "xl") => void;
 
     isCollapsed = true;
 
@@ -99,7 +98,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
             this.editDataset(null, this.selectedDataset, true);
         } else {
             this.editionDataset = false;
-            this.changeModalSize("lg")
+            this.activeModal.update({ size: 'lg' });
         }
     }
 
@@ -212,12 +211,12 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
         }
         this.editionDataset = forceEditionDataset || !this.editionDataset
         if (this.editionDataset) {
-            this.changeModalSize("xl")
+            this.activeModal.update({ size: 'xl' });
             this.editionDatasetValues = dataset;
             this.datasetForm.controls['keyValues'].patchValue(this.editionDatasetValues.uniqueValues);
             this.datasetForm.controls['multiKeyValues'].patchValue(this.editionDatasetValues.multipleValues);
         } else {
-            this.changeModalSize("lg")
+            this.activeModal.update({ size: 'lg' });
         }
     }
 

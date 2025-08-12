@@ -112,15 +112,9 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
             ).subscribe();
         }
 
-        let modalSize: "lg" | "xl" = "lg"
-        const changeModalSize = (size: "lg" | "xl") => {
-            modalSize = size;
-            modalRef.update({size: modalSize})
-        }
-        const modalRef = this.ngbModalService.open(ScenarioExecuteModalComponent, { centered: true, size: modalSize });
+        const modalRef = this.ngbModalService.open(ScenarioExecuteModalComponent, { centered: true, size: 'lg' });
         modalRef.componentInstance.environments = this.environments;
         modalRef.componentInstance.executeCallback = executeCallback;
-        modalRef.componentInstance.changeModalSize = changeModalSize;
     }
 
     private deleteCampaign() {
