@@ -6,6 +6,7 @@
  */
 
 import { PrettyPrintPipe } from './prettyPrint.pipe';
+import { stringify } from 'lossless-json';
 
 const escapedLessThanSign = '&lt;';
 const escapedGreaterThanSign = '&gt;';
@@ -58,17 +59,28 @@ describe('PrettyPrintPipe', () => {
         expect(result.trim()).toBe(`${escapedLessThanSign}script${escapedGreaterThanSign}alert(&quot;XSS&quot;)${escapedLessThanSign}/script${escapedGreaterThanSign}`);
     });
 
-    it('should return an <img> tag for base64 image data', () => {
+    it('should return a valid <img> tag for base64 image data', () => {
         const input = 'data:image/png;base64,someBase64String';
-        const result = pipe.transform(input);
-        expect(result).toBe('<img src="data:image/png;base64,someBase64String" />');
+        const result = pipe.transform(input, true);
+        expect(result).toBe(`<img src='data:image/png;base64,someBase64String' />`);
     });
 
-    it('should return a download link for other base64 data', () => {
+    it('should return a valid download link for other base64 data', () => {
         const input = 'data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9';
-        const result = pipe.transform(input);
-        expect(result).toBe('<a href="data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9">download information data</a>');
+        const result = pipe.transform(input, true);
+        expect(result).toBe(`<a href='data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9' download='data'><span class='fa fa-fw fa-download'></span></a>`);
     });
+
+    it('should return a valid <img> and <a> tags even in json object', () => {
+        const input = {
+            "img": "data:image/png;base64,someBase64String",
+            "link": "data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9",
+        };
+        const result = pipe.transform(stringify(input), true);
+        expect(result).toContain(`<img src='data:image/png;base64,someBase64String' />`);
+        expect(result).toContain(`<a href='data:application/json;base64,eyJrZXkiOiJ2YWx1ZSJ9' download='data'><span class='fa fa-fw fa-download'></span></a>`);
+    });
+
 
     it('should format XML content', () => {
         const xml = '<note><to>User</to><from>Dev</from></note>';

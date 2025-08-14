@@ -69,15 +69,18 @@ export class PrettyPrintPipe implements PipeTransform {
 
     private formatString(content: string, escapeHtmlFlag: boolean): string {
         let result = content;
+        let escapeHtmlLocalFlag = escapeHtmlFlag;
         if (content.startsWith('data:image')) {
-            result = `<img src="${content}" />`;
+            result = `<img src='${content}' />`;
+            escapeHtmlLocalFlag = false;
         } else if (content.startsWith('data:')) {
-            result = `<a href="${content}">download information data</a>`;
+            result = `<a href='${content}' download='data'><span class='fa fa-fw fa-download'></span></a>`;
+            escapeHtmlLocalFlag = false;
         } else if (content.startsWith('<') || content.includes('<?xml')) {
             result = this.formatXml(content, '  ');
         }
 
-        return escapeHtmlFlag ? escapeHtml(result) : result;
+        return escapeHtmlLocalFlag ? escapeHtml(result) : result;
     }
 
     private formatXml(input: string, indent: string = '\t'): string {
