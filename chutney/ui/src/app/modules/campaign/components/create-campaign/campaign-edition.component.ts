@@ -8,11 +8,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
-import {
-    CdkDragDrop,
-    moveItemInArray,
-  } from '@angular/cdk/drag-drop';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { CdkDragDrop, moveItemInArray, } from '@angular/cdk/drag-drop';
 import { Campaign, CampaignScenario, Dataset, JiraScenario, JiraScenarioLinks, ScenarioIndex } from '@model';
 import {
     CampaignService,
@@ -29,7 +26,9 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ScenarioJiraLinksModalComponent } from '@modules/scenarios/components/scenario-jira-links-modal/scenario-jira-links-modal.component';
+import {
+    ScenarioJiraLinksModalComponent
+} from '@modules/scenarios/components/scenario-jira-links-modal/scenario-jira-links-modal.component';
 
 @Component({
     selector: 'chutney-campaign-edition',
@@ -42,9 +41,10 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     campaignForm: FormGroup;
 
     campaign = new Campaign();
+    campaignId: number;
     submitted: boolean;
     scenarios: Array<ScenarioIndex> = [];
-    scenariosToAdd: Array<{"scenarioId": ScenarioIndex, "dataset": ListItem}> = [];
+    scenariosToAdd: Array<{ 'scenarioId': ScenarioIndex, 'dataset': ListItem }> = [];
     errorMessage: any;
     datasets: ListItem[] = [];
     dropdownDatasetSettings: IDropdownSettings
@@ -102,12 +102,17 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
 
         this.submitted = false;
         this.loadEnvironment();
-        this.initJiraPlugin();
         this.initTranslations();
-        this.loadAllScenarios();
+        this.route.params
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe((params) => {
+                this.campaignId = params['id'];
+                this.initJiraPlugin();
+                this.loadAllScenarios();
+            });
         this.datasetService.findAll().subscribe((res: Array<Dataset>) => {
             this.datasets = res.map(dataset => {
-                return {"id": dataset.id, "text": dataset.name}
+                return {'id': dataset.id, 'text': dataset.name}
             });
         });
     }
@@ -117,7 +122,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.unsubscribeSub$.complete();
     }
 
-    drop(event: CdkDragDrop<Array<{"scenarioId": ScenarioIndex, "dataset": ListItem}>>) {
+    drop(event: CdkDragDrop<Array<{ 'scenarioId': ScenarioIndex, 'dataset': ListItem }>>) {
         moveItemInArray(this.scenariosToAdd, event.previousIndex, event.currentIndex);
     }
 
@@ -181,11 +186,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.scenarios = res;
-                    this.route.params
-                        .pipe(takeUntil(this.unsubscribeSub$))
-                        .subscribe((params) => {
-                            this.load(params['id']);
-                        });
+                    this.load(this.campaignId);
                     this.initTags();
                 },
                 error: (error) => {
@@ -216,7 +217,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     private loadJiraLink() {
-        this.jiraLinkService.findByCampaignId(this.campaign.id)
+        this.jiraLinkService.findByCampaignId(this.campaignId)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (jiraId) => {
@@ -254,7 +255,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     showScenarioJiraLinks(scenario: ScenarioIndex) {
-        const modalRef = this.modalService.open(ScenarioJiraLinksModalComponent, { size: 'lg' });
+        const modalRef = this.modalService.open(ScenarioJiraLinksModalComponent, {size: 'lg'});
         modalRef.componentInstance.scenario = scenario;
         modalRef.componentInstance.jiraUrl = this.jiraUrl;
         modalRef.closed.subscribe(
@@ -300,9 +301,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     getJiraLastExecutionStatusClass(id: string) {
         const status = this.getJiraLastExecutionStatus(id);
         switch (status) {
-            case 'PASS' : return 'bg-success';
-            case 'FAIL' : return 'bg-danger';
-            default : return 'bg-secondary';
+            case 'PASS' :
+                return 'bg-success';
+            case 'FAIL' :
+                return 'bg-danger';
+            default :
+                return 'bg-secondary';
         }
     }
 
@@ -381,7 +385,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.campaign.environment = this.selectedEnvironment;
         this.campaign.parallelRun = formValue['parallelRun'];
         this.campaign.retryAuto = formValue['retryAuto'];
-        this.campaign.datasetId = (!this.datasetId || this.datasetId.trim() === "") ? null : this.datasetId
+        this.campaign.datasetId = (!this.datasetId || this.datasetId.trim() === '') ? null : this.datasetId
         const tags = formValue['campaignTags'] + '';
         this.campaign.tags = tags.length !== 0 ? tags.split(',') : [];
 
@@ -402,12 +406,18 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         if (this.campaign.scenarios) {
             for (const campaignScenario of this.campaign.scenarios) {
                 const scenarioFound = this.scenarios.find((x) => x.id === campaignScenario.scenarioId);
-                this.scenariosToAdd.push({scenarioId: scenarioFound, dataset: (campaignScenario.datasetId ? {id: campaignScenario.datasetId, text: campaignScenario.datasetId} : null)});
+                this.scenariosToAdd.push({
+                    scenarioId: scenarioFound,
+                    dataset: (campaignScenario.datasetId ? {
+                        id: campaignScenario.datasetId,
+                        text: campaignScenario.datasetId
+                    } : null)
+                });
             }
         }
     }
 
-    setCampaignScenariosIdsToAdd(scenariosToAdd: Array<{scenarioId: ScenarioIndex, dataset: ListItem}>) {
+    setCampaignScenariosIdsToAdd(scenariosToAdd: Array<{ scenarioId: ScenarioIndex, dataset: ListItem }>) {
         this.error = false;
         this.campaign.scenarios = [];
         for (const scenario of scenariosToAdd) {
@@ -418,7 +428,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                 const messageKey = scenario.dataset ? 'campaigns.edition.errors.scenarioDatasetDuplicate' : 'campaigns.edition.errors.scenarioDatasetNullDuplicate'
                 let messageParams = {
                     scenarioId: scenario.scenarioId.id,
-                    datasetId: scenario.dataset ? scenario.dataset.id : "NULL"
+                    datasetId: scenario.dataset ? scenario.dataset.id : 'NULL'
                 }
                 this.translateService.get(messageKey, messageParams).subscribe((msg: string) => {
                     this.errorMessage = msg
@@ -437,7 +447,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.refreshForPipe();
     }
 
-    removeScenario(scenario: {"scenarioId": ScenarioIndex, "dataset": ListItem}) {
+    removeScenario(scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const index = this.scenariosToAdd.findIndex(scenarioElement => scenarioElement === scenario)
         this.scenariosToAdd.splice(index, 1);
         this.refreshForPipe();
@@ -455,8 +465,13 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     private onSaveSuccess(result: Campaign) {
         this.submitted = false;
         const url = '/campaign/' + result.id + '/executions';
-        this.updateJiraLink(result.id);
-        this.router.navigateByUrl(url);
+        this.updateJiraLink(result.id).subscribe({
+            next: () => {
+                this.router.navigateByUrl(url);
+            },
+            error: (error) => {this.errorMessage = error.error}
+        });
+
     }
 
     private onSaveError(error) {
@@ -483,26 +498,21 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.datasetId = datasetId;
     }
 
-    selectDatasetScenario(dataset: ListItem, scenario: {"scenarioId": ScenarioIndex, "dataset": ListItem}) {
+    selectDatasetScenario(dataset: ListItem, scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const scenarioSelected = this.scenariosToAdd.find(scenarioElement => scenarioElement === scenario)
         scenarioSelected.dataset = dataset;
         this.refreshForPipe();
     }
 
-    deselectDatasetScenario(scenario: {"scenarioId": ScenarioIndex, "dataset": ListItem}) {
+    deselectDatasetScenario(scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const scenarioSelected = this.scenariosToAdd.find(scenarioElement => scenarioElement === scenario)
         scenarioSelected.dataset = null;
         this.refreshForPipe();
     }
 
-    private updateJiraLink(campaignId: number) {
+    private updateJiraLink(campaignId: number): Observable<JiraScenario> {
         this.jiraId = this.campaignForm.value['jiraId'];
-        this.jiraLinkService.saveForCampaign(campaignId, this.jiraId)
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe({
-                error: (error) => {
-                    this.errorMessage = error.error;
-                }
-            });
+        return this.jiraLinkService.saveForCampaign(campaignId, this.jiraId)
+            .pipe(takeUntil(this.unsubscribeSub$));
     }
 }
