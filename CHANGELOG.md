@@ -7,6 +7,13 @@
 
 # Changelog
 
+## [3.2.2](https://github.com/Enedis-OSS/chutney/tree/3.2.2)
+### 🐛 Fixed bugs:
+* fix(): fix img and link rendering on execution report by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/207
+* fix(): fix jira get/update on campaign edition by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/208
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.2.1...3.2.2
+
 ## [3.2.1](https://github.com/Enedis-OSS/chutney/tree/3.2.1)
 ### 🐛 Fixed bugs:
 * fix(ui): fix execution modal size change when selecting a dataset by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/204
