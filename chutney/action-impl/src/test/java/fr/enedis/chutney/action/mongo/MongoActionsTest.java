@@ -14,6 +14,10 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import fr.enedis.chutney.action.TestLogger;
 import fr.enedis.chutney.action.TestTarget;
 import fr.enedis.chutney.action.spi.Action;
@@ -21,10 +25,6 @@ import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.ActionExecutionResult.Status;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.tools.CloseableResource;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 import java.util.List;
 import java.util.function.Consumer;
 import org.bson.BsonDocument;
@@ -32,6 +32,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 public class MongoActionsTest {
 
@@ -137,6 +140,30 @@ public class MongoActionsTest {
         assertThat(listActionResult.status).isEqualTo(Status.Success);
         assertThat((List<String>) listActionResult.outputs.get("collectionNames")).containsExactlyInAnyOrder("lolilol");
         assertThat(logger.info).containsOnly("Found 1 collection(s)");
+    }
+
+    @Test
+    public void should_report_mongo_connection_error() {
+
+        GenericContainer<?> mongoContainer = new GenericContainer<>(DockerImageName.parse("mongo:latest"))
+            .withExposedPorts(27017)
+            .withCommand("--config /etc/mongod.conf")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/mongod.conf"), "/etc/mongod.conf")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/certs/server.pem"), "/etc/ssl/server.pem")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/certs/ca.pem"), "/etc/ssl/ca.pem");
+        mongoContainer.start();
+
+        Target mongoTarget = TestTarget.TestTargetBuilder.builder()
+            .withTargetId("mongo")
+            .withUrl("mongodb://" + mongoContainer.getHost() + ":" + mongoContainer.getFirstMappedPort())
+            .withProperty("databaseName", "local")
+            .build();
+
+        MongoListAction action = new MongoListAction(mongoTarget, logger);
+        ActionExecutionResult result = action.execute();
+        assertThat(result.status).isEqualTo(ActionExecutionResult.Status.Failure);
+        assertThat(logger.errors).isNotEmpty();
+        assertThat(logger.errors).anySatisfy(error -> assertThat(error).containsIgnoringCase("Timed out while waiting for a server that matches ReadPreferenceServerSelector"));
     }
 
     private <T extends Action> T mockDatabase(T action, MongoDatabase database) {

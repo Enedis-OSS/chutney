@@ -13,16 +13,17 @@ import static fr.enedis.chutney.action.spi.validation.Validator.getErrorsFrom;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.UpdateResult;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.tools.CloseableResource;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.result.UpdateResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,7 +97,7 @@ public class MongoUpdateAction implements Action {
             long modifiedCount = updateResult.getModifiedCount();
             logger.info("Modified in Mongo collection '" + this.collection + "': " + modifiedCount + " documents");
             return ActionExecutionResult.ok(Collections.singletonMap("modifiedCount", modifiedCount));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | MongoException e) {
             logger.error(e.getMessage());
             return ActionExecutionResult.ko();
         }

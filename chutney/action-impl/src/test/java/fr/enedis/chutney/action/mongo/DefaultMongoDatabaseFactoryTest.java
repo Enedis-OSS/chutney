@@ -8,8 +8,13 @@
 package fr.enedis.chutney.action.mongo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import com.mongodb.AuthenticationMechanism;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import fr.enedis.chutney.action.TestLogger;
 import fr.enedis.chutney.action.TestTarget;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
@@ -17,7 +22,11 @@ import fr.enedis.chutney.action.spi.injectable.Target;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
@@ -25,36 +34,85 @@ import org.testcontainers.utility.MountableFile;
 public class DefaultMongoDatabaseFactoryTest {
 
     private static final TestLogger logger = new TestLogger();
-    private static final String TRUSTSTORE_JKS;
-    private static final String KEYSTORE_JKS;
+    private static final String CLIENT_TRUSTSTORE_PATH = "/mongo/certs/client.truststore.jks";
+    private static final String CLIENT_KEYSTORE_PATH = "/mongo/certs/client.keystore.jks";
+    private static String TRUSTSTORE_JKS;
+    private static String KEYSTORE_JKS;
+    private final String STORE_PASSWORD = "server";
+    private final String DB_NAME = "local";
 
-    static {
+
+    @BeforeAll
+    static void beforeAll() {
         try {
-            TRUSTSTORE_JKS = Paths.get(DefaultMongoDatabaseFactoryTest.class.getResource("/security/truststore.jks").toURI()).toString();
-            KEYSTORE_JKS = Paths.get(DefaultMongoDatabaseFactoryTest.class.getResource("/security/server.jks").toURI()).toString();
+            TRUSTSTORE_JKS = Paths.get(DefaultMongoDatabaseFactoryTest.class.getResource(CLIENT_TRUSTSTORE_PATH).toURI()).toString();
+            KEYSTORE_JKS = Paths.get(DefaultMongoDatabaseFactoryTest.class.getResource(CLIENT_KEYSTORE_PATH).toURI()).toString();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    public void should_accept_ssl_connection_when_truststore_in_target_properties() {
-        GenericContainer mongoContainer = new GenericContainer(DockerImageName.parse("mongo:4.4.24"))
-            .withExposedPorts(27017)
-            .withCommand("--config /etc/mongod.conf")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("/security/mongod.conf"), "/etc/mongod.conf")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("/security/server.pem"), "/etc/ssl/server.pem");
-        mongoContainer.start();
-
-
-        final Target mongoTarget = TestTarget.TestTargetBuilder.builder()
+    void should_configure_mongo_client_settings_using_target_properties() {
+        Target target = TestTarget.TestTargetBuilder.builder()
             .withTargetId("mongo")
-            .withUrl("mongodb://" + mongoContainer.getHost() + ":" + mongoContainer.getMappedPort(27017))
-            .withProperty("databaseName", "local")
+            .withUrl("mongodb://localhost:27017")
+            .withProperty("databaseName", DB_NAME)
+            .withProperty("username", "username")
+            .withProperty("password", "password")
             .withProperty("keyStore", KEYSTORE_JKS)
             .withProperty("trustStore", TRUSTSTORE_JKS)
-            .withProperty("trustStorePassword", "truststore")
-            .withProperty("keyStorePassword", "server")
+            .withProperty("trustStorePassword", STORE_PASSWORD)
+            .withProperty("keyStorePassword", STORE_PASSWORD)
+            .withProperty("datasource.authMechanism", AuthenticationMechanism.SCRAM_SHA_1.getMechanismName())
+            .withProperty("datasource.appName", "mongoFactoryTest")
+            .withProperty("datasource.proxyHost", "testProxyHost")
+            .withProperty("datasource.proxyPort", "2222")
+            .build();
+        DefaultMongoDatabaseFactory factory = new DefaultMongoDatabaseFactory();
+
+        MongoClient mockClient = mock(MongoClient.class);
+        try (MockedStatic<MongoClients> mocked = Mockito.mockStatic(MongoClients.class)) {
+            ArgumentCaptor<MongoClientSettings> settingsCap = ArgumentCaptor.forClass(MongoClientSettings.class);
+            mocked.when(() -> MongoClients.create(settingsCap.capture())).thenReturn(mockClient);
+
+            try (var ignored = factory.create(target)) {
+                MongoClientSettings settings = settingsCap.getValue();
+                assertThat(settings.getApplicationName()).isEqualTo("mongoFactoryTest");
+                assertThat(settings.getSslSettings().isEnabled()).isTrue();
+                assertThat(settings.getCredential()).isNotNull();
+                assertThat(settings.getCredential().getAuthenticationMechanism()).isEqualTo(AuthenticationMechanism.SCRAM_SHA_1);
+                assertThat(settings.getCredential().getUserName()).isEqualTo("username");
+                assertThat(settings.getCredential().getPassword()).isEqualTo("password".toCharArray());
+                assertThat(settings.getSocketSettings().getProxySettings()).isNotNull();
+                assertThat(settings.getSocketSettings().getProxySettings().getHost()).isEqualTo("testProxyHost");
+                assertThat(settings.getSocketSettings().getProxySettings().getPort()).isEqualTo(2222);
+                verify(mockClient).getDatabase(DB_NAME);
+            }
+        }
+    }
+
+    @Test
+    public void should_connect_using_x509_authentication() {
+        GenericContainer<?> mongoContainer = new GenericContainer<>(DockerImageName.parse("mongo:latest"))
+            .withExposedPorts(27017)
+            .withCommand("--config /etc/mongod.conf")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/mongod.conf"), "/etc/mongod.conf")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/certs/server.pem"), "/etc/ssl/server.pem")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/certs/ca.pem"), "/etc/ssl/ca.pem")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/create-x509-user.sh"), "/docker-entrypoint-initdb.d/create-x509-user.sh");
+
+        mongoContainer.start();
+
+        Target mongoTarget = TestTarget.TestTargetBuilder.builder()
+            .withTargetId("mongo")
+            .withUrl("mongodb://" + mongoContainer.getHost() + ":" + mongoContainer.getMappedPort(27017))
+            .withProperty("databaseName", DB_NAME)
+            .withProperty("datasource.authMechanism", AuthenticationMechanism.MONGODB_X509.getMechanismName())
+            .withProperty("keyStore", KEYSTORE_JKS)
+            .withProperty("trustStore", TRUSTSTORE_JKS)
+            .withProperty("trustStorePassword", STORE_PASSWORD)
+            .withProperty("keyStorePassword", STORE_PASSWORD)
             .build();
 
         MongoListAction action = new MongoListAction(mongoTarget, logger);
@@ -65,24 +123,5 @@ public class DefaultMongoDatabaseFactoryTest {
             .extractingByKey("collectionNames")
             .asInstanceOf(InstanceOfAssertFactories.list(String.class))
             .isNotEmpty();
-    }
-
-    @Test
-    public void should_reject_ssl_connection_when_no_truststore_in_target() {
-
-        GenericContainer mongoContainer = new GenericContainer(DockerImageName.parse("mongo:4.4.24"))
-            .withExposedPorts(27017)
-            .withCommand("--config /etc/mongod.conf")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("/security/mongod.conf"), "/etc/mongod.conf")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("/security/server.pem"), "/etc/ssl/server.pem");
-        mongoContainer.start();
-        final Target mongoTarget = TestTarget.TestTargetBuilder.builder()
-            .withTargetId("mongo")
-            .withUrl("mongodb://" + mongoContainer.getHost() + ":" + mongoContainer.getFirstMappedPort())
-            .withProperty("databaseName", "local")
-            .build();
-
-        MongoListAction action = new MongoListAction(mongoTarget, logger);
-        assertThatThrownBy(action::execute);
     }
 }
