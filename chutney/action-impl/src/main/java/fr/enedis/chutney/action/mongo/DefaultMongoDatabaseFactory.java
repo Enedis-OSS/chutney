@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DefaultMongoDatabaseFactory implements MongoDatabaseFactory {
 
     private static final String DATABASE_NAME_PROPERTY = "databaseName";
-    private static final String DATASOURCE_PREFIX = "datasource.";
+    private static final String DATASOURCE_PREFIX = "connectionOptions.";
 
     public CloseableResource<MongoDatabase> create(Target target) throws IllegalArgumentException {
         String databaseName = target.property(DATABASE_NAME_PROPERTY).orElse("");

@@ -64,10 +64,10 @@ public class DefaultMongoDatabaseFactoryTest {
             .withProperty("trustStore", TRUSTSTORE_JKS)
             .withProperty("trustStorePassword", STORE_PASSWORD)
             .withProperty("keyStorePassword", STORE_PASSWORD)
-            .withProperty("datasource.authMechanism", AuthenticationMechanism.SCRAM_SHA_1.getMechanismName())
-            .withProperty("datasource.appName", "mongoFactoryTest")
-            .withProperty("datasource.proxyHost", "testProxyHost")
-            .withProperty("datasource.proxyPort", "2222")
+            .withProperty("connectionOptions.authMechanism", AuthenticationMechanism.SCRAM_SHA_1.getMechanismName())
+            .withProperty("connectionOptions.appName", "mongoFactoryTest")
+            .withProperty("connectionOptions.proxyHost", "testProxyHost")
+            .withProperty("connectionOptions.proxyPort", "2222")
             .build();
         DefaultMongoDatabaseFactory factory = new DefaultMongoDatabaseFactory();
 
@@ -108,7 +108,7 @@ public class DefaultMongoDatabaseFactoryTest {
             .withTargetId("mongo")
             .withUrl("mongodb://" + mongoContainer.getHost() + ":" + mongoContainer.getMappedPort(27017))
             .withProperty("databaseName", DB_NAME)
-            .withProperty("datasource.authMechanism", AuthenticationMechanism.MONGODB_X509.getMechanismName())
+            .withProperty("connectionOptions.authMechanism", AuthenticationMechanism.MONGODB_X509.getMechanismName())
             .withProperty("keyStore", KEYSTORE_JKS)
             .withProperty("trustStore", TRUSTSTORE_JKS)
             .withProperty("trustStorePassword", STORE_PASSWORD)
