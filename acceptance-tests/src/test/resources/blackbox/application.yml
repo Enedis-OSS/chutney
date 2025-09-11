@@ -68,6 +68,10 @@ spring:
       - db-sqlite
 
 chutney:
+  auth:
+    jwt:
+      issuer: chutney
+      expiresIn: 240
   configuration-folder: .chutney/conf
   environment:
     configuration-folder: ${chutney.configuration-folder}/environment

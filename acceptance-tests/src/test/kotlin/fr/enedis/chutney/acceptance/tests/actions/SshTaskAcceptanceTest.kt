@@ -12,29 +12,31 @@ import fr.enedis.chutney.acceptance.common.createExecuteAndCheckReportStatusOf
 import fr.enedis.chutney.acceptance.common.validateSshCommandExitCode
 import fr.enedis.chutney.kotlin.dsl.*
 
-fun `SSH - Server is unreachable`(): ChutneyScenario {
-  return createExecuteAndCheckReportStatusOf(
-    environment = "SSH_ENV",
-    scenario =
-      Scenario(title = "SSH - Server is unreachable") {
-        When("Execute commands") {
-          SshClientAction(
-            target = "SSH_INTERN_SERVER_DIRECT",
-            channel = SSH_CLIENT_CHANNEL.COMMAND,
-            commands = listOf("echo test")
-          )
-        }
-      },
-    reportStatusSuccess = false
-  )
-}
-
-fun `SSH - Execute shell on server`(): List<ChutneyScenario> {
-  return listOf("SSH_JUMP_SERVER", "SSH_INTERN_SERVER").mapIndexed { idx, target ->
+fun `SSH - Server is unreachable`(): List<ChutneyScenario> {
+  return listOf("SSH_INTERN_SERVER_DIRECT", "SSH_INTERN_JUMP_SERVER_DIRECT", "SSH_INTERN_SERVER_BIS_DIRECT").map {
     createExecuteAndCheckReportStatusOf(
       environment = "SSH_ENV",
       scenario =
-        Scenario(title = "SSH - Execute shell on server${if (idx == 1) " via proxy" else ""}") {
+        Scenario(title = "SSH - Server is unreachable") {
+          When("Execute commands") {
+            SshClientAction(
+              target = it,
+              channel = SSH_CLIENT_CHANNEL.COMMAND,
+              commands = listOf("echo test")
+            )
+          }
+        },
+      reportStatusSuccess = false
+    )
+  }
+}
+
+fun `SSH - Execute shell on server`(): List<ChutneyScenario> {
+  return listOf("SSH_JUMP_SERVER", "SSH_INTERN_SERVER", "SSH_INTERN_SERVER_BIS").mapIndexed { idx, target ->
+    createExecuteAndCheckReportStatusOf(
+      environment = "SSH_ENV",
+      scenario =
+        Scenario(title = "SSH - Execute shell on server${if (idx == 1) " via proxy" else if (idx == 2) " via double proxy" else ""}") {
           When("open a shell and execute some commands") {
             SshClientAction(
               target = target,
@@ -51,7 +53,7 @@ fun `SSH - Execute shell on server`(): List<ChutneyScenario> {
                 "shellOutLines" to "results.get(0).stdout.lines().toList()".spEL()
               ),
               validations = mapOf(
-                "user-check" to "shellOutLines.contains('${if (idx == 1) "internuser" else "jumpuser"}')".spEL(),
+                "user-check" to "shellOutLines.contains('${if (idx == 0) { "jumpuser" } else if (idx == 1) { "internuser" } else "internuserbis"}')".spEL(),
                 "version-check" to "shellOutLines.contains('12.7')".spEL()
               )
             )
@@ -62,10 +64,10 @@ fun `SSH - Execute shell on server`(): List<ChutneyScenario> {
 }
 
 fun `SSH - Execute commands on server`(): List<ChutneyScenario> {
-  return listOf("SSH_JUMP_SERVER", "SSH_INTERN_SERVER").mapIndexed { idx, target ->
+  return listOf("SSH_JUMP_SERVER", "SSH_INTERN_SERVER", "SSH_INTERN_SERVER_BIS").mapIndexed { idx, target ->
     createExecuteAndCheckReportStatusOf(
       environment = "SSH_ENV",
-      scenario = Scenario(title = "SSH - Execute commands on server${if (idx == 1) " via proxy" else ""}") {
+      scenario = Scenario(title = "SSH - Execute commands on server${if (idx == 1) " via proxy" else if (idx == 2) " via double proxy" else ""}") {
         When("Execute commands") {
           SshClientAction(
             target = target,
@@ -93,7 +95,7 @@ fun `SSH - Execute commands on server`(): List<ChutneyScenario> {
             sshCommandELVarName = "firstCmdResults",
             expectedCommand = "whoami",
             expectedTimeout = "500 ms",
-            expectedStdout = "${if (idx == 1) "internuser" else "jumpuser"}\n",
+            expectedStdout = "${if (idx == 0) { "jumpuser" } else if (idx == 1) { "internuser" } else "internuserbis"}\n",
             strategy = SoftAssertStrategy()
           )
           assertSshCommand(

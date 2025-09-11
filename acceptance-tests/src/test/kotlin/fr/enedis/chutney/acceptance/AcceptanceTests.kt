@@ -7,6 +7,9 @@
 
 package fr.enedis.chutney.acceptance
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.paranamer.ParanamerModule
 import fr.enedis.chutney.acceptance.tests.*
 import fr.enedis.chutney.acceptance.tests.actions.*
 import fr.enedis.chutney.acceptance.tests.edition.*
@@ -21,9 +24,6 @@ import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
 import fr.enedis.chutney.tools.Entry
 import fr.enedis.chutney.tools.SocketUtils
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.paranamer.ParanamerModule
 import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.api.*
 import org.testcontainers.containers.ComposeContainer
@@ -329,12 +329,13 @@ class AcceptanceTests {
     }
   }
 
-  @Disabled
+  //@Disabled
   @Nested
   @TestInstance(TestInstance.Lifecycle.PER_CLASS)
   inner class SSHTests {
     private var sshContainer: ComposeContainer? = null
     private val jumpServerUrl = "ssh://jump-host"
+    private val jumpServerBisUrl = "ssh://intern-jump-host"
     private val sshEnv = EnvironmentDto(
       "SSH_ENV", "The SSH tests environment", listOf(
         TargetDto(
@@ -355,10 +356,37 @@ class AcceptanceTests {
           )
         ),
         TargetDto(
+          "SSH_INTERN_SERVER_BIS", "ssh://intern-host-bis",
+          setOf(
+            Entry("user", "internuserbis"),
+            Entry("privateKey", "/config/env/ssh/client-intern-bis-id_edcsa.key"),
+            Entry("proxy_1", jumpServerUrl),
+            Entry("proxyUser_1", "jumpuser"),
+            Entry("proxyPrivateKey_1", "/config/env/ssh/client-jump-id_ecdsa.key"),
+            Entry("proxyPrivateKey_2", "/config/env/ssh/client-intern-jump-id_ecdsa.key"),
+            Entry("proxy_2", jumpServerBisUrl),
+            Entry("proxyUser_2", "jumpuserbis")
+          )
+        ),
+        TargetDto(
           "SSH_INTERN_SERVER_DIRECT", "ssh://intern-host",
           setOf(
             Entry("user", "internuser"),
             Entry("privateKey", "/config/env/ssh/client-intern-id_edcsa.key")
+          )
+        ),
+        TargetDto(
+          "SSH_INTERN_JUMP_SERVER_DIRECT", jumpServerBisUrl,
+          setOf(
+            Entry("proxyUser_1", "jumpuserbis"),
+            Entry("proxyPrivateKey_1", "/config/env/ssh/client-intern-jump-id_ecdsa.key")
+          )
+        ),
+        TargetDto(
+          "SSH_INTERN_SERVER_BIS_DIRECT", "ssh://intern-host-bis",
+          setOf(
+            Entry("user", "internuserbis"),
+            Entry("privateKey", "/config/env/ssh/client-intern-bis-id_edcsa.key"),
           )
         )
       )
@@ -370,6 +398,8 @@ class AcceptanceTests {
         ComposeContainer(File("src/test/resources/blackbox/env/ssh/ssh-env-compose.yml"))
           .waitingFor("jump-host", Wait.forLogMessage(".*Server listening on.*", 1))
           .waitingFor("intern-host", Wait.forLogMessage(".*Server listening on.*", 1))
+          .waitingFor("intern-jump-host", Wait.forLogMessage(".*Server listening on.*", 1))
+          .waitingFor("intern-host-bis", Wait.forLogMessage(".*Server listening on.*", 1))
       sshContainer!!.start()
 
       // Post environment for SSH tests

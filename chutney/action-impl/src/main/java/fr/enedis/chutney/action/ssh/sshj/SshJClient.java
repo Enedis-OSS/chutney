@@ -8,7 +8,6 @@
 package fr.enedis.chutney.action.ssh.sshj;
 
 import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -19,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import net.schmizz.concurrent.Event;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
@@ -35,13 +34,13 @@ import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 public class SshJClient implements SshClient {
 
     private final Connection connection;
-    private final Connection proxyConnection;
+    private final List<Connection> proxyConnections;
     private final Logger logger;
     private final boolean shell;
 
-    public SshJClient(Connection connection, Connection proxyConnection, boolean shell, Logger logger) {
+    public SshJClient(Connection connection, List<Connection> proxyConnections, boolean shell, Logger logger) {
         this.connection = connection;
-        this.proxyConnection = proxyConnection;
+        this.proxyConnections = proxyConnections;
         this.logger = logger;
         this.shell = shell;
     }
@@ -49,49 +48,60 @@ public class SshJClient implements SshClient {
     @Override
     public CommandResult execute(Command command) throws IOException {
         SSHClient sshClient = new SSHClient();
-        Optional<SSHClient> tunnel = connect(sshClient);
+        List<SSHClient> tunnel = connect(sshClient);
         try {
             authenticate(sshClient, connection);
             return executeCommand(sshClient, command);
         } finally {
             sshClient.disconnect();
-            if (tunnel.isPresent()) {
-                tunnel.get().disconnect();
-            }
+            tunnel.reversed().forEach(t -> {
+                try {
+                    t.disconnect();
+                } catch (IOException e) {
+                    logger.error("Error disconnecting tunnel : " + e.getMessage());
+                }
+            });
         }
     }
 
-    private Optional<SSHClient> connect(SSHClient client) throws IOException {
+    private List<SSHClient> connect(SSHClient client) throws IOException {
         client.addHostKeyVerifier(alwaysVerified()); // TODO : Add best way host key verifier to really check.
-        Optional<SSHClient> tunnel = tunnel();
-        if (tunnel.isPresent()) {
-            client.connectVia(tunnel.get().newDirectConnection(connection.serverHost, connection.serverPort));
+        List<SSHClient> tunnel = tunnel();
+        if (!tunnel.isEmpty()) {
+            client.connectVia(tunnel.getLast().newDirectConnection(connection.serverHost, connection.serverPort));
         } else {
             client.connect(connection.serverHost, connection.serverPort);
         }
         return tunnel;
     }
 
-    private Optional<SSHClient> tunnel() {
-        return ofNullable(proxyConnection).map(pc -> {
+    private List<SSHClient> tunnel() {
+        List<SSHClient> result = new ArrayList<>();
+        for (int i = 0; i < proxyConnections.size(); i++) {
+            Connection pc = proxyConnections.get(i);
             SSHClient sshClient = new SSHClient();
             try {
                 sshClient.addHostKeyVerifier(alwaysVerified()); // TODO : Add best way host key verifier to really check.
-                sshClient.connect(pc.serverHost, pc.serverPort);
+                if (i == 0) {
+                    sshClient.connect(pc.serverHost, pc.serverPort);
+                } else {
+                    sshClient.connectVia(result.getLast().newDirectConnection(pc.serverHost, pc.serverPort));
+                }
                 authenticate(sshClient, pc);
             } catch (IOException e) {
-                logger.error("Error in proxy setup : " + e.getMessage());
+                logger.error("Error in tunnel setup : " + e.getMessage());
             }
-            return sshClient;
-        });
+            result.add(sshClient);
+        }
+        return result;
     }
 
     private void authenticate(SSHClient client, Connection connection) throws IOException {
         if (isBlank(connection.privateKey)) {
-            logger.info("Authentication via username/password as " + connection.username);
+            logger.info("Authentication on " + connection.serverHost + " via username/password as " + connection.username);
             loginWithPassword(client, connection.username, connection.password);
         } else {
-            logger.info("Authentication via private key as " + connection.username);
+            logger.info("Authentication on " + connection.serverHost + " via private key as " + connection.username);
             loginWithPrivateKey(client, connection.username, connection.privateKey, connection.passphrase);
         }
     }
