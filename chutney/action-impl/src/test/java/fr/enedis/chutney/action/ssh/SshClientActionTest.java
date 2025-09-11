@@ -69,7 +69,7 @@ public class SshClientActionTest {
 
         // Then
         assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
-        assertThat(logger.info.getFirst()).startsWith("Authentication via username/password as ");
+        assertThat(logger.info.getFirst()).startsWith("Authentication on " + fakeSshServer.getHost() + " via username/password as ");
     }
 
     @ParameterizedTest
@@ -88,7 +88,7 @@ public class SshClientActionTest {
 
         // Then
         assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
-        assertThat(logger.info.getFirst()).startsWith("Authentication via private key as ");
+        assertThat(logger.info.getFirst()).startsWith("Authentication on " + fakeSshServer.getHost() + " via private key as ");
     }
 
     public static List<Arguments> usernamePrivateKeyTargets() {
@@ -169,10 +169,48 @@ public class SshClientActionTest {
 
             // Then
             assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
-            assertThat(logger.info.getFirst()).startsWith("Authentication via username/password as proxySshUser");
-            assertThat(logger.info.get(1)).startsWith("Authentication via username/password as mockssh");
+            assertThat(logger.info.getFirst()).startsWith("Authentication on " + proxy.getHost() + " via username/password as proxySshUser");
+            assertThat(logger.info.get(1)).startsWith("Authentication on " + fakeSshServer.getHost() + " via username/password as mockssh");
         } finally {
             proxy.stop();
+        }
+    }
+
+    @Test
+    public void should_succeed_to_execute_a_command_with_password_via_proxies() throws IOException {
+        // Given
+        SshServer proxy = FakeServerSsh.buildLocalProxy("proxySshUser", "proxySshPassword");
+        String proxyUrl = "ssh://" + proxy.getHost() + ":" + proxy.getPort();
+        SshServer proxyBis = FakeServerSsh.buildLocalProxy("proxySshBisUser", "proxySshBisPassword");
+        String proxyBisUrl = "ssh://" + proxyBis.getHost() + ":" + proxyBis.getPort();
+        try {
+            proxy.start();
+            proxyBis.start();
+
+            Target targetMock = buildTargetWithPassword(
+                fakeSshServer,
+                List.of(proxyUrl, proxyBisUrl),
+                List.of("proxySshUser", "proxySshBisUser"),
+                List.of("proxySshPassword", "proxySshBisPassword")
+            );
+            TestLogger logger = new TestLogger();
+            List<CommandResult> expectedResults = new ArrayList<>();
+            expectedResults.add(new CommandResult(new Command("echo Hello"), 0, "Hello\n", ""));
+
+            List<Object> commands = singletonList("echo Hello");
+
+            // When
+            SshClientAction action = new SshClientAction(targetMock, logger, commands, null);
+            ActionExecutionResult actualResult = action.execute();
+
+            // Then
+            assertThat(actualResult.outputs.get("results")).usingRecursiveComparison().isEqualTo(expectedResults);
+            assertThat(logger.info.getFirst()).startsWith("Authentication on " + proxy.getHost() + " via username/password as proxySshUser");
+            assertThat(logger.info.get(1)).startsWith("Authentication on " + proxyBis.getHost() + " via username/password as proxySshBisUser");
+            assertThat(logger.info.get(2)).startsWith("Authentication on " + fakeSshServer.getHost() + " via username/password as mockssh");
+        } finally {
+            proxy.stop();
+            proxyBis.stop();
         }
     }
 }

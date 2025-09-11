@@ -37,8 +37,30 @@ services:
       SSH_SHELL: "/bin/bash"
       SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADjHKpgLYX9tIClPRq+ZMkFSlRAGbS9Bhb+hQL0jzhyR7XqQiu8lLpQNCs70h6afqQlAfd96Eli3PLHUyp0ABdgiQFVeG0GLevHhisLG/b5HprIIF9+BMIb+Hn+pcaM0EgeR/BzI/y+Ff+Kg6TqJbTypw/IsBd6Wz3OCRdmBKcEfp5LqA=="
 
+  intern-jump-host:
+    image: threatpatrols/sshjumphost:latest
+    restart: unless-stopped
+    networks:
+      - ssh_network
+      - ssh_network_bis
+    environment:
+      SSH_USERNAME: "jumpuserbis"
+      SSH_SHELL: "/bin/bash"
+      SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAUzzGrOlNbNpyDX8so5UBe7bc2HZwG6HfiOHnO3QcTuzTrB1JeNWGYJDCYDYq+Z1ur1MQ316LdP36BXWX184ds="
+
+  intern-host-bis:
+    image: threatpatrols/sshjumphost:latest
+    restart: unless-stopped
+    networks:
+      - ssh_network_bis
+    environment:
+      SSH_USERNAME: "internuserbis"
+      SSH_SHELL: "/bin/bash"
+      SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPpu2W0IV/YKAB6HM27PAYSAohNfUCgBqgqyacgYiseF+bpuzcm4DKQYd03J8K6D2g1Wrdx1IyA12MQ2SG1V2D4="
+
 networks:
   chutney_network:
     name: chutney_network
     external: true
   ssh_network:
+  ssh_network_bis:
