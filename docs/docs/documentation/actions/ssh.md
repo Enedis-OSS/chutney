@@ -54,6 +54,8 @@
     8. Proxy private key to use
     9. Proxy private key passphrase to use
 
+    Note that multiple proxy jumps could be setted by using number suffixes for all proxy properties (5 to 9 above), for example : proxy_1, proxyUser_1, ..., proxy_2, proxyUser_2 ...
+
 # SCP
 
 !!! info "[Client implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/ssh/scp/ScpClientImpl.java){:target="_blank"}"
