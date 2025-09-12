@@ -6,6 +6,12 @@
 #
 
 #!/usr/bin/env bash
+# One shot script
+# To be manually executed
+# Minimal cert generation for MongoDB tests
+# Keeps ONLY: server.pem, ca.pem, client.keystore.jks, client.truststore.jks
+# Deletes all intermediate/unwanted files, echoing each deletion.
+
 set -euo pipefail
 
 # ================= Config (override via env) =================
@@ -38,13 +44,16 @@ set -euo pipefail
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
 need openssl
+need keytool   # Required to produce JKS outputs
 
 mkdir -p "$OUT_DIR"
 cd "$OUT_DIR"
 
 echo ">>> Cleaning previous artifacts…"
-rm -f ca.{key,pem,srl} server.{key,csr,crt,pem,cnf,srl} client.{key,csr,crt,pem,cnf,srl} \
-      client.keystore.p12 client.keystore.jks client.truststore.jks
+rm -f ca.{key,pem,srl} \
+      server.{key,csr,crt,pem,cnf,srl} \
+      client.{key,csr,crt,pem,cnf,srl} \
+      client.keystore.{p12,jks} client.truststore.jks
 
 # ---------- 1) Root CA ----------
 echo ">>> Generating CA…"
@@ -54,7 +63,6 @@ openssl req -x509 -new -nodes -key ca.key -sha256 -days "$DAYS_CA" \
   -addext "basicConstraints=critical,CA:TRUE" \
   -addext "keyUsage=critical,keyCertSign,cRLSign" \
   -out ca.pem
-chmod 600 ca.key
 openssl x509 -in ca.pem -noout -text | grep -q "CA:TRUE" || { echo "CA not marked as CA:TRUE"; exit 1; }
 
 # ---------- 2) Server cert ----------
@@ -93,15 +101,15 @@ echo ">>> Signing server certificate…"
 openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial \
   -out server.crt -days "$DAYS_LEAF" -sha256 -extfile server.cnf -extensions v3_req
 
-# Reliable RSA check: compare modulus (not DER SPKI)
+# Check modulus match
 SRV_KEY_MD5=$(openssl rsa  -in server.key  -noout -modulus | openssl md5 | awk '{print $2}')
 SRV_CRT_MD5=$(openssl x509 -in server.crt -noout -modulus | openssl md5 | awk '{print $2}')
 [[ "$SRV_KEY_MD5" == "$SRV_CRT_MD5" ]] || { echo "ERROR: server cert/key modulus mismatch"; exit 1; }
 
+# Build server.pem (cert + key) for MongoDB's --tlsCertificateKeyFile
 cat server.crt server.key > server.pem
-chmod 600 server.key server.pem
 
-# ---------- 3) Client cert ----------
+# ---------- 3) Client cert (for JKS keystore) ----------
 cat > client.cnf <<EOF
 [ req ]
 default_bits       = 4096
@@ -130,18 +138,15 @@ echo ">>> Signing client certificate…"
 openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial \
   -out client.crt -days "$DAYS_LEAF" -sha256 -extfile client.cnf -extensions v3_req
 
-# Reliable RSA check: compare modulus
+# Check modulus match
 CLI_KEY_MD5=$(openssl rsa  -in client.key  -noout -modulus | openssl md5 | awk '{print $2}')
 CLI_CRT_MD5=$(openssl x509 -in client.crt -noout -modulus | openssl md5 | awk '{print $2}')
 [[ "$CLI_KEY_MD5" == "$CLI_CRT_MD5" ]] || { echo "ERROR: client cert/key modulus mismatch"; exit 1; }
 
-cat client.crt client.key > client.pem
-chmod 600 client.key client.pem
-
-# ---------- 4) Build client keystore/truststore ----------
+# ---------- 4) Build client keystore/truststore (JKS only) ----------
 echo ">>> Building client PKCS#12 and JKS keystores/truststore…"
 
-# PKCS#12 (keystore). Try with chain; if OpenSSL refuses, fall back without chain.
+# Try exporting PKCS#12 WITH chain; if that fails (OpenSSL variants), retry WITHOUT chain
 if ! openssl pkcs12 -export \
   -in client.crt -inkey client.key \
   -name "$ALIAS_CLIENT" \
@@ -156,40 +161,68 @@ if ! openssl pkcs12 -export \
     -passout pass:"$KEYSTORE_PASS"
 fi
 
-# If keytool exists, create JKS keystore/truststore too
-if command -v keytool >/dev/null 2>&1; then
-  keytool -importkeystore \
-    -srckeystore client.keystore.p12 \
-    -srcstoretype PKCS12 \
-    -srcstorepass "$KEYSTORE_PASS" \
-    -destkeystore client.keystore.jks \
-    -deststoretype JKS \
-    -deststorepass "$KEYSTORE_PASS" \
-    -noprompt
+# Convert to JKS keystore
+keytool -importkeystore \
+  -srckeystore client.keystore.p12 \
+  -srcstoretype PKCS12 \
+  -srcstorepass "$KEYSTORE_PASS" \
+  -destkeystore client.keystore.jks \
+  -deststoretype JKS \
+  -deststorepass "$KEYSTORE_PASS" \
+  -noprompt
 
-  # Truststore with CA
-  keytool -importcert \
-    -alias "$ALIAS_CA" \
-    -file ca.pem \
-    -keystore client.truststore.jks \
-    -storepass "$KEYSTORE_PASS" \
-    -noprompt
+# Truststore with CA
+keytool -importcert \
+  -alias "$ALIAS_CA" \
+  -file ca.pem \
+  -keystore client.truststore.jks \
+  -storepass "$KEYSTORE_PASS" \
+  -noprompt
 
-  echo ">>> JKS contents (brief):"
-  keytool -list -keystore client.keystore.jks -storepass "$KEYSTORE_PASS" | sed -n '1,40p' || true
-  keytool -list -keystore client.truststore.jks -storepass "$KEYSTORE_PASS" | sed -n '1,40p' || true
-else
-  echo "!!! keytool not found. Skipping JKS generation. You can use client.keystore.p12 directly."
-fi
+echo ">>> JKS contents (brief):"
+keytool -list -keystore client.keystore.jks -storepass "$KEYSTORE_PASS" | sed -n '1,40p' || true
+keytool -list -keystore client.truststore.jks -storepass "$KEYSTORE_PASS" | sed -n '1,40p' || true
 
-# ---------- 5) Summary ----------
-echo
-echo "=== SUCCESS === Generated in: $(pwd)"
-ls -l
-
+# ---------- 5) Show Client DN BEFORE cleanup ----------
 echo
 echo "Client DN (use as \$external user):"
 openssl x509 -in client.crt -noout -subject -nameopt RFC2253 | sed 's/^subject= //'
+
+# ---------- 6) Cleanup (simple loop; echo each deletion) ----------
+echo
+echo ">>> Cleaning up intermediates and unwanted files…"
+
+# Only list files you want to remove here (keep-set is implied by omission)
+all_candidates=(
+  ca.key ca.srl
+  server.key server.csr server.crt server.cnf server.srl
+  client.key client.csr client.crt client.cnf client.srl
+  client.keystore.p12
+  client.pem
+  tmp.* *.old
+)
+
+for f in "${all_candidates[@]}"; do
+  for path in $f; do
+    if [ -e "$path" ]; then
+      echo "Deleting $path"
+      rm -f "$path"
+    fi
+  done
+done
+
+# ---------- 7) Summary ----------
+echo
+echo "=== SUCCESS === Generated in: $(pwd)"
+ls -l server.pem ca.pem client.keystore.jks client.truststore.jks || true
+
+echo
+echo "MongoDB server flags reminder:"
+cat <<'EOT'
+  mongod --tlsMode requireTLS \
+    --tlsCertificateKeyFile /path/server.pem \
+    --tlsCAFile /path/ca.pem
+EOT
 
 echo
 echo "Java example (system properties):"
@@ -200,10 +233,3 @@ cat <<EOT
   -Djavax.net.ssl.trustStorePassword=$KEYSTORE_PASS
 EOT
 
-echo
-echo "MongoDB server flags reminder:"
-cat <<'EOT'
-  mongod --tlsMode requireTLS \
-    --tlsCertificateKeyFile /path/server.pem \
-    --tlsCAFile /path/ca.pem
-EOT

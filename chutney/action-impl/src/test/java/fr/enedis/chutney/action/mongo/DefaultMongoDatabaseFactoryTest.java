@@ -100,7 +100,7 @@ public class DefaultMongoDatabaseFactoryTest {
             .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/mongod.conf"), "/etc/mongod.conf")
             .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/certs/server.pem"), "/etc/ssl/server.pem")
             .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/certs/ca.pem"), "/etc/ssl/ca.pem")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/create-x509-user.sh"), "/docker-entrypoint-initdb.d/create-x509-user.sh");
+            .withCopyFileToContainer(MountableFile.forClasspathResource("/mongo/init-users.sh"), "/docker-entrypoint-initdb.d/init-users.sh");
 
         mongoContainer.start();
 
