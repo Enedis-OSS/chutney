@@ -12,14 +12,15 @@ import static fr.enedis.chutney.action.spi.validation.ActionValidatorsUtils.notB
 import static fr.enedis.chutney.action.spi.validation.Validator.getErrorsFrom;
 import static java.util.Optional.ofNullable;
 
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.tools.CloseableResource;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +71,7 @@ public class MongoFindAction implements Action {
             documents.iterator().forEachRemaining(documentList::add);
             logger.info("Found " + documentList.size() + " document(s)");
             return ActionExecutionResult.ok(Collections.singletonMap("documents", documentList));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | MongoException e) {
             logger.error(e.getMessage());
             return ActionExecutionResult.ko();
         }

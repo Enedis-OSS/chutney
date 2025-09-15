@@ -11,13 +11,14 @@ import static fr.enedis.chutney.action.mongo.MongoActionValidatorsUtils.mongoTar
 import static fr.enedis.chutney.action.spi.validation.ActionValidatorsUtils.notBlankStringValidation;
 import static fr.enedis.chutney.action.spi.validation.Validator.getErrorsFrom;
 
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoDatabase;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.tools.CloseableResource;
-import com.mongodb.client.MongoDatabase;
 import java.util.Collections;
 import java.util.List;
 import org.bson.BsonDocument;
@@ -55,7 +56,7 @@ public class MongoCountAction implements Action {
             final long count = database.getResource().getCollection(collection).countDocuments(BsonDocument.parse(query));
             logger.info("Found " + count + " objects matching query:\n\t" + query.replace("\n", "\n\t"));
             return ActionExecutionResult.ok(Collections.singletonMap("count", count));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | MongoException e) {
             logger.error(e.getMessage());
             return ActionExecutionResult.ko();
         }

@@ -11,14 +11,15 @@ import static fr.enedis.chutney.action.mongo.MongoActionValidatorsUtils.mongoTar
 import static fr.enedis.chutney.action.spi.validation.ActionValidatorsUtils.notBlankStringValidation;
 import static fr.enedis.chutney.action.spi.validation.Validator.getErrorsFrom;
 
+import com.google.common.base.Ascii;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoDatabase;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.tools.CloseableResource;
-import com.google.common.base.Ascii;
-import com.mongodb.client.MongoDatabase;
 import java.util.List;
 import org.bson.Document;
 
@@ -58,7 +59,7 @@ public class MongoInsertAction implements Action {
                     Ascii.truncate(document.replace("\n", "\n\t"), 50, "...")
             );
             return ActionExecutionResult.ok();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | MongoException e) {
             logger.error(e.getMessage());
             return ActionExecutionResult.ko();
         }

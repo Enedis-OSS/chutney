@@ -15,22 +15,44 @@
     - [Update](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoUpdateAction.java){:target="_blank"}
 
 !!! important "Target Configuration"
-    For all actions, the target should have a property `databaseName`
+    For all actions, the target should have a property `databaseName`.  
+    Mongo connection string [options](https://www.mongodb.com/docs/manual/reference/connection-string-options/){:target="_blank"} must be prefixed with `connectionOptions.`
 
-    ```json title="Mongo target example"
-    {
-        "name": "mongo_target",
-        "url": "mongo://my.mongo.base:27017",
-        "properties": {
-            "databaseName": "myDatabaseName",
-            "username": "myUsername", // (1)
-            "password": "myPassword" // (2)
+    === "basic auth example"
+        ```json
+        {
+            "name": "mongo_target",
+            "url": "mongo://my.mongo.base:27017",
+            "properties": {
+                "databaseName": "myDatabaseName",
+                "username": "myUsername", // (1)
+                "password": "myPassword" // (2)
+                "connectionOptions.appName": "chutney"
+            }
         }
-    }
-    ```
+        ```
+    
+        1. Valid properties are `username` or `user`. Set this for basic authentication
+        2. Valid properties are `userPassword` or `password`. Set this for basic authentication
 
-    1. Valid properties are `username` or `user`. Set this for basic authentication
-    2. Valid properties are `userPassword` or `password`. Set this for basic authentication
+    === "x509 auth example"
+        ```json
+        {
+            "name": "mongo_target",
+            "url": "mongo://my.mongo.base:27017",
+            "properties": {
+                "databaseName": "myDatabaseName",
+                "connectionOptions.appName": "chutney"
+                "connectionOptions.authMechanism": "MONGODB-X509"
+                "keyStore": "path/to/keystore", // (1)
+                "keyStorePassword": "keystore.password",
+                "trustStore": "path/to/truststore",
+                "trustStorePassword": "truststore.password",
+            }
+        }
+        ```
+        
+        1. This automatically enable ssl connection (no need to do `connectionOptions.ssl=true`)
 
 !!! note "Collection Example"
     ```json title="ghibli_movies"
@@ -52,7 +74,7 @@
     ```
 
 # Count
-!!! info [Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoCountAction.java){:target="_blank"}
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoCountAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -80,7 +102,7 @@ MongoCountAction(
 ```
 
 # Delete
-!!! info [Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoDeleteAction.java){:target="_blank"}
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoDeleteAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -108,7 +130,7 @@ MongoDeleteAction(
 ```
 
 # Find
-!!! info [Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoFindAction.java){:target="_blank"}
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoFindAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -138,7 +160,7 @@ MongoFindAction(
 ```
 
 # Insert
-!!! info [Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoInsertAction.java){:target="_blank"}
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoInsertAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -162,7 +184,7 @@ MongoInsertAction(
 ```
 
 # List Collections
-!!! info [Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoListAction.java){:target="_blank"}
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoListAction.java){:target="_blank"}"
 
 === "Inputs"
 
@@ -186,7 +208,7 @@ MongoListAction(
 ```
 
 # Update
-!!! info [Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoUpdateAction.java){:target="_blank"}
+!!! info "[Browse implementations](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/mongo/MongoUpdateAction.java){:target="_blank"}"
 
 === "Inputs"
 

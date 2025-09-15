@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import org.apache.sshd.server.SshServer;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -48,33 +47,19 @@ public class SftpActionTest {
     }
 
     @Test
-    public void should_list_directory_files() {
+    public void should_list_directory_files(@TempDir Path tempDir) throws IOException {
         // Given
+        Files.createFile(tempDir.resolve("text.txt"));
         Target target = FakeTargetInfo.buildTargetWithPassword(sftpServer);
-        String directory = SftpActionTest.class.getResource("/security").getPath();
-        List<String> expectedFiles = Lists.newArrayList(
-            "client_rsa.pub",
-            "cacerts",
-            "server.pem",
-            "mongod.conf",
-            "authorized_keys",
-            "client_ecdsa.pub",
-            "keystore-with-keypwd.jks",
-            "client_rsa.key",
-            "client_ecdsa.key",
-            "server.jks",
-            "truststore.jks",
-            "truststore_empty_pass.jks"
-        );
 
-        SftpListDirAction action = new SftpListDirAction(target, new TestLogger(), directory, "1 m");
+        SftpListDirAction action = new SftpListDirAction(target, new TestLogger(), tempDir.toString(), "1 m");
 
         // When
         ActionExecutionResult actualResult = action.execute();
 
         // Then
         assertThat(actualResult.status).isEqualTo(Success);
-        assertThat((List<String>) actualResult.outputs.get("files")).hasSameElementsAs(expectedFiles);
+        assertThat((List<String>) actualResult.outputs.get("files")).containsExactly("text.txt");
     }
 
     @Test
