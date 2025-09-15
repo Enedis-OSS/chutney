@@ -7,9 +7,25 @@
 #
 # Chutney server is in a specific network and its exposure is made from 'AcceptanceTests' class.
 #
-# For SSH tests, we define 2 services :
+# For SSH tests, we define 4 services :
 #   * jump-host : A ssh service with shell and which is meant to be accessible via Chutney network on port 22.
 #   * intern-host : A ssh service with shell and which is meant to be accessible only by the jump-host on port 22.
+#   * intern-jump-host : A ssh service with shell and which is meant to be accessible only by the jump-host on port 22.
+#   * intern-host-bis : A ssh service with shell and which is meant to be accessible only by the intern-jump-host on port 22.
+#
+# Network schema :
+## ------------------------- chutney_network -------------------------
+##       |                                         |
+## chutney instance                            jump host
+##                                                 |
+## ------------------------- ssh_network -------------------------
+##       |                                         |
+## intern host                              intern jump host
+##                                                 |
+## ------------------------- ssh_network_bis -------------------------
+##       |
+## intern host bis
+#
 # Access keys are in test resources under blackbox/env/ssh directory.
 # see https://github.com/threatpatrols/docker-sshjumphost
 #
@@ -22,20 +38,26 @@ services:
     networks:
       - chutney_network
       - ssh_network
+    volumes:
+      - "./authorized_keys:/data/userkeys"
     environment:
       SSH_USERNAME: "jumpuser"
       SSH_SHELL: "/bin/bash"
-      SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADaBy1DpPb29kn1+AK4OjVc+XzimEtkyTMPZ2hkRXWTKFw66seQfj1RszxYDXxKCzHrlw5zq+/M3EG3D53s/5ae3wEmYjjgNdZvN9O9sjPA3D40mZp8Hd8kRdOWCRVKuJMMyUlbGzpEPLg6n+heTe1WCd7KN3Hdeaej/wyUb+yG/lKSDw=="
+      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADaBy1DpPb29kn1+AK4OjVc+XzimEtkyTMPZ2hkRXWTKFw66seQfj1RszxYDXxKCzHrlw5zq+/M3EG3D53s/5ae3wEmYjjgNdZvN9O9sjPA3D40mZp8Hd8kRdOWCRVKuJMMyUlbGzpEPLg6n+heTe1WCd7KN3Hdeaej/wyUb+yG/lKSDw=="
+      SSH_AUTHORIZED_KEYS: "/data/userkeys/client-jump-id_ecdsa.pub"
 
   intern-host:
     image: threatpatrols/sshjumphost:latest
     restart: unless-stopped
     networks:
       - ssh_network
+    volumes:
+      - "./authorized_keys:/data/userkeys"
     environment:
       SSH_USERNAME: "internuser"
       SSH_SHELL: "/bin/bash"
-      SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADjHKpgLYX9tIClPRq+ZMkFSlRAGbS9Bhb+hQL0jzhyR7XqQiu8lLpQNCs70h6afqQlAfd96Eli3PLHUyp0ABdgiQFVeG0GLevHhisLG/b5HprIIF9+BMIb+Hn+pcaM0EgeR/BzI/y+Ff+Kg6TqJbTypw/IsBd6Wz3OCRdmBKcEfp5LqA=="
+      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADjHKpgLYX9tIClPRq+ZMkFSlRAGbS9Bhb+hQL0jzhyR7XqQiu8lLpQNCs70h6afqQlAfd96Eli3PLHUyp0ABdgiQFVeG0GLevHhisLG/b5HprIIF9+BMIb+Hn+pcaM0EgeR/BzI/y+Ff+Kg6TqJbTypw/IsBd6Wz3OCRdmBKcEfp5LqA=="
+      SSH_AUTHORIZED_KEYS: "/data/userkeys/client-intern-id_edcsa.pub"
 
   intern-jump-host:
     image: threatpatrols/sshjumphost:latest
@@ -43,20 +65,26 @@ services:
     networks:
       - ssh_network
       - ssh_network_bis
+    volumes:
+      - "./authorized_keys:/data/userkeys"
     environment:
       SSH_USERNAME: "jumpuserbis"
       SSH_SHELL: "/bin/bash"
-      SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAUzzGrOlNbNpyDX8so5UBe7bc2HZwG6HfiOHnO3QcTuzTrB1JeNWGYJDCYDYq+Z1ur1MQ316LdP36BXWX184ds="
+      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAUzzGrOlNbNpyDX8so5UBe7bc2HZwG6HfiOHnO3QcTuzTrB1JeNWGYJDCYDYq+Z1ur1MQ316LdP36BXWX184ds="
+      SSH_AUTHORIZED_KEYS: "/data/userkeys/client-intern-jump-id_ecdsa.pub"
 
   intern-host-bis:
     image: threatpatrols/sshjumphost:latest
     restart: unless-stopped
     networks:
       - ssh_network_bis
+    volumes:
+      - "./authorized_keys:/data/userkeys"
     environment:
       SSH_USERNAME: "internuserbis"
       SSH_SHELL: "/bin/bash"
-      SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPpu2W0IV/YKAB6HM27PAYSAohNfUCgBqgqyacgYiseF+bpuzcm4DKQYd03J8K6D2g1Wrdx1IyA12MQ2SG1V2D4="
+      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPpu2W0IV/YKAB6HM27PAYSAohNfUCgBqgqyacgYiseF+bpuzcm4DKQYd03J8K6D2g1Wrdx1IyA12MQ2SG1V2D4="
+      SSH_AUTHORIZED_KEYS: "/data/userkeys/client-intern-bis-id_edcsa.pub"
 
 networks:
   chutney_network:
