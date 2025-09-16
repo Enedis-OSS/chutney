@@ -43,7 +43,6 @@ services:
     environment:
       SSH_USERNAME: "jumpuser"
       SSH_SHELL: "/bin/bash"
-      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADaBy1DpPb29kn1+AK4OjVc+XzimEtkyTMPZ2hkRXWTKFw66seQfj1RszxYDXxKCzHrlw5zq+/M3EG3D53s/5ae3wEmYjjgNdZvN9O9sjPA3D40mZp8Hd8kRdOWCRVKuJMMyUlbGzpEPLg6n+heTe1WCd7KN3Hdeaej/wyUb+yG/lKSDw=="
       SSH_AUTHORIZED_KEYS: "/data/userkeys/client-jump-id_ecdsa.pub"
 
   intern-host:
@@ -56,7 +55,6 @@ services:
     environment:
       SSH_USERNAME: "internuser"
       SSH_SHELL: "/bin/bash"
-      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADjHKpgLYX9tIClPRq+ZMkFSlRAGbS9Bhb+hQL0jzhyR7XqQiu8lLpQNCs70h6afqQlAfd96Eli3PLHUyp0ABdgiQFVeG0GLevHhisLG/b5HprIIF9+BMIb+Hn+pcaM0EgeR/BzI/y+Ff+Kg6TqJbTypw/IsBd6Wz3OCRdmBKcEfp5LqA=="
       SSH_AUTHORIZED_KEYS: "/data/userkeys/client-intern-id_edcsa.pub"
 
   intern-jump-host:
@@ -70,7 +68,6 @@ services:
     environment:
       SSH_USERNAME: "jumpuserbis"
       SSH_SHELL: "/bin/bash"
-      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAUzzGrOlNbNpyDX8so5UBe7bc2HZwG6HfiOHnO3QcTuzTrB1JeNWGYJDCYDYq+Z1ur1MQ316LdP36BXWX184ds="
       SSH_AUTHORIZED_KEYS: "/data/userkeys/client-intern-jump-id_ecdsa.pub"
 
   intern-host-bis:
@@ -83,7 +80,6 @@ services:
     environment:
       SSH_USERNAME: "internuserbis"
       SSH_SHELL: "/bin/bash"
-      #SSH_AUTHORIZED_KEYS: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPpu2W0IV/YKAB6HM27PAYSAohNfUCgBqgqyacgYiseF+bpuzcm4DKQYd03J8K6D2g1Wrdx1IyA12MQ2SG1V2D4="
       SSH_AUTHORIZED_KEYS: "/data/userkeys/client-intern-bis-id_edcsa.pub"
 
 networks:
