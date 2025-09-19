@@ -5,11 +5,11 @@
  *
  */
 
-package fr.enedis.chutney;
+package fr.enedis.chutney.execution.config;
 
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_CAMPAIGNS_EXECUTOR_POOL_SIZE_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_MAX_CAMPAIGN_EXECUTIONS_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_MAX_SCENARIO_EXECUTIONS_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_CAMPAIGNS_EXECUTOR_POOL_SIZE_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_PURGE_MAX_CAMPAIGN_EXECUTIONS_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_PURGE_MAX_SCENARIO_EXECUTIONS_SPRING_VALUE;
 import static fr.enedis.chutney.execution.domain.purge.PurgeServiceImpl.ONE_DAY_MILLIS;
 
 import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;

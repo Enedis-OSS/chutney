@@ -7,13 +7,13 @@
 
 package fr.enedis.chutney.design.infra.storage.editionlock;
 
-import static fr.enedis.chutney.ServerConfigurationValues.EDITIONS_TTL_UNIT_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.EDITIONS_TTL_VALUE_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.EDITIONS_TTL_UNIT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.EDITIONS_TTL_VALUE_SPRING_VALUE;
 
-import fr.enedis.chutney.design.domain.editionlock.TestCaseEdition;
-import fr.enedis.chutney.design.domain.editionlock.TestCaseEditions;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import fr.enedis.chutney.design.domain.editionlock.TestCaseEdition;
+import fr.enedis.chutney.design.domain.editionlock.TestCaseEditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

@@ -18,11 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fr.enedis.chutney.RestExceptionHandler;
 import fr.enedis.chutney.campaign.domain.Frequency;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
+import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.time.LocalDateTime;
 import java.util.List;

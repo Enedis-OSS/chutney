@@ -18,8 +18,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fr.enedis.chutney.RestExceptionHandler;
-import fr.enedis.chutney.WebConfiguration;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.enedis.chutney.config.web.RestExceptionHandler;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.design.domain.editionlock.TestCaseEdition;
 import fr.enedis.chutney.design.domain.editionlock.TestCaseEditionsService;
 import fr.enedis.chutney.security.api.UserDto;
@@ -27,8 +29,6 @@ import fr.enedis.chutney.security.infra.SpringUserService;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.List;
 import org.assertj.core.util.Lists;

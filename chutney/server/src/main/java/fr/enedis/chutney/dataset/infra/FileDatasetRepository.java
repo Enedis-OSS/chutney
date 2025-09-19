@@ -7,19 +7,19 @@
 
 package fr.enedis.chutney.dataset.infra;
 
-import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.dataset.infra.DatasetMapper.fromDto;
 import static fr.enedis.chutney.dataset.infra.DatasetMapper.toDto;
 import static fr.enedis.chutney.tools.file.FileUtils.createFile;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
 import fr.enedis.chutney.tools.file.FileUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

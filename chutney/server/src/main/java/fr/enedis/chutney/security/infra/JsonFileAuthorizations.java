@@ -7,16 +7,16 @@
 
 package fr.enedis.chutney.security.infra;
 
-import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.security.api.AuthorizationMapper;
 import fr.enedis.chutney.security.api.AuthorizationsDto;
 import fr.enedis.chutney.security.domain.Authorizations;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

@@ -5,7 +5,7 @@
  *
  */
 
-package fr.enedis.chutney;
+package fr.enedis.chutney.config;
 
 public final class ServerConfigurationValues {
     public static final String SERVER_PORT_SPRING_VALUE = "${server.port}";

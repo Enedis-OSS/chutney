@@ -18,6 +18,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingTargetException;
 import fr.enedis.chutney.scenario.api.GwtTestCaseController;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;

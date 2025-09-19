@@ -1,0 +1,38 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.10.xsd">
+
+    <cache-template name="keep_working">
+        <expiry>
+            <tti unit="hours">12</tti>
+        </expiry>
+        <resources>
+            <heap>1500</heap>
+        </resources>
+    </cache-template>
+
+    <cache alias="fr.enedis.chutney.scenario.infra.jpa.ScenarioEntity">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <resources>
+            <heap>1000</heap>
+        </resources>
+    </cache>
+    <cache alias="default-query-results-region" uses-template="keep_working" />
+    <cache alias="default-update-timestamps-region">
+        <expiry>
+            <none/>
+        </expiry>
+        <resources>
+            <heap>1000</heap>
+        </resources>
+    </cache>
+</config>

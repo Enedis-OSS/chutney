@@ -5,13 +5,13 @@
  *
  */
 
-package fr.enedis.chutney;
+package fr.enedis.chutney.config.web;
 
-import fr.enedis.chutney.security.AuditHandler;
-import fr.enedis.chutney.tools.MyMixInForIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import fr.enedis.chutney.security.AuditHandler;
+import fr.enedis.chutney.tools.MyMixInForIgnoreType;
 import java.io.File;
 import java.nio.file.Paths;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;

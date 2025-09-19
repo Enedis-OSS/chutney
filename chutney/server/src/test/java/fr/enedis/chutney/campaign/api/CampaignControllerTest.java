@@ -18,14 +18,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static util.WaitUtils.awaitDuring;
 
-import fr.enedis.chutney.RestExceptionHandler;
-import fr.enedis.chutney.WebConfiguration;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.campaign.api.dto.CampaignDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignDto.CampaignScenarioDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportDto;
 import fr.enedis.chutney.campaign.api.dto.ScenarioExecutionReportOutlineDto;
 import fr.enedis.chutney.campaign.domain.CampaignService;
 import fr.enedis.chutney.campaign.infra.FakeCampaignRepository;
+import fr.enedis.chutney.config.web.RestExceptionHandler;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.dataset.api.DataSetDto;
 import fr.enedis.chutney.dataset.domain.DatasetService;
 import fr.enedis.chutney.scenario.api.raw.dto.ImmutableTestCaseIndexDto;
@@ -40,8 +42,6 @@ import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecutionReportBuilder;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;

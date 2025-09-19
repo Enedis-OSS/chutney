@@ -21,7 +21,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fr.enedis.chutney.ServerConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fr.enedis.chutney.ServerBootstrap;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.Authorizations;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
@@ -29,8 +31,6 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tools.file.FileUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +53,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(classes = {ServerConfiguration.class})
+@SpringBootTest(classes = {ServerBootstrap.class})
 @TestPropertySource(properties = "spring.datasource.url=jdbc:h2:mem:testdbsecu")
 @TestPropertySource(properties = "spring.config.location=classpath:blackbox/")
 public class SecuredControllerSpringBootIntegrationTest {
@@ -70,7 +70,6 @@ public class SecuredControllerSpringBootIntegrationTest {
     private MockMvc mvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
     @BeforeAll
     public static void cleanUp() {
         FileUtils.deleteFolder(new File("./target/.chutney").toPath());

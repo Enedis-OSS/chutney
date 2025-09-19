@@ -5,11 +5,11 @@
  *
  */
 
-package fr.enedis.chutney;
+package fr.enedis.chutney.config.web;
 
-import static fr.enedis.chutney.ServerConfigurationValues.SERVER_HTTP_INTERFACE_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SERVER_HTTP_PORT_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_INTERFACE_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_PORT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 
 import io.undertow.servlet.api.SecurityConstraint;
 import io.undertow.servlet.api.SecurityInfo;

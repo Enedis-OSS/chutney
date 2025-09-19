@@ -7,8 +7,8 @@
 
 package fr.enedis.chutney.admin.api;
 
-import static fr.enedis.chutney.ServerConfigurationValues.SERVER_INSTANCE_NAME_VALUE;
 import static fr.enedis.chutney.admin.api.InfoController.BASE_URL;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_INSTANCE_NAME_VALUE;
 
 import java.io.IOException;
 import java.io.InputStream;

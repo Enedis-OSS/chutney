@@ -41,7 +41,6 @@
         <module>action-impl</module>
         <module>environment</module>
         <module>tools</module>
-        <module>packaging</module>
         <module>jira</module>
     </modules>
 

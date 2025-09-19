@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.execution.api.schedule;
 
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_CAMPAIGNS_FIXED_RATE_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_CAMPAIGNS_FIXED_RATE_SPRING_VALUE;
 
 import fr.enedis.chutney.execution.domain.schedule.CampaignScheduler;
 import org.springframework.scheduling.annotation.Scheduled;

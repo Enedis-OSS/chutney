@@ -5,7 +5,7 @@
  *
  */
 
-package fr.enedis.chutney;
+package fr.enedis.chutney.config.web;
 
 import fr.enedis.chutney.admin.domain.BackupNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
