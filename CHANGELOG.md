@@ -7,6 +7,14 @@
 
 # Changelog
 
+## [3.3.0](https://github.com/Enedis-OSS/chutney/tree/3.3.0)
+### 🚀 Implemented enhancements:
+* SSH action - Allow multiple proxies jumps by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/213
+* Handle more mongo configurations properties by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/212
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.2.2...3.3.0
+
 ## [3.2.2](https://github.com/Enedis-OSS/chutney/tree/3.2.2)
 ### 🐛 Fixed bugs:
 * fix(): fix img and link rendering on execution report by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/207
