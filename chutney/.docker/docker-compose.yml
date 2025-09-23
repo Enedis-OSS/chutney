@@ -1,7 +1,6 @@
 #SPDX-FileCopyrightText: 2017-2024 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
-version: '3.7'
 services:
   server:
     image: ghcr.io/enedis-oss/chutney/chutney-server
@@ -12,14 +11,14 @@ services:
     container_name: server
     ports:
       - "8081:8443"
+    volumes:
+      - ../server/.chutney/:/.chutney
     restart: unless-stopped
     environment:
       # https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables
-      SPRING_CONFIG_LOCATION: /config/
       CHUTNEY_SECURITY_CORS_ALLOWEDORIGINS_0: https://localhost
-    volumes:
-      - ../server/.chutney/:/.chutney
-      - ../server/src/main/resources/:/config/
+
+
   ui:
     image: ghcr.io/enedis-oss/chutney/chutney-ui:latest
     pull_policy: build

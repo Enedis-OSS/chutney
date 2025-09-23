@@ -34,7 +34,7 @@ docker push ghcr.io/enedis-oss/chutney/chutney-ui:latest
 ### Run ui and server containers using docker compose
 
 ```shell
-docker-compose -f ./.docker/docker-compose-local-dev.yml up -d
+docker-compose -f ./.docker/docker-compose.yml up -d
 ```
 
 **Notes :**
@@ -51,11 +51,11 @@ visit https://localhost
 **stop**
 
 ```shell
-docker-compose -f ./.docker/docker-compose-local-dev.yml stop
+docker-compose -f ./.docker/docker-compose.yml stop
 ```
 
 **remove**
 
 ```shell
-docker-compose -f ./.docker/docker-compose-local-dev.yml rm server ui --force
+docker-compose -f ./.docker/docker-compose.yml rm server ui --force
 ```
