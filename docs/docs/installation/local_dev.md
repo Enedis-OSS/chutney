@@ -19,25 +19,20 @@ You can find all code and configuration below in this [example project](https://
 -->
 
 # Start a server
-<!-- Wait for project template
-!!! note "Docker"
 
-    1. Checkout this [example project](https://github.com/Enedis-OSS/chutney-project-template)
-    2. Start Chutney locally with `docker compose up&` ([Docker compose documentation](https://docs.docker.com/compose/)).
--->
+!!! note "Maven (dev run)"
 
-!!! note "Docker"
-
-    1. Start Chutney locally with `docker -p 8443:8443 -d run ghcr.io/enedis-oss/chutney/chutney-server` ([Docker run documentation](https://docs.docker.com/reference/cli/docker/container/run/)).
-
-!!! note "Java"
-
-    1. Download the latest release jar [chutney-local-dev-x.x.x.jar](https://github.com/Enedis-OSS/chutney/releases/latest).
-    2. Start Chutney locally with `java -jar chutney-local-dev-x.x.x.jar`
+    1. Checkout [chutney](https://github.com/Enedis-OSS/chutney).
+    2. Go to server module `cd chutney/server`
+    3. Start Chutney locally with `mvn spring-boot:run`
 
 !!! note "Intellij"
 
     1. Checkout [chutney](https://github.com/Enedis-OSS/chutney).
-    2. Build the project using maven : `mvn compile [-DuseExternalNpm]`
-    3. Start [Intellij run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) `start_local_server`
+    2. Start [Intellij run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) `start_local_server`
 
+!!! note "Fat-jar"
+
+    From repo root:  
+    1. Package the project using maven: `mvn -pl chutney/server -am package -DskipTests`  
+    2. Run server jar: `java -jar chutney/server/target/server-<version>.jar`

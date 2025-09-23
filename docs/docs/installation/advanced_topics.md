@@ -34,7 +34,7 @@ Moreover, Chutney provides following metrics and corresponding Micrometer tags :
 # Authentication
 
 !!! important
-    Maven module [local-dev](https://github.com/Enedis-OSS/chutney/tree/main/chutney/packaging/local-dev) shows :
+    Maven module [server](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server) shows :
 
     * How to use in memory authentication and roles, see the `mem-auth` profile  
     * How to use a custom LDAP authentication (for example purpose, it uses an embedded LDAP server)  
@@ -175,28 +175,28 @@ Since Chutney includes this module, you can also configure it.
 
 Following table shows all properties you can set to configure Chutney.
 
-| Name                                                    | Description                                                                                                       | Default value               |
-|:--------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------|:----------------------------|
-| chutney.configuration-folder                            | Local directory path to data and configuration files                                                              | ~/.chutney/conf             |
-| chutney.environment.configuration-folder                | Local directory path to environments data files                                                                   | ~/.chutney/conf/environment |
-| chutney.jira.configuration-folder                       | Local directory path to jira data files                                                                           | ~/.chutney/conf/jira        |
-| chutney.server.execution.async.publisher.ttl            | Time to live in seconds of a finished observable scenario execution                                               | 5                           |
-| chutney.server.execution.async.publisher.debounce       | Window time in milliseconds in which a running observable scenario execution ignores new associated engine report | 250                         |
-| chutney.server.campaigns.executor.pool-size             | Pool size of campaigns' executor                                                                                  | 20                          |
-| chutney.server.scheduled-campaigns.fixed-rate           | Fixed time period for scheduled campaigns execution checking                                                      | 60000                       |
-| chutney.server.scheduled-campaigns.executor.pool-size   | Pool size of scheduled campaigns' executor                                                                        | 20                          |
-| chutney.server.schedule-purge.cron                      | Purge launch cron planification                                                                                   | 0 0 1 * * *                 |
-| chutney.server.schedule-purge.timeout                   | Timeout in seconds for purge (+ retries)                                                                          | 600                         |
-| chutney.server.schedule-purge.retry                     | Number of max purge retries                                                                                       | 2                           |
-| chutney.server.schedule-purge.max-scenario-executions   | Number of max scenario executions to keep when purging                                                            | 10                          |
-| chutney.server.schedule-purge.max-campaign-executions   | Number of max campaign executions to keep when purging                                                            | 10                          |
-| chutney.server.agent.name                               | Default name of local agent                                                                                       |                             |
-| chutney.server.agent.hostname                           | Default hostname of local agent                                                                                   |                             |
-| chutney.server.agent.network.connection-checker-timeout | Socket timeout in milliseconds for agent networking management actions                                            | 1000                        |
-| chutney.server.editions.ttl.value                       | Time to live value of unclosed scenario's editions                                                                | 6                           |
-| chutney.server.editions.ttl.unit                        | Time to live time unit of unclosed scenario's editions                                                            | HOURS                       |
-| chutney.engine.executor.pool-size                       | Pool size of scenarios' executor                                                                                  | 20                          |
-| chutney.engine.delegation.user                          | Username of engine's delegation service HTTP client                                                               |                             |
-| chutney.engine.delegation.password                      | Password of engine's delegation service HTTP client                                                               |                             |
-| chutney.engine.reporter.publisher.ttl                   | Time to live in seconds of the engine's executions' reports                                                       | 5                           |
-| chutney.actions.sql.max-logged-rows                     | Max logged rows in report for SQL action                                                                          | 30                          |
+| Name                                                    | Description                                                                                                       | Default value                               |
+|:--------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|
+| chutney.configuration-folder                            | Local directory path to data and configuration files                                                              | ~/.chutney/conf                             |
+| chutney.environment.configuration-folder                | Local directory path to environments data files                                                                   | ${chutney.configuration-folder}/environment |
+| chutney.jira.configuration-folder                       | Local directory path to jira data files                                                                           | ${chutney.configuration-folder}/jira        |
+| chutney.server.execution.async.publisher.ttl            | Time to live in seconds of a finished observable scenario execution                                               | 5                                           |
+| chutney.server.execution.async.publisher.debounce       | Window time in milliseconds in which a running observable scenario execution ignores new associated engine report | 250                                         |
+| chutney.server.campaigns.executor.pool-size             | Pool size of campaigns' executor                                                                                  | 20                                          |
+| chutney.server.scheduled-campaigns.fixed-rate           | Fixed time period for scheduled campaigns execution checking                                                      | 60000                                       |
+| chutney.server.scheduled-campaigns.executor.pool-size   | Pool size of scheduled campaigns' executor                                                                        | 20                                          |
+| chutney.server.schedule-purge.cron                      | Purge launch cron planification                                                                                   | 0 0 1 * * *                                 |
+| chutney.server.schedule-purge.timeout                   | Timeout in seconds for purge (+ retries)                                                                          | 600                                         |
+| chutney.server.schedule-purge.retry                     | Number of max purge retries                                                                                       | 2                                           |
+| chutney.server.schedule-purge.max-scenario-executions   | Number of max scenario executions to keep when purging                                                            | 10                                          |
+| chutney.server.schedule-purge.max-campaign-executions   | Number of max campaign executions to keep when purging                                                            | 10                                          |
+| chutney.server.agent.name                               | Default name of local agent                                                                                       |                                             |
+| chutney.server.agent.hostname                           | Default hostname of local agent                                                                                   |                                             |
+| chutney.server.agent.network.connection-checker-timeout | Socket timeout in milliseconds for agent networking management actions                                            | 1000                                        |
+| chutney.server.editions.ttl.value                       | Time to live value of unclosed scenario's editions                                                                | 6                                           |
+| chutney.server.editions.ttl.unit                        | Time to live time unit of unclosed scenario's editions                                                            | HOURS                                       |
+| chutney.engine.executor.pool-size                       | Pool size of scenarios' executor                                                                                  | 20                                          |
+| chutney.engine.delegation.user                          | Username of engine's delegation service HTTP client                                                               |                                             |
+| chutney.engine.delegation.password                      | Password of engine's delegation service HTTP client                                                               |                                             |
+| chutney.engine.reporter.publisher.ttl                   | Time to live in seconds of the engine's executions' reports                                                       | 5                                           |
+| chutney.actions.sql.max-logged-rows                     | Max logged rows in report for SQL action                                                                          | 30                                          |
