@@ -30,6 +30,7 @@
         <mainClass>fr.enedis.chutney.ServerBootstrap</mainClass>
         <jasypt-spring-boot.version>3.0.5</jasypt-spring-boot.version>
         <acceptance-tests-docker-image-name>chutney-acceptance-test-server</acceptance-tests-docker-image-name>
+        <boot.server.classifier>boot</boot.server.classifier>
     </properties>
 
     <dependencies>
@@ -344,7 +345,8 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <classifier>boot</classifier>
+                            <classifier>${boot.server.classifier}</classifier>
+                            <attach>false</attach>
                             <executable>true</executable>
                             <layout>ZIP</layout>
                             <mainClass>${mainClass}</mainClass>
@@ -392,7 +394,28 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-boot-jar-locally</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${boot.server.classifier}.jar</file>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${project.version}</version>
+                            <packaging>jar</packaging>
+                            <classifier>boot</classifier>
+                            <pomFile>${project.file}</pomFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-maven-plugin</artifactId>
