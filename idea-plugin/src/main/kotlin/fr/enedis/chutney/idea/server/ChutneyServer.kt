@@ -131,8 +131,8 @@ class ChutneyServer(settings: ChutneyServerSettings) {
 
         private fun createCommandLine(settings: ChutneyServerSettings): GeneralCommandLine {
             val libFolder = File(PathUtil.toSystemIndependentName(PathManager.getPluginsPath() + "/chutney-idea-plugin/lib"))
-          val ideaServerJarFile = libFolder.walk().find { it.name.startsWith("local-api-unsecure-") && it.name.endsWith(".jar") }
-                  ?: throw RuntimeException("local-api-unsecure jar file not found in " + libFolder.absolutePath)
+          val ideaServerJarFile = libFolder.walk().find { it.name.startsWith("server-") && it.name.endsWith("-boot.jar") }
+                  ?: throw RuntimeException("server-*-boot.jar file not found in " + libFolder.absolutePath)
 
             val commandLine = GeneralCommandLine()
             val javaHomePath = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
@@ -146,7 +146,12 @@ class ChutneyServer(settings: ChutneyServerSettings) {
             commandLine.addParameter(ideaServerJarFile.name)
             commandLine.addParameter("--server.port=" + settings.port)
             commandLine.addParameter("--chutney.configuration-folder=" + PathUtil.toSystemIndependentName(PathManager.getConfigPath() + "/chutney-idea-plugin/conf"))
-            return commandLine
+            commandLine.addParameter("--chutney.db-server.base-dir=./.chutney/data")
+            commandLine.addParameter("--spring.profiles.active=db-h2")
+            commandLine.addParameter("--server.ssl.enabled=false")
+            commandLine.addParameter("--chutney.security.enabled=false")
+            commandLine.addParameter("--server.instance-name=chutney server for idea plugin")
+          return commandLine
         }
 
         /* private val classpath: String

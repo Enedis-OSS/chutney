@@ -7,11 +7,6 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.ChutneyUtil
-import fr.enedis.chutney.idea.actions.converter.JsonSerializer
-import fr.enedis.chutney.idea.actions.converter.ScenarioV1ToV2Converter
-import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
-import fr.enedis.chutney.kotlin.util.HttpClient
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.intellij.execution.process.ProcessHandler
@@ -29,6 +24,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.LightVirtualFile
+import fr.enedis.chutney.idea.ChutneyUtil
+import fr.enedis.chutney.idea.actions.converter.JsonSerializer
+import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
+import fr.enedis.chutney.kotlin.util.HttpClient
 import org.jetbrains.yaml.psi.YAMLFile
 
 
@@ -57,7 +56,8 @@ data class Report(
     val datasetId: String?,
     val constants: Map<String, String>,
     val datatable: List<Map<String, String>>,
-    val report: Base
+    val report: Base,
+    val user: String,
 )
 
 data class Base(
