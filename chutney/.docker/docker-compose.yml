@@ -4,10 +4,6 @@
 services:
   server:
     image: ghcr.io/enedis-oss/chutney/chutney-server
-    pull_policy: build
-    build:
-      context: ..
-      dockerfile: .docker/server/Dockerfile
     container_name: server
     ports:
       - "8081:8443"
@@ -21,10 +17,6 @@ services:
 
   ui:
     image: ghcr.io/enedis-oss/chutney/chutney-ui:latest
-    pull_policy: build
-    build:
-      context: ..
-      dockerfile: .docker/ui/Dockerfile
     container_name: ui
     ports:
       - "80:80"

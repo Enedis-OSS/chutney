@@ -39,7 +39,7 @@ docker-compose -f ./.docker/docker-compose.yml up -d
 
 **Notes :**
 
-* By default, server container will run with local-dev configuration(see packaging/local-dev module)
+* By default, server container will run with default server configuration(see server module)
 * It's possible to override default configuration by passing configuration folder as volume when running server container (see docker-compose-custom-config.yml file for more details)
 
 ### Enjoy app
