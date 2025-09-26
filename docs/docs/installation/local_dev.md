@@ -20,7 +20,7 @@ You can find all code and configuration below in this [example project](https://
 
 # Start a server
 
-!!! note "Maven (dev run)"
+!!! note "Maven"
 
     1. Checkout [chutney](https://github.com/Enedis-OSS/chutney).
     2. Go to server module `cd chutney/server`
@@ -31,8 +31,7 @@ You can find all code and configuration below in this [example project](https://
     1. Checkout [chutney](https://github.com/Enedis-OSS/chutney).
     2. Start [Intellij run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) `start_local_server`
 
-!!! note "Fat-jar"
+!!! note "Boot jar"
 
-    From repo root:  
-    1. Package the project using maven: `mvn -pl chutney/server -am package -DskipTests`  
-    2. Run server jar: `java -jar chutney/server/target/server-<version>.jar`
+    1. Download server-<version>-boot.jar from last relase [assets](https://github.com/Enedis-OSS/chutney/releases){:target="_blank"}.   
+    2. Run server jar: `java -jar server-<version>-boot.jar`

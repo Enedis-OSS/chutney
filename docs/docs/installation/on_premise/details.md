@@ -40,66 +40,35 @@ To configure your datasource, use the property `spring.datasource`
 
 # Logs
 
-Chutney depends on [SLF4J](https://www.slf4j.org/) API logging library.
-
-At runtime, the Chutney server uses the [Logback](https://logback.qos.ch/) SLF4J implementation and bridges legacy APIs (JCL, LOG4J and JUL).
+Chutney uses [SLF4J](https://www.slf4j.org/) with [Logback](https://logback.qos.ch/) as the runtime implementation.  
+A default [logback.xml](https://github.com/Enedis-OSS/chutney/blob/main/chutney/server/src/main/resources/logback.xml){:target=_blank} is packaged in the server jar and logs to the console at level `WARN`.
 
 !!! warning
-    
-    Since the server bridges all legacy APIs, you must be careful to not include any of the following libraries:
+Do **not** add logging bridges yourself — they are already included.  
+Avoid:
+* `jcl-over-slf4j`
+* `log4j-over-slf4j` / `slf4j-reload4j`
+* `jul-to-slf4j`
 
-    * jcl-over-slf4j
-    * log4j-over-slf4j and slf4j-reload4j
-    * jul-to-slf4j
+For complete details, see the Spring boot [logging](https://docs.spring.io/spring-boot/reference/features/logging.html){:target=_blank} documentation.  
+Below are just a few common examples.
+## Override the log configuration
 
-    Read [Bridging legacy APIs](https://logback.qos.ch/manual/configuration.html) for further details.
+You can replace or adjust the default logging without repackaging.
 
-A **default Logback configuration** is packaged ([here](https://github.com/Enedis-OSS/chutney/blob/main/chutney/server/src/main/resources/logback.xml){:target=_blank}) inside the server jar (classpath root).  
-By default it logs to the console at level `WARN`.
-
-## **External** Log config
-
-You can override the packaged logging config. Choose one of the following options for example. See details [here](https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.custom-log-configuration){:target=_blank}
-
-### Option A — Point to a file with `logging.config` (recommended)
-
-Use a JVM system property or an environment variable:
+### Use a custom Logback file
 
 ```bash
 # JVM system property
-java -Dlogging.config=file:./my-logback.xml -jar server-<version>.jar
+java -Dlogging.config=file:./my-logback.xml -jar server-<version>-boot.jar
 
-# Environment variable
-LOGGING_CONFIG=file:./my-logback.xml \
-java -jar server-<version>.jar
+# or environment variable
+LOGGING_CONFIG=file:./my-logback.xml java -jar server-<version>-boot.jar
 ```
 
-Supported file names are typically `logback.xml` or `logback-spring.xml`.  
-Using `file:` ensures the file on disk is picked up even if a default config is packaged.
+### Quick tweaks via `application.yml`
 
-### Option B — Put a config file on the classpath
-
-Spring Boot also looks for Logback config on the classpath (e.g., `logback-spring.xml` or `logback.xml`).  
-If you want to keep the file next to the jar, place it under `./config` which is added to the classpath automatically:
-
-```
-.
-├─ chutney-server-<version>.jar
-└─ config/
-   └─ logback-spring.xml
-```
-
-Then start normally:
-
-```bash
-java -jar chutney-server-<version>.jar
-```
-
-> Prefer `logback-spring.xml` when you want to use Spring profile conditions (`<springProfile>`).
-
-### Option C — Basic tweaks via `application.yml`
-
-For simple level changes you can stay in Spring config:
+For simple level changes:
 
 ```yaml
 logging:
@@ -108,7 +77,7 @@ logging:
     com.company.yourpackage: DEBUG
 ```
 
-This won’t replace appenders/layouts; for full control use **Option A** or **B**.
+Use a full Logback file if you need to change appenders or patterns.
 
 # Server (TLS/SSL)
 
