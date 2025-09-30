@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { of, Subject, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { delay } from '@shared/tools';
@@ -32,7 +32,6 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     activeTab = 'keyValue';
     datasetForm: FormGroup;
     private unsubscribeSub$: Subject<void> = new Subject();
-    private previousDataSet: Dataset = this.dataset;
     private modificationsSaved = false;
     message;
     backendError;
@@ -53,18 +52,10 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     }
 
     ngOnInit(): void {
-        this.datasetForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            description: '',
-            tags: [],
-            keyValues: new FormControl(),
-            multiKeyValues: new FormControl()
-        });
-
         this.route.params
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((params) => {
-                this.load(params['id']);
+                this.initForm(params['id']);
             });
 
         this.initTranslation();
@@ -89,43 +80,21 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
         this.unsubscribeSub$.complete();
     }
 
-    load(id) {
-        if (id != null) {
-            this.dataSetService.findById(id)
-                .pipe(takeUntil(this.unsubscribeSub$))
-                .subscribe(
-                    (res) => {
-                        this.setCurrentDataSet(res);
-                    }
-                );
-        }
-    }
-
-    private setCurrentDataSet(res) {
-        this.dataset = res;
-        this.previousDataSet = res;
-        this.datasetForm.controls['name'].patchValue(this.dataset.name);
-        this.datasetForm.controls['description'].patchValue(this.dataset.description);
-        this.datasetForm.controls['tags'].patchValue(this.dataset.tags.join(','));
-        this.datasetForm.controls['keyValues'].patchValue(this.dataset.uniqueValues);
-        this.datasetForm.controls['multiKeyValues'].patchValue(this.dataset.multipleValues);
-    }
-
     isValid(): boolean {
         return this.validationService.isNotEmpty(this.datasetForm.value['name']);
     }
 
     save() {
-        const dataset = this.createDataset();
+        const dataset = this.formToDataset();
         this.errorDuplicateHeader = false;
-        this.dataSetService.save(dataset, this.previousDataSet.id)
-            .pipe(takeUntil(this.unsubscribeSub$))
+        const obs$ = this.dataset.id ? this.dataSetService.update(this.dataset.id, dataset) : this.dataSetService.create(dataset);
+        obs$.pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: (res) => {
-                    this.setCurrentDataSet(res);
-                    this.location.replaceState('/dataset/' + this.dataset.id + '/edition');
+                    //this.setCurrentDataSet(res);
                     this.notify(this.savedMessage, null);
                     this.modificationsSaved = true;
+                    this.router.navigateByUrl('/dataset/' + res.id + '/edition');
                 },
                 error: (error) => {
                     if (error.status === 400) {
@@ -151,7 +120,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     }
 
     canDeactivatePage(): boolean {
-        return this.modificationsSaved || this.createDataset().equals(this.previousDataSet);
+        return this.modificationsSaved || this.formToDataset().equals(this.dataset);
     }
 
     cancel() {
@@ -174,9 +143,9 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
             });
     }
 
-    private createDataset() {
-        const name = this.datasetForm.value['name'] ? this.datasetForm.value['name'] : '';
-        const desc = this.datasetForm.value['description'] ? this.datasetForm.value['description'] : '';
+    private formToDataset() {
+        const name = this.datasetForm.value['name'] ;
+        const desc = this.datasetForm.value['description'];
         const tags = this.datasetForm.value['tags'] ? this.datasetForm.value['tags'].split(',') : [];
         const date = new Date();
 
@@ -192,7 +161,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
             name,
             desc,
             tags,
-            date,
+            date,// todo move to backend
             keyValues,
             multiKeyValues,
             id
@@ -203,5 +172,23 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
         if (this.dataset.id == null || this.dataset.id.length === 0) {
             this.dataSetName.nativeElement.focus();
         }
+    }
+
+    private initForm(datasetId: string) {
+        const dataset$ = datasetId === null ? of(new Dataset('', '', [], null, [], [])) :
+            this.dataSetService.findById(datasetId).pipe(takeUntil(this.unsubscribeSub$))
+        dataset$.subscribe(
+                dataset => {
+                    this.datasetForm = this.formBuilder.group({
+                        name: new FormControl(dataset.name, [Validators.required]),
+                        description: new FormControl(dataset.description),
+                        tags: new FormControl(dataset.tags.join(',')),
+                        keyValues: new FormControl(dataset.uniqueValues),
+                        multiKeyValues: new FormControl(dataset.multipleValues)
+                    });
+                    this.dataset = dataset;
+                }
+            );
+
     }
 }

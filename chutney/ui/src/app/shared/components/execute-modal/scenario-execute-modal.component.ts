@@ -139,8 +139,8 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
         }
     }
 
-    saveDataset(datasetToSave): Observable<Dataset> {
-        return this.datasetService.save(datasetToSave).pipe(
+    saveDataset(datasetToSave: Dataset): Observable<Dataset> {
+        return this.datasetService.create(datasetToSave).pipe(
             catchError(error => {
                 this.errorMessage = error.message
                 console.error('Error while saving dataset : ', error);
@@ -154,7 +154,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
             (dataset.multipleValues.length == 0 && dataset.uniqueValues.length == 0)
     }
 
-    buildDataset() {
+    buildDataset(): Dataset {
         const kv = this.datasetForm.controls['keyValues'] as FormArray;
         const keyValues = kv.value ? kv.value.map((p) => new KeyValue(p.key, p.value)) : [];
 

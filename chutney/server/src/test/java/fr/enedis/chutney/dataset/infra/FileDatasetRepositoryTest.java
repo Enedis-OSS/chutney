@@ -12,13 +12,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
-import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
 import fr.enedis.chutney.tools.file.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,17 +34,27 @@ public class FileDatasetRepositoryTest {
     }
 
     @Test
-    void should_create_and_update_dataset() {
+    void should_create_dataset() {
         // Create
         DataSet dataset = DataSet.builder().withName("name").build();
         String id = sut.save(dataset);
         assertThat(Files.exists(Paths.get(STORE_PATH + File.separator + id + ".json"))).isTrue();
+    }
+
+    @Test
+    void should_update_dataset() {
+        // Create
+        String name = "name";
+        DataSet dataset = DataSet.builder().withName(name).build();
+        String id = sut.save(dataset);
+        assertThat(Files.exists(Paths.get(STORE_PATH + File.separator + id + ".json"))).isTrue();
 
         // Update
-        DataSet updatedDataset = DataSet.builder().withId(id).withDescription("new description").withName("name").build();
+        DataSet updatedDataset = DataSet.builder().withId(id).withDescription("new description").withName(name).build();
         sut.save(updatedDataset);
-        DataSet toValid = sut.findById(id);
-        assertThat(toValid.description).isEqualTo("new description");
+
+        DataSet inDb = sut.findById(id);
+        assertThat(inDb.description).isEqualTo("new description");
     }
 
     @Test
@@ -54,17 +64,37 @@ public class FileDatasetRepositoryTest {
           .isInstanceOf(DataSetNotFoundException.class);
     }
 
-    @Test
-    void should_not_save_new_dataset_already_exist() {
-        DataSet dataset = DataSet.builder().withName("name").build();
 
+    @Test
+    void should_check_if_dataset_exists_by_name() {
+        DataSet dataset = DataSet.builder().withName("existing").build();
         sut.save(dataset);
 
-        DataSet newDataset = DataSet.builder().withDescription("Should no be saved").withName("name").build();
+        boolean exists = sut.existByName("existing");
+        boolean nonExisting = sut.existByName("non_existing");
 
-        assertThatThrownBy(() -> {
-            sut.save(newDataset);
-        }).isInstanceOf(DataSetAlreadyExistException.class);
+        assertThat(exists).isTrue();
+        assertThat(nonExisting).isFalse();
+    }
 
+    @Test
+    void should_remove_dataset_by_id() {
+        DataSet dataset = DataSet.builder().withName("to_delete").build();
+        String id = sut.save(dataset);
+
+        sut.removeById(id);
+
+        assertThat(Files.exists(Paths.get(STORE_PATH + File.separator + id + ".json"))).isFalse();
+    }
+
+    @Test
+    void should_return_all_datasets() {
+        sut.save(DataSet.builder().withName("one").build());
+        sut.save(DataSet.builder().withName("two").build());
+
+        List<DataSet> all = sut.findAll();
+
+        assertThat(all).hasSize(2);
+        assertThat(all.stream().map(ds -> ds.name)).containsExactlyInAnyOrder("one", "two");
     }
 }

@@ -16,6 +16,8 @@ public interface DataSetRepository {
 
     DataSet findById(String dataSetId);
 
+    boolean existByName(String name);
+
     void removeById(String dataSetId);
 
     List<DataSet> findAll();

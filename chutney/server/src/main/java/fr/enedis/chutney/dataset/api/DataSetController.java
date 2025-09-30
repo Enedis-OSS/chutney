@@ -51,18 +51,14 @@ public class DataSetController {
     @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public DataSetDto save(@RequestBody DataSetDto datasetDto) {
         hasNoDuplicatedHeaders(datasetDto);
-        return toDto(datasetService.save(fromDto(datasetDto)));
+        return toDto(datasetService.create(fromDto(datasetDto)));
     }
 
     @PreAuthorize("hasAuthority('DATASET_WRITE')")
-    @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public DataSetDto update(@RequestBody DataSetDto dataSetDto, @RequestParam Optional<String> oldId) {
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public DataSetDto update(@PathVariable String id, @RequestBody DataSetDto dataSetDto) {
         hasNoDuplicatedHeaders(dataSetDto);
-        if (oldId.isPresent()) {
-            return toDto(datasetService.updateWithRename(oldId.get(), fromDto(dataSetDto)));
-        } else {
-            return save(dataSetDto);
-        }
+        return toDto(datasetService.update(id, fromDto(dataSetDto)));
     }
 
     @PreAuthorize("hasAuthority('DATASET_WRITE')")

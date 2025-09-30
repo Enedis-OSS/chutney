@@ -54,19 +54,15 @@ export class DataSetService {
             );
     }
 
-    save(dataset: Dataset, oldId?: string): Observable<Dataset> {
+    create(dataset: Dataset): Observable<Dataset> {
+        return this.httpClient.post<Dataset>(environment.backend + this.resourceUrl, dataset)
+            .pipe(map(dto => this.fromDto(dto)));
+    }
+
+    update(id: string, dataset: Dataset): Observable<Dataset> {
         DataSetService.cleanTags(dataset);
-        if (dataset.id && dataset.id.length > 0) {
-            return this.httpClient.put<Dataset>(environment.backend + this.resourceUrl, dataset, {params: {oldId}})
-                .pipe(
-                    map(dto => this.fromDto(dto))
-                );
-        } else {
-            return this.httpClient.post<Dataset>(environment.backend + this.resourceUrl, dataset)
-                .pipe(
-                    map(dto => this.fromDto(dto))
-                );
-        }
+        return this.httpClient.put<Dataset>(environment.backend + this.resourceUrl + "/" + id, dataset)
+            .pipe(map(dto => this.fromDto(dto)));
     }
 
     delete(id: String): Observable<Object> {

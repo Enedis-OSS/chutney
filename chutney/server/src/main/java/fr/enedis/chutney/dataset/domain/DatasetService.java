@@ -7,12 +7,10 @@
 
 package fr.enedis.chutney.dataset.domain;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
-import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
+import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
 import fr.enedis.chutney.server.core.domain.scenario.AggregatedRepository;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
@@ -85,24 +83,26 @@ public class DatasetService {
             .toList();
     }
 
-    public DataSet save(DataSet dataset) {
-        String id = datasetRepository.save(dataset);
-        return DataSet.builder().fromDataSet(dataset).withId(id).build();
+    public DataSet create(DataSet dataset) {
+        if (datasetRepository.existByName(dataset.name)) {
+            throw new DataSetAlreadyExistException("Dataset with name " + dataset.name + " already exists");
+        }
+       return save(dataset);
     }
 
-    public DataSet updateWithRename(String oldId, DataSet dataset) {
-        if (isBlank(oldId)) {
-            throw new DataSetNotFoundException("");
-        }
-
-        DataSet newDataset = save(dataset);
-        String newId = newDataset.id;
-        if (!oldId.equals(newId)) {
-            updateScenarios(oldId, newId);
-            updateCampaigns(oldId, newId);
+    public DataSet update(String oldId, DataSet dataset) {
+        DataSet saved = save(dataset);
+        if (!oldId.equals(saved.id)) {
             datasetRepository.removeById(oldId);
+            updateScenarios(oldId, saved.id);
+            updateCampaigns(oldId, saved.id);
         }
-        return newDataset;
+        return saved;
+    }
+
+    private DataSet save(DataSet dataset) {
+        String id = datasetRepository.save(dataset);
+        return DataSet.builder().fromDataSet(dataset).withId(id).build();
     }
 
     private void updateScenarios(String oldId, String newId) {

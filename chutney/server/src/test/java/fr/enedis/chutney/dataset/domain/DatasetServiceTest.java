@@ -9,8 +9,10 @@ package fr.enedis.chutney.dataset.domain;
 
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +20,7 @@ import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.scenario.domain.gwt.GwtScenario;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
+import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
 import fr.enedis.chutney.server.core.domain.scenario.AggregatedRepository;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
@@ -27,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 class DatasetServiceTest {
 
@@ -91,28 +95,6 @@ class DatasetServiceTest {
     }
 
     @Test
-    public void should_update_dataset_reference_in_scenarios_on_rename() {
-        String oldId = "old_id";
-        String newId = "new_id";
-
-        TestCaseMetadataImpl metadata = TestCaseMetadataImpl.builder().withDefaultDataset(oldId).build();
-        when(testCaseRepository.findAll()).thenReturn(List.of(metadata));
-
-        GwtTestCase testCase = GwtTestCase.builder().withMetadata(metadata).withScenario(mock(GwtScenario.class)).build();
-        when(testCaseRepository.findById(any())).thenReturn(of(testCase));
-
-        when(datasetRepository.save(any())).thenReturn(newId);
-
-        GwtTestCase expected = GwtTestCase.builder().from(testCase).withMetadata(
-            TestCaseMetadataImpl.TestCaseMetadataBuilder.from(metadata).withDefaultDataset(newId).build()
-        ).build();
-
-        sut.updateWithRename(oldId, DataSet.builder().withName(newId).build());
-
-        verify(testCaseRepository).save(expected);
-    }
-
-    @Test
     void should_remove_deleted_dataset_from_campaigns_and_scenarios() {
         String datasetId = "dataset_id";
 
@@ -144,17 +126,108 @@ class DatasetServiceTest {
     }
 
     @Test
-    public void should_return_dataset_with_id_after_save() {
+    public void should_create_dataset_when_not_existing() {
         // Given
-        DataSet dataset = DataSet.builder().withName("A").build();
+        String name = "a dataset";
+        DataSet dataset = DataSet.builder().withName(name).build();
 
         when(datasetRepository.save(any()))
-            .thenReturn("newId");
+            .thenReturn("a_dataset");
+        when(datasetRepository.existByName(name))
+            .thenReturn(false);
 
         // When
-        DataSet persistedDataset = sut.save(dataset);
+        DataSet persistedDataset = sut.create(dataset);
 
         // Then
-        assertThat(persistedDataset.id).isEqualTo("newId");
+        assertThat(persistedDataset.id).isEqualTo("a_dataset");
     }
+    @Test
+    void should_return_dataset_by_id() {
+        DataSet expected = DataSet.builder().withId("123").withName("Test").build();
+        when(datasetRepository.findById("123")).thenReturn(expected);
+
+        DataSet actual = sut.findById("123");
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void should_throw_exception_when_creating_existing_dataset() {
+        DataSet existing = DataSet.builder().withId("existing").withName("existing").build();
+        when(datasetRepository.existByName("existing")).thenReturn(true);
+
+        DataSet newDataset = DataSet.builder().withName("existing").build();
+
+        assertThatThrownBy(() -> sut.create(newDataset))
+            .isInstanceOf(DataSetAlreadyExistException.class)
+            .hasMessageContaining("already exists");
+    }
+
+
+    @Test
+    void should_update_dataset_and_references_when_renaming() {
+        String oldId = "old_dataset";
+        String newId = "new_dataset";
+        String newName = "new dataset";
+
+        TestCaseMetadataImpl metadata = TestCaseMetadataImpl.builder()
+            .withId("tc1")
+            .withDefaultDataset(oldId)
+            .build();
+
+        GwtTestCase testCase = GwtTestCase.builder()
+            .withMetadata(metadata)
+            .withScenario(mock(GwtScenario.class))
+            .build();
+
+        Campaign campaign = CampaignBuilder.builder()
+            .setId(1L)
+            .setTitle("Campaign")
+            .setDescription("")
+            .setEnvironment("Env")
+            .setTags(List.of())
+            .setDatasetId(oldId)
+            .build();
+
+        DataSet updatedDataset = DataSet.builder().withId(oldId).withName(newName).build();
+
+        when(testCaseRepository.findAll()).thenReturn(List.of(metadata));
+        when(testCaseRepository.findById("tc1")).thenReturn(Optional.of(testCase));
+        when(datasetRepository.save(updatedDataset)).thenReturn(newId);
+        when(campaignRepository.findAll()).thenReturn(List.of(campaign));
+
+        sut.update(oldId, updatedDataset);
+
+        verify(datasetRepository).save(updatedDataset);
+        verify(datasetRepository).removeById(oldId);
+
+        ArgumentCaptor<GwtTestCase> captor = ArgumentCaptor.forClass(GwtTestCase.class);
+        verify(testCaseRepository).save(captor.capture());
+        GwtTestCase saved = captor.getValue();
+        assertThat(saved.metadata.defaultDataset()).isEqualTo(newId);
+
+        verify(campaignRepository).createOrUpdate(
+            CampaignBuilder.builder().from(campaign).setDatasetId(newId).build()
+        );
+    }
+
+    @Test
+    void should_update_only_dataset_when_no_renaming() {
+        String name = "old dataset";
+        String id = "old_dataset";
+        DataSet dataSet = DataSet.builder().withId(id).withName(name).build();
+
+        when(datasetRepository.save(dataSet)).thenReturn(id);
+
+        sut.update(id, dataSet);
+
+        verify(datasetRepository).save(dataSet);
+        verify(datasetRepository, never()).removeById(any());
+        verify(testCaseRepository, never()).findAll();
+        verify(campaignRepository, never()).findAll();
+    }
+
+
+
 }

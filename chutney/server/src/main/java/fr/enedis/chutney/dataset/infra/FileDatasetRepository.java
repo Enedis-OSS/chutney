@@ -8,18 +8,18 @@
 package fr.enedis.chutney.dataset.infra;
 
 import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
+import static fr.enedis.chutney.dataset.infra.DatasetDto.toId;
 import static fr.enedis.chutney.dataset.infra.DatasetMapper.fromDto;
 import static fr.enedis.chutney.dataset.infra.DatasetMapper.toDto;
 import static fr.enedis.chutney.tools.file.FileUtils.createFile;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
-import fr.enedis.chutney.dataset.domain.DataSetRepository;
-import fr.enedis.chutney.server.core.domain.dataset.DataSet;
-import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
-import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
-import fr.enedis.chutney.tools.file.FileUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import fr.enedis.chutney.dataset.domain.DataSetRepository;
+import fr.enedis.chutney.server.core.domain.dataset.DataSet;
+import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
+import fr.enedis.chutney.tools.file.FileUtils;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -52,9 +52,6 @@ public class FileDatasetRepository implements DataSetRepository {
 
     @Override
     public String save(DataSet dataSet) {
-        if(alreadyExists(dataSet)) {
-            throw new DataSetAlreadyExistException(dataSet.name);
-        }
         DatasetDto dto = toDto(dataSet);
         Path file = this.storeFolderPath.resolve(dto.id + FILE_EXTENSION);
         createFile(file);
@@ -65,19 +62,6 @@ public class FileDatasetRepository implements DataSetRepository {
             throw new UncheckedIOException("Cannot save " + file.toUri(), e);
         }
         return dto.id;
-    }
-
-    private boolean alreadyExists(DataSet dataSet) {
-        if(dataSet.id != null) {
-            // Not a new dataset
-            return false;
-        }
-        try {
-            DataSet byId = findById(dataSet.name);
-            return !byId.equals(DataSet.NO_DATASET);
-        } catch (DataSetNotFoundException e) {
-            return false;
-        }
     }
 
     @Override
@@ -95,6 +79,14 @@ public class FileDatasetRepository implements DataSetRepository {
             throw new DataSetNotFoundException("Cannot read " + file.toUri(), e);
         }
     }
+
+    @Override
+    public boolean existByName(String name) {
+        String expectedId = toId(name);
+        Path file = this.storeFolderPath.resolve(expectedId + FILE_EXTENSION);
+        return Files.exists(file);
+    }
+
 
     @Override
     public void removeById(String fileName) {

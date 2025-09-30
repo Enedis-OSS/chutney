@@ -13,7 +13,8 @@ import java.util.Map;
 
 class DatasetDto {
 
-    @JsonIgnore public final String id;
+    @JsonIgnore
+    public final String id;
     public final String name;
     public final String description;
     public final List<String> tags;
@@ -21,12 +22,16 @@ class DatasetDto {
     public final List<Map<String, String>> datatable;
 
     DatasetDto(String name, String description, List<String> tags, Map<String, String> constants, List<Map<String, String>> datatable) {
-        this.id = name.replaceAll(" ", "_");
+        this.id = toId(name);
         this.name = name;
         this.description = description;
         this.tags = tags;
         this.constants = constants;
         this.datatable = datatable;
+    }
+
+    public static String toId(String name) {
+        return name.replaceAll(" ", "_");
     }
 
 }
