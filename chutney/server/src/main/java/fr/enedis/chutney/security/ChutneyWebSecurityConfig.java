@@ -8,6 +8,7 @@
 package fr.enedis.chutney.security;
 
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_SSL_ENABLED_SPRING_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -86,7 +87,7 @@ public class ChutneyWebSecurityConfig {
     @Value("${management.endpoints.web.base-path:/actuator}")
     protected String actuatorBaseUrl;
 
-    @Value("${server.ssl.enabled:true}")
+    @Value(SERVER_SSL_ENABLED_SPRING_VALUE)
     private Boolean sslEnabled;
 
     @Bean

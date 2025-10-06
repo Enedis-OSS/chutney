@@ -19,9 +19,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnvironmentSpringConfiguration {
 
-    private static final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
-    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.configuration-folder:" + WORKSPACE_SPRING_VALUE + "/conf}";
-    public static final String ENVIRONMENT_FOLDER ="/environment";
+    private final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
+    private final String CONFIGURATION_FOLDER_SPRING_VALUE = "#{'" + WORKSPACE_SPRING_VALUE + "' + '/conf'}";
+    private final String ENVIRONMENT_FOLDER = "/environment";
 
 
     @Bean
