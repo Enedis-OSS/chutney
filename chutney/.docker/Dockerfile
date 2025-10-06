@@ -4,7 +4,7 @@
 FROM eclipse-temurin:21-jre
 VOLUME ~/.chutney
 ARG JAR_PATH=server/target
-COPY $JAR_PATH/server-*-boot.jar app.jar
+COPY $JAR_PATH/chutney-server-*.jar app.jar
 LABEL org.opencontainers.image.source https://github.com/Enedis-OSS/chutney
 EXPOSE 8443
 CMD java -jar /app.jar
