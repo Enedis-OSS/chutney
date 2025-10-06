@@ -1,10 +1,14 @@
+<!--
+SPDX-FileCopyrightText: 2017-2024 Enedis
+SPDX-License-Identifier: Apache-2.0
+-->
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="start_local_server" type="Application" factoryName="Application">
     <option name="ALTERNATIVE_JRE_PATH" value="homebrew-21" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="fr.enedis.chutney.ServerBootstrap" />
     <module name="server" />
-    <shortenClasspath name="NONE" />
+    <shortenClasspath name="ARGS_FILE" />
     <option name="VM_PARAMETERS" value="-Dspring.config.additional-location=file:./server/src/test/resources/local-dev/additional-config/" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/chutney" />
     <extension name="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.IdeaRunConfigurationExtension">

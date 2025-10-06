@@ -11,9 +11,7 @@ import fr.enedis.chutney.index.api.dto.Hit;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.springframework.stereotype.Service;
 
-@Service
 public class IndexService {
     private final List<IndexRepository<?>> indexRepositories;
 

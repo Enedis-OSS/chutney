@@ -45,14 +45,18 @@ Chutney uses [SLF4J](https://www.slf4j.org/) with [Logback](https://logback.qos.
 A default [logback.xml](https://github.com/Enedis-OSS/chutney/blob/main/chutney/server/src/main/resources/logback.xml){:target=_blank} is packaged in the server jar and logs to the console at level `WARN`.
 
 !!! warning
-Do **not** add logging bridges yourself — they are already included.  
-Avoid:
-* `jcl-over-slf4j`
-* `log4j-over-slf4j` / `slf4j-reload4j`
-* `jul-to-slf4j`
+    
+    Do **not** add logging bridges yourself — they are already included.  
+    
+    Avoid:    
+    
+    * `jcl-over-slf4j`  
+    * `log4j-over-slf4j` / `slf4j-reload4j`  
+    * `jul-to-slf4j`
 
 For complete details, see the Spring boot [logging](https://docs.spring.io/spring-boot/reference/features/logging.html){:target=_blank} documentation.  
 Below are just a few common examples.
+
 ## Override the log configuration
 
 You can replace or adjust the default logging without repackaging.

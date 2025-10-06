@@ -5,7 +5,7 @@
  *
  */
 
-package fr.enedis.chutney.execution.config;
+package fr.enedis.chutney.execution;
 
 import static fr.enedis.chutney.config.ServerConfigurationValues.CAMPAIGNS_EXECUTOR_POOL_SIZE_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.ENGINE_DELEGATION_PASSWORD_SPRING_VALUE;
@@ -27,8 +27,6 @@ import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.campaign.domain.CampaignService;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
-import fr.enedis.chutney.design.domain.editionlock.TestCaseEditions;
-import fr.enedis.chutney.design.domain.editionlock.TestCaseEditionsService;
 import fr.enedis.chutney.engine.api.execution.TestEngine;
 import fr.enedis.chutney.execution.domain.campaign.CampaignExecutionEngine;
 import fr.enedis.chutney.execution.infra.execution.ExecutionRequestMapper;
@@ -155,12 +153,6 @@ public class ExecutionsConfiguration {
         );
     }
 
-
-
-    @Bean
-    TestCaseEditionsService testCaseEditionsService(TestCaseEditions testCaseEditions, TestCaseRepositoryAggregator testCaseRepository) {
-        return new TestCaseEditionsService(testCaseEditions, testCaseRepository);
-    }
 
     @Bean
     TestEngine embeddedTestEngine(fr.enedis.chutney.ExecutionConfiguration executionConfiguration) {
