@@ -14,6 +14,8 @@ import static fr.enedis.chutney.config.ServerConfigurationValues.ENGINE_EXECUTOR
 import static fr.enedis.chutney.config.ServerConfigurationValues.ENGINE_REPORTER_PUBLISHER_TTL_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.EXECUTION_ASYNC_PUBLISHER_DEBOUNCE_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.EXECUTION_ASYNC_PUBLISHER_TTL_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED;
+import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_NB_LOGGED_ROW;
 import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_NB_LOGGED_ROW_SPRING_VALUE;
 
@@ -90,11 +92,13 @@ public class ExecutionsConfiguration {
         @Value(ENGINE_REPORTER_PUBLISHER_TTL_SPRING_VALUE) Long reporterTTL,
         @Qualifier("engineExecutor") ThreadPoolTaskExecutor engineExecutor,
         @Value(TASK_SQL_NB_LOGGED_ROW_SPRING_VALUE) String nbLoggedRow,
+        @Value(TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED_SPRING_VALUE) String minimumMemoryPercentageRequired,
         @Value(ENGINE_DELEGATION_USER_SPRING_VALUE) String delegateUser,
         @Value(ENGINE_DELEGATION_PASSWORD_SPRING_VALUE) String delegatePassword
     ) {
         Map<String, String> actionsConfiguration = new HashMap<>();
         actionsConfiguration.put(TASK_SQL_NB_LOGGED_ROW, nbLoggedRow);
+        actionsConfiguration.put(TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED, minimumMemoryPercentageRequired);
         return new ExecutionConfiguration(reporterTTL, engineExecutor.getThreadPoolExecutor(), actionsConfiguration, delegateUser, delegatePassword);
     }
 

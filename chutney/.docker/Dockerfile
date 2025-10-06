@@ -2,8 +2,7 @@
 #SPDX-License-Identifier: Apache-2.0
 
 FROM eclipse-temurin:21-jre
-VOLUME /config
-VOLUME /.chutney
+VOLUME ~/.chutney
 ARG JAR_PATH=server/target
 COPY $JAR_PATH/server-*-boot.jar app.jar
 LABEL org.opencontainers.image.source https://github.com/Enedis-OSS/chutney

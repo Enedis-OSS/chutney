@@ -16,16 +16,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ChutneyJwtProperties {
 
-    private String issuer;
-    private Duration expiresIn;
+    private String issuer = "chutney";
+    private long expiresIn = 240;
 
     public void setExpiresIn(long expiresIn) {
-        this.expiresIn = Duration.ofMinutes(expiresIn);
+        this.expiresIn = expiresIn;
     }
 
-    public ChutneyJwtProperties setIssuer(String issuer) {
+    public void setIssuer(String issuer) {
         this.issuer = issuer;
-        return this;
     }
 
     public String issuer() {
@@ -33,6 +32,6 @@ public class ChutneyJwtProperties {
     }
 
     public Duration expiresIn() {
-        return expiresIn;
+        return Duration.ofMinutes(expiresIn);
     }
 }

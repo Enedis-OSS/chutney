@@ -19,6 +19,7 @@ import java.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -49,6 +50,16 @@ public class ServerConfiguration {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
             .findAndRegisterModules();
+    }
+
+    @Bean
+    ApplicationRunner listResources() {
+        return args -> {
+            var resolver = new org.springframework.core.io.support.PathMatchingResourcePatternResolver();
+            for (var r : resolver.getResources("classpath*:**/*.ldif")) {
+                System.out.println("found: " + r);
+            }
+        };
     }
 
 }

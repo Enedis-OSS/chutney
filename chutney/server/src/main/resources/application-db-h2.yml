@@ -4,7 +4,6 @@
 chutney:
   db-server:
     port: 9360
-    base-dir: ./.chutney/data
 
 spring:
   jpa:

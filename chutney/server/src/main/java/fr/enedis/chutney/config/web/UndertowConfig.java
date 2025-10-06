@@ -37,6 +37,8 @@ public class UndertowConfig {
     @Bean
     public UndertowServletWebServerFactory servletWebServerFactory() {
         UndertowServletWebServerFactory factory = new UndertowServletWebServerFactory();
+        // redirect http 80 to https 443 if ssl enabled & securePort=443
+        // redirect http securePort to https securePort if ssl enabled
         // Add http listener
         factory.getBuilderCustomizers().add(builder -> builder.addHttpListener(httpPort, httpInterface));
         // Redirect rule to secure port

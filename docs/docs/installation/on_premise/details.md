@@ -11,8 +11,9 @@
 You can find corresponding changelog [here](https://github.com/Enedis-OSS/chutney/blob/main/chutney/server/src/main/resources/changelog/db.changelog-master.xml){:target="_blank"}.
 
 !!! note
-    * Chutney is tested with SQLite, H2 and PostgreSQL databases.  
-    * You can find complete examples in maven module [chutney/server](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server/src/main/resources){:target="_blank"}, for all three database types.
+    * Chutney is tested with SQLite, H2 and PostgreSQL databases. 
+    * Chutney configure those database throught spring profiles. `db-h2` for H2, `db-sqlite `or `db-sqlite-rw`(different datasources for read and write) for SQLite and `db-pg` for PostgreSQL
+    * You can find complete examples in maven module [chutney/server](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server){:target="_blank"}, for all three database types.
 
 To configure your datasource, use the property `spring.datasource`
 
@@ -58,7 +59,7 @@ You can replace or adjust the default logging without repackaging.
 
 ### Use a custom Logback file
 
-```bash
+```shell
 # JVM system property
 java -Dlogging.config=file:./my-logback.xml -jar server-<version>-boot.jar
 

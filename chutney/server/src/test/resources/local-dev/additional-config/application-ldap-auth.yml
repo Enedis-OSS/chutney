@@ -1,6 +1,7 @@
 #SPDX-FileCopyrightText: 2017-2024 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
+
 # emmbedded LDAP
 spring:
   ldap:
@@ -9,7 +10,7 @@ spring:
       credential:
         username: uid=admin
         password: secret
-      ldif: classpath:/security/ldap/schema.ldif
+      ldif: file:./server/src/test/resources/local-dev/ldap/schema.ldif
       port: 12345
       validation:
         enabled: false

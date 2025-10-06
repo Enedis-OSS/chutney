@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.index.config;
 
+import static fr.enedis.chutney.config.ServerConfigurationValues.INDEXING_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.INDEXING_TTL_UNIT_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.INDEXING_TTL_VALUE_SPRING_VALUE;
 
@@ -24,6 +25,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Configuration
 @EnableAspectJAutoProxy
 public class IndexConfiguration {
+
+    @Value(INDEXING_FOLDER_SPRING_VALUE)
+    private String indexFolder;
+
     @Bean
     public LuceneIndexRepository reportLuceneIndexRepository(IndexConfig reportIndexConfig) {
         return new LuceneIndexRepository(reportIndexConfig);
@@ -45,23 +50,23 @@ public class IndexConfiguration {
     }
 
     @Bean
-    public IndexConfig reportIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
-        return new OnDiskIndexConfig(directory, "report");
+    public IndexConfig reportIndexConfig() {
+        return new OnDiskIndexConfig(indexFolder, "report");
     }
 
     @Bean
-    public IndexConfig scenarioIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
-        return new OnDiskIndexConfig(directory, "scenario");
+    public IndexConfig scenarioIndexConfig() {
+        return new OnDiskIndexConfig(indexFolder, "scenario");
     }
 
     @Bean
-    public IndexConfig datasetIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
-        return new OnDiskIndexConfig(directory, "dataset");
+    public IndexConfig datasetIndexConfig() {
+        return new OnDiskIndexConfig(indexFolder, "dataset");
     }
 
     @Bean
-    public IndexConfig campaignIndexConfig(@Value("${chutney.index-folder:~/.chutney/index}") String directory) {
-        return new OnDiskIndexConfig(directory, "campaign");
+    public IndexConfig campaignIndexConfig() {
+        return new OnDiskIndexConfig(indexFolder, "campaign");
     }
 
     @Bean

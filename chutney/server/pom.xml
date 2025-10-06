@@ -28,7 +28,6 @@
 
     <properties>
         <mainClass>fr.enedis.chutney.ServerBootstrap</mainClass>
-        <jasypt-spring-boot.version>3.0.5</jasypt-spring-boot.version>
         <acceptance-tests-docker-image-name>chutney-acceptance-test-server</acceptance-tests-docker-image-name>
         <boot.server.classifier>boot</boot.server.classifier>
     </properties>
@@ -106,11 +105,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>${jasypt-spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -414,10 +408,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.ulisesbocchio</groupId>
-                <artifactId>jasypt-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

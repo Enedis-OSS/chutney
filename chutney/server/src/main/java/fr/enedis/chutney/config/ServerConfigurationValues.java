@@ -9,10 +9,11 @@ package fr.enedis.chutney.config;
 
 public final class ServerConfigurationValues {
     public static final String SERVER_PORT_SPRING_VALUE = "${server.port}";
-    public static final String SERVER_INSTANCE_NAME_VALUE = "${server.instance-name:''}";
+    public static final String SERVER_INSTANCE_NAME_VALUE = "${server.instance-name:${spring.application.name}}";
     public static final String SERVER_HTTP_PORT_SPRING_VALUE = "${server.http.port}";
     public static final String SERVER_HTTP_INTERFACE_SPRING_VALUE = "${server.http.interface}";
-    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.configuration-folder:~/.chutney/conf}";
+    public static final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
+    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.workspace.configuration-folder:" + WORKSPACE_SPRING_VALUE + "/conf}";
     public static final String ENGINE_REPORTER_PUBLISHER_TTL_SPRING_VALUE = "${chutney.engine.reporter.publisher.ttl:5}";
     public static final String ENGINE_DELEGATION_USER_SPRING_VALUE = "${chutney.engine.delegation.user:#{null}}";
     public static final String ENGINE_DELEGATION_PASSWORD_SPRING_VALUE = "${chutney.engine.delegation.password:#{null}}";
@@ -32,8 +33,11 @@ public final class ServerConfigurationValues {
     public static final String LOCAL_AGENT_DEFAULT_HOSTNAME_SPRING_VALUE = "${chutney.server.agent.hostname:#{null}}";
     public static final String EDITIONS_TTL_VALUE_SPRING_VALUE = "${chutney.server.editions.ttl.value:6}";
     public static final String EDITIONS_TTL_UNIT_SPRING_VALUE = "${chutney.server.editions.ttl.unit:HOURS}";
+    public static final String INDEXING_FOLDER_SPRING_VALUE = "${chutney.index-folder:" + WORKSPACE_SPRING_VALUE + "/index}";
     public static final String INDEXING_TTL_VALUE_SPRING_VALUE = "${chutney.server.indexes.build.time.ttl.value:6}";
     public static final String INDEXING_TTL_UNIT_SPRING_VALUE = "${chutney.server.indexes.build.time.ttl.unit:HOURS}";
     public static final String TASK_SQL_NB_LOGGED_ROW = "chutney.actions.sql.max-logged-rows";
     public static final String TASK_SQL_NB_LOGGED_ROW_SPRING_VALUE = "${" + TASK_SQL_NB_LOGGED_ROW + ":30}";
+    public static final String TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED = "chutney.actions.sql.minimum-memory-percentage-required";
+    public static final String TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED_SPRING_VALUE = "${" + TASK_SQL_MINIMUM_MEMORY_PERCENTAGE_REQUIRED + ":0}";
 }

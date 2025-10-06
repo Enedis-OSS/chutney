@@ -19,13 +19,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnvironmentSpringConfiguration {
 
-    public static final String ENVIRONMENT_CONFIGURATION_FOLDER = "${chutney.environment.configuration-folder:~/.chutney/conf/environment}";
+    private static final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
+    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.workspace.configuration-folder:" + WORKSPACE_SPRING_VALUE + "/conf}";
+    public static final String ENVIRONMENT_CONFIGURATION_FOLDER = "${chutney.environment.configuration-folder:" + CONFIGURATION_FOLDER_SPRING_VALUE + "/environment}";
 
 
     @Bean
     EnvironmentConfiguration environmentConfiguration(@Value(ENVIRONMENT_CONFIGURATION_FOLDER) String storeFolderPath, List<UpdateEnvironmentHandler> updateEnvironmentHandlers) {
         return new EnvironmentConfiguration(storeFolderPath, updateEnvironmentHandlers);
     }
+
     @Bean
     EmbeddedEnvironmentApi environmentEmbeddedApplication(EnvironmentConfiguration environmentConfiguration) {
         return environmentConfiguration.getEmbeddedEnvironmentApi();

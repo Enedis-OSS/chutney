@@ -7,6 +7,8 @@
 
 package fr.enedis.chutney.config.db;
 
+import static fr.enedis.chutney.config.ServerConfigurationValues.WORKSPACE_SPRING_VALUE;
+
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
@@ -34,7 +36,7 @@ public class DBConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(DBConfiguration.class);
 
     private static final String DBSERVER_PORT_SPRING_VALUE = "${chutney.db-server.port}";
-    private static final String DBSERVER_BASEDIR_SPRING_VALUE = "${chutney.db-server.base-dir:~/.chutney/data}";
+    private static final String DBSERVER_BASEDIR_SPRING_VALUE = "${chutney.db-server.base-dir:" + WORKSPACE_SPRING_VALUE + "/data}";
     private static final String DBSERVER_TMPDIR_SPRING_VALUE = "${chutney.db-server.base-dir:}";
 
     @Bean

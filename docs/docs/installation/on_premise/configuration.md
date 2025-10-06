@@ -5,7 +5,6 @@
   ~
 -->
 
-# Configuration & Extensibility
 
 Chutney is packaged as a Spring Boot executable jar (fat-jar) built from the **server** module.  
 That means you configure and extend it the same way you would any other Spring Boot application.
@@ -20,7 +19,7 @@ Below are just a few common examples.
 
 You can override the packaged `application.yml` with an external file or directory:
 
-```bash
+```shell
 # JVM system property
 java -Dspring.config.location=./my-config/application.yml -jar server-<version>-boot.jar
 
@@ -46,7 +45,7 @@ logging:
 
 For quick tweaks or CI/CD pipelines you can pass properties directly:
 
-```bash
+```shell
 # JVM system properties
 java -Dserver.port=8081 -Dlogging.level.root=INFO -jar server-<version>-boot.jar
 
@@ -55,8 +54,7 @@ SERVER_PORT=8081 LOGGING_LEVEL_ROOT=INFO java -jar server-<version>-boot.jar
 ```
 
 !!! warning "Handling secrets"
-Handling secrets depends on your CI/CD environment.  
-By default, the server packaging can handle [jasypt](../server/src/main/resources/security/jasypt/README.md){:target=_blank} for encoding sensitive data.
+    Handling secrets depends on your CI/CD environment(Vault, Jasypt, etc).
 
 ---
 
@@ -64,7 +62,7 @@ By default, the server packaging can handle [jasypt](../server/src/main/resource
 
 Because Chutney uses Spring Boot’s [PropertiesLauncher](https://docs.spring.io/spring-boot/specification/executable-jar/property-launcher.html){:target="_blank"}, you can add proprietary drivers or custom extensions([Actions](/documentation/extension/action.md) or [Functions](/documentation/extension/function.md)) at runtime by dropping jars into a directory and pointing to it:
 
-```bash
+```shell
 # JVM system property
 java -Dloader.path=lib -jar server-<version>-boot.jar
 

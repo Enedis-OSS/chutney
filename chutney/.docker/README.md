@@ -4,58 +4,31 @@
   ~ SPDX-License-Identifier: Apache-2.0
   ~
   -->
-### Build docker images
+### Build image
 
 From project root folder, run:
 
-**server**
 ```shell
 docker build --tag ghcr.io/enedis-oss/chutney/chutney-server:latest . -f ./.docker/server/Dockerfile
 ```
-
-**ui**
-```shell
-docker build --tag ghcr.io/enedis-oss/chutney/chutney-ui:latest . -f ./.docker/ui/Dockerfile
-```
-
-### Push docker image to github registry
-
-Push will be done by github actions during release workflow.
-
-To push manually :
-```shell
-//login
-docker login ghcr.io -u ${your_username} --password ${your_personal_github_token}
-// push
-docker push ghcr.io/enedis-oss/chutney/chutney-server:latest
-docker push ghcr.io/enedis-oss/chutney/chutney-ui:latest
-```
-
-### Run ui and server containers using docker compose
+### Start container
 
 ```shell
-docker-compose -f ./.docker/docker-compose.yml up -d
+docker run -d \
+  --name chutney-server \
+  -p 8443:8443 \
+  -v .chutney/:~/.chutney \
+  --restart unless-stopped \
+  ghcr.io/enedis-oss/chutney/chutney-server
+
 ```
 
 **Notes :**
 
-* By default, server container will run with default server configuration(see server module)
-* It's possible to override default configuration by passing configuration folder as volume when running server container (see docker-compose-custom-config.yml file for more details)
+* Server container will run with default configuration(see server module)
+* It's possible to override default configuration like any other spring boot application when running server container (see [this](https://github.com/Enedis-OSS/chutney/blob/main/example/.docker/dev-docker-compose-demo.yml){:target="_blank"} compose file for example)
 
 ### Enjoy app
 
-visit https://localhost
-
-### Stop & remove docker compose services
-
-**stop**
-
-```shell
-docker-compose -f ./.docker/docker-compose.yml stop
-```
-
-**remove**
-
-```shell
-docker-compose -f ./.docker/docker-compose.yml rm server ui --force
+visit https://localhost:8443
 ```

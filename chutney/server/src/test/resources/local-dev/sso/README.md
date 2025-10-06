@@ -13,7 +13,6 @@ In order to use the local oidc provider you need to configure your project with 
 - client id: 'my-client'
 - client secret: 'my-client-secret'
 
-
 ## Start OIDC-provider
 
 Open a new terminal

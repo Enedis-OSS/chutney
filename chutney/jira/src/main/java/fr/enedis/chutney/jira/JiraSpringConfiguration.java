@@ -19,8 +19,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JiraSpringConfiguration {
+    private static final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
+    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.workspace.configuration-folder:" + WORKSPACE_SPRING_VALUE + "/conf}";
 
-    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.jira.configuration-folder:~/.chutney/conf/jira}";
+    public static final String JIRA_CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.jira.configuration-folder:" + CONFIGURATION_FOLDER_SPRING_VALUE + "/jira}";
 
     // api Bean
     @Bean
@@ -41,7 +43,7 @@ public class JiraSpringConfiguration {
     }
 
     @Bean
-    JiraRepository jiraFileRepository(@Value(CONFIGURATION_FOLDER_SPRING_VALUE) String storeFolderPath) {
+    JiraRepository jiraFileRepository(@Value(JIRA_CONFIGURATION_FOLDER_SPRING_VALUE) String storeFolderPath) {
         return new JiraFileRepository(storeFolderPath);
     }
 }
