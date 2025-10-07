@@ -9,15 +9,15 @@
 From project root folder, run:
 
 ```shell
-docker build --tag ghcr.io/enedis-oss/chutney/chutney-server:latest . -f ./.docker/server/Dockerfile
+docker build --tag ghcr.io/enedis-oss/chutney/chutney-server:latest . -f ./.docker/Dockerfile
 ```
 ### Start container
 
 ```shell
 docker run -d \
   --name chutney-server \
-  -p 8443:8443 \
-  -v .chutney/:~/.chutney \
+  -p 443:8443 \
+  -v ./.chutney/:/.chutney \
   --restart unless-stopped \
   ghcr.io/enedis-oss/chutney/chutney-server
 

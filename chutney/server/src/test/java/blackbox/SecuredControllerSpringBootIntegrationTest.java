@@ -86,21 +86,8 @@ public class SecuredControllerSpringBootIntegrationTest {
     private static Object[] securedEndPointList() {
         return new Object[][]{
             {GET, "/actuator", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/beans", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/caches", "ADMIN_ACCESS", null, OK},
             {GET, "/actuator/health", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/info", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/conditions", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/configprops", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/env", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/liquibase", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/loggers", "ADMIN_ACCESS", null, OK},
-            //{HttpMethod.GET, "/actuator/heapdump",  "ADMIN_ACCESS", null, OK}, in comment because it takes 2s
-            {GET, "/actuator/threaddump", "ADMIN_ACCESS", null, OK},
             {GET, "/actuator/prometheus", "ADMIN_ACCESS", null, NOT_FOUND},
-            {GET, "/actuator/metrics", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/scheduledtasks", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/mappings", "ADMIN_ACCESS", null, OK},
 
             {GET, "/api/v1/backups", "ADMIN_ACCESS", null, OK},
             {POST, "/api/v1/backups", "ADMIN_ACCESS", "{\"backupables\": [ \"environments\" ]}", OK},

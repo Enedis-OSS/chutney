@@ -167,6 +167,7 @@ public class ChutneyWebSecurityConfig {
                     .requestMatchers(new MvcRequestMatcher(introspector, InfoController.BASE_URL + "/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, SsoOpenIdConnectController.BASE_URL + "/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, API_BASE_URL_PATTERN)).authenticated()
+                    .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/health/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
                     .anyRequest().permitAll();
             })

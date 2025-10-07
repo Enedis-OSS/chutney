@@ -38,17 +38,20 @@ class SqliteDataSourceFactory {
     private static SQLiteConfig config(boolean readOnly, String tmpDirectoryOrNull) {
         SQLiteConfig config = new SQLiteConfig();
         config.setReadOnly(readOnly);
-        // See https://www.sqlite.org/pragma.html
-        config.setLockingMode(SQLiteConfig.LockingMode.NORMAL);
-        config.setTransactionMode(SQLiteConfig.TransactionMode.IMMEDIATE);
-        config.setDefaultCacheSize(-20000);   // ~20MB
-        config.setPageSize(4096);              // 4KB
-        config.setJournalMode(SQLiteConfig.JournalMode.WAL);
-        config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
-        config.setBusyTimeout(10000);
-        if (StringUtils.isNotBlank(tmpDirectoryOrNull)) {
-            config.setTempStoreDirectory(tmpDirectoryOrNull);
+        if (!readOnly) {
+            // See https://www.sqlite.org/pragma.html
+            config.setLockingMode(SQLiteConfig.LockingMode.NORMAL);
+            config.setTransactionMode(SQLiteConfig.TransactionMode.IMMEDIATE);
+            config.setDefaultCacheSize(-20000);   // ~20MB
+            config.setPageSize(4096);              // 4KB
+            config.setJournalMode(SQLiteConfig.JournalMode.WAL);
+            config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
+            config.setBusyTimeout(10000);
+            if (StringUtils.isNotBlank(tmpDirectoryOrNull)) {
+                config.setTempStoreDirectory(tmpDirectoryOrNull);
+            }
         }
+
         return config;
     }
 }
