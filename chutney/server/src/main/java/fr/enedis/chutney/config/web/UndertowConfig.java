@@ -8,8 +8,8 @@
 package fr.enedis.chutney.config.web;
 
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_INTERFACE_SPRING_VALUE;
-import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_PORT_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_SSL_ENABLED_SPRING_VALUE;
 
 import io.undertow.servlet.api.SecurityConstraint;
 import io.undertow.servlet.api.SecurityInfo;
@@ -28,19 +28,19 @@ public class UndertowConfig {
     @Value(SERVER_PORT_SPRING_VALUE)
     private int securePort;
 
-    @Value(SERVER_HTTP_PORT_SPRING_VALUE)
-    private int httpPort;
-
     @Value(SERVER_HTTP_INTERFACE_SPRING_VALUE)
     private String httpInterface;
+
+    @Value(SERVER_SSL_ENABLED_SPRING_VALUE)
+    private Boolean sslEnabled;
 
     @Bean
     public UndertowServletWebServerFactory servletWebServerFactory() {
         UndertowServletWebServerFactory factory = new UndertowServletWebServerFactory();
-        // redirect http 80 to https 443 if ssl enabled & securePort=443
-        // redirect http securePort to https securePort if ssl enabled
         // Add http listener
-        factory.getBuilderCustomizers().add(builder -> builder.addHttpListener(httpPort, httpInterface));
+        if (sslEnabled && securePort == 443) {
+            factory.getBuilderCustomizers().add(builder -> builder.addHttpListener(80, httpInterface));
+        }
         // Redirect rule to secure port
         factory.getDeploymentInfoCustomizers().add(deploymentInfo ->
             deploymentInfo.addSecurityConstraint(

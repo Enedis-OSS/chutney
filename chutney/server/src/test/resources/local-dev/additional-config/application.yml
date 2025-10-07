@@ -6,6 +6,6 @@ chutney:
   security:
     cors:
       allowed-origins:
-        - 'https://localhost:${server.port}'
+        - 'https://localhost:${server.port:8080}'
         - 'https://localhost:4200'
 

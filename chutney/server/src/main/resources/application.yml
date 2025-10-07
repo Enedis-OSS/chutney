@@ -3,10 +3,6 @@
 
 server:
   port: 8443
-  # todo remove http
-  http:
-    port: 8080
-    interface: localhost
   compression:
     enabled: true
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,text/event-stream
@@ -17,6 +13,7 @@ server:
     key-password: server
     trust-store: 'classpath:security/https/truststore.jks'
     trust-store-password: truststore
+
 management:
   endpoints:
     web:
