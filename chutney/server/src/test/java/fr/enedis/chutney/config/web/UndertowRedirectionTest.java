@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -21,6 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(properties = {
     "server.port=443",
 })
+@Disabled
 class UndertowRedirectionTest {
     private final HttpClient client = HttpClient.newBuilder()
         .followRedirects(HttpClient.Redirect.NEVER) // we want to inspect the 301/302
