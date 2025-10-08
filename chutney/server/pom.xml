@@ -327,6 +327,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
                 <configuration>
                     <jmxPort>${jmx.port.chutney-server}</jmxPort>
                 </configuration>
@@ -373,7 +374,7 @@
                             <goal>build-image-no-fork</goal>
                         </goals>
                         <configuration>
-                            <skip>${skip-server-start-stop-and-docker-build}</skip>
+                            <skip>!${skip-server-start-stop-and-docker-build}</skip>
                             <classifier>boot</classifier>
                             <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                             <image>
