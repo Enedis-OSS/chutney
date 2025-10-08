@@ -338,7 +338,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>${chutney.boot-jar.name}-${chutney.version}</finalName>
+                            <finalName>${chutney.boot-jar.name}-${project.version}</finalName>
                             <attach>false</attach>
                             <executable>true</executable>
                             <layout>ZIP</layout>
@@ -398,7 +398,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${project.build.directory}/${chutney.boot-jar.name}-${chutney.version}.jar</file>
+                            <file>${project.build.directory}/${chutney.boot-jar.name}-${project.version}.jar</file>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${chutney.boot-jar.name}</artifactId>
                             <version>${project.version}</version>
