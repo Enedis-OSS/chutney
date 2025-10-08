@@ -281,6 +281,7 @@
     </dependencies>
 
     <build>
+        <finalName>${chutney.boot-jar.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.cxf</groupId>
@@ -339,7 +340,6 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>${chutney.boot-jar.artifactId}-${project.version}</finalName>
                             <attach>false</attach>
                             <executable>true</executable>
                             <layout>ZIP</layout>
@@ -374,7 +374,7 @@
                             <goal>build-image-no-fork</goal>
                         </goals>
                         <configuration>
-                            <skip>!${skip-server-start-stop-and-docker-build}</skip>
+                            <skip>${skip-server-start-stop-and-docker-build}</skip>
                             <classifier>boot</classifier>
                             <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                             <image>
