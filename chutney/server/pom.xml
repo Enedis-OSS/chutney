@@ -29,7 +29,7 @@
     <properties>
         <mainClass>fr.enedis.chutney.ServerBootstrap</mainClass>
         <acceptance-tests-docker-image-name>chutney-acceptance-test-server</acceptance-tests-docker-image-name>
-        <chutney.boot-jar.name>chutney-server</chutney.boot-jar.name>
+        <chutney.boot-jar.artifactId>chutney-server</chutney.boot-jar.artifactId>
     </properties>
 
     <dependencies>
@@ -338,7 +338,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>${chutney.boot-jar.name}-${project.version}</finalName>
+                            <finalName>${chutney.boot-jar.artifactId}-${project.version}</finalName>
                             <attach>false</attach>
                             <executable>true</executable>
                             <layout>ZIP</layout>
@@ -398,9 +398,9 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${project.build.directory}/${chutney.boot-jar.name}-${project.version}.jar</file>
+                            <file>${project.build.directory}/${chutney.boot-jar.artifactId}-${project.version}.jar</file>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>${chutney.boot-jar.name}</artifactId>
+                            <artifactId>${chutney.boot-jar.artifactId}</artifactId>
                             <version>${project.version}</version>
                             <packaging>jar</packaging>
                             <generatePom>true</generatePom>
