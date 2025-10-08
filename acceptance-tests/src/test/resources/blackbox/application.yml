@@ -10,6 +10,15 @@ server:
     trust-store: 'classpath:security/https/truststore.jks'
     trust-store-password: truststore
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+          - metrics
+
 chutney:
   server:
     editions:
