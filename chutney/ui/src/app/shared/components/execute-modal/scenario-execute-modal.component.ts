@@ -59,7 +59,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
 
     ngOnInit(): void {
-        const createDatasetLabel = this.translateService.instant('dataset.actions.createDataset');
+        const createDatasetLabel = this.translateService.instant('dataset.actions.edit-new');
         this.createDataset = new Dataset(createDatasetLabel, "", [], new Date(), [], [])
         this.datasetService.findAll()
             .pipe(takeUntil(this.unsubscribeSub$))

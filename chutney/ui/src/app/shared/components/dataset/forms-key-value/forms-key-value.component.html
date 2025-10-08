@@ -6,48 +6,47 @@
   -->
 
 <div class="mt-3">
-  <button type="button" class="btn btn-primary mb-3" (click)="insertNewKeyValue()">
-    {{ 'global.actions.add' | translate }} <span class="fa fa-grip-lines" aria-hidden="true"></span>
-  </button>
-  @if (enableImportExport) {
-      <div class="float-end">
-        <button type="button" class="btn btn-primary" (click)="exportKeyValue()">
-          <span class="fa fa-file-csv" aria-hidden="true"></span> {{ 'global.actions.export' | translate }}
-        </button>
-        <div class="btn btn-primary div-file ms-2">
-          <span class="fa fa-file-import" aria-hidden="true"></span> {{ 'global.actions.import' | translate }}
-          <input class="input-file" type="file" name="file" multiple="false"
-            (change)="importKeyValue($event.target.files)"/>
+    <button type="button" class="btn btn-primary mb-3" (click)="insertNewKeyValue()">
+        {{ 'global.actions.add' | translate }} <span class="fa fa-grip-lines" aria-hidden="true"></span>
+    </button>
+    <small class="text-danger" *ngIf="keyValuesForm.touched && keyValuesForm.hasError('duplicatedKey')">{{"dataset.edition.unique-values.validations.duplicatedKey" | translate}}</small>
+    @if (enableImportExport) {
+        <div class="float-end">
+            <button type="button" class="btn btn-primary" (click)="exportKeyValue()">
+                <span class="fa fa-file-csv" aria-hidden="true"></span> {{ 'global.actions.export' | translate }}
+            </button>
+            <div class="btn btn-primary div-file ms-2">
+                <span class="fa fa-file-import" aria-hidden="true"></span> {{ 'global.actions.import' | translate }}
+                <input class="input-file" type="file" name="file" multiple="false"
+                       (change)="importKeyValue($event.target.files)"/>
+            </div>
         </div>
-      </div>
-  }
+    }
 
-  @for (keyValue of keyValuesForm.controls; track keyValue; let i = $index) {
-    <div [formGroup]="keyValuesForm">
-      <div [formGroupName]="i" class="row mb-2">
-        <div style="flex: 0 0 110px;" class="align-self-center">
-          <button type="button" class="btn btn-sm btn-outline-primary delete-button-height"
-            (click)="insertNewKeyValue(i)"
-            title="{{'global.actions.add' | translate}}">
-            <span class="fa fa-plus"></span>
-          </button>
-          <button type="button" class="btn btn-sm btn-outline-danger delete-button-height ms-1"
-            (click)="removeKeyValueLine(i)"
-            title="{{'global.actions.delete' | translate}}">
-            <span class="fa fa-times"></span>
-          </button>
-        </div>
-        <div class='col-md-2 '>
-          <input type="text" class="form-control" id="key" formControlName="key"
-            placeholder="{{ 'global.smallword.key' | translate }}"/>
-        </div>
-        <div class='col-md-8'>
+    @for (keyValue of keyValuesForm.controls; track $index; let i = $index) {
+        <div [formGroup]="asFormGroup(keyValue)">
+            <div style="flex: 0 0 110px;" class="align-self-center">
+                <button type="button" class="btn btn-sm btn-outline-primary delete-button-height"
+                        (click)="insertNewKeyValue(i)"
+                        title="{{'global.actions.add' | translate}}">
+                    <span class="fa fa-plus"></span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger delete-button-height ms-1"
+                        (click)="removeKeyValueLine(i)"
+                        title="{{'global.actions.delete' | translate}}">
+                    <span class="fa fa-times"></span>
+                </button>
+            </div>
+            <div class='col-md-2 '>
+                <input type="text" class="form-control" id="key" formControlName="key"
+                       placeholder="{{ 'global.smallword.key' | translate }}"/>
+            </div>
+            <div class='col-md-8'>
           <textarea class="form-control" rows="1" max-rows="20" cols="100%" formControlName="value"
-          placeholder="{{ 'global.smallword.value' | translate }}"></textarea>
+                    placeholder="{{ 'global.smallword.value' | translate }}"></textarea>
+            </div>
         </div>
-      </div>
-    </div>
-  }
+    }
 
 </div>
 

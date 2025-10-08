@@ -5,21 +5,17 @@
   ~
   -->
 
-@if (message || backendError) {
-  <div class="notification text-center text-white rounded" [ngClass]="backendError ? 'bg-danger' : 'bg-info'">
-    @if (message) {
-      <strong>{{ message }} <br></strong>
-    }
-    @if (backendError) {
-      <strong>{{ backendError }}</strong>
-    }
+@if (message) {
+  <div class="notification text-center text-white rounded" [ngClass]="'bg-' + message.level">
+      <strong>{{ message.content }}</strong>
   </div>
 }
 
-<div class="p-3">
+<div class="p-3" *ngIf="datasetForm">
   <ng-container [formGroup]="datasetForm">
     <div class="box2">
-      <input #dataSetName id="datasetName" class="form-control" placeholder="Name" formControlName="name" required/>
+      <input #dataSetName id="datasetName" class="form-control" [placeholder]="'dataset.edition.name.placeholder' | translate" formControlName="name" required/>
+        <small class="text-danger" *ngIf="datasetForm.get('name').touched && datasetForm.get('name').hasError('required')">{{"dataset.edition.name.validations.required" | translate}}</small>
     </div>
     <div class="box2">
       <input id="datasetDescription" class="form-control" placeholder="Description" formControlName="description"/>
@@ -29,7 +25,7 @@
     </div>
 
     <div class="box2">
-      <button type="button" [disabled]="!isValid()" (click)="save()" class="btn btn-primary m-2">
+      <button type="button" [disabled]="datasetForm.invalid" (click)="save()" class="btn btn-primary m-2">
         <span class="fa fa-check"></span>&nbsp;
         <span>{{ 'global.actions.record' | translate }}</span>
       </button>
@@ -52,7 +48,7 @@
     }
 
     <div>
-      <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs">
         <li class="nav-item cursor-pointer">
           <a class="nav-link" [ngClass]="{ 'active':activeTab==='keyValue'}"
             (click)="selectTab('keyValue')"><span class="fa fa-list" aria-hidden="true"></span></a>
@@ -65,10 +61,10 @@
 
           <div class="tab-content clearfix">
             <div class="tab-pane" id="keyValue" [ngClass]="{ 'active':activeTab==='keyValue'}">
-              <chutney-forms-key-value formControlName="keyValues" [enableImportExport]="true"></chutney-forms-key-value>
+              <chutney-forms-key-value [keyValuesForm]="asFormArray(datasetForm.get('keyValues'))" [enableImportExport]="true"></chutney-forms-key-value>
             </div>
-            <div class="tab-pane" id="mulitKeyValue" [ngClass]="{ 'active':activeTab==='multiKeyValue'}">
-              <chutney-forms-data-grid formControlName="multiKeyValues" [enableImportExport]="true"></chutney-forms-data-grid>
+            <div class="tab-pane" id="multiKeyValue" [ngClass]="{ 'active':activeTab==='multiKeyValue'}">
+              <chutney-forms-data-grid [dataGridForm]="asFormArray(datasetForm.get('multiKeyValues'))" [enableImportExport]="true"></chutney-forms-data-grid>
             </div>
           </div>
         </div>

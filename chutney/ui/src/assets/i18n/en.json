@@ -418,11 +418,26 @@
         "warning": "Warning"
     },
     "dataset": {
-        "error": {
-            "duplicatedHeader": "One or many columns have duplicated header"
+        "edition": {
+            "name": {
+                "placeholder": "Nom",
+                "validations": {
+                    "required": "The name is required"
+                }
+            },
+            "unique-values": {
+                "validations": {
+                    "duplicatedKey": "One or more rows have the same key"
+                }
+            },
+            "multiple-values": {
+                "validations": {
+                    "duplicatedHeader": "One or many columns have duplicated headere"
+                }
+            }
         },
         "actions": {
-            "createDataset": "+ Edit new dataset"
+            "edit-new": "+ Edit new dataset"
         },
         "customLabel": "Custom"
     },

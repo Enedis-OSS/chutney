@@ -75,6 +75,8 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         InputGroupModule,
         InputGroupAddonModule,
         TypeaheadModule.forRoot(),
+        FormsDataGridComponent,
+        FormsKeyValueComponent,
     ],
     declarations: [
         ComponentSearchPipe,
@@ -105,8 +107,6 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         ChutneyRightMenuComponent,
         DistinctPipe,
         ScenarioExecuteModalComponent,
-        FormsDataGridComponent,
-        FormsKeyValueComponent,
         SearchBarComponent
     ],
     exports: [

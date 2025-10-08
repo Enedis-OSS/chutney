@@ -418,11 +418,26 @@
         "warning": "Avertissement"
     },
     "dataset": {
-        "error": {
-            "duplicatedHeader": "Une ou plusieurs colonnes ont le même header"
+        "edition": {
+            "name": {
+                "placeholder": "Nom",
+                "validations": {
+                    "required": "Le nom est obligatoire"
+                }
+            },
+            "unique-values": {
+                "validations": {
+                    "duplicatedKey": "Une ou plusieurs lignes ont la même clé"
+                }
+            },
+            "multiple-values": {
+                "validations": {
+                    "duplicatedHeader": "Une ou plusieurs colonnes ont le même en-tête"
+                }
+            }
         },
         "actions": {
-            "createDataset": "+ Editer un nouveau dataset"
+            "edit-new": "+ Editer un nouveau dataset"
         },
         "customLabel": "Custom"
     },

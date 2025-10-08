@@ -5,43 +5,26 @@
  *
  */
 
-import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
-import {
-    AbstractControl,
-    ControlValueAccessor,
-    FormArray,
-    FormBuilder,
-    FormGroup,
-    NG_VALIDATORS,
-    NG_VALUE_ACCESSOR,
-    ValidationErrors
-} from '@angular/forms';
-import { KeyValue } from '@model';
+import { Component, Input, OnDestroy } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FileSaverService } from 'ngx-filesaver';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'chutney-forms-key-value',
     templateUrl: './forms-key-value.component.html',
-    styleUrls: ['./forms-key-value.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => FormsKeyValueComponent),
-            multi: true
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => FormsKeyValueComponent),
-            multi: true
-        }
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        NgIf
     ],
-    standalone: false
+    styleUrls: ['./forms-key-value.component.scss']
 })
-export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
+export class FormsKeyValueComponent implements OnDestroy {
 
-    keyValuesForm: FormArray;
-    isDisabled: boolean;
+    @Input() keyValuesForm!: FormArray;
     @Input() enableImportExport: boolean = true;
 
     private unsubscribeSub$: Subject<void> = new Subject();
@@ -49,9 +32,7 @@ export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
     constructor(
         private fb: FormBuilder,
         private fileSaverService: FileSaverService,
-    ) {
-        this.keyValuesForm = this.fb.array([]);
-    }
+    ) {}
 
     ngOnDestroy() {
         this.unsubscribeSub$.next();
@@ -59,47 +40,43 @@ export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
     }
 
     insertNewKeyValue(i?: number) {
-        this.addKeyValue('', '', i+1);
+        this.addKeyValue('', '', i != null ? i + 1 : undefined);
     }
 
     private addKeyValue(key?: string, value?: string, i?: number): void {
-        if (i == null) {
-            i = this.keyValuesForm.length + 1;
+        const group = this.createKeyValue(key, value);
+        if (i != null) {
+            this.keyValuesForm.insert(i, group);
+        } else {
+            this.keyValuesForm.push(group);
         }
-
-        this.keyValuesForm.insert(i, this.createKeyValue(key, value));
     }
 
     private createKeyValue(key?: string, value?: string): FormGroup {
         return this.fb.group({
-            key: key ? key : '',
-            value: value ? value : ''
+            key: key || '',
+            value: value || ''
         });
     }
 
     removeKeyValueLine(i?: number) {
-        if (i == null) {
-            i = this.keyValuesForm.length;
+        if (i != null && i >= 0 && i < this.keyValuesForm.length) {
+            this.keyValuesForm.removeAt(i);
         }
-
-        this.keyValuesForm.removeAt(i);
     }
 
     private clearForm() {
-        const lineCount = this.keyValuesForm.controls.length;
-        for (let index = 0; index < lineCount; index++) {
+        while (this.keyValuesForm.length > 0) {
             this.keyValuesForm.removeAt(0);
         }
     }
 
     exportKeyValue() {
         const fileName = 'chutney_dataset_keyvalues.csv';
-        let fileContent = '';
         const delimiter = ';';
-
-        this.keyValuesForm.value.forEach(element => {
-            fileContent += element.key + delimiter + element.value + '\n';
-        });
+        const fileContent = this.keyValuesForm.value
+            .map((element: any) => `${element.key}${delimiter}${element.value}`)
+            .join('\n');
 
         this.fileSaverService.saveText(fileContent, fileName);
     }
@@ -107,14 +84,14 @@ export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
     importKeyValue(files: FileList) {
         const file = files.item(0);
         const fileReader = new FileReader();
-        fileReader.onload = (e) => {
+        fileReader.onload = () => {
             this.clearForm();
             const content = '' + fileReader.result;
             const lines = content.split('\n');
-            lines.forEach(l => {
-                const oneLine = l.split(';');
-                if (oneLine.length === 2) {
-                    this.addKeyValue(oneLine[0], oneLine[1]);
+            lines.forEach(line => {
+                const [key, value] = line.split(';');
+                if (key && value) {
+                    this.addKeyValue(key, value);
                 }
             });
             this.keyValuesForm.enable();
@@ -122,45 +99,7 @@ export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
         fileReader.readAsText(file);
     }
 
-    // CVA
-    onChanged: any = () => {};
-
-    onTouched: any = () => {};
-
-    propagateChange: any = () => {};
-
-    writeValue(val: Array<KeyValue>): void {
-        this.clearForm();
-        if (val != null && val.length > 0) {
-            if (this.keyValuesForm.length === 0) {
-                val.forEach(kv => {
-                   this.addKeyValue(kv.key, kv.value)
-                });
-            }
-        }
-    }
-
-    registerOnChange(fn: any): void {
-        this.propagateChange = fn;
-        this.keyValuesForm.valueChanges
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe(fn);
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
-
-    setDisabledState(isDisabled: boolean): void {
-        this.isDisabled = isDisabled;
-    }
-
-    validate(c: AbstractControl): ValidationErrors | null {
-        return this.keyValuesForm.valid ? null : {
-            invalidForm: {
-                valid: false,
-                message: 'fields are invalid'
-            }
-        };
+    asFormGroup(formGroup: AbstractControl<any>): FormGroup {
+        return formGroup as FormGroup;
     }
 }
