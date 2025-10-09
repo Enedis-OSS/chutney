@@ -92,8 +92,11 @@ dependencies {
     // exclude("org.sl4j") does not exclude
     isTransitive = false // this excludes "org.sl4j"
   }
-  runtimeOnly("fr.enedis.chutney", "chutney-server", chutneyVersion, ext = "jar") {
+  runtimeOnly("fr.enedis.chutney", "server", chutneyVersion, ext = "jar") {
     isTransitive = false
+    artifact {
+      classifier = "boot"
+    }
   }
 }
 

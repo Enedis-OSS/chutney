@@ -29,7 +29,7 @@
     <properties>
         <mainClass>fr.enedis.chutney.ServerBootstrap</mainClass>
         <acceptance-tests-docker-image-name>chutney-acceptance-test-server</acceptance-tests-docker-image-name>
-        <chutney.boot-jar.artifactId>chutney-server</chutney.boot-jar.artifactId>
+        <chutney.boot-jar.classifier>boot</chutney.boot-jar.classifier>
     </properties>
 
     <dependencies>
@@ -281,7 +281,6 @@
     </dependencies>
 
     <build>
-        <finalName>${chutney.boot-jar.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.cxf</groupId>
@@ -341,6 +340,7 @@
                         </goals>
                         <configuration>
                             <attach>false</attach>
+                            <classifier>${chutney.boot-jar.classifier}</classifier>
                             <executable>true</executable>
                             <layout>ZIP</layout>
                             <mainClass>${mainClass}</mainClass>
@@ -399,12 +399,13 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${project.build.directory}/${chutney.boot-jar.artifactId}-${project.version}.jar</file>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${chutney.boot-jar.classifier}.jar</file>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>${chutney.boot-jar.artifactId}</artifactId>
+                            <artifactId>${project.artifactId}</artifactId>
                             <version>${project.version}</version>
+                            <classifier>${chutney.boot-jar.classifier}</classifier>
                             <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
+                            <pomFile>${project.file}</pomFile>
                         </configuration>
                     </execution>
                 </executions>

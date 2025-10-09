@@ -33,5 +33,5 @@ You can find all code and configuration below in this [example project](https://
 
 !!! note "Boot jar"
 
-    1. Download chutney-server-<version>.jar from last relase [assets](https://github.com/Enedis-OSS/chutney/releases){:target="_blank"}.   
-    2. Run server jar: `java -jar chutney-server-<version>.jar`
+    1. Download server-<version>-boot.jar from last relase [assets](https://github.com/Enedis-OSS/chutney/releases){:target="_blank"}.   
+    2. Run server jar: `java -jar server-<version>-boot.jar`
