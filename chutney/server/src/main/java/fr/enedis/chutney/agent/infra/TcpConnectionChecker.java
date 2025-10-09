@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.agent.infra;
 
-import static fr.enedis.chutney.ServerConfigurationValues.AGENT_NETWORK_CONNECTION_CHECK_TIMEOUT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.AGENT_NETWORK_CONNECTION_CHECK_TIMEOUT_SPRING_VALUE;
 
 import fr.enedis.chutney.engine.domain.delegation.ConnectionChecker;
 import fr.enedis.chutney.engine.domain.delegation.NamedHostAndPort;

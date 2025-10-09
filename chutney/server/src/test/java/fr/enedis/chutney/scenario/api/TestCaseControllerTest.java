@@ -13,7 +13,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fr.enedis.chutney.RestExceptionHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.scenario.api.raw.dto.ImmutableRawTestCaseDto;
 import fr.enedis.chutney.scenario.api.raw.dto.RawTestCaseDto;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
@@ -22,7 +23,6 @@ import fr.enedis.chutney.security.infra.SpringUserService;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import fr.enedis.chutney.server.core.domain.scenario.AggregatedRepository;
 import fr.enedis.chutney.server.core.domain.scenario.ScenarioNotParsableException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;

@@ -21,10 +21,17 @@
     <licenses>
         <license>
             <name>Apache-2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <properties>
+        <mainClass>fr.enedis.chutney.ServerBootstrap</mainClass>
+        <acceptance-tests-docker-image-name>chutney-acceptance-test-server</acceptance-tests-docker-image-name>
+        <chutney.boot-jar.classifier>boot</chutney.boot-jar.classifier>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>fr.enedis.chutney</groupId>
@@ -45,6 +52,11 @@
         <dependency>
             <groupId>fr.enedis.chutney</groupId>
             <artifactId>tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.enedis.chutney</groupId>
+            <artifactId>ui</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -93,6 +105,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-ldap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-ldap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -215,67 +239,39 @@
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-highlighter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.enedis.chutney</groupId>
-            <artifactId>ui</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-community-dialects</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq.tooling</groupId>
-            <artifactId>activemq-junit</artifactId>
         </dependency>
         <dependency>
             <groupId>net.jqwik</groupId>
             <artifactId>jqwik</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.jqwik</groupId>
-            <artifactId>jqwik-time</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -309,6 +305,161 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>reserve-network-port</id>
+                        <goals>
+                            <goal>reserve-network-port</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <portNames>
+                                <portName>jmx.port.chutney-server</portName>
+                            </portNames>
+                            <randomPort>true</randomPort>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
+                <configuration>
+                    <jmxPort>${jmx.port.chutney-server}</jmxPort>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>fatjar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <attach>false</attach>
+                            <classifier>${chutney.boot-jar.classifier}</classifier>
+                            <executable>true</executable>
+                            <layout>ZIP</layout>
+                            <mainClass>${mainClass}</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-start</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skip-server-start-stop-and-docker-build}</skip>
+                            <wait>2000</wait>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-stop</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skip-server-start-stop-and-docker-build}</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>docker-test-build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build-image-no-fork</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skip-server-start-stop-and-docker-build}</skip>
+                            <classifier>boot</classifier>
+                            <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                            <image>
+                                <name>${acceptance-tests-docker-image-name}</name>
+                                <runImage>eclipse-temurin:${maven.compiler.target}-jre</runImage>
+                                <env>
+                                    <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
+                                </env>
+                            </image>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-boot-jar-locally</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-${chutney.boot-jar.classifier}.jar</file>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${project.version}</version>
+                            <classifier>${chutney.boot-jar.classifier}</classifier>
+                            <packaging>jar</packaging>
+                            <pomFile>${project.file}</pomFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>behind-proxy</id>
+            <activation>
+                <property>
+                    <name>http.proxyHost</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <image>
+                                <env>
+                                    <http_proxy>http://${http.proxyHost}:${http.proxyPort}</http_proxy>
+                                    <https_proxy>http://${https.proxyHost}:${https.proxyPort}</https_proxy>
+                                </env>
+                            </image>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>skip-start-stop-docker-build-when-maven.test.skip</id>
+            <activation>
+                <property>
+                    <name>maven.test.skip</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skip-server-start-stop-and-docker-build>true</skip-server-start-stop-and-docker-build>
+            </properties>
+        </profile>
+        <profile>
+            <id>skip-start-stop-docker-build-when-skipTests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skip-server-start-stop-and-docker-build>true</skip-server-start-stop-and-docker-build>
+            </properties>
+        </profile>
+    </profiles>
 </project>

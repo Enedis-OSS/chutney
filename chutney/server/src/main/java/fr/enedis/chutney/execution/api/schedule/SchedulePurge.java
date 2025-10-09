@@ -7,9 +7,9 @@
 
 package fr.enedis.chutney.execution.api.schedule;
 
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_CRON_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_RETRY_COUNT_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SCHEDULED_PURGE_TIMEOUT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_PURGE_CRON_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_PURGE_RETRY_COUNT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SCHEDULED_PURGE_TIMEOUT_SPRING_VALUE;
 import static java.util.Optional.empty;
 
 import fr.enedis.chutney.server.core.domain.execution.history.PurgeReport;

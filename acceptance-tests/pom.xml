@@ -16,7 +16,7 @@
   </parent>
 
   <artifactId>acceptance-tests</artifactId>
-  <description>A GitHub project template to help you start with Chutney Kotlin DSL</description>
+  <description>Chutney acceptance tests written with chutney kotlin dsl</description>
 
   <licenses>
     <license>
@@ -69,7 +69,7 @@
 
     <dependency> <!-- Here to be sure that oci image is built before testing -->
       <groupId>fr.enedis.chutney</groupId>
-      <artifactId>local-dev</artifactId>
+      <artifactId>server</artifactId>
       <version>${chutney.version}</version>
       <scope>test</scope>
     </dependency>

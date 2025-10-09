@@ -42,24 +42,36 @@ jobs:
       maven-username: ${{ github.actor }}
       maven-password: ${{ secrets.GITHUB_TOKEN }}
 
-  upload-plugin-to-release:
-    needs: [ create-github-release]
+  upload-assets-to-release:
+    needs: [create-github-release]
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      matrix:
+        include:
+          - download_name: plugin-artifacts
+            asset_path: artifacts/idea-plugin/build/distributions/chutney-idea-plugin-${{ github.ref_name }}.zip
+            asset_name: chutney-idea-plugin-${{ github.ref_name }}.zip
+            asset_content_type: application/zip
+          - download_name: server-artifacts
+            asset_path: artifacts/chutney/server/target/server-${{ github.ref_name }}-boot.jar
+            asset_name: server-${{ github.ref_name }}.jar
+            asset_content_type: application/java-archive
     steps:
-      - name: get plugin artifacts from build job
+      - name: Get ${{ matrix.download_name }} from build job
         uses: actions/download-artifact@v4
         with:
-          name: plugin-artifacts
+          name: ${{ matrix.download_name }}
           path: artifacts
 
-      - name: Upload artifacts to github release
+      - name: Upload ${{ matrix.asset_name }} to GitHub release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-github-release.outputs.RELEASE_PATH }}
-          asset_path: artifacts/idea-plugin/build/distributions/chutney-idea-plugin-${{ github.ref_name }}.zip
-          asset_name: chutney-idea-plugin-${{ github.ref_name }}.zip
-          asset_content_type: application/zip
-
+          asset_path: ${{ matrix.asset_path }}
+          asset_name: ${{ matrix.asset_name }}
+          asset_content_type: ${{ matrix.asset_content_type }}
 

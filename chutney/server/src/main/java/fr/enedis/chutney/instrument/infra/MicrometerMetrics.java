@@ -35,12 +35,12 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 
 @Component
-class MicrometerMetrics implements ChutneyMetrics {
+public class MicrometerMetrics implements ChutneyMetrics {
 
     private final MeterRegistry meterRegistry;
     private final Map<String, Map<ServerReportStatus, AtomicLong>> statusCountCache = new HashMap<>();
 
-    MicrometerMetrics(MeterRegistry meterRegistry) {
+    public MicrometerMetrics(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
     }
 

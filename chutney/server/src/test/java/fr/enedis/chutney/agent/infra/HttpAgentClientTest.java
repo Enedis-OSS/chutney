@@ -21,7 +21,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import fr.enedis.chutney.WebConfiguration;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.agent.NodeNetworkSpringConfiguration;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto.AgentLinkEntity;
@@ -32,11 +34,9 @@ import fr.enedis.chutney.agent.domain.configure.ImmutableNetworkConfiguration.En
 import fr.enedis.chutney.agent.domain.configure.NetworkConfiguration;
 import fr.enedis.chutney.agent.domain.explore.ExploreResult;
 import fr.enedis.chutney.agent.domain.network.NetworkDescription;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.engine.domain.delegation.ConnectionChecker;
 import fr.enedis.chutney.engine.domain.delegation.NamedHostAndPort;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.time.Instant;

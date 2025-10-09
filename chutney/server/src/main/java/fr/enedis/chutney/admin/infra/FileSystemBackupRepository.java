@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.admin.infra;
 
-import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
 import fr.enedis.chutney.admin.domain.Backup;

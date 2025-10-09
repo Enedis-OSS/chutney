@@ -52,10 +52,6 @@ chutney:
       issuer: chutney
       expiresIn: 240
   configuration-folder: .chutney
-  environment:
-    configuration-folder: ${chutney.configuration-folder}/environment
-  jira:
-    configuration-folder: ${chutney.configuration-folder}/jira
   index-folder: ${chutney.configuration-folder}/index
 
   server:

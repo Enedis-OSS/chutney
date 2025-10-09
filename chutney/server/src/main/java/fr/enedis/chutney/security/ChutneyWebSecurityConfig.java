@@ -7,9 +7,12 @@
 
 package fr.enedis.chutney.security;
 
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_SSL_ENABLED_SPRING_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import com.nimbusds.jose.JOSEException;
 import fr.enedis.chutney.admin.api.InfoController;
 import fr.enedis.chutney.security.api.SsoOpenIdConnectController;
 import fr.enedis.chutney.security.api.UserController;
@@ -22,11 +25,12 @@ import fr.enedis.chutney.security.infra.sso.OAuth2TokenAuthenticationFilter;
 import fr.enedis.chutney.security.infra.sso.SsoOpenIdConnectConfigProperties;
 import fr.enedis.chutney.server.core.domain.security.Authorization;
 import fr.enedis.chutney.server.core.domain.security.User;
-import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
@@ -37,6 +41,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
@@ -82,7 +87,7 @@ public class ChutneyWebSecurityConfig {
     @Value("${management.endpoints.web.base-path:/actuator}")
     protected String actuatorBaseUrl;
 
-    @Value("${server.ssl.enabled:true}")
+    @Value(SERVER_SSL_ENABLED_SPRING_VALUE)
     private Boolean sslEnabled;
 
     @Bean
@@ -129,8 +134,14 @@ public class ChutneyWebSecurityConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "chutney.security.cors")
-    CorsConfiguration corsConfiguration() {
-        return new CorsConfiguration();
+    CorsConfiguration corsConfiguration( @Value(SERVER_PORT_SPRING_VALUE) int serverPort) {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("https://localhost:"+serverPort));
+        config.setAllowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).toList());
+        config.setAllowedHeaders(List.of(CorsConfiguration.ALL));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+        return config;
     }
 
     @Bean
@@ -156,6 +167,7 @@ public class ChutneyWebSecurityConfig {
                     .requestMatchers(new MvcRequestMatcher(introspector, InfoController.BASE_URL + "/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, SsoOpenIdConnectController.BASE_URL + "/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, API_BASE_URL_PATTERN)).authenticated()
+                    .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/health/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
                     .anyRequest().permitAll();
             })

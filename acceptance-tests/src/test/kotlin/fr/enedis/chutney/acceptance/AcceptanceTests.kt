@@ -67,7 +67,7 @@ class AcceptanceTests {
         MountableFile.forClasspathResource("/blackbox/"),
         "/config"
       )
-      withEnv("SPRING_CONFIG_LOCATION", "file:/config/")
+      withEnv("SPRING_CONFIG_ADDITIONALLOCATION", "file:/config/")
     }
     chutneyServer!!.start()
 

@@ -7,8 +7,9 @@ SPDX-License-Identifier: Apache-2.0
     <option name="ALTERNATIVE_JRE_PATH" value="21" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="fr.enedis.chutney.ServerBootstrap" />
-    <module name="local-dev" />
+    <module name="server" />
     <shortenClasspath name="ARGS_FILE" />
+    <option name="VM_PARAMETERS" value="-Dspring.config.additional-location=file:./server/src/test/resources/local-dev/additional-config/" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/chutney" />
     <extension name="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.IdeaRunConfigurationExtension">
       <option name="DIRENV_ENABLED" value="false" />

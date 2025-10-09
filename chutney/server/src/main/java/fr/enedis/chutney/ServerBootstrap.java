@@ -12,12 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.Banner.Mode;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Located by the <b>spring-boot-maven-plugin</b> Maven plugin.
  */
+@SpringBootApplication(exclude = {LiquibaseAutoConfiguration.class, ActiveMQAutoConfiguration.class, MongoAutoConfiguration.class})
 public class ServerBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerBootstrap.class);
@@ -34,7 +39,7 @@ public class ServerBootstrap {
     }
 
     public static ConfigurableApplicationContext start(String... args) {
-        SpringApplicationBuilder appBuilder = new SpringApplicationBuilder(ServerConfiguration.class)
+        SpringApplicationBuilder appBuilder = new SpringApplicationBuilder(ServerBootstrap.class)
             .registerShutdownHook(true)
             .bannerMode(Mode.OFF);
 

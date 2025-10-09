@@ -7,20 +7,20 @@
 
 package fr.enedis.chutney.campaign.infra;
 
-import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.campaign.domain.Frequency.toFrequency;
+import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
-import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
-import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
-import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
-import fr.enedis.chutney.campaign.infra.SchedulingCampaignDto.CampaignExecutionRequestDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
+import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
+import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
+import fr.enedis.chutney.campaign.infra.SchedulingCampaignDto.CampaignExecutionRequestDto;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

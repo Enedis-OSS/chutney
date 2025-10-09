@@ -7,15 +7,15 @@
 
 package fr.enedis.chutney.design.infra.storage.plugins.linkifier;
 
-import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
-import fr.enedis.chutney.design.domain.plugins.linkifier.Linkifier;
-import fr.enedis.chutney.design.domain.plugins.linkifier.Linkifiers;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import fr.enedis.chutney.design.domain.plugins.linkifier.Linkifier;
+import fr.enedis.chutney.design.domain.plugins.linkifier.Linkifiers;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

@@ -1,0 +1,11 @@
+#SPDX-FileCopyrightText: 2017-2024 Enedis
+#SPDX-License-Identifier: Apache-2.0
+
+chutney:
+  workspace: ./.chutney
+  security:
+    cors:
+      allowed-origins:
+        - 'https://localhost:${server.port:8080}'
+        - 'https://localhost:4200'
+

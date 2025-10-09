@@ -21,7 +21,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fr.enedis.chutney.ServerConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fr.enedis.chutney.ServerBootstrap;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.Authorizations;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
@@ -29,8 +31,6 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tools.file.FileUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +53,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(classes = {ServerConfiguration.class})
-@TestPropertySource(properties = "spring.datasource.url=jdbc:h2:mem:testdbsecu")
-@TestPropertySource(properties = "spring.config.location=classpath:blackbox/")
+@SpringBootTest(classes = {ServerBootstrap.class})
+@TestPropertySource(properties = "spring.config.additional-location=classpath:blackbox/")
 public class SecuredControllerSpringBootIntegrationTest {
 
     @Autowired
@@ -70,7 +69,6 @@ public class SecuredControllerSpringBootIntegrationTest {
     private MockMvc mvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
     @BeforeAll
     public static void cleanUp() {
         FileUtils.deleteFolder(new File("./target/.chutney").toPath());
@@ -88,21 +86,8 @@ public class SecuredControllerSpringBootIntegrationTest {
     private static Object[] securedEndPointList() {
         return new Object[][]{
             {GET, "/actuator", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/beans", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/caches", "ADMIN_ACCESS", null, OK},
             {GET, "/actuator/health", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/info", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/conditions", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/configprops", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/env", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/liquibase", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/loggers", "ADMIN_ACCESS", null, OK},
-            //{HttpMethod.GET, "/actuator/heapdump",  "ADMIN_ACCESS", null, OK}, in comment because it takes 2s
-            {GET, "/actuator/threaddump", "ADMIN_ACCESS", null, OK},
             {GET, "/actuator/prometheus", "ADMIN_ACCESS", null, NOT_FOUND},
-            {GET, "/actuator/metrics", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/scheduledtasks", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/mappings", "ADMIN_ACCESS", null, OK},
 
             {GET, "/api/v1/backups", "ADMIN_ACCESS", null, OK},
             {POST, "/api/v1/backups", "ADMIN_ACCESS", "{\"backupables\": [ \"environments\" ]}", OK},

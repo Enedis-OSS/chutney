@@ -1,76 +1,12 @@
 #SPDX-FileCopyrightText: 2017-2024 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
-agent-name: dev-agent
-server:
-  port: ${securePort:443}
-  http:
-    port: ${port:80}
-    interface: 0.0.0.0
-  ssl:
-    keyStore: 'classpath:blackbox/keystores/server.jks'
-    key-store-password: 'server'
-    key-password: 'server'
-  undertow:
-    io-threads: 1
-    worker-threads: 8
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-      cors:
-        allowed-origins: '*'
-        allowed-methods: GET
-  health:
-    ldap:
-      enabled: false
-
 spring:
-  liquibase:
-    change-log: classpath:changelog/db.changelog-master.xml
-  jpa:
-    open-in-view: false
-    show_sql: false
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        #generate_statistics: true
-        cache:
-          use_second_level_cache: true
-          use_query_cache: true
-          region.factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
-        javax:
-          cache:
-            provider: org.ehcache.jsr107.EhcacheCachingProvider
-            uri: ehcache.xml
   profiles:
     active:
       - undertow-https-redirect
       - mem-auth
-      - db-h2
+      - db-h2-mem
 
 chutney:
-  auth:
-    jwt:
-      issuer: chutney
-      expiresIn: 240
-  configuration-folder: target/.chutney/conf
-  environment:
-    configuration-folder: ${chutney.configuration-folder}/environment
-  jira:
-    configuration-folder: ${chutney.configuration-folder}/jira
-
-  server:
-    editions:
-      ttl:
-        value: 2
-        unit: SECONDS
-    execution:
-      async:
-        publisher:
-          ttl: 5
-          debounce: 250
+  workspace: target/.chutney

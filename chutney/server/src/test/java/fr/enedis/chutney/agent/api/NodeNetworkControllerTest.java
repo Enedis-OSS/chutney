@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fr.enedis.chutney.WebConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto.AgentLinkEntity;
 import fr.enedis.chutney.agent.api.dto.NetworkConfigurationApiDto;
@@ -31,8 +31,8 @@ import fr.enedis.chutney.agent.domain.configure.ConfigureService;
 import fr.enedis.chutney.agent.domain.configure.GetCurrentNetworkDescriptionService;
 import fr.enedis.chutney.agent.domain.explore.ExploreAgentsService;
 import fr.enedis.chutney.agent.domain.network.NetworkDescription;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.environment.api.environment.EmbeddedEnvironmentApi;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;

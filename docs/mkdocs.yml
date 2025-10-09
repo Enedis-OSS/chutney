@@ -22,7 +22,7 @@ nav:
       - Local Development: installation/local_dev.md
       - On premise:
           - installation/on_premise/introduction.md
-          - Minimal configuration: installation/on_premise/minimal_conf.md
+          - Configuration: installation/on_premise/configuration.md
           - Further details: installation/on_premise/details.md
       - Advanced topics: installation/advanced_topics.md
   - Documentation:

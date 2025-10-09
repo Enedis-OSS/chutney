@@ -107,17 +107,6 @@ jobs:
           cache-artifacts: ${{ inputs.cache-artifacts }}
           codecov-token: ${{ secrets.codecov-token }}
 
-      - name: Install api-insecure
-        shell: bash
-        run: |
-          mvn org.apache.maven.plugins:maven-install-plugin:3.1.1:install-file \
-            -Dfile=./chutney/packaging/local-api-unsecure/target/local-api-unsecure-${{steps.get-version.outputs.PROJECT_VERSION}}.jar \
-            -DgroupId=fr.enedis.chutney \
-            -DartifactId=local-api-unsecure \
-            -Dversion=${{steps.get-version.outputs.PROJECT_VERSION}} \
-            -Dpackaging=jar
-
-
       - name: Resolve plugin gradle goal from inputs
         if: ${{! inputs.release}}
         id: plugin-goals

@@ -7,11 +7,15 @@
 
 package fr.enedis.chutney.agent;
 
-import static fr.enedis.chutney.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.LOCAL_AGENT_DEFAULT_HOSTNAME_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.LOCAL_AGENT_DEFAULT_NAME_SPRING_VALUE;
-import static fr.enedis.chutney.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_FOLDER_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.LOCAL_AGENT_DEFAULT_HOSTNAME_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.LOCAL_AGENT_DEFAULT_NAME_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.collect.Lists;
 import fr.enedis.chutney.agent.domain.AgentClient;
 import fr.enedis.chutney.agent.domain.configure.ConfigureService;
 import fr.enedis.chutney.agent.domain.configure.Explorations;
@@ -22,10 +26,6 @@ import fr.enedis.chutney.agent.domain.explore.ExploreAgentsService;
 import fr.enedis.chutney.agent.infra.storage.JsonFileAgentNetworkDao;
 import fr.enedis.chutney.engine.domain.delegation.ConnectionChecker;
 import fr.enedis.chutney.environment.api.environment.EmbeddedEnvironmentApi;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.collect.Lists;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;

@@ -19,8 +19,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JiraSpringConfiguration {
+    private final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
+    private final String CONFIGURATION_FOLDER_SPRING_VALUE = "#{'" + WORKSPACE_SPRING_VALUE + "' + '/conf'}";
 
-    public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "${chutney.jira.configuration-folder:~/.chutney/conf/jira}";
+    private final String JIRA_SUB_FOLDER = "/jira";
 
     // api Bean
     @Bean
@@ -42,6 +44,6 @@ public class JiraSpringConfiguration {
 
     @Bean
     JiraRepository jiraFileRepository(@Value(CONFIGURATION_FOLDER_SPRING_VALUE) String storeFolderPath) {
-        return new JiraFileRepository(storeFolderPath);
+        return new JiraFileRepository(storeFolderPath.concat(JIRA_SUB_FOLDER));
     }
 }
