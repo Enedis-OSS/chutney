@@ -396,6 +396,7 @@ class AcceptanceTests {
     fun setUp() {
       sshContainer =
         ComposeContainer(File("src/test/resources/blackbox/env/ssh/ssh-env-compose.yml"))
+          .withLocalCompose(true)
           .waitingFor("jump-host", Wait.forLogMessage(".*Server listening on.*", 1))
           .waitingFor("intern-host", Wait.forLogMessage(".*Server listening on.*", 1))
           .waitingFor("intern-jump-host", Wait.forLogMessage(".*Server listening on.*", 1))
