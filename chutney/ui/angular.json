@@ -64,7 +64,6 @@
                   "ace-builds",
                   "hjson",
                   "core-js",
-                  "dragula",
                   "file-saver"
 
               ]
