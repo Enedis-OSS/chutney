@@ -79,6 +79,10 @@ fr.enedis.chutney.action.selenium.driver.SeleniumGenericDriverInitAction
 fr.enedis.chutney.action.sql.SqlAction
 fr.enedis.chutney.action.ssh.ScpDownloadAction
 fr.enedis.chutney.action.ssh.ScpUploadAction
+fr.enedis.chutney.action.ssh.SftpDownloadAction
+fr.enedis.chutney.action.ssh.SftpFileInfoAction
+fr.enedis.chutney.action.ssh.SftpListDirAction
+fr.enedis.chutney.action.ssh.SftpUploadAction
 fr.enedis.chutney.action.ssh.SshClientAction
 fr.enedis.chutney.action.ssh.SshServerStartAction
 fr.enedis.chutney.action.ssh.SshServerStopAction
