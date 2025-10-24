@@ -49,9 +49,10 @@ public class FileDatasetRepositoryTest {
 
     @Test
     void should_throw_exception_when_dataset_not_found() {
-      String datasetId = "UNKNOWED_DATASET";
-      assertThatThrownBy(() -> sut.findById(datasetId))
-          .isInstanceOf(DataSetNotFoundException.class);
+        String datasetId = "UNKNOWED_DATASET";
+        assertThatThrownBy(() -> sut.findById(datasetId))
+            .isInstanceOf(DataSetNotFoundException.class)
+            .hasMessage(new DataSetNotFoundException(datasetId).getMessage());
     }
 
     @Test
