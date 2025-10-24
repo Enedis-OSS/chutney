@@ -11,51 +11,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.enedis.chutney.action.spi.Action;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.ClassUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
+import org.junit.platform.commons.support.ReflectionSupport;
 
 class FindMissingActionsTest {
-
-    @TempDir
-    static Path testFolder;
 
     @Test
     void should_find_missing_actions_in_meta_inf_file() throws IOException {
 
-        var reflections = new Reflections(
-            "fr.enedis.chutney.action", Scanners.SubTypes);
-        Set<Class<? extends Action>> actionsSubTypes = reflections.getSubTypesOf(Action.class);
-
-        Set<String> actionsByReflection = actionsSubTypes
+        List<Class<?>> allClassesInPackage = ReflectionSupport.findAllClassesInPackage("fr.enedis.chutney.action",
+            (clazz) -> !Modifier.isAbstract(clazz.getModifiers()) && ClassUtils.getAllInterfaces(clazz).contains(Action.class),
+            (str) -> true);
+        Set<String> actionsByReflection = allClassesInPackage
             .stream()
-            .filter(c -> !Modifier.isAbstract(c.getModifiers()))
             .map(Class::getCanonicalName)
             .collect(Collectors.toSet());
 
-        var path = testFolder.resolve(this.getClass().getCanonicalName() + ".class");
+        Path path;
 
-        try(InputStream chutneyActionsStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/extension/chutney.actions")) {
-            assertThat(chutneyActionsStream).isNotNull();
-            Files.copy(chutneyActionsStream, path, StandardCopyOption.REPLACE_EXISTING);
-
-        } catch (IOException e) {
+        try {
+            path = Path.of(Objects.requireNonNull(
+                this.getClass().getClassLoader().getResource("META-INF/extension/chutney.actions"))
+                .toURI());
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
         try(Stream<String> lines = Files.lines(path)) {
             Set<String> actionsFromFile = lines.collect(Collectors.toSet());
-            actionsFromFile.forEach(line -> assertThat(actionsByReflection).contains(line));
-            actionsByReflection.forEach(line -> assertThat(actionsFromFile).contains(line));
+            assertThat(actionsFromFile).containsExactlyInAnyOrderElementsOf(actionsByReflection);
         }
 
     }
