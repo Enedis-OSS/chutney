@@ -9,10 +9,14 @@ package fr.enedis.chutney.server.core.domain.dataset;
 
 public class DataSetNotFoundException extends RuntimeException {
     public DataSetNotFoundException(String id) {
-        super("Dataset [" + id + "] could not be found");
+        super(buildMessageFromId(id));
     }
 
-  public DataSetNotFoundException(String id, Throwable throwable) {
-    super("Dataset [" + id + "] could not be found", throwable);
-  }
+    public DataSetNotFoundException(String id, Throwable throwable) {
+        super(buildMessageFromId(id), throwable);
+    }
+
+    private static String buildMessageFromId(String id) {
+        return "Dataset [" + id + "] could not be found";
+    }
 }

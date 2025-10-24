@@ -51,11 +51,11 @@ public class FileDatasetRepository implements DataSetRepository {
     }
 
     @Override
-    public String save(DataSet dataSet) {
-        if(alreadyExists(dataSet)) {
-            throw new DataSetAlreadyExistException(dataSet.name);
+    public String save(DataSet dataset) {
+        if (alreadyExists(dataset)) {
+            throw new DataSetAlreadyExistException(dataset.name);
         }
-        DatasetDto dto = toDto(dataSet);
+        DatasetDto dto = toDto(dataset);
         Path file = this.storeFolderPath.resolve(dto.id + FILE_EXTENSION);
         createFile(file);
         try {
@@ -67,13 +67,13 @@ public class FileDatasetRepository implements DataSetRepository {
         return dto.id;
     }
 
-    private boolean alreadyExists(DataSet dataSet) {
-        if(dataSet.id != null) {
+    private boolean alreadyExists(DataSet dataset) {
+        if (dataset.id != null) {
             // Not a new dataset
             return false;
         }
         try {
-            DataSet byId = findById(dataSet.name);
+            DataSet byId = findById(dataset.name);
             return !byId.equals(DataSet.NO_DATASET);
         } catch (DataSetNotFoundException e) {
             return false;
@@ -81,24 +81,24 @@ public class FileDatasetRepository implements DataSetRepository {
     }
 
     @Override
-    public DataSet findById(String fileName) {
-        if (null == fileName || fileName.isBlank()) {
+    public DataSet findById(String datasetId) {
+        if (null == datasetId || datasetId.isBlank()) {
             return DataSet.NO_DATASET;
         }
 
-        Path file = this.storeFolderPath.resolve(fileName + FILE_EXTENSION);
+        Path file = this.storeFolderPath.resolve(datasetId + FILE_EXTENSION);
         try {
             String content = FileUtils.readContent(file);
             BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
             return fromDto(objectMapper.readValue(content, DatasetDto.class), attr.creationTime().toInstant());
         } catch (IOException | UncheckedIOException e) {
-            throw new DataSetNotFoundException("Cannot read " + file.toUri(), e);
+            throw new DataSetNotFoundException(datasetId, e);
         }
     }
 
     @Override
-    public void removeById(String fileName) {
-        Path filePath = this.storeFolderPath.resolve(fileName + FILE_EXTENSION);
+    public void removeById(String datasetId) {
+        Path filePath = this.storeFolderPath.resolve(datasetId + FILE_EXTENSION);
         FileUtils.delete(filePath);
     }
 
@@ -113,5 +113,4 @@ public class FileDatasetRepository implements DataSetRepository {
                 .collect(Collectors.toList())
         );
     }
-
 }
