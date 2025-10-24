@@ -79,7 +79,7 @@ public class JiraController {
         return jiraRepository.getAllLinkedCampaigns();
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_WRITE')")
+    @PreAuthorize("hasAuthority('SCENARIO_READ')")
     @GetMapping(path = BASE_SCENARIO_URL + "/{scenarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public JiraScenarioLinksDto getByScenarioId(@PathVariable String scenarioId) {
         String jiraId = jiraRepository.getByScenarioId(scenarioId);

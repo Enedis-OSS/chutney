@@ -168,13 +168,15 @@
                                 <button type="button" class="btn btn-sm px-1"
                                         title="{{ 'global.actions.show' | translate }}"
                                         [routerLink]="['/scenario', scenario.id, 'executions']" [queryParams]="{open: 'last', active: 'last'}"
-                                        (click)="$event.stopPropagation()" >
+                                        (click)="$event.stopPropagation()"
+                                        *hasAuthorization="[Authorization.SCENARIO_READ]">
                                     <span  class="fa fa-eye"></span>
                                 </button>
                                 <button type="button" class="btn btn-sm px-1"
                                         title="{{ 'global.actions.edit' | translate }}"
                                         routerLink="{{'/scenario/' + scenario.id + '/raw-edition'}}"
-                                        (click)="$event.stopPropagation()">
+                                        (click)="$event.stopPropagation()"
+                                        *hasAuthorization="[Authorization.SCENARIO_WRITE]">
                                     <span  class="fa fa-edit"></span>
                                 </button>
                                 @if (jiraUrl !== '') {
