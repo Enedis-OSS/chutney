@@ -7,7 +7,7 @@
 
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
+import { Authorization, JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
 import { JiraPluginService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
@@ -33,6 +33,8 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
     jiraFormGroup: FormGroup;
 
     errorMessage = "";
+
+    Authorization = Authorization;
 
     private unsubscribeSub$: Subject<void> = new Subject();
 

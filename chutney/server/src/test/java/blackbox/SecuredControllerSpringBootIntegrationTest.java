@@ -136,7 +136,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/ui/jira/v1/scenario", "SCENARIO_READ", null, OK},
             {GET, "/api/ui/jira/v1/scenario", "CAMPAIGN_WRITE", null, OK},
             {GET, "/api/ui/jira/v1/campaign", "CAMPAIGN_READ", null, OK},
-            {GET, "/api/ui/jira/v1/scenario/scenarioId", "SCENARIO_WRITE", null, OK},
+            {GET, "/api/ui/jira/v1/scenario/scenarioId", "SCENARIO_READ", null, OK},
             {POST, "/api/ui/jira/v1/scenario", "SCENARIO_WRITE", "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
             {DELETE, "/api/ui/jira/v1/scenario/scenarioId", "SCENARIO_WRITE", null, OK},
             {GET, "/api/ui/jira/v1/campaign/campaignId", "CAMPAIGN_READ", null, OK},
