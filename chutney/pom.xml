@@ -187,11 +187,6 @@
             </dependency>
             <dependency>
                 <groupId>fr.enedis.chutney</groupId>
-                <artifactId>chutney-junit-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fr.enedis.chutney</groupId>
                 <artifactId>tools</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -211,12 +206,6 @@
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
