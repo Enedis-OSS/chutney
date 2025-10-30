@@ -207,11 +207,11 @@ export class LoginService {
     private defaultForwardUrl(user: User): string {
         const authorizations = user.authorizations;
         if (authorizations) {
-            if (contains(authorizations, Authorization.SCENARIO_READ)) return '/scenario';
+            if (contains(authorizations, Authorization.SCENARIO_READ) || contains(authorizations, Authorization.EXECUTION_READ)) return '/scenario';
             if (contains(authorizations, Authorization.CAMPAIGN_READ)) return '/campaign';
             if (contains(authorizations, Authorization.ENVIRONMENT_ACCESS)) return '/targets';
             if (contains(authorizations, Authorization.DATASET_READ)) return '/dataset';
-            if (contains(authorizations, Authorization.ADMIN_ACCESS)) return '/';
+            if (contains(authorizations, Authorization.ADMIN_ACCESS)) return '/plugins';
         }
 
         return '/login';

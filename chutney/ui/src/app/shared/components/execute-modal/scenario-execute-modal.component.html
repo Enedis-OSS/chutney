@@ -19,7 +19,7 @@
       <p-floatLabel>
           <p-select [options]="environments" [(ngModel)]="selectedEnv"
                     [showClear]="true" variant="filled" class="p-0 w-100"></p-select>
-          <label for="env-selection" class="p-2">{{ "scenarios.execution.history.env" | translate }}</label>
+          <label class="p-2">{{ "scenarios.execution.history.env" | translate }}</label>
 
       </p-floatLabel>
   </div>
@@ -82,7 +82,7 @@
               </div>
             </ng-template>
           </p-select>
-          <label for="dataset-selection" class="p-2">{{ "scenarios.execution.history.dataset" | translate }}</label>
+          <label class="p-2">{{ "scenarios.execution.history.dataset" | translate }}</label>
       </p-floatLabel>
   </div>
 
@@ -124,7 +124,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-column align-items-end m-3">
+        <div class="d-flex flex-column align-items-end m-3" *hasAuthorization="[Authorization.DATASET_WRITE]">
             <div class="d-flex me-3 align-content-center me-2">
                 <label class="form-check-label me-2" for="saveDatasetCheckbox">{{ "scenarios.execution.modal.saveDatasetCheckbox" | translate }}</label>
                 <input id="saveDatasetCheckbox" type="checkbox" class="form-check-input" formControlName="saveDatasetCheckbox"/>

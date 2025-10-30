@@ -32,7 +32,7 @@ public class ScheduleCampaignController {
         this.scheduledCampaignRepository = scheduledCampaignRepository;
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SchedulingCampaignDto> getAll() {
         return scheduledCampaignRepository.getAll().stream()

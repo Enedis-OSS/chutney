@@ -9,8 +9,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventManagerService } from '@shared/event-manager.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
-import { TestCase } from '@model';
-import { ScenarioService } from '@core/services';
+import { TestCase, Authorization } from '@model';
+import { ScenarioService, LoginService } from '@core/services';
 import { CanDeactivatePage } from '@core/guards';
 import { HjsonParserService } from '@shared/hjson-parser/hjson-parser.service';
 
@@ -31,41 +31,41 @@ export class RawEditionComponent
     modifiedContent = '';
     saveErrorMessage: string;
     defaultContent =
-        '{\n' +
-        '  givens:\n' +
-        '  [\n' +
-        '    {\n' +
-        '      description: step description\n' +
-        '      implementation:\n' +
-        '      {\n' +
-        '        type: success\n' +
-        '        inputs:\n' +
-        '        {\n' +
-        '        }\n' +
-        '        outputs:\n' +
-        '        {\n' +
-        '        }\n' +
-        '        validations:\n' +
-        '        {\n' +
-        '        }\n' +
-        '      }\n' +
-        '    }\n' +
-        '  ]\n' +
-        '  when: {}\n' +
-        '  thens: []\n' +
-        '}';
+        `{
+           givens: [
+             {
+               description: step description
+               implementation:
+               {
+                 type: success
+                 inputs: {
+                 }
+                 outputs: {
+                 }
+                 validations: {
+                 }
+               }
+             }
+           ]
+           when: {}
+           thens: []
+        }`;
 
     private unsubscribeSub$: Subject<void> = new Subject();
+
+    isAuthorizedToWriteScenario: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private scenarioService: ScenarioService,
-        private hjsonParserService: HjsonParserService
+        private hjsonParserService: HjsonParserService,
+        private loginService: LoginService
     ) {
         super();
         this.testCase = new TestCase();
         this.previousTestCase = this.testCase.clone();
+        this.isAuthorizedToWriteScenario = this.loginService.hasAuthorization(Authorization.SCENARIO_WRITE);
     }
 
     ngOnInit() {

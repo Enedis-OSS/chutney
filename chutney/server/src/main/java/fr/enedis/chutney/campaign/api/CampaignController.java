@@ -93,7 +93,7 @@ public class CampaignController {
         return campaignRepository.removeById(campaignId);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignDto getCampaignById(@PathVariable("campaignId") Long campaignId) {
         Campaign campaign = campaignRepository.findById(campaignId);
@@ -122,7 +122,7 @@ public class CampaignController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CampaignDto> getAllCampaigns() {
         return campaignRepository.findAll().stream()
@@ -130,7 +130,7 @@ public class CampaignController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/lastexecutions/{limit}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CampaignExecutionReportDto> getLastExecutions(@PathVariable("limit") Long limit) {
         List<CampaignExecution> lastExecutions = campaignExecutionRepository.getLastExecutions(limit);
@@ -141,7 +141,7 @@ public class CampaignController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/scenario/{scenarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CampaignDto> getCampaignsByScenarioId(@PathVariable("scenarioId") String scenarioId) {
         return campaignRepository.findCampaignsByScenarioId(scenarioId).stream()

@@ -24,29 +24,30 @@ export const CampaignRoute: Routes = [
         path: '',
         component: CampaignListComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
+        data: { 'authorizations': [ Authorization.CAMPAIGN_READ, Authorization.EXECUTION_READ ] }
     },
     {
         path: 'edition',
         component: CampaignEditionComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_WRITE ] }
+        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
     },
     {
         path: 'scheduling',
         component: CampaignSchedulingComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_EXECUTE ] }
+        data: { 'authorizations': [ Authorization.EXECUTION_WRITE ] }
     },
     {
         path: ':id',
         redirectTo: ':id/executions',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: {'authorizations': [Authorization.EXECUTION_READ]}
     },
     {
         path: ':id/executions',
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] },
+        data: { 'authorizations': [ Authorization.EXECUTION_READ ] },
         children: [
             {
                 path: '',
@@ -62,6 +63,6 @@ export const CampaignRoute: Routes = [
     {
         path: ':id/edition',component: CampaignEditionComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_WRITE ] }
+        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
     }
 ];

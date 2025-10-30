@@ -57,7 +57,7 @@
             </small>
           }
         </span>
-        <ng-container *hasAuthorization="[Authorization.CAMPAIGN_EXECUTE]">
+        <ng-container *hasAuthorization="[Authorization.EXECUTION_WRITE]">
           @if (!report.isRunning()) {
             <div class="text-center">
               @if (report.hasFailed() || report.hasStopped()) {
@@ -161,14 +161,14 @@
                 </i>
               </td>
               <td class="align-middle">
-                <ng-container *hasAuthorization="[Authorization.SCENARIO_READ]">
+                <ng-container *hasAuthorization="[Authorization.EXECUTION_READ]">
                   <a [routerLink]="['/scenario', scenarioReportOutline.scenarioId, 'executions']"
                     [queryParams]="toQueryParams(scenarioReportOutline)"
                     title="{{ 'campaigns.execution.scenarios.item.executions.link' | translate }} {{ scenarioReportOutline.scenarioName }}">
                     {{ scenarioReportOutline.scenarioName }}
                   </a>
                 </ng-container>
-                <ng-container *hasAuthorization="{not: true, authorizations: [Authorization.SCENARIO_READ]}">
+                <ng-container *hasAuthorization="{not: true, authorizations: [Authorization.EXECUTION_READ]}">
                   {{ scenarioReportOutline.scenarioName }}
                 </ng-container>
               </td>

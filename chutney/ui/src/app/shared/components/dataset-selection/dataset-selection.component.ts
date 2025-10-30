@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs';
 export class DatasetSelectionComponent implements OnInit, OnDestroy {
 
     @Input() selectedDatasetId: String;
+    @Input() disabled: boolean = false;
     @Output() selectionEvent = new EventEmitter();
 
     datasets: Array<Dataset>;
