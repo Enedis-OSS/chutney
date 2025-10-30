@@ -194,7 +194,6 @@
         },
         "list": {
             "item": {
-                "title.link.title": "Go to the executions of",
                 "description.none": "No description"
             },
             "empty": "No campaign available",

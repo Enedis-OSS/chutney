@@ -29,7 +29,7 @@ public class ExecutionSearchController {
         this.executionHistoryRepository = executionHistoryRepository;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ExecutionSummaryDto> getExecutionReportMatchQuery(@QueryParam("query") String query) {
         return executionHistoryRepository.getExecutionReportMatchKeyword(query).stream().map(ExecutionSummaryDto::toDto).toList();

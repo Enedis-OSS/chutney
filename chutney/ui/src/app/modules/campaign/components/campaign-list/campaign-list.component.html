@@ -45,12 +45,16 @@
   </div>
 
   <div class="campaign-2 w-100">
-    <button *hasAuthorization="[Authorization.CAMPAIGN_WRITE]" type="button" class="btn btn-primary" (click)="createCampaign()">
-      <span class="fa fa-plus" aria-hidden="true"></span> {{ 'campaigns.list.actions.create' | translate }}
-    </button>
-    <button *hasAuthorization="[Authorization.CAMPAIGN_EXECUTE]" type="button" class="btn btn-primary ms-2" [routerLink]="['scheduling']">
-      <span class="fa fa-plus" aria-hidden="true"></span> {{ 'campaigns.scheduling.schedule' | translate }}
-    </button>
+    @if (isAuthorizedToWriteCampaign) {
+        <button type="button" class="btn btn-primary" (click)="createCampaign()">
+          <span class="fa fa-plus" aria-hidden="true"></span> {{ 'campaigns.list.actions.create' | translate }}
+        </button>
+    }
+    @if (isAuthorizedToWriteExecutions) {
+        <button type="button" class="btn btn-primary ms-2" [routerLink]="['scheduling']">
+          <span class="fa fa-plus" aria-hidden="true"></span> {{ 'campaigns.scheduling.schedule' | translate }}
+        </button>
+    }
   </div>
 
   <div class="campaign-3 w-100">
@@ -60,10 +64,7 @@
           <tbody>
             @for (campaign of (viewedCampaigns | searchTextPipe : campaignFilter:campaignFilterAttributes); track campaign.id) {
               <tr>
-                <td class="small_text w93 align-middle">
-                  <a [routerLink]="['/campaign', campaign.id, 'executions']"
-                  title="{{ 'campaigns.list.item.title.link.title' | translate }} {{campaign.title}}">{{campaign.title}}</a>
-                </td>
+                <td (click)="showCampaign(campaign, $event)" class="small_text w93 align-middle cursor-pointer">{{campaign.title}}</td>
                 <td class="ps-0 w1">
                   @if (jiraMap.has(campaign.id.toString())) {
                     <a role="button" class="btn btn-sm btn-link me-0"
@@ -97,16 +98,18 @@
                     <span class="fa fa-info-circle" aria-hidden="true"></span>
                   </button>
                 </td>
-                <td class="ps-0 w2 align-middle" *hasAuthorization="[Authorization.CAMPAIGN_WRITE]">
-                  <button type="button" class="btn btn-sm btn-outline-primary" (click)="editCampaign(campaign)"
-                          title="{{ 'global.actions.edit' | translate }}">
-                    <span class="fa fa-pencil-alt"></span>
+                <td class="ps-0 w2 align-middle">
+                  <button type="button" class="btn btn-sm btn-outline-primary"
+                          (click)="editCampaign(campaign, $event)"
+                          title="{{ (isAuthorizedToWriteCampaign ? 'global.actions.edit' : 'global.actions.show') | translate }}">
+                    <span class="fa" [ngClass]="isAuthorizedToWriteCampaign ? 'fa-pencil-alt' : 'fa-eye'"></span>
                   </button>
                 </td>
-                <td class="ps-0 w2 align-middle" *hasAuthorization="[Authorization.CAMPAIGN_WRITE]">
+                <td class="ps-0 w2 align-middle">
                   <button type="button" class="btn btn-sm btn-outline-danger"
+                          [disabled]="!isAuthorizedToWriteCampaign"
                           title="{{ 'global.actions.delete' | translate }}"
-                          (click)="deleteCampaign(campaign.id, campaign.title)">
+                          (click)="deleteCampaign(campaign.id, campaign.title,$event)">
                     <span class="fa fa-trash"></span>
                   </button>
                 </td>
@@ -167,12 +170,16 @@
               <tr class="small_text">
                 <td class="w25 text-nowrap"> {{ toIsoDate(report.startDate) | amDateFormat: 'DD MMM. YYYY HH:mm' }}</td>
                 <td class="ps-0 w60">
-                  <a
+                  @if (isAuthorizedToReadExecutions) {
+                    <a
                     [routerLink]="['/campaign', campaignIdFromName(report.campaignName), 'executions']"
                     [queryParams]="{active: report.executionId, open: report.executionId}"
                     >
                     {{ report.campaignName }}
                   </a>
+                  } @else {
+                    {{ report.campaignName }}
+                  }
                 </td>
                 <td class="ps-0 w5">
                   <chutney-execution-badge [status]="report.status" [spin]="true"></chutney-execution-badge>

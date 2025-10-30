@@ -5,16 +5,16 @@
   ~
   -->
 
-<div *hasAuthorization="[Authorization.SCENARIO_WRITE]"
-     class="create-scenario-wrapper"
->
-    <div class="create-scenario">
-        <button type="button" class="btn btn-sm border text-primary" title="{{ 'scenarios.search.create.form' | translate }}"
-                (click)="createNewScenario()">
-            <span class="fa fa-pencil-alt fa-2x"></span>
-        </button>
+@if (isAuthorizedToWriteScenario) {
+    <div class="create-scenario-wrapper">
+        <div class="create-scenario">
+            <button type="button" class="btn btn-sm border text-primary" title="{{ 'scenarios.search.create.form' | translate }}"
+                    (click)="createNewScenario()">
+                <span class="fa fa-pencil-alt fa-2x"></span>
+            </button>
+        </div>
     </div>
-</div>
+}
 <div class="header-scenario">
     <div class="row">
         <div class="col-2"></div>
@@ -128,7 +128,7 @@
                         <td scope="row" class="text-center">
                             {{ scenario.lastExecution != null ? (scenario.lastExecution | amLocale:'fr' | amTimeAgo) : "" }}
                         </td>
-                        <td [routerLink]="['/scenario', scenario.id, 'executions']" (click)="$event.stopPropagation()" class="scenario-title cursor-pointer">{{scenario.title}}</td>
+                        <td (click)="showScenario(scenario, $event)" class="scenario-title cursor-pointer">{{scenario.title}}</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-link me-0"
                                     title="{{scenario.description}}">
@@ -167,23 +167,20 @@
                             <div class="float-end">
                                 <button type="button" class="btn btn-sm px-1"
                                         title="{{ 'global.actions.show' | translate }}"
-                                        [routerLink]="['/scenario', scenario.id, 'executions']" [queryParams]="{open: 'last', active: 'last'}"
-                                        (click)="$event.stopPropagation()"
-                                        *hasAuthorization="[Authorization.SCENARIO_READ]">
+                                        (click)="showScenario(scenario, $event)" >
                                     <span  class="fa fa-eye"></span>
                                 </button>
                                 <button type="button" class="btn btn-sm px-1"
+                                        [ngClass]="isAuthorizedToWriteScenario ? null : 'disabled border-0'"
                                         title="{{ 'global.actions.edit' | translate }}"
-                                        routerLink="{{'/scenario/' + scenario.id + '/raw-edition'}}"
-                                        (click)="$event.stopPropagation()"
-                                        *hasAuthorization="[Authorization.SCENARIO_WRITE]">
+                                        (click)="editScenario(scenario, $event)">
                                     <span  class="fa fa-edit"></span>
                                 </button>
                                 @if (jiraUrl !== '') {
                                     <button type="button" class="btn btn-sm px-1"
                                         [ngClass]="!hasJiraLinks(scenario) ? 'opacity-50' : ''"
                                         [title]="jiraLinksTitleContent(scenario)"
-                                        (click)="showScenarioJiraLinks(scenario)">
+                                        (click)="showScenarioJiraLinks(scenario, $event)">
                                         <span  class="fab fa-jira"></span>
                                     </button>
                                 }

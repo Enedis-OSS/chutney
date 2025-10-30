@@ -64,7 +64,7 @@ public class CampaignExecutionUiController {
     }
 
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = {"/{campaignName}/lastExecution", "/{campaignName}/{env}/lastExecution"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportSummaryDto getLastCampaignExecution(@PathVariable("campaignId") Long campaignId) {
         CampaignExecution lastCampaignExecution = campaignExecutionEngine.getLastCampaignExecution(campaignId);
@@ -72,7 +72,7 @@ public class CampaignExecutionUiController {
     }
 
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @GetMapping(path = {"/{campaignName}", "/{campaignName}/{env}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CampaignExecutionReportDto> executeCampaignByName(@PathVariable("campaignName") String campaignName, @PathVariable("env") Optional<String> environment) {
         String userId = userService.currentUser().getId();
@@ -82,7 +82,7 @@ public class CampaignExecutionUiController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = {"/replay/{campaignExecutionId}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportDto replayFailedScenario(@PathVariable("campaignExecutionId") Long campaignExecutionId) {
         String userId = userService.currentUser().getId();
@@ -90,7 +90,7 @@ public class CampaignExecutionUiController {
         return toDto(newExecution);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @GetMapping(path = {"/{campaignPattern}/surefire", "/{campaignPattern}/surefire/{env}"}, produces = "application/zip")
     public byte[] executeCampaignsByPatternWithSurefireReport(HttpServletResponse response, @PathVariable("campaignPattern") String campaignPattern, @PathVariable("env") Optional<String> environment) {
         String userId = userService.currentUser().getId();
@@ -99,7 +99,7 @@ public class CampaignExecutionUiController {
         return surefireCampaignExecutionReportBuilder.createReport(reports);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/{executionId}/stop")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void stopExecution(@PathVariable("executionId") Long executionId) {
@@ -107,7 +107,7 @@ public class CampaignExecutionUiController {
         campaignExecutionEngine.stopExecution(executionId);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = {"/byID/{campaignId}", "/byID/{campaignId}/{env}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportDto executeCampaignById(
         @PathVariable("campaignId") Long campaignId,

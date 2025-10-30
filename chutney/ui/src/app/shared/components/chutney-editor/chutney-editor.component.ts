@@ -33,6 +33,7 @@ export class ChutneyEditorComponent implements OnInit, AfterViewInit, OnChanges 
     @Input() modes: string[];
     @Input() mode: string;
     @Input() height = '420px';
+    @Input() readOnly: boolean = false;
     currentMode: string;
     @Output() onContentChange = new EventEmitter<string>();
 
@@ -78,6 +79,7 @@ export class ChutneyEditorComponent implements OnInit, AfterViewInit, OnChanges 
         this.aceEditor = ace.edit(this.editorHtmlElement.nativeElement);
         this.aceEditor.session.setValue(this.content ? this.content : '');
         this.aceEditor.setTheme(`ace/theme/${this.currentTheme}`);
+        this.aceEditor.setReadOnly(this.readOnly);
         this.aceEditor.session.setMode(`ace/mode/${this.mode}`);
         this.aceEditor.on('change', () => this.onContentChange.emit(this.aceEditor.getValue()))
     }

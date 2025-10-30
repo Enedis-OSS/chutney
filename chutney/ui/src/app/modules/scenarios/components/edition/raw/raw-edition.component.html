@@ -8,12 +8,12 @@
 <div class="row mb-2">
   <div class="col-6">
     <div class="mb-2">
-      <textarea type="text" id="title" class="form-control"
+      <textarea type="text" id="title" class="form-control" [disabled]="!isAuthorizedToWriteScenario"
         [(ngModel)]="testCase.title" maxlength="300">
       </textarea>
     </div>
     <div class="mb-2">
-      <textarea type="text" id="description" class="form-control"
+      <textarea type="text" id="description" class="form-control" [disabled]="!isAuthorizedToWriteScenario"
         [(ngModel)]="testCase.description" maxlength="300">
       </textarea>
     </div>
@@ -22,7 +22,7 @@
     <div class="d-flex flex-column align-items-center">
       <div class="mb-3">
         <button type="button" class="btn btn-primary ms-3 rounded"
-          (click)="saveScenario()" [disabled]="errorMessage"
+          (click)="saveScenario()" [disabled]="(!isAuthorizedToWriteScenario) || errorMessage"
           title="{{'global.actions.record' | translate}}">
           {{'global.actions.save' | translate}}
         </button>
@@ -36,7 +36,9 @@
       @if (testCase && testCase.id) {
         <div class="d-flex flex-wrap">
           <chutney-authoring-info [testCase]="testCase"></chutney-authoring-info>
-          <chutney-edition-info class="ms-3" [testCase]="testCase"></chutney-edition-info>
+          @if (isAuthorizedToWriteScenario) {
+            <chutney-edition-info class="ms-3" [testCase]="testCase"></chutney-edition-info>
+          }
         </div>
       }
     </div>
@@ -44,6 +46,7 @@
   <div class="col-3 text-center">
     <label class="form-label fw-bold" for="tags">{{ 'scenarios.edition.form.tags' | translate }}</label>
     <textarea type="text" class="form-control" name="tags" id="tags"
+      [disabled]="!isAuthorizedToWriteScenario"
       [ngModel]="testCase.tags" (ngModelChange)="updateTags($event)"
     rows="3"></textarea>
   </div>
@@ -54,6 +57,7 @@
     <span class="fw-bold me-5">{{'menu.principal.dataset' | translate}}</span>
     <chutney-dataset-selection
       [selectedDatasetId]="testCase.defaultDataset"
+      [disabled]="!isAuthorizedToWriteScenario"
       (selectionEvent)="selectDataset($event)">
     </chutney-dataset-selection>
   </div>
@@ -73,6 +77,7 @@
     <chutney-editor
       [modes]="['json', 'hjson']"
       [mode]="'hjson'"
+      [readOnly]="!isAuthorizedToWriteScenario"
       [content]="testCase.content"
       [height]="'310px'"
       (onContentChange)="onScenarioContentChanged($event)">

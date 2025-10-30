@@ -15,7 +15,8 @@ import {
     CampaignSchedulingService,
     CampaignService,
     JiraPluginConfigurationService,
-    JiraPluginService
+    JiraPluginService,
+    LoginService
 } from '@core/services';
 import { StateService } from '@shared/state/state.service';
 import { distinct, filterOnTextContent, flatMap, intersection } from '@shared/tools/array-utils';
@@ -46,7 +47,10 @@ export class CampaignListComponent implements OnInit, OnDestroy {
 
     scheduledCampaigns: Array<CampaignScheduling> = [];
 
-    Authorization = Authorization;
+    isAuthorizedToReadExecutions: boolean = false;
+    isAuthorizedToWriteExecutions: boolean = false;
+    isAuthorizedToReadCampaign: boolean = false;
+    isAuthorizedToWriteCampaign: boolean = false;
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
@@ -56,7 +60,8 @@ export class CampaignListComponent implements OnInit, OnDestroy {
                 private router: Router,
                 private translate: TranslateService,
                 private stateService: StateService,
-                private campaignSchedulingService: CampaignSchedulingService
+                private campaignSchedulingService: CampaignSchedulingService,
+                private loginService: LoginService
     ) {
         translate.get('campaigns.confirm.deletion.prefix').subscribe((res: string) => {
             this.deletionConfirmationTextPrefix = res;
@@ -64,6 +69,11 @@ export class CampaignListComponent implements OnInit, OnDestroy {
         translate.get('campaigns.confirm.deletion.suffix').subscribe((res: string) => {
             this.deletionConfirmationTextSuffix = res;
         });
+
+        this.isAuthorizedToReadExecutions = this.loginService.hasAuthorization(Authorization.EXECUTION_READ);
+        this.isAuthorizedToWriteExecutions = this.loginService.hasAuthorization(Authorization.EXECUTION_WRITE);
+        this.isAuthorizedToReadCampaign = this.loginService.hasAuthorization(Authorization.CAMPAIGN_READ);
+        this.isAuthorizedToWriteCampaign = this.loginService.hasAuthorization(Authorization.CAMPAIGN_WRITE);
     }
 
     ngOnInit() {
@@ -102,16 +112,25 @@ export class CampaignListComponent implements OnInit, OnDestroy {
     }
 
     createCampaign() {
-        const url = '/campaign/edition';
-        this.router.navigateByUrl(url);
+        this.router.navigate(['/campaign', 'edition']);
     }
 
-    editCampaign(campaign: Campaign) {
-        const url = '/campaign/' + campaign.id + '/edition';
-        this.router.navigateByUrl(url);
+    showCampaign(campaign: Campaign, event) {
+        event.stopPropagation();
+        if (this.isAuthorizedToReadExecutions) {
+            this.router.navigate(['/campaign', campaign.id, 'executions']);
+        } else {
+            this.editCampaign(campaign, event);
+        }
     }
 
-    deleteCampaign(id: number, title: string) {
+    editCampaign(campaign: Campaign, event) {
+        event.stopPropagation();
+        this.router.navigate(['/campaign', campaign.id, 'edition']);
+    }
+
+    deleteCampaign(id: number, title: string, event) {
+        event.stopPropagation();
         if (confirm(this.deletionConfirmationTextPrefix + title + this.deletionConfirmationTextSuffix)) {
             this.campaignService.delete(id)
                 .pipe(takeUntil(this.unsubscribeSub$))

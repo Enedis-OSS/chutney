@@ -31,7 +31,7 @@ public class HttpTestEngine implements TestEngine {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = EXECUTION_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public StepExecutionReportDto execute(@Valid @RequestBody ExecutionRequestDto request) {
         return testEngine.execute(request);

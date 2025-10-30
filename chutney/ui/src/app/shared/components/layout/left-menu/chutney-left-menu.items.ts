@@ -16,25 +16,25 @@ export const allMenuItems: MenuItem [] = [
                 label: 'menu.principal.scenarios',
                 link: '/scenario',
                 iconClass: 'fa fa-film',
-                authorizations: [Authorization.SCENARIO_READ,Authorization.SCENARIO_WRITE,Authorization.SCENARIO_EXECUTE]
+                authorizations: [Authorization.SCENARIO_READ, Authorization.EXECUTION_READ]
             },
             {
                 label: 'menu.principal.campaigns',
                 link: '/campaign',
                 iconClass: 'fa fa-flask',
-                authorizations: [Authorization.CAMPAIGN_READ, Authorization.CAMPAIGN_WRITE,Authorization.CAMPAIGN_EXECUTE]
+                authorizations: [Authorization.CAMPAIGN_READ, Authorization.EXECUTION_READ]
             },
             {
                 label: 'menu.principal.dataset',
                 link: '/dataset',
                 iconClass: 'fa fa-table',
-                authorizations: [Authorization.DATASET_READ,Authorization.DATASET_WRITE]
+                authorizations: [Authorization.DATASET_READ]
             },
             {
                 label: 'menu.principal.executionSearch',
                 link: '/execution/search',
                 iconClass: 'fa fa-clipboard',
-                authorizations: [Authorization.SCENARIO_READ]
+                authorizations: [Authorization.EXECUTION_READ]
             },
         ],
     },
