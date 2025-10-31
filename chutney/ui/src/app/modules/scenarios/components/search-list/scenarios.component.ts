@@ -19,7 +19,7 @@ import {
     sortByAndOrder
 } from '@shared/tools/array-utils';
 import { StateService } from '@shared/state/state.service';
-import { JiraPluginConfigurationService, JiraPluginService, ScenarioService } from '@core/services';
+import { JiraPluginConfigurationService, JiraPluginService, ScenarioService, LoginService } from '@core/services';
 import { Authorization, JiraScenarioLinks, ScenarioIndex } from '@model';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { TranslateService } from '@ngx-translate/core';
@@ -57,8 +57,8 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     orderBy = 'lastExecution';
     reverseOrder = false;
 
-    Authorization = Authorization;
-
+    isAuthorizedToReadExecutions: boolean = false;
+    isAuthorizedToWriteScenario: boolean = false;
 
     constructor(
         private router: Router,
@@ -68,9 +68,12 @@ export class ScenariosComponent implements OnInit, OnDestroy {
         private stateService: StateService,
         private readonly route: ActivatedRoute,
         private translateService: TranslateService,
+        private loginService: LoginService,
         private modalService: NgbModal,
         @Inject(DROPDOWN_SETTINGS) public dropdownSettings: IDropdownSettings
     ) {
+        this.isAuthorizedToReadExecutions = this.loginService.hasAuthorization(Authorization.EXECUTION_READ);
+        this.isAuthorizedToWriteScenario = this.loginService.hasAuthorization(Authorization.SCENARIO_WRITE);
     }
 
     ngOnInit() {
@@ -163,7 +166,23 @@ export class ScenariosComponent implements OnInit, OnDestroy {
         });
     }
 
-    showScenarioJiraLinks(scenario: ScenarioIndex) {
+    showScenario(scenario: ScenarioIndex, event) {
+        event.stopPropagation();
+        if (this.isAuthorizedToReadExecutions) {
+            const queryParams: Object = {open: 'last', active: 'last'};
+            this.router.navigate(['/scenario', scenario.id, 'executions'], queryParams);
+        } else {
+            this.editScenario(scenario, event);
+        }
+    }
+
+    editScenario(scenario: ScenarioIndex, event) {
+        event.stopPropagation();
+        this.router.navigate(['/scenario', scenario.id, 'raw-edition']);
+    }
+
+    showScenarioJiraLinks(scenario: ScenarioIndex, event) {
+        event.stopPropagation();
         const modalRef = this.modalService.open(ScenarioJiraLinksModalComponent, { size: 'lg' });
         modalRef.componentInstance.scenario = scenario;
         modalRef.componentInstance.jiraUrl = this.jiraUrl;

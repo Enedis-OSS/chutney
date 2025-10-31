@@ -30,20 +30,20 @@ class ScenarioExecutionHistoryController {
         this.executionHistoryRepository = executionHistoryRepository;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/api/ui/scenario/{scenarioId}/execution/v1", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ExecutionSummaryDto> listExecutions(@PathVariable("scenarioId") String scenarioId) {
         return ExecutionSummaryDto.toDto(
             executionHistoryRepository.getExecutions(scenarioId));
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/api/ui/scenario/execution/{executionId}/summary/v1", produces = MediaType.APPLICATION_JSON_VALUE)
     public ExecutionSummaryDto getExecutionSummary(@PathVariable("executionId") Long executionId) {
         return ExecutionSummaryDto.toDto(executionHistoryRepository.getExecutionSummary(executionId));
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/api/ui/scenario/{scenarioId}/execution/{executionId}/v1", produces = MediaType.APPLICATION_JSON_VALUE)
     public ExecutionHistory.Execution getExecutionReport(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {
         ExecutionHistory.Execution execution = executionHistoryRepository.getExecution(scenarioId, executionId); // TODO - return ExecutionReportDto

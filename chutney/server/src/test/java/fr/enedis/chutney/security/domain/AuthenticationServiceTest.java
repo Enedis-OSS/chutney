@@ -36,7 +36,7 @@ class AuthenticationServiceTest {
         // Given
         Role expectedRole = Role.builder()
             .withName("expectedRole")
-            .withAuthorizations(List.of(Authorization.SCENARIO_EXECUTE.name(), Authorization.CAMPAIGN_EXECUTE.name()))
+            .withAuthorizations(List.of(Authorization.SCENARIO_READ.name(), Authorization.EXECUTION_WRITE.name()))
             .build();
         when(authorizations.read()).thenReturn(
             UserRoles.builder()

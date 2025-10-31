@@ -20,7 +20,14 @@ import net.jqwik.api.arbitraries.SetArbitrary;
 public final class PropertyBasedTestingUtils {
 
     public static Arbitrary<Role> validRole() {
-        return Combinators.combine(validRoleName(), validRights())
+        return validRole(true);
+    }
+
+    public static Arbitrary<Role> validRole(boolean withWrite) {
+        return Combinators.combine(
+                validRoleName(),
+                withWrite ? validRights() : validNotWriteRights()
+            )
             .as((n, a) ->
                 Role.builder()
                     .withName(n)
@@ -62,6 +69,10 @@ public final class PropertyBasedTestingUtils {
 
     public static SetArbitrary<String> validRights() {
         return Arbitraries.of(Authorization.class).map(Enum::name).set().ofMinSize(1).ofMaxSize(5);
+    }
+
+    public static SetArbitrary<String> validNotWriteRights() {
+        return Arbitraries.of(Authorization.class).map(Enum::name).filter(a -> !a.endsWith("WRITE")).set().ofMinSize(1).ofMaxSize(5);
     }
 
     public static String randomRole(Set<Role> roles, Random rand) {

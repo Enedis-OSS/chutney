@@ -32,21 +32,19 @@ export const appRoutes: Routes = [
                 path: 'scenario',
                 loadChildren: () => import('./modules/scenarios/scenario.module').then(m => m.ScenarioModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.SCENARIO_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_EXECUTE]}
+                data: {'authorizations': [Authorization.SCENARIO_READ, Authorization.EXECUTION_READ]}
             },
             {
                 path: 'campaign',
                 loadChildren: () => import('./modules/campaign/campaign.module').then(m => m.CampaignModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.CAMPAIGN_READ, Authorization.CAMPAIGN_WRITE, Authorization.CAMPAIGN_EXECUTE]}
+                data: {'authorizations': [Authorization.CAMPAIGN_READ, Authorization.EXECUTION_READ]}
             },
             {
                 path: 'dataset',
                 loadChildren: () => import('./modules/dataset/dataset.module').then(m => m.DatasetModule),
                 canActivate: [authGuard, featuresGuard], // add requiredAuthorizations
-                data: {
-                    'authorizations': [Authorization.DATASET_READ, Authorization.DATASET_WRITE]
-                }
+                data: {'authorizations': [Authorization.DATASET_READ]}
             },
             {
                 path: 'configurationAgent',
@@ -64,7 +62,7 @@ export const appRoutes: Routes = [
                 path: 'execution/search',
                 loadChildren: () => import('@modules/execution-search/execution-search.module').then(m => m.ExecutionSearchModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.SCENARIO_READ]}
+                data: {'authorizations': [Authorization.EXECUTION_READ]}
             },
             {
                 path: 'vacuum',
@@ -76,19 +74,19 @@ export const appRoutes: Routes = [
                 path: 'targets',
                 loadChildren: () => import('./modules/target/target.module').then(m => m.TargetModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
+                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS]}
             },
             {
                 path: 'environments',
                 loadChildren: () => import('./modules/environment/environment.module').then(m => m.EnvironmentModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
+                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS]}
             },
             {
                 path: 'environmentsVariables',
                 loadChildren: () => import('./modules/environment-variable/environment-variable.module').then(m => m.EnvironmentVariableModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS, Authorization.ADMIN_ACCESS]}
+                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS]}
             },
             {
                 path: 'roles',

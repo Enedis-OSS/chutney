@@ -81,7 +81,7 @@ public class ScenarioExecutionUiController {
         this.scenarioExecutionReportMapper = scenarioExecutionReportMapper;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/api/idea/scenario/execution/{env}")
     public String executeScenarioWitRawContent(@RequestBody IdeaRequest ideaRequest, @PathVariable("env") String env) throws IOException {
         LOGGER.debug("execute Scenario v2 for content='{}'", ideaRequest.content());
@@ -103,7 +103,7 @@ public class ScenarioExecutionUiController {
         return objectMapper.writeValueAsString(report);
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = {"/api/ui/scenario/executionasync/v1/{scenarioId}/{env}", "/api/ui/scenario/executionasync/v1/{scenarioId}/{env}"}, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String executeScenarioAsyncWithExecutionParameters(@PathVariable("scenarioId") String scenarioId, @PathVariable("env") String env, @RequestBody(required = false) ExecutionDatasetDto dataset) {
         LOGGER.debug("execute async scenario '{}'", scenarioId);
@@ -113,13 +113,13 @@ public class ScenarioExecutionUiController {
         return executionEngineAsync.execute(new ExecutionRequest(testCase, env, userId, execDataset)).toString();
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/api/ui/scenario/executionasync/v1/{scenarioId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String executeScenarioAsyncOnDefaultEnv(@PathVariable("scenarioId") String scenarioId) {
         return executeScenarioAsyncWithExecutionParameters(scenarioId, embeddedEnvironmentApi.defaultEnvironmentName(), null);
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/api/ui/scenario/execution/v1/{scenarioId}/{env}")
     public String executeScenario(@PathVariable("scenarioId") String scenarioId, @PathVariable("env") String env) throws IOException {
         LOGGER.debug("executeScenario for scenarioId='{}'", scenarioId);
@@ -131,7 +131,7 @@ public class ScenarioExecutionUiController {
         return reportObjectMapper.writeValueAsString(this.scenarioExecutionReportMapper.toDto(report));
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/api/ui/scenario/executionasync/v1/{scenarioId}/execution/{executionId}")
     public Flux<ServerSentEvent<String>> followScenarioExecution(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {
         LOGGER.debug("followScenarioExecution for scenarioId='{}' and executionID='{}'", scenarioId, executionId);
@@ -140,7 +140,7 @@ public class ScenarioExecutionUiController {
         );
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/api/ui/scenario/executionasync/v1/{scenarioId}/execution/{executionId}/stop")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void stopExecution(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {
@@ -148,7 +148,7 @@ public class ScenarioExecutionUiController {
         executionEngineAsync.stop(scenarioId, executionId);
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/api/ui/scenario/executionasync/v1/{scenarioId}/execution/{executionId}/pause")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void pauseExecution(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {
@@ -156,7 +156,7 @@ public class ScenarioExecutionUiController {
         executionEngineAsync.pause(scenarioId, executionId);
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/api/ui/scenario/executionasync/v1/{scenarioId}/execution/{executionId}/resume")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void resumeExecution(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {

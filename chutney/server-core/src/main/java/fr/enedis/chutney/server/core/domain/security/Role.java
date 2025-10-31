@@ -30,6 +30,14 @@ public class Role {
         this.authorizations = authorizations;
     }
 
+    public Role copyWithWriteAsRead() {
+        var auth = new LinkedHashSet<>(authorizations);
+        auth.addAll(this.authorizations.stream()
+            .map(Authorization::readAuthorization)
+            .toList());
+        return new Role(name, auth);
+    }
+
     public static Predicate<Role> roleByNamePredicate(String roleName) {
         return role -> role.name.equals(roleName);
     }
