@@ -23,5 +23,12 @@ public enum Authorization {
     DATASET_READ,
     DATASET_WRITE,
 
-    ADMIN_ACCESS
+    ADMIN_ACCESS;
+
+    public Authorization readAuthorization() {
+        if (this.name().endsWith("_WRITE")) {
+            return Authorization.valueOf(this.name().replace("_WRITE", "_READ"));
+        }
+        return this;
+    }
 }

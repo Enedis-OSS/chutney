@@ -97,7 +97,7 @@ public class UserRoles {
 
             return new UserRoles(
                 roles.stream().collect(toMap(
-                    r -> r,
+                    Role::copyWithWriteAsRead,
                     r -> users.stream().filter(User.userByRoleNamePredicate(r.name)).collect(toCollection(LinkedHashSet::new)),
                     (x, y) -> y,
                     LinkedHashMap::new

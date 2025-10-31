@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.Test;
 public class UserRolesTest {
 
     @Test
-    void minimal_build_should_be_empty() {
+    void minimal_build_is_empty() {
         UserRoles defaultBuild = UserRoles.builder().build();
         UserRoles nullBuild = UserRoles.builder().withUsers(null).withRoles(null).build();
         UserRoles emptyBuild = UserRoles.builder().withUsers(emptySet()).withRoles(emptySet()).build();
@@ -49,6 +50,39 @@ public class UserRolesTest {
                     .build()
             ).isInstanceOf(IllegalArgumentException.class);
         }
+    }
+
+    @Test
+    void write_authorization_implies_read_one() {
+        UserRoles sut = UserRoles.builder()
+            .withRoles(List.of(
+                Role.builder()
+                    .withName("role")
+                    .withAuthorizations(
+                        Stream.of(
+                            Authorization.SCENARIO_WRITE,
+                            Authorization.CAMPAIGN_WRITE,
+                            Authorization.ADMIN_ACCESS,
+                            Authorization.DATASET_WRITE,
+                            Authorization.EXECUTION_WRITE
+                        ).map(Enum::name).toList()
+                    )
+                    .build()
+            ))
+            .build();
+
+        assertThat(sut.roles()).hasSize(1);
+        assertThat(sut.roleByName("role").authorizations).containsExactly(
+            Authorization.SCENARIO_WRITE,
+            Authorization.CAMPAIGN_WRITE,
+            Authorization.ADMIN_ACCESS,
+            Authorization.DATASET_WRITE,
+            Authorization.EXECUTION_WRITE,
+            Authorization.SCENARIO_READ,
+            Authorization.CAMPAIGN_READ,
+            Authorization.DATASET_READ,
+            Authorization.EXECUTION_READ
+        );
     }
 
     @Test
@@ -81,7 +115,7 @@ public class UserRolesTest {
     }
 
     @Test
-    void should_find_user_by_id() {
+    void find_user_by_id() {
         Role roleOfUserToFind = Role.builder().withName("roleOfUserToFind").build();
         User userToFind = User.builder().withId("userToFind").withRole(roleOfUserToFind.name).build();
         Role anotherRole = Role.builder().withName("R").build();
@@ -96,7 +130,7 @@ public class UserRolesTest {
     }
 
     @Test
-    void should_find_users_by_role_name() {
+    void find_users_by_role_name() {
         Role roleOfUserToFind = Role.builder().withName("roleOfUserToFind").build();
         User userToFind = User.builder().withId("userToFind").withRole(roleOfUserToFind.name).build();
         Role roleNotUsedByUser = Role.builder().withName("roleNotUsedByUser").build();
@@ -112,7 +146,7 @@ public class UserRolesTest {
     }
 
     @Test
-    void should_find_role_by_name() {
+    void find_role_by_name() {
         Role role2 = Role.builder().withName("role2").build();
         UserRoles sut = UserRoles.builder()
             .withRoles(List.of(Role.builder().withName("role1").build(), role2))
@@ -125,7 +159,7 @@ public class UserRolesTest {
     }
 
     @Property
-    void should_keep_users_and_roles_orders_when_build(@ForAll("validRoles") Set<Role> roles) {
+    void keep_users_and_roles_orders_when_build(@ForAll("validNotWriteRoles") Set<Role> roles) {
         Set<User> users = PropertyBasedTestingUtils.validUsers(roles);
 
         List<Role> orderedRoles = List.copyOf(roles);
@@ -149,8 +183,7 @@ public class UserRolesTest {
 
     @Provide
     @SuppressWarnings("unused")
-    private SetArbitrary<Role> validRoles() {
-        return PropertyBasedTestingUtils.validRole().set().ofMinSize(1).ofMaxSize(10);
+    private SetArbitrary<Role> validNotWriteRoles() {
+        return PropertyBasedTestingUtils.validRole(false).set().ofMinSize(1).ofMaxSize(10);
     }
-
 }
