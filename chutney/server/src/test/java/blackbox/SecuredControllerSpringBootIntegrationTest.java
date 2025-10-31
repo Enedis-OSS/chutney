@@ -155,7 +155,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/scenario/v2/1", "SCENARIO_READ", null, NOT_FOUND},
             {GET, "/api/scenario/v2/testCaseId/metadata", "SCENARIO_READ", null, NOT_FOUND},
             {GET, "/api/scenario/v2", "SCENARIO_READ", null, OK},
-            {GET, "/api/scenario/v2", "CAMPAIGN_WRITE", null, OK},
+            {GET, "/api/scenario/v2", "CAMPAIGN_READ", null, OK},
             {POST, "/api/scenario/v2", "SCENARIO_WRITE", "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
             {PATCH, "/api/scenario/v2", "SCENARIO_WRITE", "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
             {DELETE, "/api/scenario/v2/testCaseId", "SCENARIO_WRITE", null, OK},
@@ -164,9 +164,9 @@ public class SecuredControllerSpringBootIntegrationTest {
 
             {POST, "/api/scenario/execution/v1", "EXECUTION_WRITE", "{\"scenario\":{},\"environment\": {\"name\":\"env\"}}", OK},
 
-            {GET, "/api/ui/scenario/123/execution/v1", "SCENARIO_READ", null, OK},
-            {GET, "/api/ui/scenario/123/execution/123/v1", "SCENARIO_READ", null, NOT_FOUND},
-            {GET, "/api/ui/scenario/execution/123/summary/v1", "SCENARIO_READ", null, NOT_FOUND},
+            {GET, "/api/ui/scenario/123/execution/v1", "EXECUTION_READ", null, OK},
+            {GET, "/api/ui/scenario/123/execution/123/v1", "EXECUTION_READ", null, NOT_FOUND},
+            {GET, "/api/ui/scenario/execution/123/summary/v1", "EXECUTION_READ", null, NOT_FOUND},
             {POST, "/api/ui/scenario/execution/v1/scenarioId/secuenv", "EXECUTION_WRITE", null, NOT_FOUND},
             {POST, "/api/idea/scenario/execution/DEFAULT", "EXECUTION_WRITE", "{\"content\":\"{\\\"when\\\":{}}\",\"params\":{}} ", OK},
             {POST, "/api/ui/scenario/executionasync/v1/scenarioId/DEFAULT", "EXECUTION_WRITE", null, NOT_FOUND},
