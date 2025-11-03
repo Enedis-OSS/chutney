@@ -12,6 +12,6 @@ HEALTHCHECK --timeout=5s --start-period=10s \
   CMD curl -fsSk https://localhost:8443/actuator/health | grep -q '"status":"UP"' || exit 1
 
 ARG JAR_PATH=server/target
-COPY $JAR_PATH/chutney-server-*.jar app.jar
+COPY $JAR_PATH/server-*-boot.jar app.jar
 
 CMD ["java", "-jar", "/app.jar", "--server.port=8443", "--chutney.workspace=/.chutney"]
