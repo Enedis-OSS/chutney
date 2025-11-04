@@ -116,7 +116,7 @@ public class CampaignExecutionUiController {
     ) {
         LOGGER.warn("jiraId {}", campaignExecutionDto.jiraId());
         String userId = userService.currentUserId();
-        DataSet ds = fromExecutionDatasetDto(dataset, datasetRepository::findById);
+        DataSet ds = fromExecutionDatasetDto(campaignExecutionDto.dataset(), datasetRepository::findById);
         CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId);
         return toDto(report);
     }

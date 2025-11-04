@@ -155,11 +155,11 @@ public class SchedulingCampaignFileRepository implements ScheduledCampaignReposi
     }
 
     private PeriodicScheduledCampaign fromDto(SchedulingCampaignDto dto) {
-        return new PeriodicScheduledCampaign(Long.valueOf(dto.id), dto.schedulingDate, toFrequency(dto.frequency), dto.environment, dto.campaignExecutionRequestDto.stream().map(aa -> new CampaignExecutionRequest(aa.campaignId(), aa.campaignTitle(), aa.datasetId())).toList());
+        return new PeriodicScheduledCampaign(Long.valueOf(dto.id), dto.schedulingDate, toFrequency(dto.frequency), dto.environment, dto.campaignExecutionRequestDto.stream().map(aa -> new CampaignExecutionRequest(aa.campaignId(), aa.campaignTitle(), aa.datasetId(), aa.jiraId())).toList());
     }
 
     private SchedulingCampaignDto toDto(long id, PeriodicScheduledCampaign periodicScheduledCampaign) {
-        return new SchedulingCampaignDto(String.valueOf(id), periodicScheduledCampaign.nextExecutionDate, periodicScheduledCampaign.frequency.label, periodicScheduledCampaign.environment,  periodicScheduledCampaign.campaignExecutionRequests.stream().map(aa -> new CampaignExecutionRequestDto(aa.campaignId(), aa.campaignTitle(), aa.datasetId())).toList());
+        return new SchedulingCampaignDto(String.valueOf(id), periodicScheduledCampaign.nextExecutionDate, periodicScheduledCampaign.frequency.label, periodicScheduledCampaign.environment,  periodicScheduledCampaign.campaignExecutionRequests.stream().map(aa -> new CampaignExecutionRequestDto(aa.campaignId(), aa.campaignTitle(), aa.datasetId(), aa.jiraId())).toList());
     }
 
     private Long getCurrentMaxId(Map<String, SchedulingCampaignDto> schedulingCampaigns) {

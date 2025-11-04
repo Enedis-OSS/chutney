@@ -54,7 +54,7 @@ class ScheduleCampaignControllerTest {
     @WithMockUser(authorities = "CAMPAIGN_READ")
     void should_get_all_scheduled_campaigns() throws Exception {
 
-        CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "datasetId");
+        CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "datasetId", null);
         when(scheduledCampaignRepository.getAll()).thenReturn(List.of(
             new PeriodicScheduledCampaign(1L, LocalDateTime.of(2024, 10, 12, 14, 30, 45), Frequency.DAILY, "PROD", List.of(request))
         ));

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@JsonPropertyOrder({ "id", "schedulingDate", "environment", "campaignsId", "campaignsTitle", "datasetsId" })
+@JsonPropertyOrder({ "id", "schedulingDate", "environment", "campaignsId", "campaignsTitle", "datasetsId", "jiraIds" })
 public class SchedulingCampaignDto {
     public final String id;
     public final LocalDateTime schedulingDate;
@@ -62,6 +62,10 @@ public class SchedulingCampaignDto {
         return campaignExecutionRequestDto != null ? campaignExecutionRequestDto.stream().map(cer -> cer.datasetId).toList() : emptyList();
     }
 
-    public record CampaignExecutionRequestDto(Long campaignId, String campaignTitle, String datasetId) {
+    public List<String> getJiraIds() {
+        return campaignExecutionRequestDto != null ? campaignExecutionRequestDto.stream().map(cer -> cer.jiraId).toList() : emptyList();
+    }
+
+    public record CampaignExecutionRequestDto(Long campaignId, String campaignTitle, String datasetId, String jiraId) {
     }
 }

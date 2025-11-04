@@ -126,7 +126,7 @@ public class CampaignSchedulerTest {
 
     @Test
     void should_execute_sequentially_campaigns() {
-        PeriodicScheduledCampaign sc1 = new PeriodicScheduledCampaign(1L, now(clock).minusSeconds(5), Frequency.HOURLY, environment, of(new CampaignExecutionRequest(11L, "campaign title 1", dataset.id), new CampaignExecutionRequest(22L, "campaign title 2", dataset.id)));
+        PeriodicScheduledCampaign sc1 = new PeriodicScheduledCampaign(1L, now(clock).minusSeconds(5), Frequency.HOURLY, environment, of(new CampaignExecutionRequest(11L, "campaign title 1", dataset.id, null), new CampaignExecutionRequest(22L, "campaign title 2", dataset.id, null)));
 
         List<PeriodicScheduledCampaign> periodicScheduledCampaigns = of(sc1);
         when(scheduledCampaignRepository.getAll())
@@ -150,7 +150,7 @@ public class CampaignSchedulerTest {
         Random rand = new Random();
         return frequencies.stream()
             .map(f ->
-                new PeriodicScheduledCampaign(rand.nextLong(), now(clock).minusSeconds(5), f, environment, of(new CampaignExecutionRequest(rand.nextLong(), "title", datasetId)))
+                new PeriodicScheduledCampaign(rand.nextLong(), now(clock).minusSeconds(5), f, environment, of(new CampaignExecutionRequest(rand.nextLong(), "title", datasetId, null)))
             )
             .collect(toList());
     }

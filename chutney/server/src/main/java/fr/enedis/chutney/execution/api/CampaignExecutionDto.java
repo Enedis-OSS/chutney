@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.execution.api;
 
-import fr.enedis.chutney.dataset.api.DataSetDto;
+import fr.enedis.chutney.dataset.api.ExecutionDatasetDto;
 
-public record CampaignExecutionDto(DataSetDto dataset, String jiraId) {
+public record CampaignExecutionDto(ExecutionDatasetDto dataset, String jiraId) {
 }
