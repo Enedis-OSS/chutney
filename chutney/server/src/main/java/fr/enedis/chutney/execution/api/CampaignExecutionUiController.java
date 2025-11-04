@@ -112,8 +112,9 @@ public class CampaignExecutionUiController {
     public CampaignExecutionReportDto executeCampaignById(
         @PathVariable("campaignId") Long campaignId,
         @PathVariable("env") Optional<String> environment,
-        @RequestBody ExecutionDatasetDto dataset
+        @RequestBody CampaignExecutionDto campaignExecutionDto
     ) {
+        LOGGER.warn("jiraId {}", campaignExecutionDto.jiraId());
         String userId = userService.currentUserId();
         DataSet ds = fromExecutionDatasetDto(dataset, datasetRepository::findById);
         CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId);
