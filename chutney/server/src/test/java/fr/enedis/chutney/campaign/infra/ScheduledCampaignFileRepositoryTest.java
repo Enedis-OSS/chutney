@@ -162,7 +162,8 @@ public class ScheduledCampaignFileRepositoryTest {
                     "schedulingDate" : [ 2024, 2, 4, 7, 10 ],
                     "campaignsId" : [ 1, 3 ],
                     "campaignsTitle" : [ "campaign title 1", "campaign title 3" ],
-                    "datasetsId" : [ "", "" ]
+                    "datasetsId" : [ "", "" ],
+                    "jiraIds" : [ "", "" ]
                   }
                 }
                 """;
@@ -190,7 +191,8 @@ public class ScheduledCampaignFileRepositoryTest {
                         "schedulingDate" : [ 2021, 3, 5, 8, 11 ],
                         "campaignsId" : [ 22 ],
                         "campaignsTitle" : [ "campaign title 2" ],
-                        "datasetsId" : [ "" ]
+                        "datasetsId" : [ "" ],
+                        "jiraIds" : [ "" ]
                       }
                     }
                 """;
@@ -252,7 +254,8 @@ public class ScheduledCampaignFileRepositoryTest {
         FileUtils.writeContent(SCHEDULING_CAMPAIGN_FILE, old_scheduled_campaign);
 
         PeriodicScheduledCampaign oldSchedule = create(1L, 11L, "campaign title 1", of(2020, 2, 4, 7, 10));
-        PeriodicScheduledCampaign newSchedule = create(2L, List.of(22L, 33L, 44L), List.of("campaign title 2", "campaign title 3", "campaign title 4"), of(2021, 3, 5, 8, 11), "MY_ENV", List.of("FIRST_DATASET", "SECOND_DATASET", ""));
+        PeriodicScheduledCampaign newSchedule = create(2L, List.of(22L, 33L, 44L), List.of("campaign title 2", "campaign title 3", "campaign title 4"),
+            of(2021, 3, 5, 8, 11), "MY_ENV", List.of("FIRST_DATASET", "SECOND_DATASET"), null);
         // When
          List<PeriodicScheduledCampaign> periodicScheduledCampaigns = sut.getAll();
         //Then
@@ -262,7 +265,6 @@ public class ScheduledCampaignFileRepositoryTest {
         //// UPDATE
         // When
         sut.add(newSchedule);
-
 
         // Then
         periodicScheduledCampaigns = sut.getAll();
@@ -278,7 +280,8 @@ public class ScheduledCampaignFileRepositoryTest {
                     "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
-                    "datasetsId" : [ "" ]
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "" ]
                   },
                   "2" : {
                     "id" : "2",
@@ -286,7 +289,8 @@ public class ScheduledCampaignFileRepositoryTest {
                     "environment" : "MY_ENV",
                     "campaignsId" : [ 22, 33, 44 ],
                     "campaignsTitle" : [ "campaign title 2", "campaign title 3", "campaign title 4" ],
-                    "datasetsId" : [ "FIRST_DATASET", "SECOND_DATASET", "" ]
+                    "datasetsId" : [ "FIRST_DATASET", "SECOND_DATASET", "" ],
+                    "jiraIds" : [ "J21" ]
                   }
                 }
                 """;
