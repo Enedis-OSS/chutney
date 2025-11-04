@@ -45,7 +45,7 @@ public class SchedulingCampaignDto {
         this.campaignExecutionRequest = campaignExecutionRequest;
     }
 
-    public record CampaignExecutionRequestDto(Long campaignId, String campaignTitle, String datasetId) {
+    public record CampaignExecutionRequestDto(Long campaignId, String campaignTitle, String datasetId, String jiraId) {
     }
 
     public Long getId() {
@@ -73,7 +73,7 @@ public class SchedulingCampaignDto {
             sc.nextExecutionDate,
             sc.frequency.label,
             sc.environment,
-            sc.campaignExecutionRequests.stream().map(cer -> new CampaignExecutionRequestDto(cer.campaignId(), cer.campaignTitle(), cer.datasetId())).toList()
+            sc.campaignExecutionRequests.stream().map(cer -> new CampaignExecutionRequestDto(cer.campaignId(), cer.campaignTitle(), cer.datasetId(), null)).toList()
         );
     }
 
@@ -83,7 +83,7 @@ public class SchedulingCampaignDto {
             dto.getSchedulingDate(),
             toFrequency(dto.getFrequency()),
             dto.getEnvironment(),
-            dto.campaignExecutionRequest.stream().map(cer -> new CampaignExecutionRequest(cer.campaignId(), cer.campaignTitle(), cer.datasetId())).toList()
+            dto.campaignExecutionRequest.stream().map(cer -> new CampaignExecutionRequest(cer.campaignId(), cer.campaignTitle(), cer.datasetId(), cer.jiraId())).toList()
         );
     }
 }

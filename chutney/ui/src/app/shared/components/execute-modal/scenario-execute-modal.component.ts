@@ -42,7 +42,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     Authorization = Authorization;
 
-    @Input() executeCallback: (env: string, dataset: Dataset) => void;
+    @Input() executeCallback: (env: string, dataset: Dataset, jiraId: string) => void;
 
     isCollapsed = true;
 
@@ -131,7 +131,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     execute(dataset: Dataset) {
         if (this.selectedEnv) {
-            this.executeCallback(this.selectedEnv, dataset)
+            this.executeCallback(this.selectedEnv, dataset, "422")
             this.activeModal.close();
         } else {
             this.translateService.get('scenarios.execution.errors.environment').subscribe((res: string) => {
