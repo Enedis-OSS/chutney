@@ -7,6 +7,11 @@
 
 package fr.enedis.chutney.server.core.domain.security;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+import java.util.Optional;
+
 public enum Authorization {
 
     SCENARIO_READ,
@@ -25,10 +30,19 @@ public enum Authorization {
 
     ADMIN_ACCESS;
 
-    public Authorization readAuthorization() {
-        if (this.name().endsWith("_WRITE")) {
-            return Authorization.valueOf(this.name().replace("_WRITE", "_READ"));
+    private static final String WRITE_SUFFIX = "_WRITE";
+    private static final String READ_SUFFIX = "_READ";
+
+    public Optional<Authorization> readAuthorization() {
+        if (isWriteAuthorization()) {
+            return of(
+                Authorization.valueOf(this.name().replace(WRITE_SUFFIX, READ_SUFFIX))
+            );
         }
-        return this;
+        return empty();
+    }
+
+    public boolean isWriteAuthorization() {
+        return this.name().endsWith(WRITE_SUFFIX);
     }
 }
