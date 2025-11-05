@@ -68,7 +68,7 @@
 
         <dependency>  <!-- Here to be sure that oci image is built before testing -->
             <groupId>fr.enedis.chutney</groupId>
-            <artifactId>server</artifactId>
+            <artifactId>chutney-server</artifactId>
             <version>${chutney.version}</version>
             <scope>test</scope>
         </dependency>
