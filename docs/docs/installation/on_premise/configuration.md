@@ -21,10 +21,10 @@ You can override the packaged `application.yml` with an external file or directo
 
 ```shell
 # JVM system property
-java -Dspring.config.location=./my-config/application.yml -jar server-<version>-boot.jar
+java -Dspring.config.location=./my-config/application.yml -jar chutney-server-<version>-boot.jar
 
 # or environment variable
-SPRING_CONFIG_LOCATION=./my-config/application.yml java -jar server-<version>-boot.jar
+SPRING_CONFIG_LOCATION=./my-config/application.yml java -jar chutney-server-<version>-boot.jar
 ```
 
 ### Overriding only some properties
@@ -47,10 +47,10 @@ For quick tweaks or CI/CD pipelines you can pass properties directly:
 
 ```shell
 # JVM system properties
-java -Dserver.port=8081 -Dlogging.level.root=INFO -jar server-<version>-boot.jar
+java -Dserver.port=8081 -Dlogging.level.root=INFO -jar chutney-server-<version>-boot.jar
 
 # Environment variables
-SERVER_PORT=8081 LOGGING_LEVEL_ROOT=INFO java -jar server-<version>-boot.jar
+SERVER_PORT=8081 LOGGING_LEVEL_ROOT=INFO java -jar chutney-server-<version>-boot.jar
 ```
 
 !!! warning "Handling secrets"
@@ -64,10 +64,10 @@ Because Chutney uses Spring Boot’s [PropertiesLauncher](https://docs.spring.io
 
 ```shell
 # JVM system property
-java -Dloader.path=lib -jar server-<version>-boot.jar
+java -Dloader.path=lib -jar chutney-server-<version>-boot.jar
 
 # or environment variable
-LOADER_PATH=lib java -jar server-<version>-boot.jar
+LOADER_PATH=lib java -jar chutney-server-<version>-boot.jar
 ```
 
 Everything under `./lib` is added to the classpath automatically.

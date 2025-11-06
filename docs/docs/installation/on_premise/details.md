@@ -65,10 +65,10 @@ You can replace or adjust the default logging without repackaging.
 
 ```shell
 # JVM system property
-java -Dlogging.config=file:./my-logback.xml -jar server-<version>-boot.jar
+java -Dlogging.config=file:./my-logback.xml -jar chutney-server-<version>-boot.jar
 
 # or environment variable
-LOGGING_CONFIG=file:./my-logback.xml java -jar server-<version>-boot.jar
+LOGGING_CONFIG=file:./my-logback.xml java -jar chutney-server-<version>-boot.jar
 ```
 
 ### Quick tweaks via `application.yml`
