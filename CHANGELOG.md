@@ -7,6 +7,35 @@
 
 # Changelog
 
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## [3.4.0](https://github.com/Enedis-OSS/chutney/tree/3.4.0)
+### 🐛 Fixed bugs:
+* Missing sftp actions and test by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/232
+* Scenario list - Check role for list's actions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/234
+### 🔧 Technical enhancements:
+* Boot jar from server module by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/217
+* Use local docker compose when running ssh acceptance test by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/229
+* Clean README badges by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/228
+* Bump node version by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/230
+* Clean dataset not found exception call by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/233
+* Change server module artifact name by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/247
+### 👒 Dependencies:
+* chore(deps): Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.1 to 3.12.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/224
+* chore(deps): Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.3 to 3.5.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/223
+* chore(deps): Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.3 to 3.5.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/222
+* chore(deps): Bump commons-io:commons-io from 2.19.0 to 2.20.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/220
+* chore(deps): Bump org.immutables:value from 2.11.0 to 2.11.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/226
+* chore(deps): Bump springboot.version from 3.5.4 to 3.5.6 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/218
+* chore(deps): Bump lucene.version from 10.2.1 to 10.3.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/225
+* chore(deps): Bump sshd.version from 2.15.0 to 2.16.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/246
+* chore(deps): Bump org.sonatype.central:central-publishing-maven-plugin from 0.8.0 to 0.9.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/238
+* chore(deps): Bump org.jacoco:jacoco-maven-plugin from 0.8.13 to 0.8.14 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/239
+* chore(deps): Bump com.github.eirslett:frontend-maven-plugin from 1.15.1 to 1.15.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/244
+* chore(deps): Bump org.immutables:value from 2.11.4 to 2.11.6 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/241
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.3.0...3.4.0
+
 ## [3.3.0](https://github.com/Enedis-OSS/chutney/tree/3.3.0)
 ### 🚀 Implemented enhancements:
 * SSH action - Allow multiple proxies jumps by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/213
