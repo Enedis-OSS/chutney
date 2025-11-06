@@ -16,8 +16,8 @@
         <artifactId>chutney-parent</artifactId>
         <version>3.3.1-SNAPSHOT</version>
     </parent>
-    <name>server</name>
-    <artifactId>server</artifactId>
+    <name>chutney-server</name>
+    <artifactId>chutney-server</artifactId>
     <licenses>
         <license>
             <name>Apache-2.0</name>

@@ -131,7 +131,7 @@
         <dependencies>
             <dependency>
                 <groupId>fr.enedis.chutney</groupId>
-                <artifactId>server</artifactId>
+                <artifactId>chutney-server</artifactId>
                 <version>${project.version}</version>
                 <exclusions>
                     <exclusion>
