@@ -305,7 +305,7 @@ public class CampaignExecutionEngine {
                     .dataset()
                     .map(dataset -> ofNullable(dataset.id).orElse(""))
                     .orElse("");
-                jiraXrayEmbeddedApi.updateTestExecution(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, JiraReportMapper.from(execution.report(), objectMapper));
+                jiraXrayEmbeddedApi.updateTestExecution(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, JiraReportMapper.from(execution.report(), objectMapper), null);
             } catch (NoJiraConfigurationException e) { // Silent
             } catch (Exception e) {
                 LOGGER.warn("Update JIRA failed", e);

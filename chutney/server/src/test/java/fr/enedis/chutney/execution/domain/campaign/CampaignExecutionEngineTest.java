@@ -130,8 +130,8 @@ public class CampaignExecutionEngineTest {
         CampaignExecution cer = sut.executeScenarioInCampaign(campaign, "user", null);
 
         ArgumentCaptor<ReportForJira> reportForJiraCaptor = ArgumentCaptor.forClass(ReportForJira.class);
-        verify(jiraXrayPlugin).updateTestExecution(eq(campaign.id), eq(cer.executionId), eq(firstTestCase.metadata.id), eq(""), reportForJiraCaptor.capture());
-        verify(jiraXrayPlugin, times(0)).updateTestExecution(eq(campaign.id), eq(cer.executionId), eq(notExecutedTestCase.metadata.id), eq(""), reportForJiraCaptor.capture());
+        verify(jiraXrayPlugin).updateTestExecution(eq(campaign.id), eq(cer.executionId), eq(firstTestCase.metadata.id), eq(""), reportForJiraCaptor.capture(), null);
+        verify(jiraXrayPlugin, times(0)).updateTestExecution(eq(campaign.id), eq(cer.executionId), eq(notExecutedTestCase.metadata.id), eq(""), reportForJiraCaptor.capture(), null);
     }
 
     @Test

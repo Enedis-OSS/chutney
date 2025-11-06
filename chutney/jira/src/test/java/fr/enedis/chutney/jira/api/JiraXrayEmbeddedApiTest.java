@@ -97,19 +97,42 @@ class JiraXrayEmbeddedApiTest {
         ReportForJira report = new ReportForJira(Instant.parse("2021-05-19T11:22:33.00Z"), 10000L, "SUCCESS", rootStep, "env");
 
         //W
-        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "", report);
+        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "", report, null);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
         verify(jiraXrayApiMock, times(1)).updateRequest(xrayArgumentCaptor.capture());
 
         Xray xrayValue = xrayArgumentCaptor.getValue();
+        assertThat(xrayValue.getTestExecutionKey()).isEqualTo("JIRA-20");
         XrayTest xrayTest = xrayValue.getTests().getFirst();
         assertThat(xrayTest.getTestKey()).isEqualTo("SCE-1");
         assertThat(xrayTest.getStart()).isEqualTo(Instant.parse("2021-05-19T11:22:33.00Z").atZone(ZoneId.systemDefault()).format(formatter));
         assertThat(xrayTest.getFinish()).isEqualTo(Instant.parse("2021-05-19T11:22:43.00Z").atZone(ZoneId.systemDefault()).format(formatter));
         assertThat(xrayTest.getComment()).isEqualTo("[ > rootStep > sub step => [Sub step error 1, Sub step error 2],  > rootStep => [Root error]]");
         assertThat(xrayTest.getStatus()).isEqualTo(PASS.value);
+    }
+
+    @Test
+    @DisplayName("Given an execution report, When we want to send the result to jira xray, Then the campaign execution key is overridden by th execution key if the latter is filled")
+    void updateTestExecutionOverridingExecutionKey() {
+        // G
+        jiraRepository.saveForCampaign("20", "JIRA-20");
+        jiraRepository.saveForScenario("1", "SCE-1");
+        ReportForJira.Step subStep = new ReportForJira.Step("sub step", of("Sub step error 1", "Sub step error 2"), null);
+        ReportForJira.Step rootStep = new ReportForJira.Step("rootStep", of("Root error"), of(subStep));
+        ReportForJira report = new ReportForJira(Instant.parse("2021-05-19T11:22:33.00Z"), 10000L, "SUCCESS", rootStep, "env");
+
+        //W
+        String jiraId = "JIRA-125";
+        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "", report, jiraId);
+
+        //T
+        ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
+        verify(jiraXrayApiMock, times(1)).updateRequest(xrayArgumentCaptor.capture());
+
+        Xray xrayValue = xrayArgumentCaptor.getValue();
+        assertThat(xrayValue.getTestExecutionKey()).isEqualTo("JIRA-125");
     }
 
     @Test
@@ -125,7 +148,7 @@ class JiraXrayEmbeddedApiTest {
         //W
         when(jiraXrayApiMock.isTestPlan("JIRA-20")).thenReturn(true);
         when(jiraXrayApiMock.createTestExecution("JIRA-20")).thenReturn("JIRA-22");
-        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "", report);
+        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "", report, null);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
@@ -149,7 +172,7 @@ class JiraXrayEmbeddedApiTest {
         //W
         when(jiraXrayApiMock.isTestPlan("JIRA-20")).thenReturn(true);
         when(jiraXrayApiMock.createTestExecution("JIRA-20")).thenReturn("JIRA-22");
-        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "dataset-02", report);
+        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", "dataset-02", report, null);
 
         //T
         verify(jiraXrayApiMock, times(0)).updateRequest(any());
@@ -170,7 +193,7 @@ class JiraXrayEmbeddedApiTest {
         //W
         when(jiraXrayApiMock.isTestPlan("JIRA-20")).thenReturn(true);
         when(jiraXrayApiMock.createTestExecution("JIRA-20")).thenReturn("JIRA-22");
-        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", datasetUsed, report);
+        jiraXrayEmbeddedApi.updateTestExecution(20L, 1L, "1", datasetUsed, report, null);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
