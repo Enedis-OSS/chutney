@@ -16,7 +16,6 @@ jobs:
       cache-artifacts: |
         chutney/server/target/chutney-server-*-boot.jar
         idea-plugin/build/distributions/*.zip
-        chutney/ui/dist
 
   release-github:
     needs: [ build ]

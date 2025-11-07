@@ -41,26 +41,13 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ${{ github.workspace }}
-          file: ${{ github.workspace }}/chutney/.docker/server/Dockerfile
+          file: ${{ github.workspace }}/chutney/.docker/Dockerfile
           tags: |
             ghcr.io/enedis-oss/chutney/chutney-server:latest
             ghcr.io/enedis-oss/chutney/chutney-server:${{ inputs.version }}
           push: true
           build-args: |
             JAR_PATH=artifacts/chutney/server/target
-
-      - name: Build and push ui docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ${{ github.workspace }}
-          file: ${{ github.workspace }}/chutney/.docker/ui/Dockerfile
-          tags: |
-            ghcr.io/enedis-oss/chutney/chutney-ui:latest
-            ghcr.io/enedis-oss/chutney/chutney-ui:${{ inputs.version }}
-          push: true
-          build-args: |
-            WEBSITE=artifacts/chutney/ui/dist
-            CONF=chutney/.docker/ui
 
       - name: Build and push demo docker image
         uses: docker/build-push-action@v2
