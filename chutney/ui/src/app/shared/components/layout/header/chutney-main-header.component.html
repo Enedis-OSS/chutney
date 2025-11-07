@@ -12,7 +12,7 @@
                 <i class="fa fa-bars"></i>
             </div>
         </div>
-        <div class="search-bar-container">
+        <div class="search-bar-container" *hasAuthorization="[Authorization.SCENARIO_READ, Authorization.CAMPAIGN_READ, Authorization.DATASET_READ]">
             <chutney-search-bar></chutney-search-bar>
         </div>
         <div class="app-header-right">

@@ -9,6 +9,7 @@ package fr.enedis.chutney.index.domain;
 
 import fr.enedis.chutney.index.api.dto.Hit;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -19,8 +20,9 @@ public class IndexService {
         this.indexRepositories = indexRepositories;
     }
 
-    public List<Hit> search(String query) {
+    public List<Hit> search(String query, Set<IndexObject> requestedObjects) {
         List<CompletableFuture<List<Hit>>> futures = indexRepositories.stream()
+            .filter(repo -> requestedObjects.contains(repo.indexObject()))
             .map(repo -> CompletableFuture.supplyAsync(() -> repo.search(query)))
             .toList();
 

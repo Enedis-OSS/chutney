@@ -43,7 +43,7 @@ public class GwtTestCaseController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = "/{testCaseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GwtTestCaseDto getTestCase(@PathVariable("testCaseId") String testCaseId) {
         return GwtTestCaseMapper.toDto(gwtTestCaseRepository.findById(testCaseId).orElseThrow(() -> new ScenarioNotFoundException(testCaseId)));
@@ -87,7 +87,7 @@ public class GwtTestCaseController {
         gwtTestCase = GwtTestCase.builder()
             .withMetadata(TestCaseMetadataImpl.TestCaseMetadataBuilder.from(gwtTestCase.metadata)
                 .withUpdateDate(now())
-                .withAuthor(userService.currentUser().getId())
+                .withAuthor(userService.currentUserId())
                 .build())
             .withScenario(gwtTestCase.scenario)
             .build();

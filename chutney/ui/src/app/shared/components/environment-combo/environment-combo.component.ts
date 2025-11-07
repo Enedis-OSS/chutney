@@ -17,6 +17,7 @@ export class EnvironmentComboComponent implements OnChanges {
 
     @Input() environments: Array<string>;
     @Input() defaultValue: string;
+    @Input() disabled: boolean = false;
     @Output() selectionEvent = new EventEmitter();
 
     selectedEnvironment: string | null;

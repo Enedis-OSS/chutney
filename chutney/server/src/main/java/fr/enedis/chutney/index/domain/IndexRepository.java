@@ -20,4 +20,6 @@ public interface IndexRepository<T> {
     void delete(String id);
 
     List<Hit> search(String keyword);
+
+    IndexObject indexObject();
 }

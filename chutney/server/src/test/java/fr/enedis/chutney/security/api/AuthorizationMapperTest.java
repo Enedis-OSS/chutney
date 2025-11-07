@@ -13,10 +13,10 @@ import static fr.enedis.chutney.security.PropertyBasedTestingUtils.validUserId;
 import static net.jqwik.api.Arbitraries.just;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.Lists;
 import fr.enedis.chutney.security.PropertyBasedTestingUtils;
 import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import net.jqwik.api.Arbitraries;
@@ -30,13 +30,13 @@ import net.jqwik.api.arbitraries.ListArbitrary;
 class AuthorizationMapperTest {
 
     @Property
-    void should_map_dto_back_and_forth(@ForAll("validDto") AuthorizationsDto dto) {
+    void map_dto_back_and_forth_for_reader_rights(@ForAll("validDto") AuthorizationsDto dto) {
         AuthorizationsDto mapDto = AuthorizationMapper.toDto(AuthorizationMapper.fromDto(dto));
         assertThat(mapDto).isEqualTo(dto);
     }
 
     @Property
-    void should_map_user_roles_back_and_forth(@ForAll("validUserRoles") UserRoles userRoles) {
+    void map_user_roles_back_and_forth(@ForAll("validUserRoles") UserRoles userRoles) {
         UserRoles mapUserRoles = AuthorizationMapper.fromDto(AuthorizationMapper.toDto(userRoles));
 
         assertThat(mapUserRoles).isEqualTo(userRoles);

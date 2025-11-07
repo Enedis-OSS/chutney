@@ -5,7 +5,7 @@
   ~
   -->
 
-<select class="form-select dataset-combo" (change)="changingValue($event)">
+<select class="form-select dataset-combo" (change)="changingValue($event)" [disabled]="disabled">
   <option value=""></option>
   @for (dataset of datasets; track $index) {
     <option [selected]="dataset.id === selectedDatasetId"

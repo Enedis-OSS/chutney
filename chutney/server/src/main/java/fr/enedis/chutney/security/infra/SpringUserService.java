@@ -7,11 +7,14 @@
 
 package fr.enedis.chutney.security.infra;
 
+import static java.util.stream.Collectors.toUnmodifiableSet;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.domain.CurrentUserNotFoundException;
+import fr.enedis.chutney.server.core.domain.security.Authorization;
 import fr.enedis.chutney.server.core.domain.security.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -44,6 +47,11 @@ public class SpringUserService implements UserService {
         return currentUser().getId();
     }
 
+    @Override
+    public Set<Authorization> currentUserAuthorizations() {
+        return currentUser().getAuthorizations().stream().map(Authorization::valueOf).collect(toUnmodifiableSet());
+    }
+
     private UserDto getUserFromBearerAuthentication(Authentication authentication) {
         var principal = authentication.getPrincipal();
         if (principal instanceof UserDto) {
@@ -53,7 +61,7 @@ public class SpringUserService implements UserService {
             return getUserFromClaims(((Jwt) principal).getClaims());
         }
         if (principal instanceof OAuth2IntrospectionAuthenticatedPrincipal) {
-             return getUserFromUsername(((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub").toString(), new UserDto());
+            return getUserFromUsername(((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub").toString(), new UserDto());
         }
         return null;
     }

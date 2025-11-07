@@ -5,7 +5,7 @@
   ~
   -->
 
-<div class="create-campaign-container min-vh-100">
+<div class="create-campaign-container" [ngClass]="isAuthorizedToWriteCampaign ? 'min-vh-100' : null">
   <form [formGroup]="campaignForm" (ngSubmit)="saveCampaign()" autocomplete="off" class="w-100">
     <div class ="d-flex flex-md-row justify-content-between">
       <div>
@@ -14,7 +14,7 @@
         </h4>
       </div>
       <div>
-        <button type="submit" [disabled]="submitted && campaignForm.invalid" class="btn btn-primary m-2">
+        <button type="submit" [disabled]="(!isAuthorizedToWriteCampaign) || (submitted && campaignForm.invalid)" class="btn btn-primary m-2">
           <span class="fa fa-check"></span>&nbsp;
           <span>{{ 'global.actions.record' | translate }}</span>
         </button>
@@ -63,6 +63,7 @@
         <label>{{'menu.principal.dataset' | translate}}</label>
         <chutney-dataset-selection
           [selectedDatasetId]="campaign.datasetId"
+          [disabled]="!isAuthorizedToWriteCampaign"
           (selectionEvent)="selectDataset($event)">
         </chutney-dataset-selection>
       </div>
@@ -70,7 +71,10 @@
       @if (environments) {
         <div class="col-12">
           <label>{{'admin.targets.environment' | translate}}</label>
-          <chutney-environment-combo [environments]="environments" [defaultValue]="campaign.environment"
+          <chutney-environment-combo
+              [environments]="environments"
+              [defaultValue]="campaign.environment"
+              [disabled]="!isAuthorizedToWriteCampaign"
             (selectionEvent)="setSelectedEnvironment($event)">
           </chutney-environment-combo>
           @if (submitted && !this.selectedEnvironment) {
@@ -104,7 +108,8 @@
         </div>
       </div>
     </div>
-    <div class="row justify-content-end">
+    @if (isAuthorizedToWriteCampaign) {
+      <div class="row justify-content-end">
       <div class="col-6 ps-0">
         <div class="row row-cols-12">
           <div class="col">
@@ -142,17 +147,20 @@
         </div>
       </div>
     </div>
+    }
     <div class="row">
       <!-- Left side -->
-      <div class="col-md-6">
+      <div [ngClass]="isAuthorizedToWriteCampaign ? 'col-md-6' : 'col-md'">
           <table class="table table-striped table-hover">
             <thead>
               <th colspan="2">
                 {{ 'campaigns.edition.scenarios.title' | translate }}
               </th>
-              <th class="w5"></th>
+              @if (isAuthorizedToWriteCampaign) {
+                <th class="w5"></th>
+              }
             </thead>
-            <tbody cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+              <tbody cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!isAuthorizedToWriteCampaign">
               @for (scenario of scenariosToAdd; track scenario) {
                 <tr class="cursor" cdkDrag>
                   <td class="w5">
@@ -165,6 +173,7 @@
                     <div class="pe-5">
                       @if (datasets.length > 0) {
                         <ng-multiselect-dropdown
+                                        [disabled]="!isAuthorizedToWriteCampaign"
                                         [settings]="dropdownDatasetSettings"
                                         class="dataset-combo w-100"
                                         [placeholder]="'campaigns.edition.selectDatasetScenario' | translate"
@@ -177,79 +186,83 @@
                       }
                     </div>
                   </td>
-                  <td class="p-0">
-                    <button type="button" class="btn btn-outline-primary btn-sm me-2 float-end"
-                            (click)="removeScenario(scenario)">
-                        <span class="fa fa-arrow-circle-right"></span>
-                    </button>
-                  </td>
+                  @if (isAuthorizedToWriteCampaign) {
+                      <td class="p-0">
+                        <button type="button" class="btn btn-outline-primary btn-sm me-2 float-end"
+                                (click)="removeScenario(scenario)">
+                            <span class="fa fa-arrow-circle-right"></span>
+                        </button>
+                      </td>
+                  }
                 </tr>
               }
             </tbody>
           </table>
       </div>
       <!-- Right side -->
-      <div class="col-md-6 pe-4">
-        <div class="row table-responsive">
-          <table class="table table-striped table-hover">
-            <thead>
-              <th colspan="6">
-                <span class="p-0">
-                    {{ 'campaigns.edition.scenarios.pick.title' | translate }}
-                </span>
-                @if (hasJiraId()) {
-                    <div class="jira-link float-end p-0 me-2">
-                        <label for="jiraLinkTests">
-                            <span class="fab fa-jira"></span>
-                            {{ 'campaigns.edition.jiraLinkedTest' | translate }}
-                        </label>
-                        <input type="checkbox" id="jiraLinkTests" class="ms-2"
-                        formControlName="onlyLinkedScenarios" (change)="jiraFilter()">
-                    </div>
-                }
-              </th>
-            </thead>
-            <tbody>
-              @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd | withoutScenario:jiraScenariosToExclude; track trackViewedScenarios($index, scenario)) {
-                <tr>
-                  <td class="w-3">
-                    <button type="button" class="btn btn-outline-primary btn-sm"
-                      (click)="addScenario(scenario)">
-                      <span class="fa fa-arrow-circle-left"></span>
-                    </button>
-                  </td>
-                  <td class="text-nowrap w-10">{{ scenario?.id }}</td>
-                  <td class="scenario-title-cell w-70">{{ scenario?.title }}</td>
-                  <td class="w-15">
-                    @for (tag of scenario.tags; track $index) {
-                      <span>
-                        <span class="chutney-tag chutney-tag-selected">{{ tag }}</span>
-                      </span>
+      @if (isAuthorizedToWriteCampaign) {
+          <div class="col-md-6 pe-4">
+            <div class="row table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <th colspan="6">
+                    <span class="p-0">
+                        {{ 'campaigns.edition.scenarios.pick.title' | translate }}
+                    </span>
+                    @if (hasJiraId()) {
+                        <div class="jira-link float-end p-0 me-2">
+                            <label for="jiraLinkTests">
+                                <span class="fab fa-jira"></span>
+                                {{ 'campaigns.edition.jiraLinkedTest' | translate }}
+                            </label>
+                            <input type="checkbox" id="jiraLinkTests" class="ms-2"
+                            formControlName="onlyLinkedScenarios" (change)="jiraFilter()">
+                        </div>
                     }
-                  </td>
-                  <td class="p-0">
-                    @if (jiraLinks.has(scenario.id)) {
-                      <span [ngClass]="getJiraLastExecutionStatusClass(scenario.id)" class="badge">
-                        {{ getJiraLastExecutionStatus(scenario.id) }}
-                      </span>
-                    }
-                  </td>
-                  <td class="p-0">
-                    @if (jiraUrl !== '') {
-                        <button type="button" class="btn btn-sm btn-link me-0"
-                            [ngClass]="!hasJiraLinks(scenario) ? 'opacity-50' : ''"
-                            [title]="jiraLinksTitleContent(scenario)"
-                            (click)="showScenarioJiraLinks(scenario)">
-                            <span  class="fab fa-jira" aria-hidden="true"></span>
+                  </th>
+                </thead>
+                <tbody>
+                  @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd | withoutScenario:jiraScenariosToExclude; track trackViewedScenarios($index, scenario)) {
+                    <tr>
+                      <td class="w-3">
+                        <button type="button" class="btn btn-outline-primary btn-sm"
+                          (click)="addScenario(scenario)">
+                          <span class="fa fa-arrow-circle-left"></span>
                         </button>
-                    }
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
+                      </td>
+                      <td class="text-nowrap w-10">{{ scenario?.id }}</td>
+                      <td class="scenario-title-cell w-70">{{ scenario?.title }}</td>
+                      <td class="w-15">
+                        @for (tag of scenario.tags; track $index) {
+                          <span>
+                            <span class="chutney-tag chutney-tag-selected">{{ tag }}</span>
+                          </span>
+                        }
+                      </td>
+                      <td class="p-0">
+                        @if (jiraLinks.has(scenario.id)) {
+                          <span [ngClass]="getJiraLastExecutionStatusClass(scenario.id)" class="badge">
+                            {{ getJiraLastExecutionStatus(scenario.id) }}
+                          </span>
+                        }
+                      </td>
+                      <td class="p-0">
+                        @if (jiraUrl !== '') {
+                            <button type="button" class="btn btn-sm btn-link me-0"
+                                [ngClass]="!hasJiraLinks(scenario) ? 'opacity-50' : ''"
+                                [title]="jiraLinksTitleContent(scenario)"
+                                (click)="showScenarioJiraLinks(scenario)">
+                                <span  class="fab fa-jira" aria-hidden="true"></span>
+                            </button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+      }
     </div>
   </form>
 </div>

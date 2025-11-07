@@ -46,7 +46,7 @@ public class GwtTestCaseControllerTest {
     @BeforeEach
     public void setUp() {
         currentUser.setId("currentUser");
-        when(userService.currentUser()).thenReturn(currentUser);
+        when(userService.currentUserId()).thenReturn(currentUser.getId());
         GwtTestCaseController testCaseController = new GwtTestCaseController(testCaseRepository, userService);
         mockMvc = MockMvcBuilders.standaloneSetup(testCaseController).build();
 
@@ -64,8 +64,8 @@ public class GwtTestCaseControllerTest {
 
         // Save a scenario
         mockMvc.perform(post("/api/scenario/v2")
-            .contentType(APPLICATION_JSON)
-            .content(exampleWithoutTechStep))
+                .contentType(APPLICATION_JSON)
+                .content(exampleWithoutTechStep))
             .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
             .andExpect(status().isOk());
 
@@ -84,19 +84,19 @@ public class GwtTestCaseControllerTest {
                 .build())
             .withScenario(GwtScenario.builder()
                 .withGivens(Arrays.asList(
-                    GwtStep.builder().withDescription("given 1").withSubSteps(
-                        GwtStep.builder().withDescription("given sub step 1.1").build(),
-                        GwtStep.builder().withDescription("given sub step 1.2").build()).build()
-                    ,
-                    GwtStep.builder().withDescription("given 2").build(),
-                    GwtStep.builder().withDescription("given 3").build()
+                        GwtStep.builder().withDescription("given 1").withSubSteps(
+                            GwtStep.builder().withDescription("given sub step 1.1").build(),
+                            GwtStep.builder().withDescription("given sub step 1.2").build()).build()
+                        ,
+                        GwtStep.builder().withDescription("given 2").build(),
+                        GwtStep.builder().withDescription("given 3").build()
                     )
                 )
                 .withWhen(GwtStep.builder().withDescription("when 1").build())
                 .withThens(Arrays.asList(
-                    GwtStep.builder().withDescription("then 1").build(),
-                    GwtStep.builder().withDescription("then 2").build(),
-                    GwtStep.builder().withDescription("then 3").build()
+                        GwtStep.builder().withDescription("then 1").build(),
+                        GwtStep.builder().withDescription("then 2").build(),
+                        GwtStep.builder().withDescription("then 3").build()
                     )
                 ).build())
             .build();
@@ -114,10 +114,10 @@ public class GwtTestCaseControllerTest {
 
         // Save a scenario
         mockMvc.perform(
-            post("/api/scenario/v2")
-                .content(contents)
-                .contentType(APPLICATION_JSON)
-        )
+                post("/api/scenario/v2")
+                    .content(contents)
+                    .contentType(APPLICATION_JSON)
+            )
             //.andDo(MockMvcResultHandlers.print())
             .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
             .andExpect(status().isOk());
@@ -145,16 +145,16 @@ public class GwtTestCaseControllerTest {
                             .withImplementation(new GwtStepImplementation("debug", "", null, null, null, null)).build()).build()
                 )
                 .withThens(Arrays.asList(
-                    GwtStep.builder().withDescription("then one executable step").withSubSteps(
-                        GwtStep.builder().withDescription("executable step with trailing spaces, root braces & \\r")
-                            .withImplementation(new GwtStepImplementation("debug", "", null, null, null, null)).build()).build(),
+                        GwtStep.builder().withDescription("then one executable step").withSubSteps(
+                            GwtStep.builder().withDescription("executable step with trailing spaces, root braces & \\r")
+                                .withImplementation(new GwtStepImplementation("debug", "", null, null, null, null)).build()).build(),
 
-                    GwtStep.builder().withDescription("then another executable step").withSubSteps(
-                        GwtStep.builder().withDescription("executable step with docString ''' ")
-                            .withImplementation(new GwtStepImplementation(
-                                "sql",
-                                "COCO",
-                                Collections.singletonMap("statements", Arrays.asList("DELETE FROM COCO WHERE ID = 'MOMO'", "DELETE FROM CUCU WHERE ID = 'MIMI'", "INSERT INTO CECE ('ID') VALUES ('MEME')")), null, null, null)).build()).build()
+                        GwtStep.builder().withDescription("then another executable step").withSubSteps(
+                            GwtStep.builder().withDescription("executable step with docString ''' ")
+                                .withImplementation(new GwtStepImplementation(
+                                    "sql",
+                                    "COCO",
+                                    Collections.singletonMap("statements", Arrays.asList("DELETE FROM COCO WHERE ID = 'MOMO'", "DELETE FROM CUCU WHERE ID = 'MIMI'", "INSERT INTO CECE ('ID') VALUES ('MEME')")), null, null, null)).build()).build()
                     )
                 ).build())
             .build();

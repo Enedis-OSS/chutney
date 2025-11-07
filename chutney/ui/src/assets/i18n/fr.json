@@ -194,7 +194,6 @@
         },
         "list": {
             "item": {
-                "title.link.title": "Voir les exécutions de",
                 "description.none": "Aucune description"
             },
             "empty": "Aucune campagne disponible",

@@ -31,16 +31,17 @@
       <pre class="text-white bg-info rounded pt-3">
         Declare Roles and Map users to them.
         Roles has to be declared in a "roles" objects' list.
+        Rights with write implies read.
         Role template :
         {{'{
         "name": "ROLE_NAME",
         "rights": [
         "SCENARIO_READ",
         "SCENARIO_WRITE",
-        "SCENARIO_EXECUTE",
         "CAMPAIGN_READ",
         "CAMPAIGN_WRITE",
-        "CAMPAIGN_EXECUTE",
+        "EXECUTION_READ",
+        "EXECUTION_WRITE",
         "ENVIRONMENT_ACCESS",
         "DATASET_READ",
         "DATASET_WRITE",

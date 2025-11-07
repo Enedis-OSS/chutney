@@ -5,7 +5,7 @@
   ~
   -->
 
-<select class="form-select env-combo ms-2" (change)="changingValue($event)">
+<select class="form-select env-combo ms-2" (change)="changingValue($event)" [disabled]="disabled">
   @if (selectedEnvironment === null) {
     <option></option>
   }

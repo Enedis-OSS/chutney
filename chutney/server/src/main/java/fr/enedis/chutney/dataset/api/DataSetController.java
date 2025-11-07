@@ -38,7 +38,7 @@ public class DataSetController {
         this.datasetService = datasetService;
     }
 
-    @PreAuthorize("hasAuthority('DATASET_READ') or hasAuthority('SCENARIO_WRITE') or hasAuthority('CAMPAIGN_WRITE')")
+    @PreAuthorize("hasAuthority('DATASET_READ') or hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_WRITE')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DataSetDto> findAll(@RequestParam("usage") Optional<Boolean> query) {
         return datasetService.findAll(query.orElse(false))
@@ -71,7 +71,7 @@ public class DataSetController {
         datasetService.remove(datasetName);
     }
 
-    @PreAuthorize("hasAuthority('DATASET_READ')")
+    @PreAuthorize("hasAuthority('DATASET_READ') or hasAuthority('EXECUTION_WRITE')")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public DataSetDto findById(@PathVariable String id) {
         return toDto(datasetService.findById(id));

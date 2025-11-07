@@ -53,7 +53,7 @@ public class JiraController {
         this.jiraXrayService = jiraXrayService;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_WRITE')")
+    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_WRITE') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = BASE_SCENARIO_URL, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, JiraScenarioLinksDto> getLinkedScenarios() {
         var linkedScenarios = jiraRepository.getAllLinkedScenarios();
@@ -73,13 +73,13 @@ public class JiraController {
         return result;
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = BASE_CAMPAIGN_URL, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> getLinkedCampaigns() {
         return jiraRepository.getAllLinkedCampaigns();
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ')")
+    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_WRITE') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = BASE_SCENARIO_URL + "/{scenarioId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public JiraScenarioLinksDto getByScenarioId(@PathVariable String scenarioId) {
         String jiraId = jiraRepository.getByScenarioId(scenarioId);
@@ -92,7 +92,7 @@ public class JiraController {
             .build();
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_WRITE')")
+    @PreAuthorize("hasAuthority('SCENARIO_WRITE') or hasAuthority('CAMPAIGN_WRITE')")
     @PostMapping(path = BASE_SCENARIO_URL,
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -106,7 +106,7 @@ public class JiraController {
             .build();
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_WRITE')")
+    @PreAuthorize("hasAuthority('SCENARIO_WRITE') or hasAuthority('CAMPAIGN_WRITE')")
     @DeleteMapping(path = BASE_SCENARIO_URL + "/{scenarioId}")
     public void removeForScenario(@PathVariable String scenarioId) {
         jiraRepository.removeForScenario(scenarioId);
@@ -143,7 +143,7 @@ public class JiraController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")
+    @PreAuthorize("hasAuthority('CAMPAIGN_WRITE') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = BASE_CAMPAIGN_EXEC_URL + "/{campaignExecutionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public JiraTestExecutionDto getScenariosByCampaignExecutionId(@PathVariable String campaignExecutionId) {
         if (campaignExecutionId.isEmpty()) {
@@ -191,7 +191,7 @@ public class JiraController {
             .build();
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
     @GetMapping(path = BASE_CONFIGURATION_URL + "/url", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getConfigurationUrl() {
         JiraServerConfiguration jiraServerConfiguration = jiraRepository.loadServerConfiguration();

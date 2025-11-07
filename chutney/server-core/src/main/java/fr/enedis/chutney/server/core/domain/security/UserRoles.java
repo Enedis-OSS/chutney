@@ -39,6 +39,7 @@ public class UserRoles {
         return roles().stream()
             .filter(Role.roleByNamePredicate(roleName))
             .findFirst()
+            .map(Role::copyWithWriteAsRead)
             .orElseThrow(() -> RoleNotFoundException.forRole(roleName));
     }
 

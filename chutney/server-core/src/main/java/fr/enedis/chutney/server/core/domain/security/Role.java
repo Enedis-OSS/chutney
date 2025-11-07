@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -28,6 +29,17 @@ public class Role {
     private Role(String name, Set<Authorization> authorizations) {
         this.name = name;
         this.authorizations = authorizations;
+    }
+
+    public Role copyWithWriteAsRead() {
+        var auth = new LinkedHashSet<>(authorizations);
+        auth.addAll(this.authorizations.stream()
+            .map(Authorization::readAuthorization)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList()
+        );
+        return new Role(name, auth);
     }
 
     public static Predicate<Role> roleByNamePredicate(String roleName) {

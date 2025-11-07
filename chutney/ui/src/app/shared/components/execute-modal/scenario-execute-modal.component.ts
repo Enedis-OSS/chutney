@@ -6,7 +6,7 @@
  */
 
 import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { Dataset, KeyValue } from '@core/model';
+import { Dataset, KeyValue, Authorization } from '@core/model';
 import { DataSetService, EnvironmentService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,6 +40,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     editionDataset: boolean = false;
     editionDatasetValues?: Dataset;
 
+    Authorization = Authorization;
 
     @Input() executeCallback: (env: string, dataset: Dataset) => void;
 

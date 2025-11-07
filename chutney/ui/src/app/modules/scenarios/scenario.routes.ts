@@ -24,14 +24,14 @@ export const scenarioRoute: Routes = [
         path: '',
         component: ScenariosComponent,
         canActivate: [authGuard],
-        data: {'authorizations': [Authorization.SCENARIO_READ]}
+        data: {'authorizations': [Authorization.SCENARIO_READ, Authorization.EXECUTION_READ]}
     },
     {
         path: 'raw-edition',
         component: RawEditionComponent,
         canDeactivate: [canDeactivateGuard],
         canActivate: [authGuard],
-        data: {'authorizations': [Authorization.SCENARIO_WRITE]}
+        data: {'authorizations': [Authorization.SCENARIO_READ]}
     },
     {
         path: 'report-preview',
@@ -42,12 +42,13 @@ export const scenarioRoute: Routes = [
     {
         path: ':id',
         redirectTo: ':id/executions',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: {'authorizations': [Authorization.EXECUTION_READ]}
     },
     {
         path: ':id/executions',
         canActivate: [authGuard],
-        data: {'authorizations': [Authorization.SCENARIO_READ]},
+        data: {'authorizations': [Authorization.EXECUTION_READ]},
         children: [
             {
                 path: '',
@@ -65,6 +66,6 @@ export const scenarioRoute: Routes = [
         component: RawEditionComponent,
         canDeactivate: [canDeactivateGuard],
         canActivate: [authGuard],
-        data: {'authorizations': [Authorization.SCENARIO_WRITE]}
+        data: {'authorizations': [Authorization.SCENARIO_READ]}
     }
 ];

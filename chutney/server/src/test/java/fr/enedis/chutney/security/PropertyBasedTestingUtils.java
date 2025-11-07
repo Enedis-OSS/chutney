@@ -23,7 +23,6 @@ import net.jqwik.api.arbitraries.SetArbitrary;
 
 public final class PropertyBasedTestingUtils {
 
-
     public static Arbitrary<UserRoles> validUserRoles() {
         SetArbitrary<Role> roles = validRole().set().ofMinSize(1).ofMaxSize(10);
         return roles.map(r -> {

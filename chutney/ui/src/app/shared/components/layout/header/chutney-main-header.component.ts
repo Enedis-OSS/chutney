@@ -7,7 +7,7 @@
 
 import { Component, HostBinding } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '@model';
+import { User, Authorization } from '@model';
 import { LoginService } from '@core/services';
 import { ThemeService } from '@core/theme/theme.service';
 import { LayoutOptions } from '@core/layout/layout-options.service';
@@ -21,6 +21,8 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
 export class ChutneyMainHeaderComponent{
 
     public user$: Observable<User>;
+
+    Authorization = Authorization;
 
     constructor(private loginService: LoginService,
                 private themeService: ThemeService,

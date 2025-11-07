@@ -41,11 +41,13 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
     private modalRef: BsModalRef;
     private unsubscribeSub$: Subject<void> = new Subject();
 
+    private isAuthorizedToWriteCampaign: boolean = false;
+
     executeLastMenuItem = {
         label: 'global.actions.execute.last',
         click: this.replay.bind(this),
         iconClass: 'fa fa-play',
-        authorizations: [Authorization.CAMPAIGN_EXECUTE]
+        authorizations: [Authorization.EXECUTION_WRITE]
     };
 
     @ViewChild('delete_modal') deleteModal: TemplateRef<any>;
@@ -61,7 +63,9 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
         private loginService: LoginService,
         private modalService: BsModalService,
         private eventManagerService: EventManagerService,
-        private ngbModalService: NgbModal) {
+        private ngbModalService: NgbModal)
+    {
+        this.isAuthorizedToWriteCampaign = this.loginService.hasAuthorization(Authorization.CAMPAIGN_WRITE);
     }
 
     ngOnInit(): void {
@@ -95,7 +99,7 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
     }
 
     private environments$(): Observable<string[]> {
-        if (this.loginService.hasAuthorization(Authorization.CAMPAIGN_EXECUTE)) {
+        if (this.loginService.hasAuthorization(Authorization.EXECUTION_WRITE)) {
             return this.environmentService.names();
         }
         return of([]);
@@ -177,13 +181,13 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
                 click: this.executeCampaign.bind(this),
                 iconClass: 'fa fa-play',
                 secondaryIconClass: 'fa-solid fa-gear fa-2xs',
-                authorizations: [Authorization.CAMPAIGN_EXECUTE],
+                authorizations: [Authorization.EXECUTION_WRITE],
             },
             {
-                label: 'global.actions.edit',
+                label: this.isAuthorizedToWriteCampaign ? 'global.actions.edit' : 'global.actions.show',
                 link: `/campaign/${this.campaign.id}/edition`,
-                iconClass: 'fa fa-pencil-alt',
-                authorizations: [Authorization.CAMPAIGN_WRITE]
+                iconClass: this.isAuthorizedToWriteCampaign ? 'fa fa-pencil-alt' : 'fa fa-eye',
+                authorizations: [Authorization.CAMPAIGN_READ]
             },
             {
                 label: 'global.actions.delete',
@@ -195,7 +199,7 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
                 label: 'global.actions.export',
                 click: this.exportCampaign.bind(this),
                 iconClass: 'fa fa-file-code',
-                authorizations: [Authorization.CAMPAIGN_WRITE]
+                authorizations: [Authorization.CAMPAIGN_READ]
             }
         ];
         this.addReplayButtonIfNecessary()

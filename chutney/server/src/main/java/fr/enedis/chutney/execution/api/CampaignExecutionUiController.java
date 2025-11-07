@@ -64,7 +64,7 @@ public class CampaignExecutionUiController {
     }
 
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ')")
+    @PreAuthorize("hasAuthority('EXECUTION_READ')")
     @GetMapping(path = {"/{campaignName}/lastExecution", "/{campaignName}/{env}/lastExecution"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportSummaryDto getLastCampaignExecution(@PathVariable("campaignId") Long campaignId) {
         CampaignExecution lastCampaignExecution = campaignExecutionEngine.getLastCampaignExecution(campaignId);
@@ -72,34 +72,34 @@ public class CampaignExecutionUiController {
     }
 
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @GetMapping(path = {"/{campaignName}", "/{campaignName}/{env}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CampaignExecutionReportDto> executeCampaignByName(@PathVariable("campaignName") String campaignName, @PathVariable("env") Optional<String> environment) {
-        String userId = userService.currentUser().getId();
+        String userId = userService.currentUserId();
         List<CampaignExecution> reports = campaignExecutionEngine.executeByName(campaignName, environment.orElse(null), userId);
         return reports.stream()
             .map(CampaignExecutionReportMapper::toDto)
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = {"/replay/{campaignExecutionId}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportDto replayFailedScenario(@PathVariable("campaignExecutionId") Long campaignExecutionId) {
-        String userId = userService.currentUser().getId();
+        String userId = userService.currentUserId();
         CampaignExecution newExecution = campaignExecutionEngine.replayFailedScenariosExecutionsForExecution(campaignExecutionId, userId);
         return toDto(newExecution);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @GetMapping(path = {"/{campaignPattern}/surefire", "/{campaignPattern}/surefire/{env}"}, produces = "application/zip")
     public byte[] executeCampaignsByPatternWithSurefireReport(HttpServletResponse response, @PathVariable("campaignPattern") String campaignPattern, @PathVariable("env") Optional<String> environment) {
-        String userId = userService.currentUser().getId();
+        String userId = userService.currentUserId();
         response.addHeader("Content-Disposition", "attachment; filename=\"surefire-report.zip\"");
         List<CampaignExecution> reports = campaignExecutionEngine.executeByName(campaignPattern, environment.orElse(null), userId);
         return surefireCampaignExecutionReportBuilder.createReport(reports);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = "/{executionId}/stop")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void stopExecution(@PathVariable("executionId") Long executionId) {
@@ -107,14 +107,14 @@ public class CampaignExecutionUiController {
         campaignExecutionEngine.stopExecution(executionId);
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_EXECUTE')")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = {"/byID/{campaignId}", "/byID/{campaignId}/{env}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportDto executeCampaignById(
         @PathVariable("campaignId") Long campaignId,
         @PathVariable("env") Optional<String> environment,
         @RequestBody ExecutionDatasetDto dataset
     ) {
-        String userId = userService.currentUser().getId();
+        String userId = userService.currentUserId();
         DataSet ds = fromExecutionDatasetDto(dataset, datasetRepository::findById);
         CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId);
         return toDto(report);

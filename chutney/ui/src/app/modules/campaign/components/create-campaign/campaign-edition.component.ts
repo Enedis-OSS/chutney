@@ -10,14 +10,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, } from '@angular/cdk/drag-drop';
-import { Campaign, CampaignScenario, Dataset, JiraScenario, JiraScenarioLinks, ScenarioIndex } from '@model';
+import { Campaign, CampaignScenario, Dataset, JiraScenario, JiraScenarioLinks, ScenarioIndex, Authorization } from '@model';
 import {
     CampaignService,
     DataSetService,
     EnvironmentService,
     JiraPluginConfigurationService,
     JiraPluginService,
-    ScenarioService
+    ScenarioService,
+    LoginService
 } from '@core/services';
 import { distinct, flatMap, newInstance } from '@shared/tools/array-utils';
 import { isNotEmpty } from '@shared';
@@ -68,6 +69,9 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
 
     private jiraEditText: string = '';
 
+    isAuthorizedToWriteCampaign: boolean = false;
+    private isAuthorizedToReadExecutions: boolean = false;
+
     constructor(
         private campaignService: CampaignService,
         private scenarioService: ScenarioService,
@@ -80,8 +84,11 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private datasetService: DataSetService,
         private translateService: TranslateService,
         private modalService: NgbModal,
+        private loginService: LoginService,
         @Inject(DROPDOWN_SETTINGS) public dropdownSettings: IDropdownSettings
     ) {
+        this.isAuthorizedToReadExecutions = this.loginService.hasAuthorization(Authorization.EXECUTION_READ);
+        this.isAuthorizedToWriteCampaign = this.loginService.hasAuthorization(Authorization.CAMPAIGN_WRITE);
         this.campaignForm = this.formBuilder.group({
             title: ['', Validators.required],
             description: '',
@@ -172,6 +179,10 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                         this.selectedEnvironment = this.campaign.environment;
                         this.setCampaignScenarios();
                         this.datasetId = this.campaign.datasetId;
+
+                        if (!this.isAuthorizedToWriteCampaign) {
+                            this.campaignForm.disable();
+                        }
                     },
                     error: (error) => {
                         this.errorMessage = error._body;
@@ -231,6 +242,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     private initJiraPlugin() {
+        if (this.isAuthorizedToWriteCampaign) {
         this.jiraPluginConfigurationService.getUrl()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((r) => {
@@ -246,6 +258,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                         );
                 }
             });
+        }
     }
 
     private initTranslations() {
@@ -363,13 +376,11 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
 
     clear() {
         this.campaignForm.reset();
-        let url: string;
-        if (this.campaign.id) {
-            url = '/campaign/' + this.campaign.id + '/executions';
-        } else {
-            url = '/campaign';
+        let url: string[] = ['/campaign'];
+        if (this.campaign.id && this.isAuthorizedToReadExecutions) {
+            url.push(this.campaign.id + '', '/executions');
         }
-        this.router.navigateByUrl(url);
+        this.router.navigate(url);
     }
 
     saveCampaign() {

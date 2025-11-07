@@ -43,11 +43,13 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
+    private isAuthorizedToWriteScenario: boolean = false;
+
     executeLastMenuItem = {
         label: 'global.actions.execute.last',
         click: this.replay.bind(this),
         iconClass: 'fa fa-play',
-        authorizations: [Authorization.SCENARIO_EXECUTE]
+        authorizations: [Authorization.EXECUTION_WRITE]
     };
     private executionModal: NgbModalRef;
 
@@ -60,7 +62,9 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
         private modalService: BsModalService,
         private ngbModalService: NgbModal,
         private route: ActivatedRoute,
-        private eventManagerService: EventManagerService) {
+        private eventManagerService: EventManagerService)
+    {
+        this.isAuthorizedToWriteScenario = this.loginService.hasAuthorization(Authorization.SCENARIO_WRITE);
     }
 
     ngOnInit(): void {
@@ -166,13 +170,13 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
                 click: this.executeScenario.bind(this),
                 iconClass: 'fa fa-play',
                 secondaryIconClass: 'fa-solid fa-gear fa-2xs',
-                authorizations: [Authorization.SCENARIO_EXECUTE]
+                authorizations: [Authorization.EXECUTION_WRITE]
             },
             {
-                label: 'global.actions.edit',
+                label: this.isAuthorizedToWriteScenario ? 'global.actions.edit' : 'global.actions.show',
                 link: '/scenario/' + this.testCaseId + '/raw-edition',
-                iconClass: 'fa fa-pencil-alt',
-                authorizations: [Authorization.SCENARIO_WRITE]
+                iconClass: this.isAuthorizedToWriteScenario ? 'fa fa-pencil-alt' : 'fa fa-eye',
+                authorizations: [Authorization.SCENARIO_READ]
             },
             {
                 label: 'global.actions.delete',
@@ -189,14 +193,15 @@ export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDest
             {
                 label: 'global.actions.export',
                 click: this.exportScenario.bind(this),
-                iconClass: 'fa fa-file-code'
+                iconClass: 'fa fa-file-code',
+                authorizations: [Authorization.SCENARIO_READ]
             }
         ];
         this.addReplayButtonIfNecessary();
     }
 
     private getEnvironments(): Observable<Array<string>> {
-        if (this.loginService.hasAuthorization(Authorization.SCENARIO_EXECUTE)) {
+        if (this.loginService.hasAuthorization(Authorization.EXECUTION_WRITE)) {
             return this.environmentService.names();
         }
         return of([])
