@@ -53,39 +53,6 @@ public class UserRolesTest {
     }
 
     @Test
-    void write_authorization_implies_read_one() {
-        UserRoles sut = UserRoles.builder()
-            .withRoles(List.of(
-                Role.builder()
-                    .withName("role")
-                    .withAuthorizations(
-                        Stream.of(
-                            Authorization.SCENARIO_WRITE,
-                            Authorization.CAMPAIGN_WRITE,
-                            Authorization.ADMIN_ACCESS,
-                            Authorization.DATASET_WRITE,
-                            Authorization.EXECUTION_WRITE
-                        ).map(Enum::name).toList()
-                    )
-                    .build()
-            ))
-            .build();
-
-        assertThat(sut.roles()).hasSize(1);
-        assertThat(sut.roleByName("role").authorizations).containsExactly(
-            Authorization.SCENARIO_WRITE,
-            Authorization.CAMPAIGN_WRITE,
-            Authorization.ADMIN_ACCESS,
-            Authorization.DATASET_WRITE,
-            Authorization.EXECUTION_WRITE,
-            Authorization.SCENARIO_READ,
-            Authorization.CAMPAIGN_READ,
-            Authorization.DATASET_READ,
-            Authorization.EXECUTION_READ
-        );
-    }
-
-    @Test
     void users_must_have_a_declared_role() {
         assertThatThrownBy(() ->
             UserRoles.builder()
@@ -158,8 +125,41 @@ public class UserRolesTest {
         ).isInstanceOf(RoleNotFoundException.class);
     }
 
+    @Test
+    void write_authorization_implies_read_one() {
+        UserRoles sut = UserRoles.builder()
+            .withRoles(List.of(
+                Role.builder()
+                    .withName("role")
+                    .withAuthorizations(
+                        Stream.of(
+                            Authorization.SCENARIO_WRITE,
+                            Authorization.CAMPAIGN_WRITE,
+                            Authorization.ADMIN_ACCESS,
+                            Authorization.DATASET_WRITE,
+                            Authorization.EXECUTION_WRITE
+                        ).map(Enum::name).toList()
+                    )
+                    .build()
+            ))
+            .build();
+
+        assertThat(sut.roles()).hasSize(1);
+        assertThat(sut.roleByName("role").authorizations).containsExactly(
+            Authorization.SCENARIO_WRITE,
+            Authorization.CAMPAIGN_WRITE,
+            Authorization.ADMIN_ACCESS,
+            Authorization.DATASET_WRITE,
+            Authorization.EXECUTION_WRITE,
+            Authorization.SCENARIO_READ,
+            Authorization.CAMPAIGN_READ,
+            Authorization.DATASET_READ,
+            Authorization.EXECUTION_READ
+        );
+    }
+
     @Property
-    void keep_users_and_roles_orders_when_build(@ForAll("validNotWriteRoles") Set<Role> roles) {
+    void keep_users_and_roles_orders_when_build(@ForAll("validRoles") Set<Role> roles) {
         Set<User> users = PropertyBasedTestingUtils.validUsers(roles);
 
         List<Role> orderedRoles = List.copyOf(roles);
@@ -183,7 +183,7 @@ public class UserRolesTest {
 
     @Provide
     @SuppressWarnings("unused")
-    private SetArbitrary<Role> validNotWriteRoles() {
-        return PropertyBasedTestingUtils.validRole(false).set().ofMinSize(1).ofMaxSize(10);
+    private SetArbitrary<Role> validRoles() {
+        return PropertyBasedTestingUtils.validRole().set().ofMinSize(1).ofMaxSize(10);
     }
 }

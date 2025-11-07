@@ -7,12 +7,13 @@
 
 package fr.enedis.chutney.dataset.infra.index;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.index.domain.AbstractIndexRepository;
+import fr.enedis.chutney.index.domain.IndexObject;
 import fr.enedis.chutney.index.infra.LuceneIndexRepository;
 import fr.enedis.chutney.scenario.infra.raw.TagListMapper;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -57,4 +58,8 @@ public class DatasetIndexRepository extends AbstractIndexRepository<DataSet> {
     }
 
 
+    @Override
+    public IndexObject indexObject() {
+        return IndexObject.DATASET;
+    }
 }

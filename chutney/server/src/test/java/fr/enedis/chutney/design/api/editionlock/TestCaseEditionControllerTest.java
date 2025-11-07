@@ -56,7 +56,7 @@ public class TestCaseEditionControllerTest {
             .build();
 
         currentUser.setId("currentUser");
-        when(userService.currentUser()).thenReturn(currentUser);
+        when(userService.currentUserId()).thenReturn(currentUser.getId());
     }
 
     @Test
@@ -95,10 +95,10 @@ public class TestCaseEditionControllerTest {
 
         // When
         MvcResult mvcResult = mockMvc.perform(
-            post(TestCaseEditionController.BASE_URL + "/" + testCaseId)
-                .contentType(APPLICATION_JSON_VALUE)
-                .content("")
-        )
+                post(TestCaseEditionController.BASE_URL + "/" + testCaseId)
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .content("")
+            )
             .andExpect(status().isOk())
             .andReturn();
 

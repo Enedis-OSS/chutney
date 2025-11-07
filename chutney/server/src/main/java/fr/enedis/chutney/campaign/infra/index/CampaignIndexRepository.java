@@ -9,6 +9,7 @@ package fr.enedis.chutney.campaign.infra.index;
 
 import fr.enedis.chutney.campaign.infra.jpa.CampaignEntity;
 import fr.enedis.chutney.index.domain.AbstractIndexRepository;
+import fr.enedis.chutney.index.domain.IndexObject;
 import fr.enedis.chutney.index.infra.LuceneIndexRepository;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CampaignIndexRepository extends AbstractIndexRepository<CampaignEntity> {
 
-    public CampaignIndexRepository(@Qualifier("campaignLuceneIndexRepository")  LuceneIndexRepository luceneIndexRepository) {
+    public CampaignIndexRepository(@Qualifier("campaignLuceneIndexRepository") LuceneIndexRepository luceneIndexRepository) {
         super("campaign", luceneIndexRepository);
     }
 
@@ -38,5 +39,10 @@ public class CampaignIndexRepository extends AbstractIndexRepository<CampaignEnt
     @Override
     protected String getId(CampaignEntity campaign) {
         return campaign.id().toString();
+    }
+
+    @Override
+    public IndexObject indexObject() {
+        return IndexObject.CAMPAIGN;
     }
 }

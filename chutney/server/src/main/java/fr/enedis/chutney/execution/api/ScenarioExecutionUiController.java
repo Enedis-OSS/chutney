@@ -85,7 +85,7 @@ public class ScenarioExecutionUiController {
     @PostMapping(path = "/api/idea/scenario/execution/{env}")
     public String executeScenarioWitRawContent(@RequestBody IdeaRequest ideaRequest, @PathVariable("env") String env) throws IOException {
         LOGGER.debug("execute Scenario v2 for content='{}'", ideaRequest.content());
-        String userId = userService.currentUser().getId();
+        String userId = userService.currentUserId();
         GwtScenario gwtScenario = marshaller.deserialize("test title for idea", "test description for idea", ideaRequest.content());
 
         TestCase testCase = GwtTestCase.builder()
@@ -108,7 +108,7 @@ public class ScenarioExecutionUiController {
     public String executeScenarioAsyncWithExecutionParameters(@PathVariable("scenarioId") String scenarioId, @PathVariable("env") String env, @RequestBody(required = false) ExecutionDatasetDto dataset) {
         LOGGER.debug("execute async scenario '{}'", scenarioId);
         TestCase testCase = testCaseRepository.findExecutableById(scenarioId).orElseThrow(() -> new ScenarioNotFoundException(scenarioId));
-        String userId = userService.currentUser().getId();
+        String userId = userService.currentUserId();
         DataSet execDataset = getDataSet(dataset, testCase);
         return executionEngineAsync.execute(new ExecutionRequest(testCase, env, userId, execDataset)).toString();
     }

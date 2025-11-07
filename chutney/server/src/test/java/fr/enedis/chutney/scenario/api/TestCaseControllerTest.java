@@ -54,7 +54,7 @@ public class TestCaseControllerTest {
     @BeforeEach
     public void setUp() {
         currentUser.setId("currentUser");
-        when(userService.currentUser()).thenReturn(currentUser);
+        when(userService.currentUserId()).thenReturn(currentUser.getId());
 
         GwtTestCaseController testCaseController = new GwtTestCaseController(testCaseRepository, userService);
         mockMvc = MockMvcBuilders.standaloneSetup(testCaseController)
@@ -69,10 +69,10 @@ public class TestCaseControllerTest {
         AtomicReference<String> bodyHolder = new AtomicReference<>();
         // Save a scenario
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/scenario/v2/raw")
-                .content(om.writeValueAsString(SAMPLE_SCENARIO))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        )
+                MockMvcRequestBuilders.post("/api/scenario/v2/raw")
+                    .content(om.writeValueAsString(SAMPLE_SCENARIO))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            )
             .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
             .andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -86,10 +86,10 @@ public class TestCaseControllerTest {
         AtomicReference<String> bodyHolder = new AtomicReference<>();
         // Save a scenario
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/scenario/v2/raw")
-                .content(om.writeValueAsString(SAMPLE_SCENARIO))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        )
+                MockMvcRequestBuilders.post("/api/scenario/v2/raw")
+                    .content(om.writeValueAsString(SAMPLE_SCENARIO))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            )
 //            .andDo(print())
             .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
             .andExpect(MockMvcResultMatchers.status().isOk());
@@ -102,10 +102,10 @@ public class TestCaseControllerTest {
         // When
         final AtomicInteger resultContentLength = new AtomicInteger();
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/scenario/v2/raw")
-                .content(om.writeValueAsString(SAMPLE_SCENARIO))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        )
+                MockMvcRequestBuilders.post("/api/scenario/v2/raw")
+                    .content(om.writeValueAsString(SAMPLE_SCENARIO))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            )
             .andDo(result -> resultContentLength.set(result.getResponse().getContentLength()))
             .andExpect(status().isBadRequest());
 
@@ -120,10 +120,10 @@ public class TestCaseControllerTest {
         // When
         String[] message = {null};
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/scenario/v2/raw")
-                .content(om.writeValueAsString(SAMPLE_SCENARIO))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        )
+                MockMvcRequestBuilders.post("/api/scenario/v2/raw")
+                    .content(om.writeValueAsString(SAMPLE_SCENARIO))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            )
             .andDo(result -> message[0] = result.getResponse().getContentAsString())
             .andExpect(status().isUnprocessableEntity());
 
@@ -138,10 +138,10 @@ public class TestCaseControllerTest {
         AtomicReference<String> bodyHolder = new AtomicReference<>();
         // Save a scenario
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/scenario/v2/raw")
-                .content(om.writeValueAsString(SAMPLE_SCENARIO))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        )
+                MockMvcRequestBuilders.post("/api/scenario/v2/raw")
+                    .content(om.writeValueAsString(SAMPLE_SCENARIO))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            )
 //            .andDo(print())
             .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
             .andExpect(MockMvcResultMatchers.status().isOk());

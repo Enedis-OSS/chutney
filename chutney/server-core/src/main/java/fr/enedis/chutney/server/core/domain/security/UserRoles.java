@@ -39,6 +39,7 @@ public class UserRoles {
         return roles().stream()
             .filter(Role.roleByNamePredicate(roleName))
             .findFirst()
+            .map(Role::copyWithWriteAsRead)
             .orElseThrow(() -> RoleNotFoundException.forRole(roleName));
     }
 
@@ -97,7 +98,7 @@ public class UserRoles {
 
             return new UserRoles(
                 roles.stream().collect(toMap(
-                    Role::copyWithWriteAsRead,
+                    r -> r,
                     r -> users.stream().filter(User.userByRoleNamePredicate(r.name)).collect(toCollection(LinkedHashSet::new)),
                     (x, y) -> y,
                     LinkedHashMap::new

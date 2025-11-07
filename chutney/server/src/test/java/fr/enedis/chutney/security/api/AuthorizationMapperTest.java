@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.security.api;
 
-import static fr.enedis.chutney.security.PropertyBasedTestingUtils.validNotWriteRights;
+import static fr.enedis.chutney.security.PropertyBasedTestingUtils.validRights;
 import static fr.enedis.chutney.security.PropertyBasedTestingUtils.validRoleName;
 import static fr.enedis.chutney.security.PropertyBasedTestingUtils.validUserId;
 import static net.jqwik.api.Arbitraries.just;
@@ -70,7 +70,7 @@ class AuthorizationMapperTest {
 
     private Arbitrary<AuthorizationsDto.RoleDto> validRoleDto() {
         return Combinators
-            .combine(validRoleName(), validNotWriteRights())
+            .combine(validRoleName(), validRights())
             .as((n, r) -> buildRoleDto(n, List.copyOf(r)));
     }
 

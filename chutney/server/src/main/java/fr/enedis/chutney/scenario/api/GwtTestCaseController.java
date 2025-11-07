@@ -87,7 +87,7 @@ public class GwtTestCaseController {
         gwtTestCase = GwtTestCase.builder()
             .withMetadata(TestCaseMetadataImpl.TestCaseMetadataBuilder.from(gwtTestCase.metadata)
                 .withUpdateDate(now())
-                .withAuthor(userService.currentUser().getId())
+                .withAuthor(userService.currentUserId())
                 .build())
             .withScenario(gwtTestCase.scenario)
             .build();

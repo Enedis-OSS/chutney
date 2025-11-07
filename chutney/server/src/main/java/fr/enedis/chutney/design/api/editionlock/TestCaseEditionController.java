@@ -47,13 +47,13 @@ public class TestCaseEditionController {
     @PreAuthorize("hasAuthority('SCENARIO_WRITE')")
     @PostMapping(path = "/{testCaseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public TestCaseEditionDto editTestCase(@PathVariable("testCaseId") String testCaseId) {
-        return toDto(testCaseEditionsService.editTestCase(testCaseId, userService.currentUser().getId()));
+        return toDto(testCaseEditionsService.editTestCase(testCaseId, userService.currentUserId()));
     }
 
     @PreAuthorize("hasAuthority('SCENARIO_WRITE')")
     @DeleteMapping(path = "/{testCaseId}")
     public void endTestCaseEdition(@PathVariable("testCaseId") String testCaseId) {
-        testCaseEditionsService.endTestCaseEdition(testCaseId, userService.currentUser().getId());
+        testCaseEditionsService.endTestCaseEdition(testCaseId, userService.currentUserId());
     }
 
     private static TestCaseEditionDto toDto(TestCaseEdition tcEdition) {

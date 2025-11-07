@@ -11,11 +11,10 @@ import fr.enedis.chutney.acceptance.common.jsonHeader
 import fr.enedis.chutney.kotlin.dsl.*
 
 val `Declare a new role with its authorizations` = Scenario(title = "Declare a new role with its authorizations") {
-  Given("A new role with write access") {
+  Given("A new role") {
     ContextPutAction(
         entries = mapOf(
-            "newRole" to "jsonPath('{\"name\": \"NEW_ROLE\", \"rights\":[\"CAMPAIGN_READ\", \"SCENARIO_WRITE\"]}', \"$\")".spEL,
-            "expectedNewRoleRights" to "jsonPath('[\"CAMPAIGN_READ\", \"SCENARIO_WRITE\",\"SCENARIO_READ\"]', \"$\")".spEL,
+            "newRole" to "jsonPath('{\"name\": \"NEW_ROLE\", \"rights\":[\"SCENARIO_READ\", \"CAMPAIGN_READ\", \"SCENARIO_WRITE\"]}', \"$\")".spEL,
         )
     )
   }
@@ -58,7 +57,7 @@ val `Declare a new role with its authorizations` = Scenario(title = "Declare a n
       JsonAssertAction(
           document = "readAuthorizations".spEL(),
           expected = mapOf(
-              "$.roles[?(@.name=='NEW_ROLE')].rights" to "${'$'}value:${'$'}{#jsonPath(#expectedNewRoleRights, \"${'$'}\")}",
+              "$.roles[?(@.name=='NEW_ROLE')].rights" to "${'$'}value:${'$'}{#jsonPath(#newRole, \"${'$'}.rights\")}",
           )
       )
     }

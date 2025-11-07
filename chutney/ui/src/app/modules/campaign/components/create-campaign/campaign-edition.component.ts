@@ -242,6 +242,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     }
 
     private initJiraPlugin() {
+        if (this.isAuthorizedToWriteCampaign) {
         this.jiraPluginConfigurationService.getUrl()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe((r) => {
@@ -257,6 +258,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                         );
                 }
             });
+        }
     }
 
     private initTranslations() {

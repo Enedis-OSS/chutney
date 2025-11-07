@@ -100,7 +100,7 @@
                 </td>
                 <td class="ps-0 w2 align-middle">
                   <button type="button" class="btn btn-sm btn-outline-primary"
-                          (click)="editCampaign(campaign, $event)"
+                          (click)="showCampaign(campaign, $event)"
                           title="{{ (isAuthorizedToWriteCampaign ? 'global.actions.edit' : 'global.actions.show') | translate }}">
                     <span class="fa" [ngClass]="isAuthorizedToWriteCampaign ? 'fa-pencil-alt' : 'fa-eye'"></span>
                   </button>

@@ -32,11 +32,11 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    public void get_role_from_user_id() {
+    public void get_role_from_user_id_with_write_implies_read() {
         // Given
         Role expectedRole = Role.builder()
             .withName("expectedRole")
-            .withAuthorizations(List.of(Authorization.SCENARIO_READ.name(), Authorization.EXECUTION_READ.name()))
+            .withAuthorizations(List.of(Authorization.SCENARIO_READ.name(), Authorization.EXECUTION_WRITE.name()))
             .build();
         when(authorizations.read()).thenReturn(
             UserRoles.builder()
@@ -50,7 +50,11 @@ class AuthenticationServiceTest {
 
         // Then
         assertThat(role).isEqualTo(expectedRole);
-        assertThat(role.authorizations).containsExactlyInAnyOrderElementsOf(expectedRole.authorizations);
+        assertThat(role.authorizations).containsExactly(
+            Authorization.SCENARIO_READ,
+            Authorization.EXECUTION_WRITE,
+            Authorization.EXECUTION_READ
+        );
     }
 
     @Test

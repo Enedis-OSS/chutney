@@ -8,6 +8,7 @@
 package fr.enedis.chutney.scenario.infra.index;
 
 import fr.enedis.chutney.index.domain.AbstractIndexRepository;
+import fr.enedis.chutney.index.domain.IndexObject;
 import fr.enedis.chutney.index.infra.LuceneIndexRepository;
 import fr.enedis.chutney.scenario.infra.jpa.ScenarioEntity;
 import org.apache.lucene.document.Document;
@@ -39,5 +40,10 @@ public class ScenarioIndexRepository extends AbstractIndexRepository<ScenarioEnt
     @Override
     protected String getId(ScenarioEntity scenario) {
         return scenario.getId().toString();
+    }
+
+    @Override
+    public IndexObject indexObject() {
+        return IndexObject.SCENARIO;
     }
 }
