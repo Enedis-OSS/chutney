@@ -71,7 +71,7 @@ public class CampaignSchedulerTest {
     @ParameterizedTest()
     @EnumSource(Frequency.class)
     void schedule_campaign_execution(Frequency frequency) {
-        List<PeriodicScheduledCampaign> periodicScheduledCampaign = createPeriodicScheduledCampaigns(singletonList(frequency), environment, dataset.id);
+        List<PeriodicScheduledCampaign> periodicScheduledCampaign = createPeriodicScheduledCampaigns(singletonList(frequency), environment, dataset.id, "JIRA-2");
         when(scheduledCampaignRepository.getAll())
             .thenReturn(
                 periodicScheduledCampaign
@@ -81,7 +81,7 @@ public class CampaignSchedulerTest {
 
         softAssertVerifies(of(
             // Execution called with scheduledCampaign parameter with user "auto"
-            () -> verify(campaignExecutionEngine).executeScheduledCampaign(periodicScheduledCampaign.getFirst().campaignExecutionRequests.getFirst().campaignId(), environment, dataset.id, "auto"),
+            () -> verify(campaignExecutionEngine).executeScheduledCampaign(periodicScheduledCampaign.getFirst().campaignExecutionRequests.getFirst().campaignId(), environment, dataset.id, "auto", "JIRA-2"),
             // Last execution is removed
             () -> verify(scheduledCampaignRepository).removeById(periodicScheduledCampaign.getFirst().id),
             // Add next execution except for EMPTY frequency
@@ -120,8 +120,8 @@ public class CampaignSchedulerTest {
             () -> sut.executeScheduledCampaigns()
         );
 
-        verify(campaignExecutionEngine, times(periodicScheduledCampaigns.size())).executeScheduledCampaign(any(), any(), any(), any());
-        verify(campaignExecutionEngine, times(periodicScheduledCampaigns.size())).executeScheduledCampaign(any(), any(), any(), any());
+        verify(campaignExecutionEngine, times(periodicScheduledCampaigns.size())).executeScheduledCampaign(any(), any(), any(), any(), any());
+        verify(campaignExecutionEngine, times(periodicScheduledCampaigns.size())).executeScheduledCampaign(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -137,20 +137,20 @@ public class CampaignSchedulerTest {
 
         sut.executeScheduledCampaigns();
 
-        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.getFirst().campaignId()), eq(environment), eq(dataset.id), eq("auto"));
-        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.get(1).campaignId()), eq(environment), eq(dataset.id), eq("auto"));
-        verify(campaignExecutionEngine, times(2)).executeScheduledCampaign(any(), any(), any(), any());
+        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.getFirst().campaignId()), eq(environment), eq(dataset.id), eq("auto"), any());
+        inOrder.verify(campaignExecutionEngine).executeScheduledCampaign(eq(periodicScheduledCampaigns.getFirst().campaignExecutionRequests.get(1).campaignId()), eq(environment), eq(dataset.id), eq("auto"), any());
+        verify(campaignExecutionEngine, times(2)).executeScheduledCampaign(any(), any(), any(), any(), any());
     }
 
     private List<PeriodicScheduledCampaign> createPeriodicScheduledCampaigns(List<Frequency> frequencies) {
-        return createPeriodicScheduledCampaigns(frequencies, null, null);
+        return createPeriodicScheduledCampaigns(frequencies, null, null, null);
     }
 
-    private List<PeriodicScheduledCampaign> createPeriodicScheduledCampaigns(List<Frequency> frequencies, String environment, String datasetId) {
+    private List<PeriodicScheduledCampaign> createPeriodicScheduledCampaigns(List<Frequency> frequencies, String environment, String datasetId, String jiraId) {
         Random rand = new Random();
         return frequencies.stream()
             .map(f ->
-                new PeriodicScheduledCampaign(rand.nextLong(), now(clock).minusSeconds(5), f, environment, of(new CampaignExecutionRequest(rand.nextLong(), "title", datasetId, null)))
+                new PeriodicScheduledCampaign(rand.nextLong(), now(clock).minusSeconds(5), f, environment, of(new CampaignExecutionRequest(rand.nextLong(), "title", datasetId, jiraId)))
             )
             .collect(toList());
     }

@@ -12,7 +12,6 @@ import static fr.enedis.chutney.dataset.api.DataSetMapper.fromExecutionDatasetDt
 
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportMapper;
-import fr.enedis.chutney.dataset.api.ExecutionDatasetDto;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.execution.api.report.surefire.SurefireCampaignExecutionReportBuilder;
 import fr.enedis.chutney.execution.api.report.surefire.SurefireScenarioExecutionReportBuilder;
@@ -117,7 +116,7 @@ public class CampaignExecutionUiController {
         LOGGER.warn("jiraId {}", campaignExecutionDto.jiraId());
         String userId = userService.currentUserId();
         DataSet ds = fromExecutionDatasetDto(campaignExecutionDto.dataset(), datasetRepository::findById);
-        CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId);
+        CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId, campaignExecutionDto.jiraId());
         return toDto(report);
     }
 }
