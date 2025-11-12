@@ -20,6 +20,7 @@ import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.jira.api.JiraXrayEmbeddedApi;
+import fr.enedis.chutney.jira.api.ScenarioJiraLink;
 import fr.enedis.chutney.jira.domain.exception.NoJiraConfigurationException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.ExecutionRequest;
@@ -305,7 +306,7 @@ public class CampaignExecutionEngine {
                     .dataset()
                     .map(dataset -> ofNullable(dataset.id).orElse(""))
                     .orElse("");
-                jiraXrayEmbeddedApi.updateTestExecution(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, JiraReportMapper.from(execution.report(), objectMapper), null);
+                jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, campaignExecution.jiraId), JiraReportMapper.from(execution.report(), objectMapper));
             } catch (NoJiraConfigurationException e) { // Silent
             } catch (Exception e) {
                 LOGGER.warn("Update JIRA failed", e);

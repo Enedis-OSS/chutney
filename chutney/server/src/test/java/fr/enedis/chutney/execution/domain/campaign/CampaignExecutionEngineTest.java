@@ -36,6 +36,7 @@ import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.jira.api.JiraXrayEmbeddedApi;
 import fr.enedis.chutney.jira.api.ReportForJira;
+import fr.enedis.chutney.jira.api.ScenarioJiraLink;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.ExecutionRequest;
@@ -130,8 +131,8 @@ public class CampaignExecutionEngineTest {
         CampaignExecution cer = sut.executeScenarioInCampaign(campaign, "user", null);
 
         ArgumentCaptor<ReportForJira> reportForJiraCaptor = ArgumentCaptor.forClass(ReportForJira.class);
-        verify(jiraXrayPlugin).updateTestExecution(eq(campaign.id), eq(cer.executionId), eq(firstTestCase.metadata.id), eq(""), reportForJiraCaptor.capture(), null);
-        verify(jiraXrayPlugin, times(0)).updateTestExecution(eq(campaign.id), eq(cer.executionId), eq(notExecutedTestCase.metadata.id), eq(""), reportForJiraCaptor.capture(), null);
+        verify(jiraXrayPlugin).updateTestExecution(eq(new ScenarioJiraLink(campaign.id, cer.executionId, firstTestCase.metadata.id, "", null)), eq(reportForJiraCaptor.capture()));
+        verify(jiraXrayPlugin, times(0)).updateTestExecution(new ScenarioJiraLink(campaign.id, cer.executionId, notExecutedTestCase.metadata.id, "", null), reportForJiraCaptor.capture());
     }
 
     @Test

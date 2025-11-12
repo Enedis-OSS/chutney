@@ -21,9 +21,9 @@ public class JiraXrayEmbeddedApi {
         this.jiraXrayService = jiraXrayService;
     }
 
-    public void updateTestExecution(Long campaignId, Long campaignExecutionId, String scenarioId, String datasetId, ReportForJira report, String jiraId) {
-        if (report != null && isNotEmpty(scenarioId) && campaignId != null) {
-            jiraXrayService.updateTestExecution(campaignId, campaignExecutionId, scenarioId, datasetId, report, jiraId);
+    public void updateTestExecution(ScenarioJiraLink scenarioJiraLink, ReportForJira report) {
+        if (report != null && isNotEmpty(scenarioJiraLink.scenarioId()) && scenarioJiraLink.campaignId() != null) {
+            jiraXrayService.updateTestExecution(scenarioJiraLink, report);
         }
     }
 
