@@ -128,10 +128,10 @@ public class CampaignExecutionEngineTest {
         Campaign campaign = createCampaign(List.of(firstTestCase, notExecutedTestCase));
 
         // When
-        CampaignExecution cer = sut.executeScenarioInCampaign(campaign, "user", null);
+        CampaignExecution cer = sut.executeScenarioInCampaign(campaign, "user", null, "JIRA-100");
 
         ArgumentCaptor<ReportForJira> reportForJiraCaptor = ArgumentCaptor.forClass(ReportForJira.class);
-        verify(jiraXrayPlugin).updateTestExecution(eq(new ScenarioJiraLink(campaign.id, cer.executionId, firstTestCase.metadata.id, "", null)), eq(reportForJiraCaptor.capture()));
+        verify(jiraXrayPlugin).updateTestExecution(eq(new ScenarioJiraLink(campaign.id, cer.executionId, firstTestCase.metadata.id, "", "JIRA-100")), eq(reportForJiraCaptor.capture()));
         verify(jiraXrayPlugin, times(0)).updateTestExecution(new ScenarioJiraLink(campaign.id, cer.executionId, notExecutedTestCase.metadata.id, "", null), reportForJiraCaptor.capture());
     }
 
@@ -141,7 +141,7 @@ public class CampaignExecutionEngineTest {
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
         // When
-        CampaignExecution campaignExecution = sut.executeScenarioInCampaign(campaign, "user", null);
+        CampaignExecution campaignExecution = sut.executeScenarioInCampaign(campaign, "user", null, null);
 
         // Then
         verify(testCaseRepository, times(2)).findExecutableById(anyString());
@@ -170,7 +170,7 @@ public class CampaignExecutionEngineTest {
                 String.valueOf(secondScenarioExecutionId),
                 secondTestCase.metadata.title,
                 createExecution(String.valueOf(secondScenarioExecutionId), secondScenarioExecutionId).summary())
-        ), campaign, "user", null);
+        ), campaign, "user", null, null);
 
         // Then
         verify(testCaseRepository).findExecutableById(anyString());
@@ -360,7 +360,7 @@ public class CampaignExecutionEngineTest {
 
         // When
         DataSet dataset = DataSet.builder().withId("datasetId").withName("").build();
-        sut.executeById(campaign.id, "", dataset, "");
+        sut.executeById(campaign.id, "", dataset, "", null);
         sut.executeByName(campaign.title, null, dataset, "");
 
         // Then
@@ -416,7 +416,7 @@ public class CampaignExecutionEngineTest {
         // When
         String executionEnv = "executionEnv";
         String executionUser = "executionUser";
-        sut.executeById(campaign.id, executionEnv, null, executionUser);
+        sut.executeById(campaign.id, executionEnv, null, executionUser, null);
 
         // Then
         verify(campaignRepository).findById(campaign.id);
@@ -424,7 +424,7 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
-    public void execute_campaign_with_given_dataset_when_executed_by_id() {
+    public void execute_campaign_with_given_dataset_and_jira_id_when_executed_by_id() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
         when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
@@ -432,11 +432,12 @@ public class CampaignExecutionEngineTest {
         // When
         DataSet executionDataset = DataSet.builder().withName("executionDataset").withId("executionDataset").build();
         String executionUser = "executionUser";
-        CampaignExecution execution = sut.executeById(campaign.id, null, executionDataset, executionUser);
+        CampaignExecution execution = sut.executeById(campaign.id, null, executionDataset, executionUser, "JIRA-6");
 
         // Then
         verify(campaignRepository).findById(campaign.id);
         assertThat(execution.dataset.id).isEqualTo(executionDataset.id);
+        assertThat(execution.jiraId).isEqualTo("JIRA-6");
     }
 
     @Test
@@ -623,7 +624,7 @@ public class CampaignExecutionEngineTest {
         when(campaignRepository.findById(eq(1L))).thenReturn(campaign);
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER");
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER", null);
 
         // Then
         assertThat(campaignExecution.dataset).satisfies(ds -> {
@@ -654,7 +655,7 @@ public class CampaignExecutionEngineTest {
         when(datasetRepository.findById(eq("DATASET_ID"))).thenReturn(DataSet.builder().withName("DATASET_ID").withId("DATASET_ID").build());
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER");
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER", null);
 
         // Then
         assertThat(campaignExecution.dataset).isNotNull();
@@ -677,7 +678,7 @@ public class CampaignExecutionEngineTest {
         when(datasetRepository.findById(eq("DATASET_ID"))).thenReturn(DataSet.builder().withName("DATASET_ID").withId("DATASET_ID").build());
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER");
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER", null);
 
         // Then
         assertThat(campaign.executionDataset()).isNotNull();
@@ -698,7 +699,7 @@ public class CampaignExecutionEngineTest {
         when(campaignRepository.findById(eq(1L))).thenReturn(campaign);
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER");
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER", null);
 
         // Then
         assertThat(campaign.executionDataset()).isNull();
@@ -707,11 +708,11 @@ public class CampaignExecutionEngineTest {
 
     @ParameterizedTest
     @CsvSource({
-        "123, DEV, dataset123, user123",
-        "123, DEV, , user123"
+        "123, DEV, dataset123, user123, JIRA-1",
+        "123, DEV, , user123, JIRA-1"
     })
     @DisplayName("Does not pass dataset empty if not defined in scheduling")
-    void testExecuteScheduledCampaign(Long campaignId, String environment, String datasetId, String userId) {
+    void testExecuteScheduledCampaign(Long campaignId, String environment, String datasetId, String userId, String jiraId) {
         //Given
         DataSet dataset = DataSet.builder().withName("A").withId("A").build();
         var scenarios = Lists.list(firstTestCase.id()).stream().map(id -> new Campaign.CampaignScenario(id, null)).toList();
@@ -725,13 +726,13 @@ public class CampaignExecutionEngineTest {
 
         // When
         CampaignExecutionEngine spySut = spy(sut);
-        spySut.executeScheduledCampaign(campaignId, environment, datasetId, userId);
+        spySut.executeScheduledCampaign(campaignId, environment, datasetId, userId, jiraId);
 
         // Then
         if (datasetId != null) {
-            verify(spySut).executeById(campaignId, environment, dataset, userId);
+            verify(spySut).executeById(campaignId, environment, dataset, userId, jiraId);
         } else {
-            verify(spySut).executeById(campaignId, environment, null, userId);
+            verify(spySut).executeById(campaignId, environment, null, userId, jiraId);
         }
     }
 
