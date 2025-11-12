@@ -109,7 +109,7 @@ public class CampaignExecutionEngine {
         List<Campaign> campaigns = campaignRepository.findByName(campaignName);
         return campaigns.stream()
             .map(campaign -> selectExecutionEnvironment(campaign, environment))
-            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset))
+            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset, null))
             .collect(Collectors.toList());
     }
 
@@ -117,23 +117,23 @@ public class CampaignExecutionEngine {
         return executeByName(campaignName, environment, null, userId);
     }
 
-    public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId) {
+    public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId, String jiraId) {
         return ofNullable(campaignRepository.findById(campaignId))
             .map(campaign -> selectExecutionEnvironment(campaign, environment))
-            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset))
+            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset, jiraId))
             .orElseThrow(() -> new CampaignNotFoundException(campaignId));
     }
 
     public CampaignExecution executeById(Long campaignId, String userId) {
-        return executeById(campaignId, null, null, userId);
+        return executeById(campaignId, null, null, userId, null);
     }
 
-    public void executeScheduledCampaign(Long campaignId, String environment, String datasetId, String userId) {
+    public void executeScheduledCampaign(Long campaignId, String environment, String datasetId, String userId, String jiraId) {
         DataSet dataset = datasetRepository.findById(datasetId);
         if (!DataSet.NO_DATASET.equals(dataset)) {
-            executeById(campaignId, environment, dataset, userId);
+            executeById(campaignId, environment, dataset, userId, jiraId);
         } else {
-            executeById(campaignId, environment, null, userId);
+            executeById(campaignId, environment, null, userId, jiraId);
         }
     }
 
@@ -177,18 +177,18 @@ public class CampaignExecutionEngine {
         }
         Campaign campaign = campaignRepository.findById(campaignExecution.campaignId);
         campaign.executionEnvironment(campaignExecution.executionEnvironment);
-        return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset);
+        return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset, campaignExecution.jiraId);
     }
 
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId) {
-        return executeScenarioInCampaign(emptyList(), campaign, userId, null);
+        return executeScenarioInCampaign(emptyList(), campaign, userId, null, null);
     }
 
-    CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset) {
-        return executeScenarioInCampaign(emptyList(), campaign, userId, dataset);
+    CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset, String jiraId) {
+        return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, jiraId);
     }
 
-    CampaignExecution executeScenarioInCampaign(List<ScenarioExecutionCampaign> failedExecutions, Campaign campaign, String userId, DataSet dataset) {
+    CampaignExecution executeScenarioInCampaign(List<ScenarioExecutionCampaign> failedExecutions, Campaign campaign, String userId, DataSet dataset, String jiraId) {
         verifyHasScenarios(campaign);
         verifyNotAlreadyRunning(campaign);
         Long executionId = campaignExecutionRepository.generateCampaignExecutionId(campaign.id, campaign.executionEnvironment(), dataset);
@@ -201,6 +201,7 @@ public class CampaignExecutionEngine {
             .environment(campaign.executionEnvironment())
             .dataset(ofNullable(dataset).orElse(ofNullable(campaign.executionDataset()).map(ds -> DataSet.builder().withId(ds).withName("").build()).orElse(null)))
             .userId(userId)
+            .jiraId(jiraId)
             .build();
 
         campaignExecutionRepository.startExecution(campaign.id, campaignExecution);
