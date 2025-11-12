@@ -12,6 +12,7 @@ import static fr.enedis.chutney.jira.domain.XrayStatus.FAIL;
 import static fr.enedis.chutney.jira.domain.XrayStatus.PASS;
 
 import fr.enedis.chutney.jira.api.ReportForJira;
+import fr.enedis.chutney.jira.api.ScenarioJiraLink;
 import fr.enedis.chutney.jira.domain.exception.NoJiraConfigurationException;
 import fr.enedis.chutney.jira.xrayapi.Xray;
 import fr.enedis.chutney.jira.xrayapi.XrayEvidence;
@@ -43,17 +44,17 @@ public class JiraXrayService {
         loadJiraServerConfiguration();
     }
 
-    public void updateTestExecution(Long campaignId, Long campaignExecutionId, String scenarioId, String datasetId, ReportForJira report, String jiraId) {
+    public void updateTestExecution(ScenarioJiraLink scenarioJiraLink, ReportForJira report) {
         JiraXrayApi jiraXrayApi = createHttpJiraXrayImpl();
 
-        String testExecutionKey = jiraId != null ? jiraId :
-            jiraRepository.getByCampaignId(campaignId.toString());
+        String testExecutionKey = scenarioJiraLink.jiraId() != null ? scenarioJiraLink.jiraId() :
+            jiraRepository.getByCampaignId(scenarioJiraLink.campaignId().toString());
         String testKey = jiraRepository.getAllLinkedScenariosWithDataset()
-            .getOrDefault(scenarioId, Collections.emptyMap())
-            .getOrDefault(datasetId, jiraRepository.getByScenarioId(scenarioId));
+            .getOrDefault(scenarioJiraLink.scenarioId(), Collections.emptyMap())
+            .getOrDefault(scenarioJiraLink.datasetId(), jiraRepository.getByScenarioId(scenarioJiraLink.scenarioId()));
 
         if (jiraXrayApi.isTestPlan(testExecutionKey)) {
-            String newTestExecutionKey = jiraRepository.getByCampaignExecutionId(campaignExecutionId.toString());
+            String newTestExecutionKey = jiraRepository.getByCampaignExecutionId(scenarioJiraLink.campaignExecutionId().toString());
             if (newTestExecutionKey.isEmpty()) {
                 newTestExecutionKey = jiraXrayApi.createTestExecution(testExecutionKey);
             }
@@ -62,21 +63,25 @@ public class JiraXrayService {
 
         if (!testKey.isEmpty() && !testExecutionKey.isEmpty()) {
             LOGGER.info("Update xray test {} of test execution {}", testKey, testExecutionKey);
-            jiraRepository.saveForCampaignExecution(campaignExecutionId.toString(), testExecutionKey);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZZZZZ");
-            XrayTest xrayTest = new XrayTest(
-                testKey,
-                report.startDate.atZone(ZoneId.systemDefault()).format(formatter),
-                report.startDate.plusNanos(report.duration * 1000000).atZone(ZoneId.systemDefault()).format(formatter),
-                getErrors(report).toString(),
-                report.status.equals("SUCCESS") ? PASS.value : FAIL.value
-            );
-
-            xrayTest.setEvidences(getEvidences(report.rootStep, ""));
-            XrayInfo info = new XrayInfo(Collections.singletonList(report.environment));
-            Xray xray = new Xray(testExecutionKey, Collections.singletonList(xrayTest), info);
-            jiraXrayApi.updateRequest(xray);
+            jiraRepository.saveForCampaignExecution(scenarioJiraLink.campaignExecutionId().toString(), testExecutionKey);
+            sendJiraRequest(report, testKey, testExecutionKey, jiraXrayApi);
         }
+    }
+
+    private void sendJiraRequest(ReportForJira report, String testKey, String testExecutionKey, JiraXrayApi jiraXrayApi) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+        XrayTest xrayTest = new XrayTest(
+            testKey,
+            report.startDate.atZone(ZoneId.systemDefault()).format(formatter),
+            report.startDate.plusNanos(report.duration * 1000000).atZone(ZoneId.systemDefault()).format(formatter),
+            getErrors(report).toString(),
+            report.status.equals("SUCCESS") ? PASS.value : FAIL.value
+        );
+
+        xrayTest.setEvidences(getEvidences(report.rootStep, ""));
+        XrayInfo info = new XrayInfo(Collections.singletonList(report.environment));
+        Xray xray = new Xray(testExecutionKey, Collections.singletonList(xrayTest), info);
+        jiraXrayApi.updateRequest(xray);
     }
 
     public List<XrayTestExecTest> getTestExecutionScenarios(String testExecutionId) {
