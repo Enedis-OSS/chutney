@@ -40,6 +40,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
     datasets: ListItem[] = [];
     datasetsSelected: Array<{"campaign": Campaign, "dataset": ListItem}> = [];
+    jirasSelected: Array<{"campaign": Campaign, "jira": string}> = [];
     datasetDropdownSettings: IDropdownSettings;
     EMPTY_DATASET = {"id": "", "text": ""};
 
@@ -128,11 +129,13 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
         const campaignExecutionRequests: CampaignExecutionRequest[] = campaignList.map((campaign, index) => {
             const dataset = this.datasetsSelected[index];  // Assurez-vous que les listes ont la même longueur et que l'index est valide
+            const jira = this.jirasSelected[index];
 
             return {
                 campaignId: campaign.id,
                 campaignTitle: campaign.title,
-                datasetId: dataset.dataset?.id.toString() || "" // On utilise une valeur par défaut (""), au cas où `dataset.dataset?.id` soit `undefined`
+                datasetId: dataset.dataset?.id.toString() || "", // On utilise une valeur par défaut (""), au cas où `dataset.dataset?.id` soit `undefined`
+                jiraId: jira?.jira || ""
             };
         });
 
@@ -156,6 +159,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
             });
 
         this.datasetsSelected = [];
+        this.jirasSelected = [];
         this.submitted = false;
     }
 
@@ -174,6 +178,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
     selectCampaign(campaign: Campaign) {
         this.datasetsSelected.push({campaign: campaign, dataset: this.EMPTY_DATASET});
+        this.jirasSelected.push({campaign: campaign, jira: ""});
     }
 
     unselectCampaign(campaign: Campaign) {
@@ -205,6 +210,12 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
     unselectDataset(toRemove: Campaign) {
         const foundelt = this.datasetsSelected.find(elt => elt.campaign.id === toRemove.id)
         foundelt.dataset = this.EMPTY_DATASET;
+    }
+
+    selectJira(toAdd: Event, campaign: Campaign) {
+        const newValue = (toAdd.target as HTMLInputElement).value;
+        const foundElement = this.jirasSelected.find(elt => elt.campaign.id === campaign.id)
+        foundElement.jira = newValue;
     }
 
     // convenience getter for easy access to form fields
