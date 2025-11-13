@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.environment.domain.exception;
 
-@SuppressWarnings("serial")
 public class AlreadyExistingTargetException extends RuntimeException {
 
     public AlreadyExistingTargetException(String targetName, String environmentName) {

@@ -24,13 +24,15 @@ public class TargetDto {
     public final Set<Entry> properties;
 
     public TargetDto() {
-        this(null,null,null,null);
+        this(null, null, null, null);
     }
+
     public TargetDto(String name,
                      String url,
                      Set<Entry> properties) {
         this(name, url, null, properties);
     }
+
     public TargetDto(String name,
                      String url,
                      String environment,
@@ -70,6 +72,10 @@ public class TargetDto {
 
     public Map<String, String> propertiesToMap() {
         return properties == null ? emptyMap() : properties.stream().collect(Collectors.toMap(p -> p.key, p -> p.value));
+    }
+
+    public TargetDto copyTargetsOnly() {
+        return new TargetDto(this.name, this.url, this.environment, emptySet());
     }
 
     private <T> Set<T> nullToEmpty(Set<T> set) {

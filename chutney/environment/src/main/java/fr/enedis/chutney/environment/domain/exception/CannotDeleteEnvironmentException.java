@@ -10,7 +10,6 @@ package fr.enedis.chutney.environment.domain.exception;
 import java.io.IOException;
 import java.nio.file.Path;
 
-@SuppressWarnings("serial")
 public class CannotDeleteEnvironmentException extends RuntimeException {
 
     public CannotDeleteEnvironmentException(Path environmentPath, IOException e) {

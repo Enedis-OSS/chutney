@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.environment.domain.exception;
 
-@SuppressWarnings("serial")
 public class EnvVariableNotFoundException extends RuntimeException {
     public EnvVariableNotFoundException(String variableKey) {
         super("Variable [" + variableKey + "] not found");

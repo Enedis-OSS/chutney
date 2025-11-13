@@ -10,7 +10,6 @@ package fr.enedis.chutney.environment.domain.exception;
 import java.nio.file.Path;
 import java.util.List;
 
-@SuppressWarnings("serial")
 public class EnvironmentNotFoundException extends RuntimeException {
     public EnvironmentNotFoundException(Path environmentPath) {
         super("Configuration file not found: " + environmentPath);

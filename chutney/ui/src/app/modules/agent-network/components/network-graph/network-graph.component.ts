@@ -42,7 +42,7 @@ export class NetworkGraphComponent implements OnDestroy {
     }
 
     loadUnreachableTarget() {
-        this.serviceSubscription = this.environmentAdminService.list().subscribe({
+        this.serviceSubscription = this.environmentAdminService.listTargets().subscribe({
             next: (res) => {
                 this.environments = res.sort((t1, t2) =>
                     t1.name.toUpperCase() > t2.name.toUpperCase() ? 1 : 0

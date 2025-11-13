@@ -17,12 +17,12 @@ export const targetsRoutes: Routes = [
     {
         path: '',
         component: TargetsComponent,
-        data: { 'authorizations': [ Authorization.ENVIRONMENT_ACCESS ] }
+        data: { 'authorizations': [ Authorization.TARGET_READ ] }
     },
     {
         path: ':name',
         component: TargetComponent,
         resolve: {targets: targetsResolver, environmentsNames: environmentsNamesResolver},
-        data: { 'authorizations': [ Authorization.ADMIN_ACCESS ] }
+        data: { 'authorizations': [ Authorization.TARGET_WRITE ] }
     }
 ];

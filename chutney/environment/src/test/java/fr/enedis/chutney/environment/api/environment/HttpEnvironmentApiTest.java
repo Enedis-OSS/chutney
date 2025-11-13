@@ -10,13 +10,12 @@ package fr.enedis.chutney.environment.api.environment;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toCollection;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.empty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,21 +26,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.environment.api.EnvironmentRestExceptionHandler;
+import fr.enedis.chutney.environment.api.TestHelper;
 import fr.enedis.chutney.environment.domain.Environment;
-import fr.enedis.chutney.environment.domain.EnvironmentRepository;
-import fr.enedis.chutney.environment.domain.EnvironmentService;
-import fr.enedis.chutney.environment.domain.Target;
 import fr.enedis.chutney.environment.domain.exception.EnvironmentNotFoundException;
 import fr.enedis.chutney.environment.domain.exception.InvalidEnvironmentNameException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,18 +46,21 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class HttpEnvironmentApiTest {
+public class HttpEnvironmentApiTest extends TestHelper {
 
-    private final String environmentBasePath = "/api/v2/environments";
-
-    private final EnvironmentRepository environmentRepository = mock(EnvironmentRepository.class);
-    private final EnvironmentService environmentService = new EnvironmentService(environmentRepository);
-    private final EnvironmentApi embeddedApplication = new EmbeddedEnvironmentApi(environmentService);
-    private final HttpEnvironmentApi environmentControllerV2 = new HttpEnvironmentApi(embeddedApplication);
-
-    final Map<String, Environment> registeredEnvironments = new LinkedHashMap<>();
+    private final HttpEnvironmentApi sut = new HttpEnvironmentApi(environmentApi);
 
     private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp() {
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        mappingJackson2HttpMessageConverter.setObjectMapper(new ObjectMapper().findAndRegisterModules());
+        mockMvc = MockMvcBuilders.standaloneSetup(sut)
+            .setControllerAdvice(new EnvironmentRestExceptionHandler())
+            .setMessageConverters(mappingJackson2HttpMessageConverter)
+            .build();
+    }
 
     private static Object[] params_listEnvironments_returns_all_available() {
         return new Object[]{
@@ -75,26 +70,21 @@ public class HttpEnvironmentApiTest {
         };
     }
 
-    @BeforeEach
-    public void setUp() {
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        mappingJackson2HttpMessageConverter.setObjectMapper(new ObjectMapper().findAndRegisterModules());
-        mockMvc = MockMvcBuilders.standaloneSetup(environmentControllerV2)
-            .setControllerAdvice(new EnvironmentRestExceptionHandler())
-            .setMessageConverters(mappingJackson2HttpMessageConverter)
-            .build();
-    }
-
     @ParameterizedTest
     @MethodSource("params_listEnvironments_returns_all_available")
-    public void listEnvironments_returns_all_available(String[] environmentNames) throws Exception {
+    void listEnvironments_returns_all_available(String[] environmentNames) throws Exception {
         // Given existing env and targets
-        stream(environmentNames).forEach(this::addAvailableEnvironment);
+        stream(environmentNames).forEach(env -> addAvailableEnvironment(env, List.of("target1", "target2"), List.of("envVar1", "envVar2")));
 
         ResultActions resultActions = mockMvc.perform(get(environmentBasePath))
             .andDo(MockMvcResultHandlers.log())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()", equalTo(environmentNames.length)));
+
+        if (environmentNames.length > 0) {
+            resultActions.andExpect(jsonPath("$.[0].targets", empty()))
+                .andExpect(jsonPath("$.[0].variables", empty()));
+        }
 
         List<String> expectedEnvNames = stream(environmentNames)
             .sorted(Comparator.naturalOrder())
@@ -106,7 +96,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void createEnvironment_adds_it_to_repository() throws Exception {
+    void createEnvironment_adds_it_to_repository() throws Exception {
         mockMvc.perform(
                 post(environmentBasePath)
                     .content("{\"name\": \"env_test\", \"description\": \"test description\"}")
@@ -124,7 +114,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void createEnvironment_returns_400_when_name_is_invalid() throws Exception {
+    void createEnvironment_returns_400_when_name_is_invalid() throws Exception {
         doThrow(new InvalidEnvironmentNameException()).when(environmentRepository).save(any());
         mockMvc.perform(
                 post(environmentBasePath)
@@ -135,7 +125,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void createEnvironment_returns_409_when_already_existing() throws Exception {
+    void createEnvironment_returns_409_when_already_existing() throws Exception {
         addAvailableEnvironment("env test");
 
         mockMvc.perform(
@@ -147,7 +137,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void deleteEnvironment_does_not_deletes_last_env() throws Exception {
+    void deleteEnvironment_does_not_deletes_last_env() throws Exception {
         addAvailableEnvironment("env_test");
         mockMvc.perform(delete(environmentBasePath + "/env_test"))
             .andDo(MockMvcResultHandlers.log())
@@ -155,7 +145,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void deleteEnvironment_returns_404_when_not_found() throws Exception {
+    void deleteEnvironment_returns_404_when_not_found() throws Exception {
         doThrow(new EnvironmentNotFoundException(List.of("message"))).when(environmentRepository).delete(any());
 
         mockMvc.perform(delete(environmentBasePath + "/env test"))
@@ -164,7 +154,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void deleteEnvironment_deletes_it_from_repo() throws Exception {
+    void deleteEnvironment_deletes_it_from_repo() throws Exception {
         addAvailableEnvironment("env_test_1");
         addAvailableEnvironment("env_test_2");
         mockMvc.perform(delete(environmentBasePath + "/env_test_2"))
@@ -175,7 +165,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void updateEnvironment_returns_404_when_not_found() throws Exception {
+    void updateEnvironment_returns_404_when_not_found() throws Exception {
         when(environmentRepository.findByName(any())).thenThrow(new EnvironmentNotFoundException(List.of("message")));
 
         mockMvc.perform(
@@ -187,7 +177,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void updateEnvironment_saves_it() throws Exception {
+    void updateEnvironment_saves_it() throws Exception {
         addAvailableEnvironment("env_test");
 
         mockMvc.perform(
@@ -208,7 +198,7 @@ public class HttpEnvironmentApiTest {
     }
 
     @Test
-    public void updateEnvironment_with_different_a_name_deletes_previous_one() throws Exception {
+    void updateEnvironment_with_different_a_name_deletes_previous_one() throws Exception {
         addAvailableEnvironment("env_test");
 
         mockMvc.perform(
@@ -230,8 +220,8 @@ public class HttpEnvironmentApiTest {
 
 
     @Test
-    public void should_get_environment_when_it_exists() throws Exception {
-        String[] targetNames = {"a", "b"};
+    void get_environment_when_it_exists() throws Exception {
+        var targetNames = List.of("a", "b");
         String envName = "envTest";
         addAvailableEnvironment(envName, targetNames);
         ResultActions result = mockMvc.perform(
@@ -239,7 +229,7 @@ public class HttpEnvironmentApiTest {
             .andDo(MockMvcResultHandlers.log())
             .andExpect(status().isOk()).andExpect(jsonPath("$.name", equalTo(envName)))
             .andExpect(jsonPath("$.description", equalTo(envName + " description")))
-            .andExpect(jsonPath("$.targets.length()", equalTo(targetNames.length)));
+            .andExpect(jsonPath("$.targets.length()", equalTo(targetNames.size())));
 
         for (String targetName : targetNames) {
             result
@@ -250,38 +240,5 @@ public class HttpEnvironmentApiTest {
                 .andExpect(jsonPath("$.targets[?(@.name == '" + targetName + "')].security.credential.username",
                     equalTo(emptyList())));
         }
-    }
-
-    private void addAvailableEnvironment(String envName, String... targetNames) {
-
-        Set<Target> targets = stream(targetNames)
-            .map(targetName -> Target.builder()
-                .withName(targetName)
-                .withEnvironment(envName)
-                .withUrl("http://" + targetName.replace(' ', '_') + ":43")
-                .build())
-            .collect(toCollection(LinkedHashSet::new));
-
-        registeredEnvironments.put(
-            envName,
-            Environment.builder()
-                .withName(envName)
-                .withDescription(envName + " description")
-                .withTargets(targets)
-                .build()
-        );
-
-        when(environmentRepository.findByName(eq(envName)))
-            .thenAnswer(iom -> {
-                    String envNameParam = iom.getArgument(0);
-                    if (!registeredEnvironments.containsKey(envNameParam)) {
-                        throw new EnvironmentNotFoundException(List.of("test env not found"));
-                    }
-                    return registeredEnvironments.get(envNameParam);
-                }
-            );
-
-        when(environmentRepository.listNames())
-            .thenReturn(new ArrayList<>(registeredEnvironments.keySet()));
     }
 }
