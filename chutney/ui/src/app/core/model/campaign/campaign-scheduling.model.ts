@@ -11,6 +11,7 @@ export interface CampaignExecutionRequest {
     campaignId: number;
     campaignTitle: string;
     datasetId: string;
+    jiraId: string;
 }
 
 export interface CampaignScheduling {

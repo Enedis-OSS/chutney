@@ -104,6 +104,7 @@
                     <th class="w5">#</th>
                     <th class="w40">{{ 'campaigns.scheduling.campaign' | translate }}</th>
                     <th class="w40">{{ 'global.words.dataset' | translate }}</th>
+                    <th class="w40">{{ 'menu.principal.jiraId' | translate }}</th>
                     <th class="w5"></th>
                   </tr>
                   <tbody>
@@ -121,6 +122,10 @@
                             (onSelect)="selectDataset($event, campaign)"
                             (onDeSelect)="unselectDataset(campaign)">
                           </ng-multiselect-dropdown>
+                        </td>
+                        <td>
+                          <input type="text" class="form-control me-2 small-text"
+                            (change)="selectJira($event, campaign)"/>
                         </td>
                         <td><i class="ms-2 fa fa-solid fa-xmark cursor-pointer p-2" (click)="unselectCampaign(campaign)"></i></td>
                       </tr>
