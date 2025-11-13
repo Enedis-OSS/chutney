@@ -54,7 +54,7 @@ public class LdapConfiguration {
         LdapAttributesProperties ldapAttributesProperties,
         AttributesMapper<UserDto> attributesMapper,
         AuthenticationService authenticationService,
-        @Value("${ldap.user-search-scope}") String userSearchScope
+        @Value("${ldap.user-search-scope:null}") String userSearchScope
     ) {
         return new LdapUserDetailsService(ldapTemplate, ldapAttributesProperties, attributesMapper, authenticationService, userSearchScope);
     }
