@@ -16,7 +16,6 @@ import {
 import {
     ScenarioExecutionMenuComponent
 } from '@modules/scenarios/components/execution/sub/right-side-bar/scenario-execution-menu.component';
-import { ReportPreviewComponent } from './components/execution/preview/report-preview.component';
 
 export const scenarioRoute: Routes = [
 
@@ -32,12 +31,6 @@ export const scenarioRoute: Routes = [
         canDeactivate: [canDeactivateGuard],
         canActivate: [authGuard],
         data: {'authorizations': [Authorization.SCENARIO_READ]}
-    },
-    {
-        path: 'report-preview',
-        component: ReportPreviewComponent,
-        canActivate: [authGuard],
-        data: {'authorizations': [Authorization.ADMIN_ACCESS]}
     },
     {
         path: ':id',

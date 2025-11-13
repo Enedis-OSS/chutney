@@ -29,17 +29,22 @@ export const allMenuItems: MenuItem [] = [
                 link: '/dataset',
                 iconClass: 'fa fa-table',
                 authorizations: [Authorization.DATASET_READ]
-            },
-            {
-                label: 'menu.principal.executionSearch',
-                link: '/execution/search',
-                iconClass: 'fa fa-clipboard',
-                authorizations: [Authorization.EXECUTION_READ]
-            },
+            }
         ],
     },
     {
-        label: 'Admin',
+        label: '',
+        children: [
+            {
+                label: 'menu.principal.executions',
+                link: '/execution',
+                iconClass: 'fa fa-clipboard',
+                authorizations: [Authorization.EXECUTION_READ]
+            }
+        ],
+    },
+    {
+        label: '',
         children: [
             {
                 label: 'menu.principal.environments',
@@ -58,7 +63,12 @@ export const allMenuItems: MenuItem [] = [
                 link: '/environments/variables',
                 iconClass: 'fa fa-key',
                 authorizations: [Authorization.VARIABLE_READ]
-            },
+            }
+        ]
+    },
+    {
+        label: '',
+        children: [
             {
                 label: 'menu.principal.plugins',
                 link: '/admin/plugins',
@@ -81,12 +91,6 @@ export const allMenuItems: MenuItem [] = [
                 label: 'menu.principal.workers',
                 link: '/admin/agent',
                 iconClass: 'fa fa-bars',
-                authorizations: [Authorization.ADMIN_ACCESS]
-            },
-            {
-                label: 'menu.principal.previewReport',
-                link: '/scenario/report-preview',
-                iconClass: 'fa fa-clipboard',
                 authorizations: [Authorization.ADMIN_ACCESS]
             },
             {

@@ -54,7 +54,7 @@ public class TargetController implements TargetApi {
         this.delegate = delegate;
     }
 
-    @PreAuthorize("hasAuthority('TARGET_READ')")
+    @PreAuthorize("hasAnyAuthority('TARGET_READ', 'ADMIN_ACCESS')")
     @GetMapping(path = HttpEnvironmentApi.BASE_URL + "/targets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EnvironmentDto> listTargetsByEnvironments() throws EnvironmentNotFoundException, TargetNotFoundException {
         return envDelegate.listEnvironments().stream()

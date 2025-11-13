@@ -38,7 +38,7 @@ import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NGX_MONACO_EDITOR_CONFIG } from 'ngx-monaco-editor-v2';
 
 import { Authorization, Execution, GwtTestCase, ScenarioExecutionReport, StepExecutionReport } from '@model';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { StringifyPipe } from '@shared/pipes';
 import { findScrollContainer } from '@shared/tools';

@@ -14,6 +14,10 @@ export class Environment {
         public targets: Target [] = [],
         public variables: EnvironmentVariable[] = []) {
     }
+
+    static compareByName(a: Environment, b: Environment): number {
+        return a.name.toUpperCase() > b.name.toUpperCase() ? 1 : 0;
+    }
 }
 
 export class Target {

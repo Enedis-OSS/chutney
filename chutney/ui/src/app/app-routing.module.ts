@@ -47,8 +47,8 @@ export const appRoutes: Routes = [
                 data: {'authorizations': [Authorization.DATASET_READ]}
             },
             {
-                path: 'execution/search',
-                loadChildren: () => import('@modules/execution-search/execution-search.module').then(m => m.ExecutionSearchModule),
+                path: 'execution',
+                loadChildren: () => import('@modules/execution/execution.module').then(m => m.ExecutionModule),
                 canActivate: [authGuard],
                 data: {'authorizations': [Authorization.EXECUTION_READ]}
             },

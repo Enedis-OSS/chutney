@@ -9,6 +9,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { Agent, AgentGraphe, Environment } from '@model';
 import { EnvironmentService } from '@core/services';
 import { Subscription } from 'rxjs';
+import { contains } from '@shared/tools';
 
 @Component({
     selector: 'chutney-network-graph',
@@ -52,9 +53,10 @@ export class NetworkGraphComponent implements OnDestroy {
                 this.agentNodes.forEach((agent) => {
                     agent.reachableTargets.forEach((target) => {
                         if (this.targetReachByAgent.has(target.name)) {
-                            this.targetReachByAgent
-                                .get(target.name)
-                                .push(agent.info.name);
+                            let targetReachableFromList = this.targetReachByAgent.get(target.name);
+                            if (!contains(targetReachableFromList, agent.info.name)) {
+                                targetReachableFromList.push(agent.info.name);
+                            }
                         } else {
                             this.targetReachByAgent.set(target.name, [
                                 agent.info.name

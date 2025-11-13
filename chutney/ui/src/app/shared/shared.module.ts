@@ -58,6 +58,8 @@ import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-gr
 import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SearchBarComponent } from '@shared/components/search-bar/search-bar.component';
+import { ScenarioExecutionComponent } from './components/scenario-execution/execution.component';
+import { RxFor } from '@rx-angular/template/for';
 
 @NgModule({
     imports: [
@@ -75,6 +77,7 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         InputGroupModule,
         InputGroupAddonModule,
         TypeaheadModule.forRoot(),
+        RxFor
     ],
     declarations: [
         ComponentSearchPipe,
@@ -107,7 +110,8 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         ScenarioExecuteModalComponent,
         FormsDataGridComponent,
         FormsKeyValueComponent,
-        SearchBarComponent
+        SearchBarComponent,
+        ScenarioExecutionComponent
     ],
     exports: [
         ComponentSearchPipe,
@@ -137,7 +141,8 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
         DistinctPipe,
         ScenarioExecuteModalComponent,
         FormsDataGridComponent,
-        FormsKeyValueComponent
+        FormsKeyValueComponent,
+        ScenarioExecutionComponent
     ],
     providers: [
         {

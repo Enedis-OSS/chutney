@@ -33,15 +33,12 @@ import {
 import { AuthoringInfoComponent } from './components/edition/authoring-info/authoring-info.component';
 import { EditionInfoComponent } from './components/edition/edition-info/edition-info.component';
 import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
-import { ScenarioExecutionComponent } from '@modules/scenarios/components/execution/detail/execution.component';
 import {
     ScenarioExecutionsComponent
 } from '@modules/scenarios/components/execution/history/list/scenario-executions.component';
 import {
     ScenarioExecutionMenuComponent
 } from '@modules/scenarios/components/execution/sub/right-side-bar/scenario-execution-menu.component';
-import { ReportPreviewComponent } from './components/execution/preview/report-preview.component';
-import { RxFor } from '@rx-angular/template/for';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ScenarioJiraLinksModalComponent } from './components/scenario-jira-links-modal/scenario-jira-links-modal.component';
 
@@ -66,12 +63,10 @@ const ROUTES = [
         MonacoEditorModule,
         // Internal common
         SharedModule,
-        MoleculesModule,
-        RxFor,
+        MoleculesModule
     ],
     declarations: [
         ScenariosComponent,
-        ScenarioExecutionComponent,
         ScenarioCampaignsComponent,
         ScenarioExecutionsHistoryComponent,
         RawEditionComponent,
@@ -79,7 +74,6 @@ const ROUTES = [
         AuthoringInfoComponent,
         EditionInfoComponent,
         ScenarioExecutionsComponent,
-        ReportPreviewComponent,
         ScenarioJiraLinksModalComponent,
     ],
     providers: [

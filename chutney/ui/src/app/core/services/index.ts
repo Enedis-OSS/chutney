@@ -21,3 +21,4 @@ export * from './roles.service';
 export * from './scenario.service';
 export * from './step.service';
 export * from './info.service';
+export * from './scenario-execution.service'

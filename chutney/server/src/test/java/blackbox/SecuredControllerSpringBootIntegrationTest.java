@@ -195,6 +195,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/v2/environments/envName", "ENVIRONMENT_READ", null, NOT_FOUND},
 
             {GET, "/api/v2/environments/targets", "TARGET_READ", null, OK},
+            {GET, "/api/v2/environments/targets", "ADMIN_ACCESS", null, OK},
             {GET, "/api/v2/environments/envName/targets/targetName", "TARGET_READ", null, NOT_FOUND},
             {DELETE, "/api/v2/environments/envName/targets/targetName", "TARGET_WRITE", null, NOT_FOUND},
             {POST, "/api/v2/targets", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"http://localhost\", \"environment\":\"secuenv\"}", OK},

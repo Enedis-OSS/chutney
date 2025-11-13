@@ -7,7 +7,7 @@
             "environments": "Environnements",
             "workers": "Agents",
             "plugins": "Plugins",
-            "executionSearch": "Recherche rapport",
+            "executions": "Exécutions",
             "documentation": "Doc.",
             "component": "Composants",
             "variable": "Variable",
@@ -23,7 +23,6 @@
             "lightMode": "Thème clair",
             "feedback": "Donner un avis",
             "notif": "Notifications",
-            "previewReport": "Charger rapport",
             "metrics": "Métriques"
         }
     },
