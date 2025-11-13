@@ -10,7 +10,7 @@ server:
   ssl:
     keyStore: 'classpath:security/https/server.jks'
     key-store-password: server
-    key-password: server
+    key-password: ${server.ssl.key-store-password}
     trust-store: 'classpath:security/https/truststore.jks'
     trust-store-password: truststore
 

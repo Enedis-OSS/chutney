@@ -95,7 +95,7 @@ Chutney server enforces the use of secure calls on any incoming requests.
         ssl:
             keystore: # keystore path
             key-store-password: # keystore password
-            key-password: # key password
+            key-password: # key password (default is key-store-password)
             trust-store: # truststore path
             trust-store-password: # truststore password
     ```
