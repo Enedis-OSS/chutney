@@ -7,14 +7,17 @@
 
 # Changelog
 
-## [3.4.0](https://github.com/Enedis-OSS/chutney/tree/3.4.0)
+## [4.0.0](https://github.com/Enedis-OSS/chutney/tree/4.0.0)
+### ⚡ Breaking changes:
+* Boot jar from server module by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/217
+* Split too broad Environment access authorization by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/252
 ### 🚀 Implemented enhancements:
 * Add specific read/write execution roles by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/236
 ### 🐛 Fixed bugs:
 * Missing sftp actions and test by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/232
 * Scenario list - Check role for list's actions by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/234
+* Default values for some conf properties by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/253
 ### 🔧 Technical enhancements:
-* Boot jar from server module by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/217
 * Use local docker compose when running ssh acceptance test by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/229
 * Clean README badges by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/228
 * Bump node version by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/230
@@ -38,7 +41,7 @@
 ## New Contributors
 * @joelgaspard made their first contribution in https://github.com/Enedis-OSS/chutney/pull/232
 
-**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.3.0...3.4.0
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/3.3.0...4.0.0
 
 ## [3.3.0](https://github.com/Enedis-OSS/chutney/tree/3.3.0)
 ### 🚀 Implemented enhancements:
