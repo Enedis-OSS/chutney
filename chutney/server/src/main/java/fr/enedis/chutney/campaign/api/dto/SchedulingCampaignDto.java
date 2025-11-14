@@ -73,7 +73,7 @@ public class SchedulingCampaignDto {
             sc.nextExecutionDate,
             sc.frequency.label,
             sc.environment,
-            sc.campaignExecutionRequests.stream().map(cer -> new CampaignExecutionRequestDto(cer.campaignId(), cer.campaignTitle(), cer.datasetId(), null)).toList()
+            sc.campaignExecutionRequests.stream().map(cer -> new CampaignExecutionRequestDto(cer.campaignId(), cer.campaignTitle(), cer.datasetId(), cer.jiraId())).toList()
         );
     }
 
