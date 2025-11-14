@@ -46,9 +46,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class HttpEnvironmentApiTest extends TestHelper {
+public class EnvironmentControllerTest extends TestHelper {
 
-    private final HttpEnvironmentApi sut = new HttpEnvironmentApi(environmentApi);
+    private final EnvironmentController sut = new EnvironmentController(environmentApi);
 
     private MockMvc mockMvc;
 

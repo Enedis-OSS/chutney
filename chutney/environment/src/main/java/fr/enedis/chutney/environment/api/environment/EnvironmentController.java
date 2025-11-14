@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(HttpEnvironmentApi.BASE_URL)
-public class HttpEnvironmentApi implements EnvironmentApi {
+@RequestMapping(EnvironmentController.BASE_URL)
+public class EnvironmentController implements EnvironmentApi {
 
     public static final String BASE_URL = "/api/v2/environments";
 
@@ -45,7 +45,7 @@ public class HttpEnvironmentApi implements EnvironmentApi {
         .enable(SerializationFeature.INDENT_OUTPUT)
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
-    HttpEnvironmentApi(EnvironmentApi delegate) {
+    EnvironmentController(EnvironmentApi delegate) {
         this.delegate = delegate;
     }
 
@@ -54,7 +54,7 @@ public class HttpEnvironmentApi implements EnvironmentApi {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<EnvironmentDto> listEnvironments() {
         return delegate.listEnvironments().stream()
-            .map(EnvironmentDto::copyEnvironmentsOnly)
+            .map(EnvironmentDto::copyWithEnvironmentsOnly)
             .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 

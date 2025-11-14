@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.environment.api.environment.EnvironmentApi;
-import fr.enedis.chutney.environment.api.environment.HttpEnvironmentApi;
+import fr.enedis.chutney.environment.api.environment.EnvironmentController;
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto;
 import fr.enedis.chutney.environment.api.target.dto.TargetDto;
 import fr.enedis.chutney.environment.domain.TargetFilter;
@@ -55,15 +55,15 @@ public class TargetController implements TargetApi {
     }
 
     @PreAuthorize("hasAnyAuthority('TARGET_READ', 'ADMIN_ACCESS')")
-    @GetMapping(path = HttpEnvironmentApi.BASE_URL + "/targets", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = EnvironmentController.BASE_URL + "/targets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EnvironmentDto> listTargetsByEnvironments() throws EnvironmentNotFoundException, TargetNotFoundException {
         return envDelegate.listEnvironments().stream()
-            .map(EnvironmentDto::copyTargetsByEnvironments)
+            .map(EnvironmentDto::copyWithTargetsOnly)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @PreAuthorize("hasAuthority('TARGET_WRITE')")
-    @PostMapping(value = HttpEnvironmentApi.BASE_URL + "/{environmentName}/targets", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = EnvironmentController.BASE_URL + "/{environmentName}/targets", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public TargetDto importTarget(@PathVariable("environmentName") String environmentName, @RequestParam("file") MultipartFile file) {
         try {
             return importTarget(
@@ -95,14 +95,14 @@ public class TargetController implements TargetApi {
 
     @Override
     @PreAuthorize("hasAuthority('TARGET_READ')")
-    @GetMapping(HttpEnvironmentApi.BASE_URL + "/{environmentName}/targets/{targetName}")
+    @GetMapping(EnvironmentController.BASE_URL + "/{environmentName}/targets/{targetName}")
     public TargetDto getTarget(@PathVariable("environmentName") String environmentName, @PathVariable("targetName") String targetName) throws EnvironmentNotFoundException, TargetNotFoundException {
         return delegate.getTarget(environmentName, targetName);
     }
 
     @Override
     @PreAuthorize("hasAuthority('TARGET_WRITE')")
-    @DeleteMapping(HttpEnvironmentApi.BASE_URL + "/{environmentName}/targets/{targetName}")
+    @DeleteMapping(EnvironmentController.BASE_URL + "/{environmentName}/targets/{targetName}")
     public void deleteTarget(@PathVariable("environmentName") String environmentName, @PathVariable("targetName") String targetName) throws EnvironmentNotFoundException, TargetNotFoundException {
         delegate.deleteTarget(environmentName, targetName);
     }

@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 import fr.enedis.chutney.environment.api.environment.EmbeddedEnvironmentApi;
 import fr.enedis.chutney.environment.api.environment.EnvironmentApi;
-import fr.enedis.chutney.environment.api.environment.HttpEnvironmentApi;
+import fr.enedis.chutney.environment.api.environment.EnvironmentController;
 import fr.enedis.chutney.environment.domain.Environment;
 import fr.enedis.chutney.environment.domain.EnvironmentRepository;
 import fr.enedis.chutney.environment.domain.EnvironmentService;
@@ -31,7 +31,7 @@ import java.util.Set;
 
 public abstract class TestHelper {
 
-    protected final String environmentBasePath = HttpEnvironmentApi.BASE_URL;
+    protected final String environmentBasePath = EnvironmentController.BASE_URL;
 
     protected final Map<String, Environment> registeredEnvironments = new LinkedHashMap<>();
     protected final EnvironmentRepository environmentRepository = mock(EnvironmentRepository.class);

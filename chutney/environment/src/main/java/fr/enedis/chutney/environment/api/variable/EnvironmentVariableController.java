@@ -8,7 +8,7 @@
 package fr.enedis.chutney.environment.api.variable;
 
 import fr.enedis.chutney.environment.api.environment.EnvironmentApi;
-import fr.enedis.chutney.environment.api.environment.HttpEnvironmentApi;
+import fr.enedis.chutney.environment.api.environment.EnvironmentController;
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto;
 import fr.enedis.chutney.environment.api.variable.dto.EnvironmentVariableDto;
 import fr.enedis.chutney.environment.domain.exception.EnvVariableNotFoundException;
@@ -43,10 +43,10 @@ public class EnvironmentVariableController implements EnvironmentVariableApi {
     }
 
     @PreAuthorize("hasAuthority('VARIABLE_READ')")
-    @GetMapping(path = HttpEnvironmentApi.BASE_URL + "/variables", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = EnvironmentController.BASE_URL + "/variables", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EnvironmentDto> listVariablesByEnvironments() throws EnvironmentNotFoundException, TargetNotFoundException {
         return envDelegate.listEnvironments().stream()
-            .map(EnvironmentDto::copyVariablesByEnvironments)
+            .map(EnvironmentDto::copyWithVariablesOnly)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 

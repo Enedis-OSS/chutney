@@ -80,19 +80,15 @@ public class EnvironmentDto {
             .build();
     }
 
-    public EnvironmentDto copyEnvironmentsOnly() {
+    public EnvironmentDto copyWithEnvironmentsOnly() {
         return new EnvironmentDto(this.name, this.description);
     }
 
-    public EnvironmentDto copyTargetsByEnvironments() {
+    public EnvironmentDto copyWithTargetsOnly() {
         return new EnvironmentDto(this.name, this.description, this.targets);
     }
 
-    public EnvironmentDto copyTargetsOnlyByEnvironments() {
-        return new EnvironmentDto(this.name, this.description, this.targets.stream().map(TargetDto::copyTargetsOnly).toList());
-    }
-
-    public EnvironmentDto copyVariablesByEnvironments() {
+    public EnvironmentDto copyWithVariablesOnly() {
         return new EnvironmentDto(this.name, this.description, emptyList(), this.variables);
     }
 
