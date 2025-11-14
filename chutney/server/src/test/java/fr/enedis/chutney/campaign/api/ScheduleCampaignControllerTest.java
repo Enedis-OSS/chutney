@@ -103,7 +103,6 @@ class ScheduleCampaignControllerTest {
 
         ArgumentCaptor<PeriodicScheduledCampaign> captor = ArgumentCaptor.forClass(PeriodicScheduledCampaign.class);
 
-
         verify(scheduledCampaignRepository).add(captor.capture());
 
         PeriodicScheduledCampaign capturedCampaign = captor.getValue();
