@@ -25,6 +25,7 @@
   </div>
   <div class="btn-group" role="group">
     <button type="button" class="btn btn-primary me-3 rounded"
+      [disabled]="!isAuthorizedToWriteTargets"
       [routerLink]="['new']">
       <span class="fa fa-plus" aria-hidden="true"></span>
       {{ 'global.actions.add' | translate }}
@@ -106,6 +107,7 @@
             </td>
             <td class="align-middle w1">
               <button class="btn btn-sm btn-outline-primary" [routerLink]="[targetName]"
+                    [disabled]="!isAuthorizedToWriteTargets"
                     title="{{ 'global.actions.edit' | translate}}">
                 <i class="bi bi-pencil-fill"></i>
               </button>

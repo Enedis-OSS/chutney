@@ -17,9 +17,9 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 })
 export class ExecutionSearchComponent implements OnDestroy {
 
-    query: string;
+    query: string = '';
     errorMessage: string;
-    executions: Execution[];
+    executions: Execution[] = [];
     isLoading: boolean = false;
     private _executionsFilters: Params = {};
     private executionSearchSubscription: any;
@@ -68,7 +68,7 @@ export class ExecutionSearchComponent implements OnDestroy {
     }
 
     searchQuery() {
-        if (this.query == null || this.query.trim().length === 0) {
+        if (this.query.trim().length === 0) {
             return;
         }
         this.errorMessage = null;
@@ -89,5 +89,31 @@ export class ExecutionSearchComponent implements OnDestroy {
 
     updateQuery(text: string) {
         this.query = text;
+        if (this.query.trim().length != 0) {
+            this.scenarioName = null;
+            this.execution = null;
+        }
+    }
+
+
+    // PREVIEW
+    scenarioName: string;
+    execution: Execution;
+
+    preview(file: File) {
+        this.query = '';
+        this.executions = [];
+
+        this.execution = null;
+        this.scenarioName = '';
+        this.errorMessage = null;
+        file.text()
+            .then(data => {
+                this.execution = Execution.deserialize(JSON.parse(data));
+                this.scenarioName = JSON.parse(this.execution.report).scenarioName;
+            })
+            .catch(error => {
+                this.errorMessage = error;
+            });
     }
 }

@@ -182,20 +182,29 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/action/v1", "SCENARIO_READ", null, OK},
             {GET, "/api/action/v1/actionId", "SCENARIO_READ", null, NOT_FOUND},
 
-            {GET, "/api/v2/environments", "ENVIRONMENT_ACCESS", null, OK},
+            // Environments module
+            {GET, "/api/v2/environments", "ENVIRONMENT_READ", null, OK},
             {GET, "/api/v2/environments/names", "CAMPAIGN_READ", null, OK},
+            {GET, "/api/v2/environments/names", "TARGET_WRITE", null, OK},
             {GET, "/api/v2/environments/names", "EXECUTION_WRITE", null, OK},
-            {POST, "/api/v2/environments", "ENVIRONMENT_ACCESS", "{\"name\": \"secuenv\"} ", OK},
-            {DELETE, "/api/v2/environments/envName", "ENVIRONMENT_ACCESS", null, NOT_FOUND},
-            {PUT, "/api/v2/environments/envName", "ENVIRONMENT_ACCESS", "{}", NOT_FOUND},
-            {GET, "/api/v2/environments/envName/target", "ENVIRONMENT_ACCESS", null, NOT_FOUND},
-            {GET, "/api/v2/environments/targets", "ENVIRONMENT_ACCESS", null, NOT_FOUND},
-            {GET, "/api/v2/environments/envName", "ENVIRONMENT_ACCESS", null, NOT_FOUND},
-            {GET, "/api/v2/environments/envName/targets/targetName", "ENVIRONMENT_ACCESS", null, NOT_FOUND},
-            {DELETE, "/api/v2/environments/envName/targets/targetName", "ENVIRONMENT_ACCESS", null, NOT_FOUND},
+            {GET, "/api/v2/environments/names", "ENVIRONMENT_READ", null, OK},
+            {POST, "/api/v2/environments", "ENVIRONMENT_WRITE", "{\"name\": \"secuenv\"} ", OK},
+            {DELETE, "/api/v2/environments/envName", "ENVIRONMENT_WRITE", null, NOT_FOUND},
+            {PUT, "/api/v2/environments/envName", "ENVIRONMENT_WRITE", "{}", NOT_FOUND},
+            {GET, "/api/v2/environments/envName/target", "ENVIRONMENT_READ", null, NOT_FOUND},
+            {GET, "/api/v2/environments/envName", "ENVIRONMENT_READ", null, NOT_FOUND},
 
-            {POST, "/api/v2/targets", "ENVIRONMENT_ACCESS", "{\"name\":\"targetName\",\"url\":\"http://localhost\", \"environment\":\"secuenv\"}", OK},
-            {PUT, "/api/v2/targets/targetName", "ENVIRONMENT_ACCESS", "{\"name\":\"targetName\",\"url\":\"https://localhost\", \"environment\":\"secuenv\"}", OK},
+            {GET, "/api/v2/environments/targets", "TARGET_READ", null, OK},
+            {GET, "/api/v2/environments/targets", "ADMIN_ACCESS", null, OK},
+            {GET, "/api/v2/environments/envName/targets/targetName", "TARGET_READ", null, NOT_FOUND},
+            {DELETE, "/api/v2/environments/envName/targets/targetName", "TARGET_WRITE", null, NOT_FOUND},
+            {POST, "/api/v2/targets", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"http://localhost\", \"environment\":\"secuenv\"}", OK},
+            {PUT, "/api/v2/targets/targetName", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"https://localhost\", \"environment\":\"secuenv\"}", OK},
+
+            {GET, "/api/v2/environments/variables", "VARIABLE_READ", null, OK},
+            {POST, "/api/v2/variables", "VARIABLE_WRITE", "[]", OK},
+            {PUT, "/api/v2/variables/varKey", "VARIABLE_WRITE", "[]", OK},
+            {DELETE, "/api/v2/variables/varKey", "VARIABLE_WRITE", null, NOT_FOUND},
 
             // Must be at the end because the network configuration is in wrong state, why ??
             {POST, "/api/v1/agentnetwork/wrapup", "ADMIN_ACCESS", "{\"agentsGraph\":{\"agents\":[]},\"networkConfiguration\":{\"creationDate\":\"2021-09-06T10:08:36.569227Z\",\"agentNetworkConfiguration\":[],\"environmentsConfiguration\":[]}}", OK},
@@ -251,8 +260,8 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     private static Stream<Arguments> uploadEndpoints() {
         return Stream.of(
-            Arguments.of("/api/v2/environments", "ENVIRONMENT_ACCESS", "{\"name\": \"env\"}", OK),
-            Arguments.of("/api/v2/environments/env/targets", "ENVIRONMENT_ACCESS", "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"env\"}", OK)
+            Arguments.of("/api/v2/environments", "ENVIRONMENT_WRITE", "{\"name\": \"env\"}", OK),
+            Arguments.of("/api/v2/environments/env/targets", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"env\"}", OK)
         );
     }
 

@@ -7,7 +7,7 @@
             "environments": "Environments",
             "workers": "Nodes",
             "plugins": "Plugins",
-            "executionSearch": "Search report",
+            "executions": "Executions",
             "documentation": "Doc.",
             "component": "Components",
             "variable": "Variable",
@@ -23,7 +23,6 @@
             "lightMode": "Light mode",
             "feedback": "Feedback",
             "notif": "Notifications",
-            "previewReport": "Load report",
             "metrics": "Metrics"
         }
     },

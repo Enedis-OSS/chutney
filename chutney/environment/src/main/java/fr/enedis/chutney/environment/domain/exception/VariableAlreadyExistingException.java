@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.environment.domain.exception;
 
-@SuppressWarnings("serial")
 public class VariableAlreadyExistingException extends RuntimeException {
 
     public VariableAlreadyExistingException(String message) {

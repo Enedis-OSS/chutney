@@ -209,9 +209,11 @@ export class LoginService {
         if (authorizations) {
             if (contains(authorizations, Authorization.SCENARIO_READ) || contains(authorizations, Authorization.EXECUTION_READ)) return '/scenario';
             if (contains(authorizations, Authorization.CAMPAIGN_READ)) return '/campaign';
-            if (contains(authorizations, Authorization.ENVIRONMENT_ACCESS)) return '/targets';
+            if (contains(authorizations, Authorization.ENVIRONMENT_READ)) return '/environments/names';
+            if (contains(authorizations, Authorization.TARGET_READ)) return '/environments/targets';
+            if (contains(authorizations, Authorization.VARIABLE_READ)) return '/environments/variables';
             if (contains(authorizations, Authorization.DATASET_READ)) return '/dataset';
-            if (contains(authorizations, Authorization.ADMIN_ACCESS)) return '/plugins';
+            if (contains(authorizations, Authorization.ADMIN_ACCESS)) return '/admin/plugins';
         }
 
         return '/login';

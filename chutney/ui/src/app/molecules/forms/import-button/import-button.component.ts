@@ -22,6 +22,7 @@ export class ImportButtonComponent implements OnInit {
     @Input() label: string = 'global.actions.import';
     @Input() btnSizeClass: 'lg' | 'sm';
     @Input() btnColor: 'primary' | 'success' | 'info' | 'warning' | 'danger' = 'success';
+    @Input() disabled: boolean = false;
 
     uuid: string;
 

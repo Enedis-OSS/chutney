@@ -6,10 +6,10 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Environment, EnvironmentVariable } from '@model';
+import { Environment, EnvironmentVariable, Authorization } from '@model';
 import { distinct, match } from '@shared/tools';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EnvironmentService } from '@core/services';
+import { EnvironmentService, LoginService } from '@core/services';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { ValidationService } from '../../../molecules/validation/validation.service';
 
@@ -31,10 +31,15 @@ export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
     keyword = '';
     variableEditionForm: FormGroup = null;
 
+    isAuthorizedToWriteVariables: boolean = false;
+
     private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private environmentService: EnvironmentService,
-                private validationService: ValidationService) {
+                private validationService: ValidationService,
+                private loginService: LoginService
+    ) {
+        this.isAuthorizedToWriteVariables = this.loginService.hasAuthorization(Authorization.VARIABLE_WRITE);
     }
 
     ngOnInit() {
@@ -151,7 +156,7 @@ export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
     }
 
     private loadVariables() {
-        this.environmentService.list()
+        this.environmentService.listVariables()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: envs => {

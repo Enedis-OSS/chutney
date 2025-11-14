@@ -17,11 +17,11 @@
   <div>
     <button type="button" class="btn btn-primary rounded me-2"
       (click)="enableAdd()"
-      [disabled]="environment">
+      [disabled]="!isAuthorizedToWriteEnvironments || environment">
         <span class="fa fa-plus" aria-hidden="true"></span>
         {{ 'global.actions.add' | translate }}
     </button>
-    <chutney-import-button (submitEvent)="import($event)" [btnColor]="'primary'"></chutney-import-button>
+    <chutney-import-button (submitEvent)="import($event)" [btnColor]="'primary'" [disabled]="!isAuthorizedToWriteEnvironments"></chutney-import-button>
   </div>
 
 </div>
@@ -80,6 +80,7 @@
         <td class="text-end align-middle">
           @if (!editing(i)) {
             <button class="btn btn-sm btn-outline-primary" (click)="editionIndex = i"
+              [disabled]="!isAuthorizedToWriteEnvironments"
               title="{{'global.actions.edit' | translate}}">
               <i class="bi bi-pen-fill" ></i>
             </button>
@@ -100,6 +101,7 @@
           <chutney-confirm-dialog [dialogMessage]="('global.confirm.question' | translate) + ' ' + ('global.actions.delete' | translate) + '\n' + env.name"
             [label]="'Delete Environment'"
             [btnSizeClass]="'sm'"
+            [disabled]="!isAuthorizedToWriteEnvironments"
             (callbackEvent)="delete(env.name, i)"
             class="ms-2">
           </chutney-confirm-dialog>

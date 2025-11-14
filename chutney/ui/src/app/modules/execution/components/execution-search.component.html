@@ -1,0 +1,49 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+@if (errorMessage) {
+    <div class="alert alert-dismissible alert-danger mt-4">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" (click)="errorMessage = null"></button>
+        {{ errorMessage }}
+    </div>
+}
+
+<div class="row">
+    <div class="col justify-content-center input-group input-group-sm">
+        <div class="w30">
+            <chutney-forms-search-field [id]="'scenario-search'"
+                                        [placeholder]="'scenarios.search.placeholder-search-report' | translate"
+                                        [searchInput]="query"
+                                        (searchInputEvent)="updateQuery($event)"
+                                        (enterTriggerEvent)="searchQuery()"></chutney-forms-search-field>
+        </div>
+        <div class="mx-2">
+            <button class="btn btn-primary me-3" (click)="searchQuery()">
+                <span class="fa fa-play me-2" aria-hidden="true"></span> {{ 'global.actions.search' | translate }}
+            </button>
+            <chutney-import-button label="admin.previewReport.load.title" acceptedTypes="application/json" [btnColor]="'primary'" (submitEvent)="preview($event)"></chutney-import-button>
+        </div>
+    </div>
+</div>
+
+@if (query.trim().length > 0) {
+    <div class="row mt-3">
+        <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="height: 100px;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'global.words.loading' | translate }}</span>
+            </div>
+        </div>
+        <execution-search-report-list [executions]="executions"
+                                    [(filters)]="executionsFilters"
+                                    (onExecutionSelect)="openReport($event)"></execution-search-report-list>
+    </div>
+}
+
+@if (execution) {
+  <h5 [innerHTML]="scenarioName"></h5>
+  <chutney-scenario-execution [execution]="execution" [stickyTop]="'-1.5rem'"></chutney-scenario-execution>
+}

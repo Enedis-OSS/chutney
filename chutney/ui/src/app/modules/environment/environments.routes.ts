@@ -16,6 +16,6 @@ export const environmentsRoutes: Routes = [
         path: '',
         component: EnvironmentsComponent,
         resolve: {environments: environmentsResolver},
-        data: { 'authorizations': [ Authorization.ENVIRONMENT_ACCESS ] }
+        data: { 'authorizations': [ Authorization.ENVIRONMENT_READ ] }
     }
 ];

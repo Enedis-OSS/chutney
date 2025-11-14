@@ -11,6 +11,7 @@ import fr.enedis.chutney.admin.domain.BackupNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingEnvironmentException;
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingTargetException;
+import fr.enedis.chutney.environment.domain.exception.EnvVariableNotFoundException;
 import fr.enedis.chutney.environment.domain.exception.EnvironmentNotFoundException;
 import fr.enedis.chutney.environment.domain.exception.InvalidEnvironmentNameException;
 import fr.enedis.chutney.environment.domain.exception.SingleEnvironmentException;
@@ -89,6 +90,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ScenarioNotFoundException.class,
         ScenarioNotRunningException.class,
         TargetNotFoundException.class,
+        EnvVariableNotFoundException.class,
         DataSetNotFoundException.class
     })
     protected ResponseEntity<Object> notFound(RuntimeException ex, WebRequest request) {

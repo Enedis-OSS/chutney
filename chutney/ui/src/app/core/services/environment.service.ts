@@ -29,9 +29,23 @@ export class EnvironmentService {
     list(): Observable<Environment[]> {
         return this.http
             .get<Environment[]>(server.backend + this.envBaseUrl)
-            .pipe(
-                map(res => res.sort((t1, t2) => t1.name.toUpperCase() > t2.name.toUpperCase() ? 1 : 0))
-            );
+            .pipe(this.sortByNameAsc());
+    }
+
+    listTargets(): Observable<Environment[]> {
+        return this.http
+            .get<Environment[]>(server.backend + this.envBaseUrl + '/targets')
+            .pipe(this.sortByNameAsc());
+    }
+
+    listVariables(): Observable<Environment[]> {
+        return this.http
+            .get<Environment[]>(server.backend + this.envBaseUrl + '/variables')
+            .pipe(this.sortByNameAsc());
+    }
+
+    private sortByNameAsc() {
+        return map((res: Environment[]) => res.sort(Environment.compareByName));
     }
 
     names(): Observable<Array<string>> {

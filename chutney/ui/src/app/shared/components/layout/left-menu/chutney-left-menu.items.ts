@@ -29,69 +29,73 @@ export const allMenuItems: MenuItem [] = [
                 link: '/dataset',
                 iconClass: 'fa fa-table',
                 authorizations: [Authorization.DATASET_READ]
-            },
-            {
-                label: 'menu.principal.executionSearch',
-                link: '/execution/search',
-                iconClass: 'fa fa-clipboard',
-                authorizations: [Authorization.EXECUTION_READ]
-            },
+            }
         ],
     },
     {
-        label: 'Admin',
+        label: '',
+        children: [
+            {
+                label: 'menu.principal.executions',
+                link: '/execution',
+                iconClass: 'fa fa-clipboard',
+                authorizations: [Authorization.EXECUTION_READ]
+            }
+        ],
+    },
+    {
+        label: '',
         children: [
             {
                 label: 'menu.principal.environments',
-                link: '/environments',
+                link: '/environments/names',
                 iconClass: 'fa fa-brands fa-envira',
-                authorizations: [Authorization.ENVIRONMENT_ACCESS]
+                authorizations: [Authorization.ENVIRONMENT_READ]
             },
             {
                 label: 'menu.principal.targets',
-                link: '/targets',
+                link: '/environments/targets',
                 iconClass: 'fa fa-bullseye',
-                authorizations: [Authorization.ENVIRONMENT_ACCESS]
+                authorizations: [Authorization.TARGET_READ]
             },
             {
                 label: 'menu.principal.envVariable',
-                link: '/environmentsVariables',
+                link: '/environments/variables',
                 iconClass: 'fa fa-key',
-                authorizations: [Authorization.ENVIRONMENT_ACCESS]
-            },
+                authorizations: [Authorization.VARIABLE_READ]
+            }
+        ]
+    },
+    {
+        label: '',
+        children: [
             {
                 label: 'menu.principal.plugins',
-                link: '/plugins',
+                link: '/admin/plugins',
                 iconClass: 'fa fa-cogs',
                 authorizations: [Authorization.ADMIN_ACCESS]
             },
             {
                 label: 'menu.principal.roles',
-                link: '/roles',
+                link: '/admin/roles',
                 iconClass: 'fa fa-user-shield',
                 authorizations: [Authorization.ADMIN_ACCESS]
             },
             {
                 label: 'menu.principal.vacuum',
-                link: '/vacuum',
+                link: '/admin/vacuum',
                 iconClass: 'fa fa-database',
                 authorizations: [Authorization.ADMIN_ACCESS]
             },
             {
                 label: 'menu.principal.workers',
-                link: '/configurationAgent',
+                link: '/admin/agent',
                 iconClass: 'fa fa-bars',
                 authorizations: [Authorization.ADMIN_ACCESS]
             },
             {
-                label: 'menu.principal.previewReport',
-                link: '/scenario/report-preview',
-                iconClass: 'fa fa-clipboard',
-                authorizations: [Authorization.ADMIN_ACCESS]
-            },
-            {
                 label: 'menu.principal.metrics',
-                link: '/metrics',
+                link: '/admin/metrics',
                 iconClass: 'fa fa-chart-simple',
                 authorizations: [Authorization.ADMIN_ACCESS]
             }

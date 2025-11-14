@@ -5,7 +5,7 @@
   ~
   -->
 
-<label class="btn {{btnSizeClass ? 'btn-' + btnSizeClass : ''}} btn-{{btnColor}}" for="file_browser_{{uuid}}">
+<label class="btn {{btnSizeClass ? 'btn-' + btnSizeClass : ''}} btn-{{btnColor}} {{disabled ? 'disabled' : null}}" for="file_browser_{{uuid}}">
   <span class="bi bi-upload me-1"></span>
   @if (label) {
     <span>{{ label | translate}}</span>
@@ -17,5 +17,5 @@
   [multiple]="false"
   (change)="handleFileSelection($event)"
   [formControl]="fileControl"
+  [disabled]="disabled"
   />
-

@@ -26,7 +26,7 @@
   <div class="btn-group" role="group">
     <button type="button" class="btn btn-primary me-3 rounded"
       (click)="initVariableEdition()"
-      [disabled]="variableEditionForm">
+      [disabled]="!isAuthorizedToWriteVariables || variableEditionForm">
       <span class="fa fa-plus" aria-hidden="true"></span>
       {{ 'global.actions.add' | translate }}
     </button>
@@ -43,7 +43,7 @@
   <table class="table table-striped table-hover">
     <tbody>
       @if (editing()) {
-        <tr >
+        <tr>
           <ng-container [ngTemplateOutlet]="variableEdition" ></ng-container>
         </tr>
       }
@@ -76,6 +76,7 @@
               <td class="align-bottom w5">
                 <div class="d-flex flex-row justify-content-end">
                   <button class="btn btn-sm btn-outline-primary"
+                    [disabled]="!isAuthorizedToWriteVariables"
                     (click)="initVariableEdition(variableKey)"
                     title="{{'global.actions.edit' | translate}}">
                     <i class="bi bi-pen-fill"></i>
@@ -84,6 +85,7 @@
                     [dialogMessage]="('global.confirm.question' | translate) + ' ' + ('global.actions.delete' | translate) + '\n' + variableKey"
                     [label]="'Delete Environment'"
                     [btnSizeClass]="'sm'"
+                    [disabled]="!isAuthorizedToWriteVariables"
                     (callbackEvent)="delete(variableKey)"
                     class="ms-2">
                   </chutney-confirm-dialog>

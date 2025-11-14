@@ -73,7 +73,7 @@ fun `We receive a network configuration to persist`(): ChutneyScenario {
       Step("") {
         HttpGetAction(
           target = "CHUTNEY_LOCAL",
-          uri = "/api/v2/environments",
+          uri = "/api/v2/environments/targets",
           outputs = mapOf(
             "environments" to "body".spEL
           ),

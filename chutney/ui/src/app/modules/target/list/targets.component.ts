@@ -7,8 +7,8 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { Environment, Target } from '@model';
-import { EnvironmentService } from '@core/services/environment.service';
+import { Environment, Target, Authorization } from '@model';
+import { EnvironmentService, LoginService } from '@core/services';
 import { distinct, filterOnTextContent, match } from '@shared/tools';
 import { Subscription } from 'rxjs';
 
@@ -28,10 +28,15 @@ export class TargetsComponent implements OnInit, OnDestroy {
     environmentFilter: Environment;
     targetFilter = '';
 
+    isAuthorizedToWriteTargets: boolean = false;
+
     private environmentServiceSubscription: Subscription = null;
 
     constructor(
-        private environmentService: EnvironmentService) {
+        private environmentService: EnvironmentService,
+        private loginService: LoginService
+    ) {
+            this.isAuthorizedToWriteTargets = this.loginService.hasAuthorization(Authorization.TARGET_WRITE);
     }
 
     ngOnInit() {
@@ -43,7 +48,7 @@ export class TargetsComponent implements OnInit, OnDestroy {
     }
 
     private loadTargets() {
-        this.environmentServiceSubscription = this.environmentService.list().subscribe({
+        this.environmentServiceSubscription = this.environmentService.listTargets().subscribe({
             next: envs => {
                 this.environments = envs;
                 this.targets = envs.flatMap(env => env.targets).sort(this.targetSortFunction());

@@ -6,9 +6,9 @@
  */
 
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { Environment } from '@model';
+import { Environment, Authorization } from '@model';
 import { ActivatedRoute } from '@angular/router';
-import { EnvironmentService } from '@core/services';
+import { EnvironmentService, LoginService } from '@core/services';
 import { ValidationService } from '../../../molecules/validation/validation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -29,13 +29,19 @@ export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
     nameValidationMessage: string;
     errorDeleteLastMessage: string;
 
+    isAuthorizedToWriteEnvironments: boolean = false;
+
     private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private route: ActivatedRoute,
                 private environmentService: EnvironmentService,
                 public validationService: ValidationService,
-                private translateService: TranslateService) {
+                private loginService: LoginService,
+                private translateService: TranslateService
+    ) {
         this.translateService.get("environment.error.delete.last.env").subscribe(msg => this.errorDeleteLastMessage = msg)
+
+        this.isAuthorizedToWriteEnvironments = this.loginService.hasAuthorization(Authorization.ENVIRONMENT_WRITE);
     }
 
     ngOnInit(): void {

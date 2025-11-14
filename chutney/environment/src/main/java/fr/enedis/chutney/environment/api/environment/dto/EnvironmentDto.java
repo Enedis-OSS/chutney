@@ -11,11 +11,11 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import fr.enedis.chutney.environment.api.target.dto.TargetDto;
 import fr.enedis.chutney.environment.api.variable.dto.EnvironmentVariableDto;
 import fr.enedis.chutney.environment.api.variable.dto.EnvironmentVariableDtoMapper;
 import fr.enedis.chutney.environment.domain.Environment;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +40,6 @@ public class EnvironmentDto {
         this.description = description;
         this.targets = emptyList();
         this.variables = emptyList();
-
     }
 
     public EnvironmentDto(String name, String description, List<TargetDto> targets) {
@@ -48,7 +47,6 @@ public class EnvironmentDto {
         this.description = description;
         this.targets = ofNullable(targets).map(Collections::unmodifiableList).orElse(emptyList());
         this.variables = emptyList();
-
     }
 
     @JsonCreator
@@ -57,7 +55,6 @@ public class EnvironmentDto {
         this.description = description;
         this.targets = ofNullable(targets).map(Collections::unmodifiableList).orElse(emptyList());
         this.variables = ofNullable(variables).map(Collections::unmodifiableList).orElse(emptyList());
-
     }
 
     public static EnvironmentDto from(Environment environment) {
@@ -81,6 +78,18 @@ public class EnvironmentDto {
                 ofNullable(variables).orElse(emptyList()).stream().map(EnvironmentVariableDtoMapper.INSTANCE::toDomain).collect(Collectors.toSet())
             )
             .build();
+    }
+
+    public EnvironmentDto copyWithEnvironmentsOnly() {
+        return new EnvironmentDto(this.name, this.description);
+    }
+
+    public EnvironmentDto copyWithTargetsOnly() {
+        return new EnvironmentDto(this.name, this.description, this.targets);
+    }
+
+    public EnvironmentDto copyWithVariablesOnly() {
+        return new EnvironmentDto(this.name, this.description, emptyList(), this.variables);
     }
 
     @Override

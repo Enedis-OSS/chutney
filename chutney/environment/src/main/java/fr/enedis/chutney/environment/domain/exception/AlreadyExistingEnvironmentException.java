@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.environment.domain.exception;
 
-@SuppressWarnings("serial")
 public class AlreadyExistingEnvironmentException extends RuntimeException {
     public AlreadyExistingEnvironmentException(String environmentName) {
         super("Environment [" + environmentName + "] already exists");

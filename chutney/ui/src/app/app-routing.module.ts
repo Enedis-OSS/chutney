@@ -47,55 +47,55 @@ export const appRoutes: Routes = [
                 data: {'authorizations': [Authorization.DATASET_READ]}
             },
             {
-                path: 'configurationAgent',
-                loadChildren: () => import('./modules/agent-network/agent-network.module').then(m => m.AgentNetworkModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'plugins',
-                loadChildren: () => import('./modules/plugins/plugin-configuration.module').then(m => m.PluginConfigurationModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
-            },
-            {
-                path: 'execution/search',
-                loadChildren: () => import('@modules/execution-search/execution-search.module').then(m => m.ExecutionSearchModule),
+                path: 'execution',
+                loadChildren: () => import('@modules/execution/execution.module').then(m => m.ExecutionModule),
                 canActivate: [authGuard],
                 data: {'authorizations': [Authorization.EXECUTION_READ]}
             },
             {
-                path: 'vacuum',
+                path: 'admin/vacuum',
                 loadChildren: () => import('./modules/vacuum/vacuum.module').then(m => m.VacuumModule),
                 canActivate: [authGuard],
                 data: {'authorizations': [Authorization.ADMIN_ACCESS]}
             },
             {
-                path: 'targets',
-                loadChildren: () => import('./modules/target/target.module').then(m => m.TargetModule),
-                canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS]}
-            },
-            {
-                path: 'environments',
+                path: 'environments/names',
                 loadChildren: () => import('./modules/environment/environment.module').then(m => m.EnvironmentModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS]}
+                data: {'authorizations': [Authorization.ENVIRONMENT_READ]}
             },
             {
-                path: 'environmentsVariables',
+                path: 'environments/targets',
+                loadChildren: () => import('./modules/target/target.module').then(m => m.TargetModule),
+                canActivate: [authGuard],
+                data: {'authorizations': [Authorization.TARGET_READ]}
+            },
+            {
+                path: 'environments/variables',
                 loadChildren: () => import('./modules/environment-variable/environment-variable.module').then(m => m.EnvironmentVariableModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.ENVIRONMENT_ACCESS]}
+                data: {'authorizations': [Authorization.VARIABLE_READ]}
             },
             {
-                path: 'roles',
+                path: 'admin/agent',
+                loadChildren: () => import('./modules/agent-network/agent-network.module').then(m => m.AgentNetworkModule),
+                canActivate: [authGuard],
+                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+            },
+            {
+                path: 'admin/plugins',
+                loadChildren: () => import('./modules/plugins/plugin-configuration.module').then(m => m.PluginConfigurationModule),
+                canActivate: [authGuard],
+                data: {'authorizations': [Authorization.ADMIN_ACCESS]}
+            },
+            {
+                path: 'admin/roles',
                 loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule),
                 canActivate: [authGuard],
                 data: {'authorizations': [Authorization.ADMIN_ACCESS]}
             },
             {
-                path: 'metrics',
+                path: 'admin/metrics',
                 loadChildren: () => import('./modules/metrics/metrics.module').then(m => m.MetricsModule),
                 canActivate: [authGuard],
                 data: {'authorizations': [Authorization.ADMIN_ACCESS]}

@@ -21,8 +21,23 @@
     "name" : "EXECUTION_WRITE_ROLE",
     "rights" : [ "EXECUTION_WRITE" ]
   }, {
-    "name" : "ENVIRONMENT_ACCESS_ROLE",
-    "rights" : [ "ENVIRONMENT_ACCESS" ]
+    "name" : "ENVIRONMENT_READ_ROLE",
+    "rights" : [ "ENVIRONMENT_READ" ]
+  }, {
+    "name" : "ENVIRONMENT_WRITE_ROLE",
+    "rights" : [ "ENVIRONMENT_WRITE" ]
+  }, {
+    "name" : "TARGET_READ_ROLE",
+    "rights" : [ "TARGET_READ" ]
+  }, {
+    "name" : "TARGET_WRITE_ROLE",
+    "rights" : [ "TARGET_WRITE" ]
+  }, {
+    "name" : "VARIABLE_READ_ROLE",
+    "rights" : [ "VARIABLE_READ" ]
+  }, {
+    "name" : "VARIABLE_WRITE_ROLE",
+    "rights" : [ "VARIABLE_WRITE" ]
   }, {
     "name" : "DATASET_READ_ROLE",
     "rights" : [ "DATASET_READ" ]
@@ -34,7 +49,7 @@
     "rights" : [ "ADMIN_ACCESS" ]
   }, {
     "name" : "GOD",
-    "rights" : [ "SCENARIO_WRITE", "CAMPAIGN_WRITE", "EXECUTION_WRITE", "ENVIRONMENT_ACCESS", "DATASET_WRITE", "ADMIN_ACCESS" ]
+    "rights" : [ "SCENARIO_WRITE", "CAMPAIGN_WRITE", "EXECUTION_WRITE", "ENVIRONMENT_WRITE", "TARGET_WRITE", "VARIABLE_WRITE","DATASET_WRITE", "ADMIN_ACCESS" ]
   } ],
   "authorizations" : [ {
     "name" : "SCENARIO_WRITE_ROLE",
