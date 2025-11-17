@@ -32,6 +32,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     selectedEnv: string = null;
     selectedDataset: Dataset = null;
+    selectedJiraId: string = null;
     datasetDetails: Dataset = null;
     createDataset: Dataset = null;
 
@@ -103,6 +104,11 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
         }
     }
 
+    selectJira(inputEvent: Event) {
+        const newValue = (inputEvent.target as HTMLInputElement).value;
+        this.selectedJiraId = newValue;
+    }
+
     async executeModal() {
         let dataset : Dataset = this.selectedDataset
         if (this.editionDataset) {
@@ -130,8 +136,10 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     }
 
     execute(dataset: Dataset) {
+        //const formValue = this.form.value;
+        //const jiraId: string = formValue['jiraId'];
         if (this.selectedEnv) {
-            this.executeCallback(this.selectedEnv, dataset, "422")
+            this.executeCallback(this.selectedEnv, dataset, this.selectedJiraId)
             this.activeModal.close();
         } else {
             this.translateService.get('scenarios.execution.errors.environment').subscribe((res: string) => {

@@ -141,6 +141,13 @@
     </ng-container>
     }
 </div>
+<div class="row px-2 mt-3">
+  <label for="jiraId" class="form-label">{{'menu.principal.jiraId' | translate}}</label>
+  <input type="text" id="jiraId" class="form-control me-2 small-text"
+    formControlName="jiraId"
+    placeholder="id jira"
+    (change)="selectJira($event)"/>
+</div>
 <div class="modal-footer">
   <button type="button" class="btn btn-light" (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
   <button type="button" class="btn btn-primary" (click)="executeModal()" [disabled]="!environmentsLoaded">{{ "global.actions.execute" | translate }}</button>
