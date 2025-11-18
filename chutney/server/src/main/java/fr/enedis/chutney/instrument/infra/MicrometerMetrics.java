@@ -23,25 +23,36 @@ import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionC
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MicrometerMetrics implements ChutneyMetrics {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MicrometerMetrics.class);
+
     private final MeterRegistry meterRegistry;
     private final Map<String, Map<ServerReportStatus, AtomicLong>> statusCountCache = new HashMap<>();
 
     public MicrometerMetrics(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
+        Properties buildProperties = loadBuildProperties();
+        String version = buildProperties.getProperty("build.version", "");
+        LOGGER.info("Application version is " + version);
+        meterRegistry.config().commonTags("application_version", version);
     }
 
     @Override
@@ -105,5 +116,17 @@ public class MicrometerMetrics implements ChutneyMetrics {
             statusCountCache.put(campaignId, cachedMetrics);
         }
         return cachedMetrics;
+    }
+
+    private Properties loadBuildProperties() {
+        Properties props = new Properties();
+        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("META-INF/build.properties")) {
+            if (input != null) {
+                props.load(input);
+            }
+        } catch (IOException ioe) {
+            LOGGER.warn("Cannot read build properties file", ioe);
+        }
+        return props;
     }
 }
