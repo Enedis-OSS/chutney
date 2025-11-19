@@ -101,7 +101,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
 
     private replay(): Observable<any> {
         const lastReport = this.campaignReports[0]
-        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset, "42")
+        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset, lastReport.report.jiraId)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe()
         return timer(1000).pipe(
