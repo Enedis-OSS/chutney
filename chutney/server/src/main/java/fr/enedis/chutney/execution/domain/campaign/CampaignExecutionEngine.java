@@ -20,7 +20,7 @@ import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.jira.api.JiraXrayEmbeddedApi;
-import fr.enedis.chutney.jira.api.ScenarioJiraLink;
+import fr.enedis.chutney.jira.api.ExecutionJiraLink;
 import fr.enedis.chutney.jira.domain.exception.NoJiraConfigurationException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.ExecutionRequest;
@@ -109,12 +109,16 @@ public class CampaignExecutionEngine {
         List<Campaign> campaigns = campaignRepository.findByName(campaignName);
         return campaigns.stream()
             .map(campaign -> selectExecutionEnvironment(campaign, environment))
-            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset, null))
+            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset))
             .collect(Collectors.toList());
     }
 
     public List<CampaignExecution> executeByName(String campaignName, String environment, String userId) {
         return executeByName(campaignName, environment, null, userId);
+    }
+
+    public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId) {
+        return this.executeById(campaignId, environment, dataset, userId, null);
     }
 
     public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId, String jiraId) {
@@ -182,6 +186,10 @@ public class CampaignExecutionEngine {
 
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, null, null);
+    }
+
+    CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset) {
+        return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, null);
     }
 
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset, String jiraId) {
@@ -307,7 +315,7 @@ public class CampaignExecutionEngine {
                     .dataset()
                     .map(dataset -> ofNullable(dataset.id).orElse(""))
                     .orElse("");
-                jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, campaignExecution.jiraId), JiraReportMapper.from(execution.report(), objectMapper));
+                jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, campaignExecution.jiraId), JiraReportMapper.from(execution.report(), objectMapper));
             } catch (NoJiraConfigurationException e) { // Silent
             } catch (Exception e) {
                 LOGGER.warn("Update JIRA failed", e);

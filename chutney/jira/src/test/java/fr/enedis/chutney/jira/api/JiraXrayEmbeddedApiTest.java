@@ -97,7 +97,7 @@ class JiraXrayEmbeddedApiTest {
         ReportForJira report = new ReportForJira(Instant.parse("2021-05-19T11:22:33.00Z"), 10000L, "SUCCESS", rootStep, "env");
 
         //W
-        jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(20L, 1L, "1", "", null), report);
+        jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(20L, 1L, "1", "", null), report);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
@@ -125,7 +125,7 @@ class JiraXrayEmbeddedApiTest {
 
         //W
         String jiraId = "JIRA-125";
-        jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(20L, 1L, "1", "", jiraId), report);
+        jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(20L, 1L, "1", "", jiraId), report);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
@@ -148,7 +148,7 @@ class JiraXrayEmbeddedApiTest {
         //W
         when(jiraXrayApiMock.isTestPlan("JIRA-20")).thenReturn(true);
         when(jiraXrayApiMock.createTestExecution("JIRA-20")).thenReturn("JIRA-22");
-        jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(20L, 1L, "1", "", null), report);
+        jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(20L, 1L, "1", "", null), report);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
@@ -172,7 +172,7 @@ class JiraXrayEmbeddedApiTest {
         //W
         when(jiraXrayApiMock.isTestPlan("JIRA-20")).thenReturn(true);
         when(jiraXrayApiMock.createTestExecution("JIRA-20")).thenReturn("JIRA-22");
-        jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(20L, 1L, "1", "dataset-02", null), report);
+        jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(20L, 1L, "1", "dataset-02", null), report);
 
         //T
         verify(jiraXrayApiMock, times(0)).updateRequest(any());
@@ -193,7 +193,7 @@ class JiraXrayEmbeddedApiTest {
         //W
         when(jiraXrayApiMock.isTestPlan("JIRA-20")).thenReturn(true);
         when(jiraXrayApiMock.createTestExecution("JIRA-20")).thenReturn("JIRA-22");
-        jiraXrayEmbeddedApi.updateTestExecution(new ScenarioJiraLink(20L, 1L, "1", datasetUsed, null), report);
+        jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(20L, 1L, "1", datasetUsed, null), report);
 
         //T
         ArgumentCaptor<Xray> xrayArgumentCaptor = ArgumentCaptor.forClass(Xray.class);
