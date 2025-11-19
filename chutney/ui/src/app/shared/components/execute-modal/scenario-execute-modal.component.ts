@@ -136,8 +136,6 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     }
 
     execute(dataset: Dataset) {
-        //const formValue = this.form.value;
-        //const jiraId: string = formValue['jiraId'];
         if (this.selectedEnv) {
             this.executeCallback(this.selectedEnv, dataset, this.selectedJiraId)
             this.activeModal.close();

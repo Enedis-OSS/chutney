@@ -423,7 +423,6 @@ public class DatabaseExecutionHistoryRepositoryTest {
                 .addScenarioExecutionReport(scenarioExecutionOneReport)
                 .userId("user")
                 .dataset(DataSet.builder().withId("ds287").withName("").build())
-                //TODO add test
                 .build();
             campaignExecutionDBRepository.saveCampaignExecution(campaign.id(), campaignExecution);
 

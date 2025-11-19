@@ -111,12 +111,12 @@ public class CampaignExecutionUiController {
     public CampaignExecutionReportDto executeCampaignById(
         @PathVariable("campaignId") Long campaignId,
         @PathVariable("env") Optional<String> environment,
-        @RequestBody CampaignExecutionDto campaignExecutionDto
+        @RequestBody ExecutionParamsDto executionParamsDto
     ) {
-        LOGGER.warn("jiraId {}", campaignExecutionDto.jiraId());
+        LOGGER.warn("jiraId {}", executionParamsDto.jiraId());
         String userId = userService.currentUserId();
-        DataSet ds = fromExecutionDatasetDto(campaignExecutionDto.dataset(), datasetRepository::findById);
-        CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId, campaignExecutionDto.jiraId());
+        DataSet ds = fromExecutionDatasetDto(executionParamsDto.dataset(), datasetRepository::findById);
+        CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId, executionParamsDto.jiraId());
         return toDto(report);
     }
 }

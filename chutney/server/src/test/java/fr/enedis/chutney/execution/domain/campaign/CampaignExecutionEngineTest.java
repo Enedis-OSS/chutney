@@ -36,7 +36,7 @@ import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.jira.api.JiraXrayEmbeddedApi;
 import fr.enedis.chutney.jira.api.ReportForJira;
-import fr.enedis.chutney.jira.api.ScenarioJiraLink;
+import fr.enedis.chutney.jira.api.ExecutionJiraLink;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.ExecutionRequest;
@@ -131,8 +131,8 @@ public class CampaignExecutionEngineTest {
         CampaignExecution cer = sut.executeScenarioInCampaign(campaign, "user", null, "JIRA-100");
 
         ArgumentCaptor<ReportForJira> reportForJiraCaptor = ArgumentCaptor.forClass(ReportForJira.class);
-        verify(jiraXrayPlugin).updateTestExecution(eq(new ScenarioJiraLink(campaign.id, cer.executionId, firstTestCase.metadata.id, "", "JIRA-100")), reportForJiraCaptor.capture());
-        verify(jiraXrayPlugin, times(0)).updateTestExecution(eq(new ScenarioJiraLink(campaign.id, cer.executionId, notExecutedTestCase.metadata.id, "", "JIRA-100")), reportForJiraCaptor.capture());
+        verify(jiraXrayPlugin).updateTestExecution(eq(new ExecutionJiraLink(campaign.id, cer.executionId, firstTestCase.metadata.id, "", "JIRA-100")), reportForJiraCaptor.capture());
+        verify(jiraXrayPlugin, times(0)).updateTestExecution(eq(new ExecutionJiraLink(campaign.id, cer.executionId, notExecutedTestCase.metadata.id, "", "JIRA-100")), reportForJiraCaptor.capture());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class CampaignExecutionEngineTest {
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
 
         // When
-        CampaignExecution campaignExecution = sut.executeScenarioInCampaign(campaign, "user", null, null);
+        CampaignExecution campaignExecution = sut.executeScenarioInCampaign(campaign, "user", null);
 
         // Then
         verify(testCaseRepository, times(2)).findExecutableById(anyString());
@@ -360,7 +360,7 @@ public class CampaignExecutionEngineTest {
 
         // When
         DataSet dataset = DataSet.builder().withId("datasetId").withName("").build();
-        sut.executeById(campaign.id, "", dataset, "", null);
+        sut.executeById(campaign.id, "", dataset, "");
         sut.executeByName(campaign.title, null, dataset, "");
 
         // Then
@@ -416,7 +416,7 @@ public class CampaignExecutionEngineTest {
         // When
         String executionEnv = "executionEnv";
         String executionUser = "executionUser";
-        sut.executeById(campaign.id, executionEnv, null, executionUser, null);
+        sut.executeById(campaign.id, executionEnv, null, executionUser);
 
         // Then
         verify(campaignRepository).findById(campaign.id);
@@ -624,7 +624,7 @@ public class CampaignExecutionEngineTest {
         when(campaignRepository.findById(eq(1L))).thenReturn(campaign);
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER", null);
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER");
 
         // Then
         assertThat(campaignExecution.dataset).satisfies(ds -> {
@@ -655,7 +655,7 @@ public class CampaignExecutionEngineTest {
         when(datasetRepository.findById(eq("DATASET_ID"))).thenReturn(DataSet.builder().withName("DATASET_ID").withId("DATASET_ID").build());
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER", null);
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, dataSet, "USER");
 
         // Then
         assertThat(campaignExecution.dataset).isNotNull();
@@ -678,7 +678,7 @@ public class CampaignExecutionEngineTest {
         when(datasetRepository.findById(eq("DATASET_ID"))).thenReturn(DataSet.builder().withName("DATASET_ID").withId("DATASET_ID").build());
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER", null);
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER");
 
         // Then
         assertThat(campaign.executionDataset()).isNotNull();
@@ -699,7 +699,7 @@ public class CampaignExecutionEngineTest {
         when(campaignRepository.findById(eq(1L))).thenReturn(campaign);
 
         // When
-        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER", null);
+        CampaignExecution campaignExecution = sut.executeById(campaignId, env, null, "USER");
 
         // Then
         assertThat(campaign.executionDataset()).isNull();

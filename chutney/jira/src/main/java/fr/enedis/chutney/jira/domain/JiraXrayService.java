@@ -12,7 +12,7 @@ import static fr.enedis.chutney.jira.domain.XrayStatus.FAIL;
 import static fr.enedis.chutney.jira.domain.XrayStatus.PASS;
 
 import fr.enedis.chutney.jira.api.ReportForJira;
-import fr.enedis.chutney.jira.api.ScenarioJiraLink;
+import fr.enedis.chutney.jira.api.ExecutionJiraLink;
 import fr.enedis.chutney.jira.domain.exception.NoJiraConfigurationException;
 import fr.enedis.chutney.jira.xrayapi.Xray;
 import fr.enedis.chutney.jira.xrayapi.XrayEvidence;
@@ -44,17 +44,17 @@ public class JiraXrayService {
         loadJiraServerConfiguration();
     }
 
-    public void updateTestExecution(ScenarioJiraLink scenarioJiraLink, ReportForJira report) {
+    public void updateTestExecution(ExecutionJiraLink executionJiraLink, ReportForJira report) {
         JiraXrayApi jiraXrayApi = createHttpJiraXrayImpl();
 
-        String testExecutionKey = scenarioJiraLink.jiraId() != null ? scenarioJiraLink.jiraId() :
-            jiraRepository.getByCampaignId(scenarioJiraLink.campaignId().toString());
+        String testExecutionKey = executionJiraLink.jiraId() != null ? executionJiraLink.jiraId() :
+            jiraRepository.getByCampaignId(executionJiraLink.campaignId().toString());
         String testKey = jiraRepository.getAllLinkedScenariosWithDataset()
-            .getOrDefault(scenarioJiraLink.scenarioId(), Collections.emptyMap())
-            .getOrDefault(scenarioJiraLink.datasetId(), jiraRepository.getByScenarioId(scenarioJiraLink.scenarioId()));
+            .getOrDefault(executionJiraLink.scenarioId(), Collections.emptyMap())
+            .getOrDefault(executionJiraLink.datasetId(), jiraRepository.getByScenarioId(executionJiraLink.scenarioId()));
 
         if (jiraXrayApi.isTestPlan(testExecutionKey)) {
-            String newTestExecutionKey = jiraRepository.getByCampaignExecutionId(scenarioJiraLink.campaignExecutionId().toString());
+            String newTestExecutionKey = jiraRepository.getByCampaignExecutionId(executionJiraLink.campaignExecutionId().toString());
             if (newTestExecutionKey.isEmpty()) {
                 newTestExecutionKey = jiraXrayApi.createTestExecution(testExecutionKey);
             }
@@ -63,7 +63,7 @@ public class JiraXrayService {
 
         if (!testKey.isEmpty() && !testExecutionKey.isEmpty()) {
             LOGGER.info("Update xray test {} of test execution {}", testKey, testExecutionKey);
-            jiraRepository.saveForCampaignExecution(scenarioJiraLink.campaignExecutionId().toString(), testExecutionKey);
+            jiraRepository.saveForCampaignExecution(executionJiraLink.campaignExecutionId().toString(), testExecutionKey);
             sendJiraRequest(report, testKey, testExecutionKey, jiraXrayApi);
         }
     }
