@@ -21,7 +21,8 @@ export interface CampaignExecutionReport {
     executionEnvironment?: string,
     dataset?: Dataset,
     campaignId?: string,
-    user: string
+    user: string,
+    jiraId: string
 }
 
 export interface CampaignExecutionFullReport {
