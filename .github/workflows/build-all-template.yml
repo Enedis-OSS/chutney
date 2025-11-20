@@ -110,7 +110,7 @@ jobs:
           if ${{ inputs.skipTests }}; then
             skipTestArg="-x test"
           fi
-          echo "PLUGIN_GOALS=clean buildPlugin $skipTestArg" >> $GITHUB_OUTPUT
+          echo "PLUGIN_GOALS=clean buildPlugin --build-cache $skipTestArg" >> $GITHUB_OUTPUT
 
       - name: Build Plugin
         if: ${{! inputs.release}}
