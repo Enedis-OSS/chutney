@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/ui/plugins/linkifier/")
+@RequestMapping(LinkifierController.BASE_URL)
 public class LinkifierController {
 
+    public static final String BASE_URL = "/api/v1/ui/plugins/linkifier";
     private final Linkifiers linkifiers;
 
     public LinkifierController(Linkifiers linkifiers) {

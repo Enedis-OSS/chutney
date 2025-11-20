@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ActionController.BASE_URL)
 public class ActionController {
 
-    static final String BASE_URL = "/api/action/v1";
+    public static final String BASE_URL = "/api/action/v1";
 
     private final EmbeddedActionEngine embeddedActionEngine;
 

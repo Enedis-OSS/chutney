@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v2/features")
+@RequestMapping(FeatureController.BASE_URL)
 public class FeatureController {
 
+    public static final String BASE_URL = "/api/v2/features";
     private final List<Feature> features;
 
     public FeatureController(List<Feature> features) {

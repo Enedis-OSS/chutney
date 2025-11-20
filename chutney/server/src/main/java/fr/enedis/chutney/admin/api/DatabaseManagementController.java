@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin/database")
+@RequestMapping(DatabaseManagementController.BASE_URL)
 public class DatabaseManagementController {
+
+    public static final String BASE_URL = "/api/v1/admin/database";
 
     private final DBVacuum dbVacuum;
 

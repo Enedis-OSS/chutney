@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/authorizations")
+@RequestMapping(AuthorizationController.BASE_URL)
 public class AuthorizationController {
 
+    public static final String BASE_URL = "/api/v1/authorizations";
     private final Authorizations authorizations;
 
     public AuthorizationController(Authorizations authorizations) {

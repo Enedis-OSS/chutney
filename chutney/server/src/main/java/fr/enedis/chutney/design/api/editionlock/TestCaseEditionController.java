@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(TestCaseEditionController.BASE_URL)
 public class TestCaseEditionController {
 
-    static final String BASE_URL = "/api/v1/editions/testcases";
+    public static final String BASE_URL = "/api/v1/editions/testcases";
 
     private final TestCaseEditionsService testCaseEditionsService;
     private final SpringUserService userService;

@@ -7,6 +7,19 @@
 
 package blackbox;
 
+import static fr.enedis.chutney.server.core.domain.security.Authorization.ADMIN_ACCESS;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.CAMPAIGN_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.CAMPAIGN_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.ENVIRONMENT_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.ENVIRONMENT_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.EXECUTION_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.EXECUTION_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.SCENARIO_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.SCENARIO_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.TARGET_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.TARGET_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.VARIABLE_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.VARIABLE_WRITE;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -14,8 +27,10 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
@@ -24,6 +39,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.enedis.chutney.ServerBootstrap;
+import fr.enedis.chutney.action.api.ActionController;
+import fr.enedis.chutney.admin.api.BackupController;
+import fr.enedis.chutney.admin.api.DatabaseManagementController;
+import fr.enedis.chutney.admin.api.InfoController;
+import fr.enedis.chutney.agent.api.NodeNetworkController;
+import fr.enedis.chutney.campaign.api.CampaignController;
+import fr.enedis.chutney.campaign.api.ScheduleCampaignController;
+import fr.enedis.chutney.dataset.api.DataSetController;
+import fr.enedis.chutney.design.api.editionlock.TestCaseEditionController;
+import fr.enedis.chutney.design.api.plugins.linkifier.LinkifierController;
+import fr.enedis.chutney.engine.api.execution.HttpTestEngine;
+import fr.enedis.chutney.environment.api.environment.EnvironmentController;
+import fr.enedis.chutney.environment.api.target.TargetController;
+import fr.enedis.chutney.environment.api.variable.EnvironmentVariableController;
+import fr.enedis.chutney.execution.api.CampaignExecutionUiController;
+import fr.enedis.chutney.execution.api.ScenarioExecutionHistoryController;
+import fr.enedis.chutney.execution.api.ScenarioExecutionUiController;
+import fr.enedis.chutney.execution.api.report.search.ExecutionSearchController;
+import fr.enedis.chutney.feature.api.FeatureController;
+import fr.enedis.chutney.index.api.SearchController;
+import fr.enedis.chutney.jira.api.JiraController;
+import fr.enedis.chutney.scenario.api.AggregatedTestCaseController;
+import fr.enedis.chutney.scenario.api.GwtTestCaseController;
+import fr.enedis.chutney.security.api.AuthorizationController;
+import fr.enedis.chutney.security.api.SsoOpenIdConnectController;
+import fr.enedis.chutney.security.api.UserController;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.Authorizations;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
@@ -69,6 +110,7 @@ public class SecuredControllerSpringBootIntegrationTest {
     private MockMvc mvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
     @BeforeAll
     public static void cleanUp() {
         FileUtils.deleteFolder(new File("./target/.chutney").toPath());
@@ -85,141 +127,189 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     private static Object[] securedEndPointList() {
         return new Object[][]{
-            {GET, "/actuator", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/health", "ADMIN_ACCESS", null, OK},
-            {GET, "/actuator/prometheus", "ADMIN_ACCESS", null, NOT_FOUND},
+            // Actuator
+            {GET, "/actuator", ADMIN_ACCESS.name(), null, OK},
+            {GET, "/actuator/health", ADMIN_ACCESS.name(), null, OK},
+            {GET, "/actuator/prometheus", ADMIN_ACCESS.name(), null, NOT_FOUND},
 
-            {GET, "/api/v1/backups", "ADMIN_ACCESS", null, OK},
-            {POST, "/api/v1/backups", "ADMIN_ACCESS", "{\"backupables\": [ \"environments\" ]}", OK},
-            {GET, "/api/v1/backups/backupId", "ADMIN_ACCESS", null, NOT_FOUND},
-            {DELETE, "/api/v1/backups/backupId", "ADMIN_ACCESS", null, NOT_FOUND},
-            {GET, "/api/v1/backups/id/download", "ADMIN_ACCESS", null, OK},
-            {GET, "/api/v1/backups/backupables", "ADMIN_ACCESS", null, OK},
+            // Server
+            {GET, BackupController.BASE_URL, ADMIN_ACCESS.name(), null, OK},
+            {POST, BackupController.BASE_URL, ADMIN_ACCESS.name(), "{\"backupables\": [ \"environments\" ]}", OK},
+            {GET, BackupController.BASE_URL + "/backupId", ADMIN_ACCESS.name(), null, NOT_FOUND},
+            {DELETE, BackupController.BASE_URL + "/backupId", ADMIN_ACCESS.name(), null, NOT_FOUND},
+            {GET, BackupController.BASE_URL + "/id/download", ADMIN_ACCESS.name(), null, OK},
+            {GET, BackupController.BASE_URL + "/backupables", ADMIN_ACCESS.name(), null, OK},
 
-            {GET, "/api/v1/execution/search?query=abc", "EXECUTION_READ", null, OK},
-            {POST, "/api/v1/admin/database/compact", "ADMIN_ACCESS", null, NOT_IMPLEMENTED},
-            {GET, "/api/v1/admin/database/size", "ADMIN_ACCESS", null, OK},
+            {POST, DatabaseManagementController.BASE_URL + "/compact", ADMIN_ACCESS.name(), null, NOT_IMPLEMENTED},
+            {GET, DatabaseManagementController.BASE_URL + "/size", ADMIN_ACCESS.name(), null, OK},
 
-            {POST, "/api/v1/agentnetwork/configuration", "ADMIN_ACCESS", "{}", OK},
-            {GET, "/api/v1/description", "ADMIN_ACCESS", null, OK},
-            {POST, "/api/v1/agentnetwork/explore", "ADMIN_ACCESS", "{\"creationDate\":\"1235\"}", OK},
+            {POST, NodeNetworkController.CONFIGURE_URL, ADMIN_ACCESS.name(), "{}", OK},
+            {GET, NodeNetworkController.DESCRIPTION_URL, ADMIN_ACCESS.name(), null, OK},
+            {POST, NodeNetworkController.EXPLORE_URL, ADMIN_ACCESS.name(), "{\"creationDate\":\"1235\"}", OK},
 
-            {POST, "/api/ui/campaign/v1", "CAMPAIGN_WRITE", "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[]}", BAD_REQUEST},
-            {POST, "/api/ui/campaign/v1", "CAMPAIGN_WRITE", "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"ENV\"}", OK},
-            {PUT, "/api/ui/campaign/v1", "CAMPAIGN_WRITE", "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"ENV\"}", OK},
-            {DELETE, "/api/ui/campaign/v1/123", "CAMPAIGN_WRITE", null, OK},
-            {GET, "/api/ui/campaign/v1/123", "CAMPAIGN_READ", null, NOT_FOUND},
-            {GET, "/api/ui/campaign/v1/123/scenarios", "CAMPAIGN_READ", null, NOT_FOUND},
-            {GET, "/api/ui/campaign/v1", "CAMPAIGN_READ", null, OK},
-            {GET, "/api/ui/campaign/v1/lastexecutions/20", "CAMPAIGN_READ", null, OK},
-            {GET, "/api/ui/campaign/v1/scenario/scenarioId", "SCENARIO_READ", null, OK},
-            {GET, "/api/ui/campaign/v1/scheduling", "CAMPAIGN_READ", null, OK},
-            {POST, "/api/ui/campaign/v1/scheduling", "CAMPAIGN_WRITE",
+            {POST, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[]}", BAD_REQUEST},
+            {POST, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"DEFAULT\"}", OK},
+            {PUT, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"DEFAULT\"}", OK},
+            {DELETE, CampaignController.BASE_URL + "/123", CAMPAIGN_WRITE.name(), null, OK},
+            {GET, CampaignController.BASE_URL + "/123", CAMPAIGN_READ.name(), null, NOT_FOUND},
+            {GET, CampaignController.BASE_URL + "/execution/1", CAMPAIGN_READ.name(), null, NOT_FOUND},
+            {GET, CampaignController.BASE_URL + "/123/scenarios", CAMPAIGN_READ.name(), null, NOT_FOUND},
+            {GET, CampaignController.BASE_URL, CAMPAIGN_READ.name(), null, OK},
+            {GET, CampaignController.BASE_URL, EXECUTION_READ.name(), null, OK},
+            {GET, CampaignController.BASE_URL + "/lastexecutions/20", CAMPAIGN_READ.name(), null, OK},
+            {GET, CampaignController.BASE_URL + "/lastexecutions/20", EXECUTION_READ.name(), null, OK},
+            {GET, CampaignController.BASE_URL + "/scenario/scenarioId", SCENARIO_READ.name(), null, OK},
+            {GET, CampaignController.BASE_URL + "/scenario/scenarioId", CAMPAIGN_READ.name(), null, OK},
+            {GET, CampaignController.BASE_URL + "/scenario/scenarioId", EXECUTION_READ.name(), null, OK},
+            {GET, ScheduleCampaignController.BASE_URL, CAMPAIGN_READ.name(), null, OK},
+            {GET, ScheduleCampaignController.BASE_URL, EXECUTION_READ.name(), null, OK},
+            {POST, ScheduleCampaignController.BASE_URL, CAMPAIGN_WRITE.name(),
                 """
-                {"id":1,"schedulingDate":[2024,10,12,14,30,45],"frequency":"Daily","environment":"PROD","campaignsId":[1],"campaignsTitle":["title"],"datasetsId":["datasetId"]}
+                {"id":1,"schedulingDate":[2024,10,12,14,30,45],"frequency":"Daily","environment":"DEFAULT","campaignsId":[1],"campaignsTitle":["title"],"datasetsId":["datasetId"]}
                 """, OK},
-            {DELETE, "/api/ui/campaign/v1/scheduling/123", "CAMPAIGN_WRITE", null, OK},
+            {DELETE, ScheduleCampaignController.BASE_URL + "/123", CAMPAIGN_WRITE.name(), null, OK},
 
-            {GET, "/api/ui/campaign/execution/v1/campaignName", "EXECUTION_WRITE", null, OK},
-            {GET, "/api/ui/campaign/execution/v1/campaignName/DEFAULT", "EXECUTION_WRITE", null, OK},
-            {POST, "/api/ui/campaign/execution/v1/replay/123", "EXECUTION_WRITE", "{}", NOT_FOUND},
-            {GET, "/api/ui/campaign/execution/v1/campaignPattern/surefire", "EXECUTION_WRITE", null, OK},
-            {GET, "/api/ui/campaign/execution/v1/campaignPattern/surefire/DEFAULT", "EXECUTION_WRITE", null, OK},
-            {POST, "/api/ui/campaign/execution/v1/123/stop", "EXECUTION_WRITE", "{}", NOT_FOUND},
-            {POST, "/api/ui/campaign/execution/v1/byID/123", "EXECUTION_WRITE", "{}", NOT_FOUND},
-            {POST, "/api/ui/campaign/execution/v1/byID/123/DEFAULT", "EXECUTION_WRITE", "{}", NOT_FOUND},
-            {GET, "/api/ui/campaign/v1/execution/1", "CAMPAIGN_READ", null, NOT_FOUND},
+            {GET, DataSetController.BASE_URL, "DATASET_READ", null, OK},
+            {GET, DataSetController.BASE_URL, SCENARIO_READ.name(), null, OK},
+            {GET, DataSetController.BASE_URL, CAMPAIGN_READ.name(), null, OK},
+            {GET, DataSetController.BASE_URL, EXECUTION_WRITE.name(), null, OK},
+            {POST, DataSetController.BASE_URL, "DATASET_WRITE", "{\"name\": \"ds\"}", OK},
+            {PUT, DataSetController.BASE_URL, "DATASET_WRITE", "{\"name\": \"dss\"}", OK},
+            {DELETE, DataSetController.BASE_URL + "/datasetName", "DATASET_WRITE", null, OK},
+            {GET, DataSetController.BASE_URL + "/datasetId", "DATASET_WRITE", null, NOT_FOUND},
 
-            {GET, "/api/v1/editions/testcases/testcaseId", "SCENARIO_READ", null, OK},
-            {POST, "/api/v1/editions/testcases/testcaseId", "SCENARIO_WRITE", "{}", NOT_FOUND},
-            {DELETE, "/api/v1/editions/testcases/testcaseId", "SCENARIO_WRITE", null, OK},
-            {GET, "/api/ui/jira/v1/scenario", "SCENARIO_READ", null, OK},
-            {GET, "/api/ui/jira/v1/scenario", "CAMPAIGN_WRITE", null, OK},
-            {GET, "/api/ui/jira/v1/campaign", "CAMPAIGN_READ", null, OK},
-            {GET, "/api/ui/jira/v1/scenario/scenarioId", "SCENARIO_READ", null, OK},
-            {POST, "/api/ui/jira/v1/scenario", "SCENARIO_WRITE", "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
-            {DELETE, "/api/ui/jira/v1/scenario/scenarioId", "SCENARIO_WRITE", null, OK},
-            {GET, "/api/ui/jira/v1/campaign/campaignId", "CAMPAIGN_READ", null, OK},
-            // {GET, "/api/ui/jira/v1/testexec/testExecId", "CAMPAIGN_WRITE", null, OK}, need a valid jira url
-            {PUT, "/api/ui/jira/v1/testexec/testExecId", "CAMPAIGN_WRITE", "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
-            {POST, "/api/ui/jira/v1/campaign", "CAMPAIGN_WRITE", "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
-            {DELETE, "/api/ui/jira/v1/campaign/campaignId", "CAMPAIGN_WRITE", null, OK},
-            {GET, "/api/ui/jira/v1/configuration", "ADMIN_ACCESS", null, OK},
-            {GET, "/api/ui/jira/v1/configuration/url", "SCENARIO_READ", null, OK},
-            {GET, "/api/ui/jira/v1/configuration/url", "CAMPAIGN_READ", null, OK},
-            {POST, "/api/ui/jira/v1/configuration", "ADMIN_ACCESS", "{\"url\":\"\",\"username\":\"\",\"password\":\"\",\"urlProxy\":\"\",\"userProxy\":\"\",\"passwordProxy\":\"\"}", OK},
+            {GET, TestCaseEditionController.BASE_URL + "/testcaseId", SCENARIO_READ.name(), null, OK},
+            {POST, TestCaseEditionController.BASE_URL + "/testcaseId", SCENARIO_WRITE.name(), "{}", NOT_FOUND},
+            {DELETE, TestCaseEditionController.BASE_URL + "/testcaseId", SCENARIO_WRITE.name(), null, OK},
 
-            {POST, "/api/v1/ui/plugins/linkifier/", "ADMIN_ACCESS", "{\"pattern\":\"\",\"link\":\"\",\"id\":\"\"}", OK},
-            {DELETE, "/api/v1/ui/plugins/linkifier/id", "ADMIN_ACCESS", null, OK},
+            {POST, LinkifierController.BASE_URL, ADMIN_ACCESS.name(), "{\"pattern\":\"\",\"link\":\"\",\"id\":\"\"}", OK},
+            {DELETE, LinkifierController.BASE_URL + "/id", ADMIN_ACCESS.name(), null, OK},
 
-            {GET, "/api/scenario/v2/1", "SCENARIO_READ", null, NOT_FOUND},
-            {GET, "/api/scenario/v2/testCaseId/metadata", "SCENARIO_READ", null, NOT_FOUND},
-            {GET, "/api/scenario/v2", "SCENARIO_READ", null, OK},
-            {GET, "/api/scenario/v2", "CAMPAIGN_READ", null, OK},
-            {POST, "/api/scenario/v2", "SCENARIO_WRITE", "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
-            {PATCH, "/api/scenario/v2", "SCENARIO_WRITE", "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
-            {DELETE, "/api/scenario/v2/testCaseId", "SCENARIO_WRITE", null, OK},
-            {POST, "/api/scenario/v2/raw", "SCENARIO_WRITE", "{\"title\":\"\",\"content\":\"{\\\"when\\\":{}}\"}", OK},
-            {GET, "/api/scenario/v2/raw/1", "SCENARIO_READ", null, OK},
+            {GET, CampaignExecutionUiController.BASE_URL + "/123/lastExecution", EXECUTION_READ.name(), null, NOT_FOUND},
+            {GET, CampaignExecutionUiController.BASE_URL + "/123/DEFAULT/lastExecution", EXECUTION_READ.name(), null, NOT_FOUND},
+            {GET, CampaignExecutionUiController.BASE_URL + "/campaignName", EXECUTION_WRITE.name(), null, OK},
+            {GET, CampaignExecutionUiController.BASE_URL + "/campaignName/DEFAULT", EXECUTION_WRITE.name(), null, OK},
+            {POST, CampaignExecutionUiController.BASE_URL + "/replay/123", EXECUTION_WRITE.name(), "{}", NOT_FOUND},
+            {GET, CampaignExecutionUiController.BASE_URL + "/campaignPattern/surefire", EXECUTION_WRITE.name(), null, OK},
+            {GET, CampaignExecutionUiController.BASE_URL + "/campaignPattern/surefire/DEFAULT", EXECUTION_WRITE.name(), null, OK},
+            {POST, CampaignExecutionUiController.BASE_URL + "/123/stop", EXECUTION_WRITE.name(), "{}", NOT_FOUND},
+            {POST, CampaignExecutionUiController.BASE_URL + "/byID/123", EXECUTION_WRITE.name(), "{}", NOT_FOUND},
+            {POST, CampaignExecutionUiController.BASE_URL + "/byID/123/DEFAULT", EXECUTION_WRITE.name(), "{}", NOT_FOUND},
 
-            {POST, "/api/scenario/execution/v1", "EXECUTION_WRITE", "{\"scenario\":{},\"environment\": {\"name\":\"env\"}}", OK},
+            {GET, ScenarioExecutionHistoryController.BASE_URL + "/123/execution/v1", EXECUTION_READ.name(), null, OK},
+            {GET, ScenarioExecutionHistoryController.BASE_URL + "/123/summary/v1", EXECUTION_READ.name(), null, NOT_FOUND},
+            {GET, ScenarioExecutionHistoryController.BASE_URL + "/123/execution/123/v1", EXECUTION_READ.name(), null, NOT_FOUND},
+            {DELETE, ScenarioExecutionHistoryController.BASE_URL + "/execution/123", EXECUTION_WRITE.name(), null, NOT_FOUND},
 
-            {GET, "/api/ui/scenario/123/execution/v1", "EXECUTION_READ", null, OK},
-            {GET, "/api/ui/scenario/123/execution/123/v1", "EXECUTION_READ", null, NOT_FOUND},
-            {GET, "/api/ui/scenario/execution/123/summary/v1", "EXECUTION_READ", null, NOT_FOUND},
-            {POST, "/api/ui/scenario/execution/v1/scenarioId/secuenv", "EXECUTION_WRITE", null, NOT_FOUND},
-            {POST, "/api/idea/scenario/execution/DEFAULT", "EXECUTION_WRITE", "{\"content\":\"{\\\"when\\\":{}}\",\"params\":{}} ", OK},
-            {POST, "/api/ui/scenario/executionasync/v1/scenarioId/DEFAULT", "EXECUTION_WRITE", null, NOT_FOUND},
-            {POST, "/api/ui/scenario/executionasync/v1/scenarioId/DEFAULT/DATASET", "EXECUTION_WRITE", "[]", NOT_FOUND},
-            {GET, "/api/ui/scenario/executionasync/v1/scenarioId/execution/123", "EXECUTION_READ", null, NOT_FOUND},
-            {POST, "/api/ui/scenario/executionasync/v1/scenarioId/execution/123/stop", "EXECUTION_WRITE", null, NOT_FOUND},
-            {POST, "/api/ui/scenario/executionasync/v1/scenarioId/execution/123/pause", "EXECUTION_WRITE", null, NOT_FOUND},
-            {POST, "/api/ui/scenario/executionasync/v1/scenarioId/execution/123/resume", "EXECUTION_WRITE", null, NOT_FOUND},
+            {POST, ScenarioExecutionUiController.IDEA_BASE_URL + "/DEFAULT", EXECUTION_WRITE.name(), "{\"content\":\"{\\\"when\\\":{}}\",\"params\":{}} ", OK},
+            {POST, ScenarioExecutionUiController.BASE_URL + "/scenarioId/DEFAULT", EXECUTION_WRITE.name(), null, NOT_FOUND},
+            {POST, ScenarioExecutionUiController.BASE_URL + "/scenarioId", EXECUTION_WRITE.name(), null, NOT_FOUND},
+            {POST, ScenarioExecutionUiController.SYNC_BASE_URL + "/scenarioId/DEFAULT", EXECUTION_WRITE.name(), null, NOT_FOUND},
+            {GET, ScenarioExecutionUiController.BASE_URL + "/scenarioId/execution/123", EXECUTION_READ.name(), null, NOT_FOUND},
+            {POST, ScenarioExecutionUiController.BASE_URL + "/scenarioId/execution/123/stop", EXECUTION_WRITE.name(), null, NOT_FOUND},
+            {POST, ScenarioExecutionUiController.BASE_URL + "/scenarioId/execution/123/pause", EXECUTION_WRITE.name(), null, NOT_FOUND},
+            {POST, ScenarioExecutionUiController.BASE_URL + "/scenarioId/execution/123/resume", EXECUTION_WRITE.name(), null, NOT_FOUND},
 
-            {POST, "/api/v1/authorizations", "ADMIN_ACCESS", "{}", OK},
-            {GET, "/api/v1/authorizations", "ADMIN_ACCESS", null, OK},
+            {GET, ExecutionSearchController.BASE_URL + "/search?query=abc", EXECUTION_READ.name(), null, OK},
 
-            {GET, "/api/action/v1", "SCENARIO_READ", null, OK},
-            {GET, "/api/action/v1/actionId", "SCENARIO_READ", null, NOT_FOUND},
+            {GET, SearchController.BASE_URL + "?keyword=abc", SCENARIO_READ.name(), null, OK},
+            {GET, SearchController.BASE_URL + "?keyword=abc", CAMPAIGN_READ.name(), null, OK},
+            {GET, SearchController.BASE_URL + "?keyword=abc", "DATASET_READ", null, OK},
 
-            // Environments module
-            {GET, "/api/v2/environments", "ENVIRONMENT_READ", null, OK},
-            {GET, "/api/v2/environments/names", "CAMPAIGN_READ", null, OK},
-            {GET, "/api/v2/environments/names", "TARGET_WRITE", null, OK},
-            {GET, "/api/v2/environments/names", "EXECUTION_WRITE", null, OK},
-            {GET, "/api/v2/environments/names", "ENVIRONMENT_READ", null, OK},
-            {POST, "/api/v2/environments", "ENVIRONMENT_WRITE", "{\"name\": \"secuenv\"} ", OK},
-            {DELETE, "/api/v2/environments/envName", "ENVIRONMENT_WRITE", null, NOT_FOUND},
-            {PUT, "/api/v2/environments/envName", "ENVIRONMENT_WRITE", "{}", NOT_FOUND},
-            {GET, "/api/v2/environments/envName/target", "ENVIRONMENT_READ", null, NOT_FOUND},
-            {GET, "/api/v2/environments/envName", "ENVIRONMENT_READ", null, NOT_FOUND},
+            {GET, AggregatedTestCaseController.BASE_URL + "/testCaseId/metadata", SCENARIO_READ.name(), null, NOT_FOUND},
+            {GET, AggregatedTestCaseController.BASE_URL + "/testCaseId/metadata", EXECUTION_READ.name(), null, NOT_FOUND},
+            {GET, AggregatedTestCaseController.BASE_URL, SCENARIO_READ.name(), null, OK},
+            {GET, AggregatedTestCaseController.BASE_URL, CAMPAIGN_READ.name(), null, OK},
+            {GET, AggregatedTestCaseController.BASE_URL, EXECUTION_READ.name(), null, OK},
+            {DELETE, AggregatedTestCaseController.BASE_URL + "/testCaseId", SCENARIO_WRITE.name(), null, OK},
 
-            {GET, "/api/v2/environments/targets", "TARGET_READ", null, OK},
-            {GET, "/api/v2/environments/targets", "ADMIN_ACCESS", null, OK},
-            {GET, "/api/v2/environments/envName/targets/targetName", "TARGET_READ", null, NOT_FOUND},
-            {DELETE, "/api/v2/environments/envName/targets/targetName", "TARGET_WRITE", null, NOT_FOUND},
-            {POST, "/api/v2/targets", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"http://localhost\", \"environment\":\"secuenv\"}", OK},
-            {PUT, "/api/v2/targets/targetName", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"https://localhost\", \"environment\":\"secuenv\"}", OK},
+            {GET, GwtTestCaseController.BASE_URL + "/1", SCENARIO_READ.name(), null, NOT_FOUND},
+            {GET, GwtTestCaseController.BASE_URL + "/1", EXECUTION_READ.name(), null, NOT_FOUND},
+            {POST, GwtTestCaseController.BASE_URL, SCENARIO_WRITE.name(), "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
+            {PATCH, GwtTestCaseController.BASE_URL, SCENARIO_WRITE.name(), "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
+            {POST, GwtTestCaseController.BASE_URL + "/raw", SCENARIO_WRITE.name(), "{\"title\":\"\",\"content\":\"{\\\"when\\\":{}}\"}", OK},
+            {GET, GwtTestCaseController.BASE_URL + "/raw/1", SCENARIO_READ.name(), null, OK},
 
-            {GET, "/api/v2/environments/variables", "VARIABLE_READ", null, OK},
-            {POST, "/api/v2/variables", "VARIABLE_WRITE", "[]", OK},
-            {PUT, "/api/v2/variables/varKey", "VARIABLE_WRITE", "[]", OK},
-            {DELETE, "/api/v2/variables/varKey", "VARIABLE_WRITE", null, NOT_FOUND},
+            {POST, AuthorizationController.BASE_URL, ADMIN_ACCESS.name(), "{}", OK},
+            {GET, AuthorizationController.BASE_URL, ADMIN_ACCESS.name(), null, OK},
+
+            // Engine
+            {GET, ActionController.BASE_URL, SCENARIO_READ.name(), null, OK},
+            {GET, ActionController.BASE_URL + "/actionId", SCENARIO_READ.name(), null, NOT_FOUND},
+            {POST, HttpTestEngine.EXECUTION_URL, EXECUTION_WRITE.name(), "{\"scenario\":{},\"environment\": {\"name\":\"DEFAULT\"}}", OK},
+
+            // Environment (order is important)
+            {GET, EnvironmentController.BASE_URL, ENVIRONMENT_READ.name(), null, OK},
+            {GET, EnvironmentController.BASE_URL, ADMIN_ACCESS.name(), null, OK},
+            {GET, EnvironmentController.BASE_URL + "/names", ENVIRONMENT_READ.name(), null, OK},
+            {GET, EnvironmentController.BASE_URL + "/names", CAMPAIGN_READ.name(), null, OK},
+            {GET, EnvironmentController.BASE_URL + "/names", TARGET_WRITE.name(), null, OK},
+            {GET, EnvironmentController.BASE_URL + "/names", EXECUTION_WRITE.name(), null, OK},
+            {POST, EnvironmentController.BASE_URL, ENVIRONMENT_WRITE.name(), "{\"name\": \"newEnv\"}", OK},
+            {PUT, EnvironmentController.BASE_URL + "/newEnv", ENVIRONMENT_WRITE.name(), "{\"name\": \"newEnv\"}", OK},
+            {GET, EnvironmentController.BASE_URL + "/newEnv", ENVIRONMENT_READ.name(), null, OK},
+            {DELETE, EnvironmentController.BASE_URL + "/newEnv", ENVIRONMENT_WRITE.name(), null, OK}, // keep this at the end to clean
+
+            {GET, EnvironmentController.BASE_URL + "/targets", TARGET_READ.name(), null, OK},
+            {GET, EnvironmentController.BASE_URL + "/targets", ADMIN_ACCESS.name(), null, OK},
+            {GET, TargetController.TARGET_BASE_URI + "/names", TARGET_READ.name(), null, OK},
+            {GET, TargetController.TARGET_BASE_URI, TARGET_READ.name(), null, OK},
+            {POST, TargetController.TARGET_BASE_URI, TARGET_WRITE.name(), "{\"name\":\"targetName\",\"url\":\"http://localhost\", \"environment\":\"DEFAULT\"}", OK},
+            {GET, EnvironmentController.BASE_URL + "/DEFAULT/targets/targetName", TARGET_READ.name(), null, OK},
+            {PUT, TargetController.TARGET_BASE_URI + "/targetName", TARGET_WRITE.name(), "{\"name\":\"targetName\",\"url\":\"https://localhost\", \"environment\":\"DEFAULT\"}", OK},
+            {DELETE, EnvironmentController.BASE_URL + "/DEFAULT/targets/targetName", TARGET_WRITE.name(), null, OK},
+            {DELETE, TargetController.TARGET_BASE_URI + "/targetName", TARGET_WRITE.name(), null, OK},
+
+            {GET, EnvironmentController.BASE_URL + "/variables", VARIABLE_READ.name(), null, OK},
+            {POST, EnvironmentVariableController.VARIABLE_BASE_URI, VARIABLE_WRITE.name(), "[{\"key\":\"varKey\", \"value\":\"varValue\", \"env\":\"DEFAULT\"}]", OK},
+            {PUT, EnvironmentVariableController.VARIABLE_BASE_URI + "/varKey", VARIABLE_WRITE.name(), "[{\"key\":\"varKey\", \"value\":\"varValue\", \"env\":\"DEFAULT\"}]", OK},
+            {DELETE, EnvironmentVariableController.VARIABLE_BASE_URI + "/varKey", VARIABLE_WRITE.name(), null, OK},
+
+            // Jira
+            {GET, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL, SCENARIO_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL, CAMPAIGN_WRITE.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL, EXECUTION_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_URL, CAMPAIGN_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_URL, EXECUTION_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL + "/scenarioId", SCENARIO_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL + "/scenarioId", CAMPAIGN_WRITE.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL + "/scenarioId", EXECUTION_READ.name(), null, OK},
+
+            {POST, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL, SCENARIO_WRITE.name(), "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
+            {POST, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL, CAMPAIGN_WRITE.name(), "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
+            {DELETE, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL + "/scenarioId", SCENARIO_WRITE.name(), null, OK},
+            {DELETE, JiraController.BASE_URL + JiraController.BASE_SCENARIO_URL + "/scenarioId", CAMPAIGN_WRITE.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_URL + "/campaignId", CAMPAIGN_READ.name(), null, OK},
+            // {GET, "/api/ui/jira/v1/testexec/testExecId", Authorization.CAMPAIGN_WRITE.name(), null, OK}, need a valid jira url
+            {GET, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_EXEC_URL + "/campaignExecutionId", CAMPAIGN_WRITE.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_EXEC_URL + "/campaignExecutionId", EXECUTION_READ.name(), null, OK},
+            {POST, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_URL, CAMPAIGN_WRITE.name(), "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
+            {DELETE, JiraController.BASE_URL + JiraController.BASE_CAMPAIGN_URL + "/campaignId", CAMPAIGN_WRITE.name(), null, OK},
+
+            {GET, JiraController.BASE_URL + JiraController.BASE_CONFIGURATION_URL, ADMIN_ACCESS.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CONFIGURATION_URL + "/url", SCENARIO_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CONFIGURATION_URL + "/url", CAMPAIGN_READ.name(), null, OK},
+            {GET, JiraController.BASE_URL + JiraController.BASE_CONFIGURATION_URL + "/url", EXECUTION_READ.name(), null, OK},
+            {POST, JiraController.BASE_URL + JiraController.BASE_CONFIGURATION_URL, ADMIN_ACCESS.name(), "{\"url\":\"\",\"username\":\"\",\"password\":\"\",\"urlProxy\":\"\",\"userProxy\":\"\",\"passwordProxy\":\"\"}", OK},
+            {DELETE, JiraController.BASE_URL + JiraController.BASE_CONFIGURATION_URL, ADMIN_ACCESS.name(), null, NO_CONTENT},
+            {PUT, JiraController.BASE_URL + JiraController.BASE_TEST_EXEC_URL + "/testExecId", CAMPAIGN_WRITE.name(), "{\"id\":\"\",\"chutneyId\":\"\"}", OK},
 
             // Must be at the end because the network configuration is in wrong state, why ??
-            {POST, "/api/v1/agentnetwork/wrapup", "ADMIN_ACCESS", "{\"agentsGraph\":{\"agents\":[]},\"networkConfiguration\":{\"creationDate\":\"2021-09-06T10:08:36.569227Z\",\"agentNetworkConfiguration\":[],\"environmentsConfiguration\":[]}}", OK},
+            {POST, NodeNetworkController.WRAP_UP_URL, ADMIN_ACCESS.name(), "{\"agentsGraph\":{\"agents\":[]},\"networkConfiguration\":{\"creationDate\":\"2021-09-06T10:08:36.569227Z\",\"agentNetworkConfiguration\":[],\"environmentsConfiguration\":[]}}", OK},
         };
     }
 
     private static Object[] unsecuredEndPointList() {
         return new Object[][]{
-            {GET, "/api/v1/user", "AUTHENTICATED", null, OK},
-            {POST, "/api/v1/user", "AUTHENTICATED", "{}", OK},
-            {GET, "/api/v1/ui/plugins/linkifier/", "AUTHENTICATED", null, OK},
-            {GET, "/api/v1/info/build/version", null, null, OK},
-            {GET, "/api/v1/info/appname", null, null, OK},
-            {GET, "/api/v2/features", "AUTHENTICATED", null, OK},
-            {GET, "/api/v1/sso/config", null, null, OK},
+            {GET, UserController.BASE_URL, "AUTHENTICATED", null, OK},
+            {POST, UserController.BASE_URL, "AUTHENTICATED", "{}", OK},
+            {GET, LinkifierController.BASE_URL, "AUTHENTICATED", null, OK},
+
+            {GET, InfoController.BASE_URL + "/build/version", null, null, OK},
+            {GET, InfoController.BASE_URL + "/appname", null, null, OK},
+
+            {GET, FeatureController.BASE_URL, "AUTHENTICATED", null, OK},
+            {GET, SsoOpenIdConnectController.BASE_URL + "/config", null, null, OK},
         };
     }
 
@@ -260,8 +350,8 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     private static Stream<Arguments> uploadEndpoints() {
         return Stream.of(
-            Arguments.of("/api/v2/environments", "ENVIRONMENT_WRITE", "{\"name\": \"env\"}", OK),
-            Arguments.of("/api/v2/environments/env/targets", "TARGET_WRITE", "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"env\"}", OK)
+            Arguments.of(EnvironmentController.BASE_URL, ENVIRONMENT_WRITE.name(), "{\"name\": \"DEFAULT\"}", CONFLICT),
+            Arguments.of(EnvironmentController.BASE_URL + "/envName/targets", TARGET_WRITE.name(), "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"unknownEnv\"}", NOT_FOUND)
         );
     }
 

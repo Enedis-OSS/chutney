@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CampaignExecutionUiController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CampaignExecutionUiController.class);
-    static final String BASE_URL = "/api/ui/campaign/execution/v1";
+    public static final String BASE_URL = "/api/ui/campaign/execution/v1";
 
     private final CampaignExecutionEngine campaignExecutionEngine;
     private final SurefireCampaignExecutionReportBuilder surefireCampaignExecutionReportBuilder;
@@ -65,7 +65,7 @@ public class CampaignExecutionUiController {
 
 
     @PreAuthorize("hasAuthority('EXECUTION_READ')")
-    @GetMapping(path = {"/{campaignName}/lastExecution", "/{campaignName}/{env}/lastExecution"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = {"/{campaignId}/lastExecution", "/{campaignId}/{env}/lastExecution"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public CampaignExecutionReportSummaryDto getLastCampaignExecution(@PathVariable("campaignId") Long campaignId) {
         CampaignExecution lastCampaignExecution = campaignExecutionEngine.getLastCampaignExecution(campaignId);
         return campaignExecutionApiMapper.toCampaignExecutionReportSummaryDto(lastCampaignExecution);

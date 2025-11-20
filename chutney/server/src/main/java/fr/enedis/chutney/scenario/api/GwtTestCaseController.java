@@ -29,9 +29,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/scenario/v2")
+@RequestMapping(GwtTestCaseController.BASE_URL)
 public class GwtTestCaseController {
 
+    public static final String BASE_URL = "/api/scenario/v2";
     private final AggregatedRepository<GwtTestCase> gwtTestCaseRepository;
 
 
@@ -43,7 +44,7 @@ public class GwtTestCaseController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('EXECUTION_READ')")
+    @PreAuthorize("hasAnyAuthority('SCENARIO_READ', 'EXECUTION_READ')")
     @GetMapping(path = "/{testCaseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GwtTestCaseDto getTestCase(@PathVariable("testCaseId") String testCaseId) {
         return GwtTestCaseMapper.toDto(gwtTestCaseRepository.findById(testCaseId).orElseThrow(() -> new ScenarioNotFoundException(testCaseId)));
