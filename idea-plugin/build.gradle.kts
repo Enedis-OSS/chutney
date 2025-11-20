@@ -125,7 +125,7 @@ intellijPlatform {
     //freeArgs.add("-offline")
     ides {
       // Check against the last Ultimate version
-      ide(IntelliJPlatformType.IntellijIdeaUltimate, "2025.1")
+      create(IntelliJPlatformType.IntellijIdeaUltimate, "2025.1")
       recommended()
     }
   }
