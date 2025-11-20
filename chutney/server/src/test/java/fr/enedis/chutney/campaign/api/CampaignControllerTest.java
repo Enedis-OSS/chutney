@@ -395,7 +395,6 @@ public class CampaignControllerTest {
         // When
         CampaignDto campaignDto = new CampaignDto(null, "test", "desc",
             List.of(new CampaignScenarioDto("1", "UNKNOWN_DATASET")), emptyList(), "env", false, false, null, emptyList());
-        ;
 
         when(datasetService.findById("UNKNOWN_DATASET")).thenThrow(new DataSetNotFoundException("UNKNOWN_DATASET"));
 
