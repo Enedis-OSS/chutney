@@ -26,7 +26,7 @@ runs:
       run: |
         cd ./idea-plugin
         echo "Running: ${{inputs.goals}}"
-        ./gradlew ${{inputs.goals}}
+        ./gradlew -i ${{inputs.goals}}
         cd ..
 
     - name: Temporarily cache jar artifacts
