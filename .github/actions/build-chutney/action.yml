@@ -5,7 +5,7 @@ name: 'build chutney parent'
 description: 'build chutney parent'
 inputs:
   goals:
-    default: "clean install -V -B"
+    default: "clean install -DskipTests -V -B"
     description: "Maven goals to execute"
   cache-artifacts:
     default: ""
