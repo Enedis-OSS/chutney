@@ -52,7 +52,7 @@ kotlin {
 dependencies {
   intellijPlatform {
     // Build against the lowest version supported
-    intellijIdeaUltimate("2025.2.4")
+    intellijIdeaUltimate("2024.2")
 
     bundledPlugin("com.intellij.java")
     bundledPlugin("org.jetbrains.plugins.yaml")
