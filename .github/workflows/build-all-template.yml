@@ -80,8 +80,11 @@ jobs:
       - name: Resolve chutney maven goal from inputs
         id: chutney-goals
         run: |
-          skipTestArg="-DskipTests"
+          skipTestArg=""
           mvnGoals="clean install"
+          if ${{ inputs.skipTests }}; then
+            skipTestArg="-DskipTests"
+          fi
           if ${{ inputs.release }}; then
             mvnGoals="deploy -P ${{inputs.server-id}}"
             skipTestArg="-DskipTests"
