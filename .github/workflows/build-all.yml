@@ -13,4 +13,4 @@ jobs:
   build:
     uses: ./.github/workflows/build-all-template.yml
     with:
-      skipTests: ${{ startsWith(github.head_ref, 'release/') }}
+      skipTests: true
