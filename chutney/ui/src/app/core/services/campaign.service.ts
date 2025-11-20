@@ -97,7 +97,8 @@ export class CampaignService {
 
     executeCampaign(campaignId: number, env: string, dataset?: Dataset, jiraId?: string): Observable<CampaignExecutionReport> {
         return this.http.post<CampaignExecutionReport>(environment.backend + `${this.ressourceUrlExecution}/byID/${campaignId}/${env}`,
-            dataset != null ? {dataset:dataset, jiraId:jiraId} : {});
+            {dataset:dataset, jiraId:jiraId});
+
     }
 
     stopExecution(campaignId: number, executionId: number): Observable<void> {
