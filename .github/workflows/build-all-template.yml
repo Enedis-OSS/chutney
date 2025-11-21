@@ -113,7 +113,9 @@ jobs:
           echo "PLUGIN_GOALS=clean buildPlugin --build-cache $skipTestArg" >> $GITHUB_OUTPUT
 
       - name: Display directories size
-        run: du -h -d1 / | sort -hr | head -n 20
+        run: |
+          du -h -d1 / | sort -hr | head -n 20
+          ls -al
 
       - name: Build Plugin
         if: ${{! inputs.release}}
