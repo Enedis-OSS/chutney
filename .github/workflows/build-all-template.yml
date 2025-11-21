@@ -80,11 +80,8 @@ jobs:
       - name: Resolve chutney maven goal from inputs
         id: chutney-goals
         run: |
-          skipTestArg=""
+          skipTestArg="-DskipTests"
           mvnGoals="clean install"
-          if ${{ inputs.skipTests }}; then
-            skipTestArg="-DskipTests"
-          fi
           if ${{ inputs.release }}; then
             mvnGoals="deploy -P ${{inputs.server-id}}"
             skipTestArg="-DskipTests"
@@ -115,7 +112,9 @@ jobs:
       - name: Display directories size
         run: |
           du -h -d1 / | sort -hr | head -n 20
-          cd /home
+          cd /home/runner/.m2
+          ls -al
+          cd /home/runner/.m2/repository
           ls -al
 
       - name: Build Plugin
