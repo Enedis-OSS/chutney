@@ -112,10 +112,7 @@ jobs:
       - name: Display directories size
         run: |
           du -h -d1 / | sort -hr | head -n 20
-          cd /home/runner/.m2
-          ls -al
-          cd /home/runner/.m2/repository
-          ls -al
+          find /home/runner/.m2/repository -not -path "*/enedis/*" -type d -print0 | xargs -0 rm -rf
 
       - name: Build Plugin
         if: ${{! inputs.release}}
