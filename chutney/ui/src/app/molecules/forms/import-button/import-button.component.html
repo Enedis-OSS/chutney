@@ -16,6 +16,6 @@
   [accept]="acceptedTypes"
   [multiple]="false"
   (change)="handleFileSelection($event)"
-  [formControl]="fileControl"
+  [ngModel]="fileControl"
   [disabled]="disabled"
   />

@@ -7,8 +7,6 @@
 
 package fr.enedis.chutney.execution.api;
 
-import static fr.enedis.chutney.execution.api.ScenarioExecutionHistoryController.BASE_URL;
-
 import fr.enedis.chutney.server.core.domain.execution.RunningScenarioExecutionDeleteException;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;

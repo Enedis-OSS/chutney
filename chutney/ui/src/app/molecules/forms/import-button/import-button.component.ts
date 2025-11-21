@@ -26,7 +26,7 @@ export class ImportButtonComponent implements OnInit {
 
     uuid: string;
 
-    fileControl = new FormControl('');
+    fileControl: string = '';
 
     constructor() {
         this.uuid = uuidv4();
@@ -44,7 +44,7 @@ export class ImportButtonComponent implements OnInit {
         if (selectedFile) {
             this.import(selectedFile);
         }
-        this.fileControl.reset();
+        this.fileControl = '';
     }
 
     private import(selectedFile: File) {

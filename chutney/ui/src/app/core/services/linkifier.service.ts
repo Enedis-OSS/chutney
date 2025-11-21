@@ -17,7 +17,7 @@ import { Linkifier } from '@model';
 })
 export class LinkifierService {
 
-    private url = '/api/v1/ui/plugins/linkifier/';
+    private url = '/api/v1/ui/plugins/linkifier';
 
     constructor(private http: HttpClient) {
     }
@@ -39,6 +39,6 @@ export class LinkifierService {
     }
 
     public remove(linkifier: Linkifier): Observable<String> {
-        return this.http.delete(environment.backend + this.url + linkifier.id, {responseType: 'text'});
+        return this.http.delete(environment.backend + this.url + '/' + linkifier.id, {responseType: 'text'});
     }
 }
