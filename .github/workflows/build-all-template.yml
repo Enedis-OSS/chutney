@@ -73,7 +73,6 @@ jobs:
           gpg-private-key: ${{ secrets.gpg-private-key }}
           gpg-passphrase: CHUTNEY_GPG_PASSPHRASE
 
-      - uses: actions/checkout@v4
       - name: Retrieve chutney version from pom.xml
         id: get-version
         run: echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT && cd ..
