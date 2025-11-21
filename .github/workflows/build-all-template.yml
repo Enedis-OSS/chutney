@@ -105,5 +105,11 @@ jobs:
           goals: ${{steps.plugin-goals.outputs.PLUGIN_GOALS}}
           cache-artifacts: ${{ inputs.cache-artifacts }}
 
+      - name: Space left
+        run: |
+          cd /home/runner/.gradle/caches
+          du -h -d1 / | sort -hr | head -n 20
+          du -sk
+
     outputs:
         PROJECT_VERSION: ${{ steps.get-version.outputs.PROJECT_VERSION }}
