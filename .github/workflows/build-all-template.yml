@@ -96,7 +96,7 @@ jobs:
           ls -al
           cd ..
           cd /home
-          du -sk
+          df -Ph . | tail -1 | awk '{print $4}'
 
       - name: Build Plugin
         if: ${{! inputs.release}}
