@@ -16,6 +16,11 @@ runs:
   steps:
     - uses: actions/checkout@v4
 
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+      with:
+        gradle-version: '8.10'
+
     - name: Build Plugin
       shell: bash
       run: |
