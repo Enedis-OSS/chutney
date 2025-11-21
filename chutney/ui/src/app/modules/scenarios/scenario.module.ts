@@ -15,7 +15,6 @@ import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FileSaverModule } from 'ngx-filesaver';
 import { TranslateModule } from '@ngx-translate/core';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 // Internal common
 import { SharedModule } from '@shared/shared.module';
 // Internal
@@ -60,7 +59,6 @@ const ROUTES = [
         NgMultiSelectDropDownModule.forRoot(),
         TranslateModule,
         FileSaverModule,
-        MonacoEditorModule,
         // Internal common
         SharedModule,
         MoleculesModule
