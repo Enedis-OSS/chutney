@@ -115,6 +115,7 @@ jobs:
       - name: Display directories size
         run: |
           du -h -d1 / | sort -hr | head -n 20
+          cd /home
           ls -al
 
       - name: Build Plugin
