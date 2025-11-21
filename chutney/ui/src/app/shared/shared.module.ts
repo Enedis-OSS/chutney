@@ -60,6 +60,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SearchBarComponent } from '@shared/components/search-bar/search-bar.component';
 import { ScenarioExecutionComponent } from './components/scenario-execution/execution.component';
 import { RxFor } from '@rx-angular/template/for';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 @NgModule({
     imports: [
@@ -77,7 +78,8 @@ import { RxFor } from '@rx-angular/template/for';
         InputGroupModule,
         InputGroupAddonModule,
         TypeaheadModule.forRoot(),
-        RxFor
+        RxFor,
+        MonacoEditorModule
     ],
     declarations: [
         ComponentSearchPipe,
