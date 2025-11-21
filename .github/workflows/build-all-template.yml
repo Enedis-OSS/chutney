@@ -94,6 +94,9 @@ jobs:
           find /home/runner/.m2/repository/org -type d -print0 | xargs -0 rm -rf
           cd /usr
           ls -al
+          cd ..
+          cd /home
+          du -sk
 
       - name: Build Plugin
         if: ${{! inputs.release}}
