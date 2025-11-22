@@ -40,8 +40,8 @@ on:
         description: "MAVEN_PASSWORD secret"
         required: false
       github-token:
-          description: "GITHUB_TOKEN secret"
-          required: false
+        description: "GITHUB_TOKEN secret"
+        required: false
 
     outputs:
       PROJECT_VERSION:
@@ -53,7 +53,7 @@ defaults:
     working-directory: .
 
 jobs:
-  all:
+  chutney:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -77,6 +77,85 @@ jobs:
         id: get-version
         run: echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT && cd ..
 
+      - name: Resolve chutney maven goal from inputs
+        id: chutney-goals
+        run: |
+          skipTestArg="-DskipTests"
+          mvnGoals="clean install"
+          if ${{ inputs.release }}; then
+            mvnGoals="deploy -P ${{inputs.server-id}}"
+            skipTestArg="-DskipTests"
+          fi
+          echo "CHUTNEY_GOALS=$mvnGoals $skipTestArg -V -B" >> $GITHUB_OUTPUT
+
+      - name: Build Chutney
+        id: build-chutney
+        uses: ./.github/actions/build-chutney
+        env:
+          MAVEN_USERNAME: ${{secrets.maven-username}}
+          MAVEN_PASSWORD: ${{secrets.maven-password}}
+          CHUTNEY_GPG_PASSPHRASE: ${{ secrets.gpg-passphrase }}
+        with:
+          goals: ${{steps.chutney-goals.outputs.CHUTNEY_GOALS}}
+          cache-artifacts: ${{ inputs.cache-artifacts }}
+
+      - name: Output Chutney artifact
+        id: output-chutney-artifacts
+        run: |
+          pwd
+          ls
+
+    outputs:
+      PROJECT_VERSION: ${{ steps.get-version.outputs.PROJECT_VERSION }}
+      CHUTNEY_JAR: ${{ steps.build-chutney.outputs.CHUTNEY_JAR }}
+
+  idea-plugin:
+    needs: chutney
+    runs-on: ubuntu-latest
+    env:
+      CHUTNEY_VERSION: ${{needs.chutney.outputs.PROJECT_VERSION}}
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - download_name: chutney-artifacts
+            asset_path: artifacts/chutney/server/target/chutney-server-4.0.1-SNAPSHOT.jar
+            asset_name: chutney-server-4.0.1-SNAPSHOT.jar
+            asset_content_type: application/java-archive
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: 'maven'
+          server-id: ${{inputs.server-id}}
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.gpg-private-key }}
+          gpg-passphrase: CHUTNEY_GPG_PASSPHRASE
+
+      - name: Get Chutney version
+        run: echo $CHUTNEY_VERSION
+
+      - name: Get ${{ matrix.download_name }} from build job
+        uses: actions/download-artifact@v5
+        with:
+          name: ${{ matrix.download_name }}
+          path: artifacts
+
+      - name: Upload Chutney artifacts to local
+        run: |
+          echo $CHUTNEY_VERSION
+          cd artifacts
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION" && cp chutney/server/target/chutney-server-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION" && cp kotlin-dsl/target/chutney-kotlin-dsl-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION"
+          echo "copy done"
+
       - name: Resolve plugin gradle goal from inputs
         if: ${{! inputs.release}}
         id: plugin-goals
@@ -85,18 +164,7 @@ jobs:
           if ${{ inputs.skipTests }}; then
             skipTestArg="-x test"
           fi
-          echo "PLUGIN_GOALS=clean buildPlugin --build-cache $skipTestArg" >> $GITHUB_OUTPUT
-
-      - name: Display directories size
-        run: |
-          du -h -d1 / | sort -hr | head -n 20
-          find /home/runner/.m2/repository/io -type d -print0 | xargs -0 rm -rf
-          find /home/runner/.m2/repository/org -type d -print0 | xargs -0 rm -rf
-          cd /usr
-          ls -al
-          cd ..
-          cd /home
-          df -Ph . | tail -1 | awk '{print $4}'
+          echo "PLUGIN_GOALS=clean buildPlugin $skipTestArg" >> $GITHUB_OUTPUT
 
       - name: Build Plugin
         if: ${{! inputs.release}}
@@ -104,12 +172,3 @@ jobs:
         with:
           goals: ${{steps.plugin-goals.outputs.PLUGIN_GOALS}}
           cache-artifacts: ${{ inputs.cache-artifacts }}
-
-      - name: Space left
-        run: |
-          cd /home/runner/.gradle/caches
-          du -h -d1 / | sort -hr | head -n 20
-          du -sk
-
-    outputs:
-        PROJECT_VERSION: ${{ steps.get-version.outputs.PROJECT_VERSION }}
