@@ -89,7 +89,7 @@ jobs:
             mvnGoals="deploy -P ${{inputs.server-id}}"
             skipTestArg="-DskipTests"
           fi
-          echo "CHUTNEY_GOALS=$mvnGoals -DskipTests -V -B" >> $GITHUB_OUTPUT
+          echo "CHUTNEY_GOALS=$mvnGoals $skipTestArg -V -B" >> $GITHUB_OUTPUT
 
       - name: Build Chutney
         id: build-chutney
