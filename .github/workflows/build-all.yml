@@ -15,5 +15,6 @@ jobs:
     with:
       skipTests: ${{ startsWith(github.head_ref, 'release/') }}
       cache-artifacts: |
+        chutney/pom.xml
         chutney/server/target/chutney-server-*.jar
         kotlin-dsl/target/chutney-kotlin-dsl-*.jar

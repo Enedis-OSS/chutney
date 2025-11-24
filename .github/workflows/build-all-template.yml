@@ -152,9 +152,17 @@ jobs:
         run: |
           echo $CHUTNEY_VERSION
           cd artifacts
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION" && cp chutney/server/target/chutney-server-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION" && cp kotlin-dsl/target/chutney-kotlin-dsl-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT" && mv chutney/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT/chutney-parent-4.0.1-SNAPSHOT.pom"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT" && cp chutney/server/target/chutney-server-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT" && cp kotlin-dsl/target/chutney-kotlin-dsl-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT"
           echo "copy done"
+          cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT
+          ls
+          cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT
+          ls
+          cat -e chutney-parent-4.0.1-SNAPSHOT.pom
+          cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT
+          ls
 
       - name: Resolve plugin gradle goal from inputs
         if: ${{! inputs.release}}
