@@ -99,12 +99,6 @@ jobs:
           goals: ${{steps.chutney-goals.outputs.CHUTNEY_GOALS}}
           cache-artifacts: ${{ inputs.cache-artifacts }}
 
-      - name: Output Chutney artifact
-        id: output-chutney-artifacts
-        run: |
-          pwd
-          ls
-
     outputs:
       PROJECT_VERSION: ${{ steps.get-version.outputs.PROJECT_VERSION }}
       CHUTNEY_JAR: ${{ steps.build-chutney.outputs.CHUTNEY_JAR }}
@@ -152,9 +146,10 @@ jobs:
         run: |
           echo $CHUTNEY_VERSION
           cd artifacts
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/4.0.1-SNAPSHOT" && mv pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/4.0.1-SNAPSHOT/chutney-testing-parent-4.0.1-SNAPSHOT.pom"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT" && mv chutney/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT/chutney-parent-4.0.1-SNAPSHOT.pom"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION" && mv pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION/chutney-testing-parent-4.0.1-SNAPSHOT.pom"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/$CHUTNEY_VERSION" && mv chutney/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/$CHUTNEY_VERSION/chutney-parent-$CHUTNEY_VERSION.pom"
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT" && cp chutney/server/target/chutney-server-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT"
+          cp chutney/server/target/chutney-server-4.0.1-SNAPSHOT-boot.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT"
           mv chutney/server/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT/chutney-server-4.0.1-SNAPSHOT.pom"
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT" && cp kotlin-dsl/target/chutney-kotlin-dsl-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT"
           mv kotlin-dsl/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT/chutney-kotlin-dsl-4.0.1-SNAPSHOT.pom"
@@ -163,7 +158,6 @@ jobs:
           ls
           cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT
           ls
-          cat -e chutney-parent-4.0.1-SNAPSHOT.pom
           cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT
           ls
 
