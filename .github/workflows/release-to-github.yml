@@ -14,7 +14,6 @@ jobs:
     with:
       skipTests: true
       cache-artifacts: |
-        chutney/server/target/chutney-server-*-boot.jar
         idea-plugin/build/distributions/*.zip
 
   release-github:
