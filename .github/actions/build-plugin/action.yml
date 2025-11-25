@@ -5,7 +5,7 @@ name: 'build plugin'
 description: 'build plugin'
 inputs:
   goals:
-    default: "clean buildPlugin --build-cache"
+    default: "clean buildPlugin"
     description: "Gradle goals to execute"
   cache-artifacts:
     default: ""

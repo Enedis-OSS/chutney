@@ -82,6 +82,9 @@ jobs:
         run: |
           skipTestArg="-DskipTests"
           mvnGoals="clean install"
+          if ${{ inputs.skipTests }}; then
+            skipTestArg="-DskipTests"
+          fi
           if ${{ inputs.release }}; then
             mvnGoals="deploy -P ${{inputs.server-id}}"
             skipTestArg="-DskipTests"
@@ -101,7 +104,6 @@ jobs:
 
     outputs:
       PROJECT_VERSION: ${{ steps.get-version.outputs.PROJECT_VERSION }}
-      CHUTNEY_JAR: ${{ steps.build-chutney.outputs.CHUTNEY_JAR }}
 
   idea-plugin:
     needs: chutney
@@ -111,13 +113,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    strategy:
-      matrix:
-        include:
-          - download_name: chutney-artifacts
-            asset_path: artifacts/chutney/server/target/chutney-server-4.0.1-SNAPSHOT.jar
-            asset_name: chutney-server-4.0.1-SNAPSHOT.jar
-            asset_content_type: application/java-archive
     steps:
       - uses: actions/checkout@v4
 
@@ -133,33 +128,24 @@ jobs:
           gpg-private-key: ${{ secrets.gpg-private-key }}
           gpg-passphrase: CHUTNEY_GPG_PASSPHRASE
 
-      - name: Get Chutney version
-        run: echo $CHUTNEY_VERSION
-
-      - name: Get ${{ matrix.download_name }} from build job
+      - name: Get Chutney artifacts from build job
         uses: actions/download-artifact@v5
         with:
-          name: ${{ matrix.download_name }}
+          name: chutney-artifacts
           path: artifacts
 
       - name: Upload Chutney artifacts to local
         run: |
-          echo $CHUTNEY_VERSION
+          echo "Copy Chutney artifacts for version $CHUTNEY_VERSION"
           cd artifacts
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION" && mv pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION/chutney-testing-parent-4.0.1-SNAPSHOT.pom"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION" && mv pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION/chutney-testing-parent-$CHUTNEY_VERSION.pom"
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/$CHUTNEY_VERSION" && mv chutney/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/$CHUTNEY_VERSION/chutney-parent-$CHUTNEY_VERSION.pom"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT" && cp chutney/server/target/chutney-server-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT"
-          cp chutney/server/target/chutney-server-4.0.1-SNAPSHOT-boot.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT"
-          mv chutney/server/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT/chutney-server-4.0.1-SNAPSHOT.pom"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT" && cp kotlin-dsl/target/chutney-kotlin-dsl-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT"
-          mv kotlin-dsl/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT/chutney-kotlin-dsl-4.0.1-SNAPSHOT.pom"
-          echo "copy done"
-          cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT
-          ls
-          cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT
-          ls
-          cd /home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT
-          ls
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION" && cp chutney/server/target/chutney-server-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION"
+          cp chutney/server/target/chutney-server-$CHUTNEY_VERSION-boot.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION"
+          mv chutney/server/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION/chutney-server-$CHUTNEY_VERSION.pom"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION" && cp kotlin-dsl/target/chutney-kotlin-dsl-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION"
+          mv kotlin-dsl/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION/chutney-kotlin-dsl-$CHUTNEY_VERSION.pom"
+          echo "Chutney artifacts have been copied in local maven repository"
 
       - name: Resolve plugin gradle goal from inputs
         if: ${{! inputs.release}}

@@ -14,10 +14,3 @@ jobs:
     uses: ./.github/workflows/build-all-template.yml
     with:
       skipTests: ${{ startsWith(github.head_ref, 'release/') }}
-      cache-artifacts: |
-        pom.xml
-        chutney/pom.xml
-        chutney/server/pom.xml
-        chutney/server/target/chutney-server-*.jar
-        kotlin-dsl/pom.xml
-        kotlin-dsl/target/chutney-kotlin-dsl-*.jar
