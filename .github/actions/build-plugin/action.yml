@@ -19,14 +19,14 @@ runs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
       with:
-        gradle-version: '8.10'
+        gradle-version: '8.13'
 
     - name: Build Plugin
       shell: bash
       run: |
         cd ./idea-plugin
         echo "Running: ${{inputs.goals}}"
-        ./gradlew -i ${{inputs.goals}}
+        ./gradlew ${{inputs.goals}}
         cd ..
 
     - name: Temporarily cache jar artifacts
