@@ -17,6 +17,7 @@ jobs:
       cache-artifacts: |
         pom.xml
         chutney/pom.xml
+        chutney/server/pom.xml
         chutney/server/target/chutney-server-*.jar
         kotlin-dsl/pom.xml
         kotlin-dsl/target/chutney-kotlin-dsl-*.jar

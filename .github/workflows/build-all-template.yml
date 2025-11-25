@@ -155,6 +155,7 @@ jobs:
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/4.0.1-SNAPSHOT" && mv pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/4.0.1-SNAPSHOT/chutney-testing-parent-4.0.1-SNAPSHOT.pom"
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT" && mv chutney/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/4.0.1-SNAPSHOT/chutney-parent-4.0.1-SNAPSHOT.pom"
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT" && cp chutney/server/target/chutney-server-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT"
+          mv chutney/server/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/4.0.1-SNAPSHOT/chutney-server-4.0.1-SNAPSHOT.pom"
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT" && cp kotlin-dsl/target/chutney-kotlin-dsl-4.0.1-SNAPSHOT.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT"
           mv kotlin-dsl/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/4.0.1-SNAPSHOT/chutney-kotlin-dsl-4.0.1-SNAPSHOT.pom"
           echo "copy done"
