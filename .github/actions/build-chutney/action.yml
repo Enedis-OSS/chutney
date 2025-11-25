@@ -41,7 +41,6 @@ runs:
         mvn ${{ inputs.goals }}
 
     - name: Temporarily cache jar artifacts
-      if: inputs.cache-artifacts != ''
       uses: actions/upload-artifact@v4
       with:
         name: chutney-artifacts
