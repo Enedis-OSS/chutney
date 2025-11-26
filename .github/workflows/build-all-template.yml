@@ -129,14 +129,13 @@ jobs:
       - name: Get Chutney artifacts from build job
         uses: actions/download-artifact@v5
         with:
-          name: chutney-artifacts
-          path: artifacts
+          name: chutney-maven-repository
+          path: chutney-maven-repository
 
-      - name: Upload Chutney artifacts to local
+      - name: Upload Chutney maven repository to local
         run: |
           echo "Copy Chutney artifacts in local maven repository"
-          cd artifacts
-          ls
+          cd chutney-maven-repository
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney" && cp -r * "/home/runner/.m2/repository/fr/enedis/chutney"
 
       - name: Resolve plugin gradle goal from inputs

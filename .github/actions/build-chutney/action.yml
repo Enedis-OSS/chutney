@@ -40,12 +40,19 @@ runs:
         echo "Running: ${{inputs.goals}}"
         mvn ${{ inputs.goals }}
 
+    - name: Temporarily cache Chutney maven repository
+      uses: actions/upload-artifact@v4
+      with:
+        name: chutney-maven-repository
+        path: |
+          /home/runner/.m2/repository/fr/enedis/chutney
+        retention-days: 1
+        overwrite: true
+
     - name: Temporarily cache jar artifacts
       uses: actions/upload-artifact@v4
       with:
         name: chutney-artifacts
-        path: |
-          /home/runner/.m2/repository/fr/enedis/chutney
-          ${{inputs.cache-artifacts}}
+        path: ${{inputs.cache-artifacts}}
         retention-days: 1
         overwrite: true
