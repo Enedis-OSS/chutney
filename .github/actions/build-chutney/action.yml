@@ -7,9 +7,6 @@ inputs:
   goals:
     default: "clean install -V -B"
     description: "Maven goals to execute"
-  cache-artifacts:
-    default: ""
-    description: "path of artifacts to be cached"
 
 runs:
   using: "composite"
@@ -44,8 +41,6 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: chutney-artifacts
-        path: |
-          /home/runner/.m2/repository/fr/enedis/chutney
-          ${{inputs.cache-artifacts}}
+        path: /home/runner/.m2/repository/fr/enedis/chutney
         retention-days: 1
         overwrite: true

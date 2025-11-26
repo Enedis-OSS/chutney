@@ -100,7 +100,6 @@ jobs:
           CHUTNEY_GPG_PASSPHRASE: ${{ secrets.gpg-passphrase }}
         with:
           goals: ${{steps.chutney-goals.outputs.CHUTNEY_GOALS}}
-          cache-artifacts: ${{ inputs.cache-artifacts }}
 
     outputs:
       PROJECT_VERSION: ${{ steps.get-version.outputs.PROJECT_VERSION }}
