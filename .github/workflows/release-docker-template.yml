@@ -47,7 +47,7 @@ jobs:
             ghcr.io/enedis-oss/chutney/chutney-server:${{ inputs.version }}
           push: true
           build-args: |
-            JAR_PATH=artifacts/chutney/server/target
+            JAR_PATH=artifacts/chutney-server/${{ inputs.version }}
 
       - name: Build and push demo docker image
         uses: docker/build-push-action@v2
