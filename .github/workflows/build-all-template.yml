@@ -80,7 +80,7 @@ jobs:
       - name: Resolve chutney maven goal from inputs
         id: chutney-goals
         run: |
-          skipTestArg="-DskipTests"
+          skipTestArg=""
           mvnGoals="clean install"
           if ${{ inputs.skipTests }}; then
             skipTestArg="-DskipTests"
@@ -108,8 +108,6 @@ jobs:
   idea-plugin:
     needs: chutney
     runs-on: ubuntu-latest
-    env:
-      CHUTNEY_VERSION: ${{needs.chutney.outputs.PROJECT_VERSION}}
     permissions:
       contents: read
       packages: write
@@ -136,11 +134,9 @@ jobs:
 
       - name: Upload Chutney artifacts to local
         run: |
-          echo "Copy Chutney artifacts for version $CHUTNEY_VERSION"
+          echo "Copy Chutney artifacts"
           cd artifacts
           mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney" && cp -r * "/home/runner/.m2/repository/fr/enedis/chutney"
-          cd /home/runner/.m2/repository/fr/enedis/chutney
-          ls
           echo "Chutney artifacts have been copied in local maven repository"
 
       - name: Resolve plugin gradle goal from inputs
