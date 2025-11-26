@@ -19,7 +19,7 @@ runs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
       with:
-        gradle-version: '8.10'
+        gradle-version: '8.13'
 
     - name: Build Plugin
       shell: bash

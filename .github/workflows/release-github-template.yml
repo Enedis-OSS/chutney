@@ -55,7 +55,7 @@ jobs:
             asset_name: chutney-idea-plugin-${{ github.ref_name }}.zip
             asset_content_type: application/zip
           - download_name: chutney-artifacts
-            asset_path: artifacts/chutney/server/target/chutney-server-${{ github.ref_name }}-boot.jar
+            asset_path: artifacts/chutney-server/${{ github.ref_name }}/chutney-server-${{ github.ref_name }}-boot.jar
             asset_name: chutney-server-${{ github.ref_name }}-boot.jar
             asset_content_type: application/java-archive
     steps:

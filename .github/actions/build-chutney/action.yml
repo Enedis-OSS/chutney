@@ -7,9 +7,6 @@ inputs:
   goals:
     default: "clean install -V -B"
     description: "Maven goals to execute"
-  cache-artifacts:
-    default: ""
-    description: "path of artifacts to be cached"
 
 runs:
   using: "composite"
@@ -40,11 +37,10 @@ runs:
         echo "Running: ${{inputs.goals}}"
         mvn ${{ inputs.goals }}
 
-    - name: Temporarily cache jar artifacts
-      if: inputs.cache-artifacts != ''
+    - name: Temporarily cache chutney artifacts
       uses: actions/upload-artifact@v4
       with:
         name: chutney-artifacts
-        path: ${{inputs.cache-artifacts}}
+        path: /home/runner/.m2/repository/fr/enedis/chutney
         retention-days: 1
         overwrite: true
