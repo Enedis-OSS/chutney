@@ -135,8 +135,9 @@ jobs:
       - name: Upload Chutney artifacts to local
         run: |
           echo "Copy Chutney artifacts in local maven repository"
-          cd artifacts/home/runner/.m2
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney" && cp -r * "/repository/fr/enedis/chutney"
+          cd artifacts
+          ls
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney" && cp -r * "/home/runner/.m2/repository/fr/enedis/chutney"
 
       - name: Resolve plugin gradle goal from inputs
         if: ${{! inputs.release}}
