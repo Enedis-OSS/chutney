@@ -45,12 +45,7 @@ runs:
       with:
         name: chutney-artifacts
         path: |
-          pom.xml
-          chutney/pom.xml
-          chutney/server/pom.xml
-          chutney/server/target/chutney-server-*.jar
-          kotlin-dsl/pom.xml
-          kotlin-dsl/target/chutney-kotlin-dsl-*.jar
+          /home/runner/.m2/repository/fr/enedis/chutney
           ${{inputs.cache-artifacts}}
         retention-days: 1
         overwrite: true

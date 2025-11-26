@@ -138,13 +138,9 @@ jobs:
         run: |
           echo "Copy Chutney artifacts for version $CHUTNEY_VERSION"
           cd artifacts
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION" && mv pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-testing-parent/$CHUTNEY_VERSION/chutney-testing-parent-$CHUTNEY_VERSION.pom"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/$CHUTNEY_VERSION" && mv chutney/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-parent/$CHUTNEY_VERSION/chutney-parent-$CHUTNEY_VERSION.pom"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION" && cp chutney/server/target/chutney-server-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION"
-          cp chutney/server/target/chutney-server-$CHUTNEY_VERSION-boot.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION"
-          mv chutney/server/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-server/$CHUTNEY_VERSION/chutney-server-$CHUTNEY_VERSION.pom"
-          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION" && cp kotlin-dsl/target/chutney-kotlin-dsl-$CHUTNEY_VERSION.jar "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION"
-          mv kotlin-dsl/pom.xml "/home/runner/.m2/repository/fr/enedis/chutney/chutney-kotlin-dsl/$CHUTNEY_VERSION/chutney-kotlin-dsl-$CHUTNEY_VERSION.pom"
+          mkdir -p "/home/runner/.m2/repository/fr/enedis/chutney" && cp -r * "/home/runner/.m2/repository/fr/enedis/chutney"
+          cd /home/runner/.m2/repository/fr/enedis/chutney
+          ls
           echo "Chutney artifacts have been copied in local maven repository"
 
       - name: Resolve plugin gradle goal from inputs
