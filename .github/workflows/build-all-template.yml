@@ -80,7 +80,7 @@ jobs:
       - name: Resolve chutney maven goal from inputs
         id: chutney-goals
         run: |
-          skipTestArg="-DskipTests"
+          skipTestArg=""
           mvnGoals="clean install"
           if ${{ inputs.skipTests }}; then
             skipTestArg="-DskipTests"
