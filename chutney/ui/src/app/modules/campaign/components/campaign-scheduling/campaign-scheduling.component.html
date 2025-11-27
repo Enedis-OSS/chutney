@@ -174,6 +174,9 @@
                         @if (campaignExecutionRequest.datasetId) {
                         ({{campaignExecutionRequest.datasetId}})
                         }
+                        @if (campaignExecutionRequest.jiraId) {
+                        ({{ 'global.words.jira' | translate }} : {{campaignExecutionRequest.jiraId}})
+                        }
                       </span>
                     </div>
                   }

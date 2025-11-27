@@ -525,6 +525,7 @@
         },
         "words": {
             "dataset": "Dataset",
+            "jira": "Jira",
             "loading": "Chargement..."
         }
     },
