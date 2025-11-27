@@ -38,7 +38,7 @@ public class PeriodicScheduledCampaign {
         return new PeriodicScheduledCampaign(id, scheduledDate, frequency, environment, campaignExecutionRequests);
     }
 
-    public record CampaignExecutionRequest(Long campaignId, String campaignTitle, String datasetId) {
+    public record CampaignExecutionRequest(Long campaignId, String campaignTitle, String datasetId, String jiraId) {
     }
 
     @Override
