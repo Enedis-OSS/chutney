@@ -77,6 +77,7 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
 
     @Override
     public void updateRequest(Xray xray) {
+
         String updateUri = jiraServerConfiguration.url() + "/rest/raven/1.0/import/execution";
 
         RestTemplate restTemplate = buildRestTemplate();
