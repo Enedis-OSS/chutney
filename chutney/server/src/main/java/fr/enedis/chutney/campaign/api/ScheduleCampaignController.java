@@ -23,16 +23,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/ui/campaign/v1/scheduling")
+@RequestMapping(ScheduleCampaignController.BASE_URL)
 public class ScheduleCampaignController {
 
+    public static final String BASE_URL = "/api/ui/campaign/v1/scheduling";
     private final ScheduledCampaignRepository scheduledCampaignRepository;
 
     public ScheduleCampaignController(ScheduledCampaignRepository scheduledCampaignRepository) {
         this.scheduledCampaignRepository = scheduledCampaignRepository;
     }
 
-    @PreAuthorize("hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
+    @PreAuthorize("hasAnyAuthority('CAMPAIGN_READ', 'EXECUTION_READ')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SchedulingCampaignDto> getAll() {
         return scheduledCampaignRepository.getAll().stream()
@@ -44,7 +45,7 @@ public class ScheduleCampaignController {
     @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void add(@RequestBody SchedulingCampaignDto dto) {
-            scheduledCampaignRepository.add(SchedulingCampaignDto.fromDto(dto));
+        scheduledCampaignRepository.add(SchedulingCampaignDto.fromDto(dto));
     }
 
     @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")

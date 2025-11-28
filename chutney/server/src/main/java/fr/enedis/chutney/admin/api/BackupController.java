@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/backups")
+@RequestMapping(BackupController.BASE_URL)
 public class BackupController {
 
+    public static final String BASE_URL = "/api/v1/backups";
     private final BackupRepository backupRepository;
 
     public BackupController(BackupRepository backupRepository) {

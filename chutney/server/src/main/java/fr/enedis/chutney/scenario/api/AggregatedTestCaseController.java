@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/scenario/v2")
+@RequestMapping(AggregatedTestCaseController.BASE_URL)
 public class AggregatedTestCaseController {
 
+    public static final String BASE_URL = "/api/scenario/v2";
     private final TestCaseRepository testCaseRepository;
     private final ExecutionHistoryRepository executionHistoryRepository;
 
@@ -38,14 +39,14 @@ public class AggregatedTestCaseController {
         this.executionHistoryRepository = executionHistoryRepository;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('EXECUTION_READ')")
+    @PreAuthorize("hasAnyAuthority('SCENARIO_READ', 'EXECUTION_READ')")
     @GetMapping(path = "/{testCaseId}/metadata", produces = MediaType.APPLICATION_JSON_VALUE)
     public TestCaseIndexDto testCaseMetaData(@PathVariable("testCaseId") String testCaseId) {
         TestCase testCase = testCaseRepository.findById(testCaseId).orElseThrow(() -> new ScenarioNotFoundException(testCaseId));
         return TestCaseIndexDto.from(testCase.metadata());
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_READ') or hasAuthority('CAMPAIGN_READ') or hasAuthority('EXECUTION_READ')")
+    @PreAuthorize("hasAnyAuthority('SCENARIO_READ', 'CAMPAIGN_READ', 'EXECUTION_READ')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TestCaseIndexDto> getTestCases() {
         List<TestCaseMetadata> testCases = testCaseRepository.findAll();

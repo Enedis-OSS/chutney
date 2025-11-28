@@ -22,8 +22,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-class ScenarioExecutionHistoryController {
+public class ScenarioExecutionHistoryController {
 
+    public static final String BASE_URL = "/api/ui/scenario";
     private final ExecutionHistoryRepository executionHistoryRepository;
 
     ScenarioExecutionHistoryController(ExecutionHistoryRepository executionHistoryRepository) {
@@ -31,20 +32,20 @@ class ScenarioExecutionHistoryController {
     }
 
     @PreAuthorize("hasAuthority('EXECUTION_READ')")
-    @GetMapping(path = "/api/ui/scenario/{scenarioId}/execution/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = BASE_URL + "/{scenarioId}/execution/v1", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ExecutionSummaryDto> listExecutions(@PathVariable("scenarioId") String scenarioId) {
         return ExecutionSummaryDto.toDto(
             executionHistoryRepository.getExecutions(scenarioId));
     }
 
     @PreAuthorize("hasAuthority('EXECUTION_READ')")
-    @GetMapping(path = "/api/ui/scenario/execution/{executionId}/summary/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = BASE_URL + "/execution/{executionId}/summary/v1", produces = MediaType.APPLICATION_JSON_VALUE)
     public ExecutionSummaryDto getExecutionSummary(@PathVariable("executionId") Long executionId) {
         return ExecutionSummaryDto.toDto(executionHistoryRepository.getExecutionSummary(executionId));
     }
 
     @PreAuthorize("hasAuthority('EXECUTION_READ')")
-    @GetMapping(path = "/api/ui/scenario/{scenarioId}/execution/{executionId}/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = BASE_URL + "/{scenarioId}/execution/{executionId}/v1", produces = MediaType.APPLICATION_JSON_VALUE)
     public ExecutionHistory.Execution getExecutionReport(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {
         ExecutionHistory.Execution execution = executionHistoryRepository.getExecution(scenarioId, executionId); // TODO - return ExecutionReportDto
         if (execution.dataset().isPresent()
@@ -56,8 +57,8 @@ class ScenarioExecutionHistoryController {
         return execution;
     }
 
-    @PreAuthorize("hasAuthority('SCENARIO_EXECUTE')")
-    @DeleteMapping(path = "/api/ui/scenario/execution/{executionId}")
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
+    @DeleteMapping(path = BASE_URL + "/execution/{executionId}")
     public void deleteExecution(@PathVariable("executionId") Long executionId) {
         var report = executionHistoryRepository.deleteExecutions(Set.of(executionId));
         if (report.scenariosExecutionsIds().isEmpty()) {

@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/search")
+@RequestMapping(SearchController.BASE_URL)
 public class SearchController {
 
+    public static final String BASE_URL = "/api/search";
     private final IndexService indexService;
     private final UserService userService;
 

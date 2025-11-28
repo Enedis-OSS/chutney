@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/execution")
+@RequestMapping(ExecutionSearchController.BASE_URL)
 public class ExecutionSearchController {
 
+    public static final String BASE_URL = "/api/v1/execution";
     private final ExecutionHistoryRepository executionHistoryRepository;
 
     ExecutionSearchController(
