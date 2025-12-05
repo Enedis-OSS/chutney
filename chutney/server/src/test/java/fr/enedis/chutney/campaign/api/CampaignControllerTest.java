@@ -395,7 +395,6 @@ public class CampaignControllerTest {
         // When
         CampaignDto campaignDto = new CampaignDto(null, "test", "desc",
             List.of(new CampaignScenarioDto("1", "UNKNOWN_DATASET")), emptyList(), "env", false, false, null, emptyList());
-        ;
 
         when(datasetService.findById("UNKNOWN_DATASET")).thenThrow(new DataSetNotFoundException("UNKNOWN_DATASET"));
 
@@ -472,8 +471,8 @@ public class CampaignControllerTest {
 
     @JsonIgnoreProperties("scenarioExecutionReports")
     static class CampaignExecutionReportDtoTest extends CampaignExecutionReportDto {
-        public CampaignExecutionReportDtoTest(Long executionId, List<ScenarioExecutionReportOutlineDto> scenarioExecutionReports, String campaignName, LocalDateTime startDate, ServerReportStatus status, boolean partialExecution, String executionEnvironment, String userId, Long duration, DataSetDto dataset) {
-            super(executionId, scenarioExecutionReports, campaignName, startDate, status, partialExecution, executionEnvironment, dataset, userId, duration);
+        public CampaignExecutionReportDtoTest(Long executionId, List<ScenarioExecutionReportOutlineDto> scenarioExecutionReports, String campaignName, LocalDateTime startDate, ServerReportStatus status, boolean partialExecution, String executionEnvironment, String userId, String jiraId, Long duration, DataSetDto dataset) {
+            super(executionId, scenarioExecutionReports, campaignName, startDate, status, partialExecution, executionEnvironment, dataset, userId, jiraId, duration);
         }
     }
 }

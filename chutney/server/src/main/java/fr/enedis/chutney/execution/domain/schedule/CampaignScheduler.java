@@ -68,7 +68,7 @@ public class CampaignScheduler {
             executionRequests.getLeft().forEach(executionRequest -> {
                 try {
                     LOGGER.info("Execute campaign with id [{}]", executionRequest);
-                    campaignExecutionEngine.executeScheduledCampaign(executionRequest.campaignId(), environment, executionRequest.datasetId(), SCHEDULER_EXECUTE_USER);
+                    campaignExecutionEngine.executeScheduledCampaign(executionRequest.campaignId(), environment, executionRequest.datasetId(), SCHEDULER_EXECUTE_USER, executionRequest.jiraId());
                 } catch (Exception e) {
                     LOGGER.error("Error during campaign [{}] execution", executionRequest, e);
                 }
