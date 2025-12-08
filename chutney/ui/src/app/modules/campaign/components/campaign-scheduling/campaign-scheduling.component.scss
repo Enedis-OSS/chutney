@@ -48,6 +48,10 @@
     width: 100%;
 }
 
+.info-button {
+    background-color:  var(--bs-light);
+}
+
 ::ng-deep ng-multiselect-dropdown .multiselect-dropdown .dropdown-btn  {
     font-size: small;
 

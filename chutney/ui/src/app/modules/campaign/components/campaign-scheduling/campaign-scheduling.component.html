@@ -104,7 +104,14 @@
                     <th class="w5">#</th>
                     <th class="w40">{{ 'campaigns.scheduling.campaign' | translate }}</th>
                     <th class="w40">{{ 'global.words.dataset' | translate }}</th>
-                    <th class="w40">{{ 'global.words.jira' | translate }}</th>
+                    <th class="w40">
+                      {{ 'global.words.jira' | translate }}
+                      <ng-template #jiraFieldHelp>{{'campaigns.edition.jiraIdInfo.testPlan' | translate}}<br>{{'campaigns.edition.jiraIdInfo.testExec' | translate}}</ng-template>
+                      <button type="button" class="btn info-button"
+                        [ngbPopover]="jiraFieldHelp" triggers="mouseenter:mouseleave">
+                        <span class="fa fa-info-circle" aria-hidden="true"></span>
+                      </button>
+                    </th>
                     <th class="w5"></th>
                   </tr>
                   <tbody>
