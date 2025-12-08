@@ -104,7 +104,7 @@
                     <th class="w5">#</th>
                     <th class="w40">{{ 'campaigns.scheduling.campaign' | translate }}</th>
                     <th class="w40">{{ 'global.words.dataset' | translate }}</th>
-                    <th class="w40">{{ 'menu.principal.jiraId' | translate }}</th>
+                    <th class="w40">{{ 'global.words.jira' | translate }}</th>
                     <th class="w5"></th>
                   </tr>
                   <tbody>
@@ -172,10 +172,10 @@
                     <div>
                       <span>{{ (i + 1) }} - {{ campaignExecutionRequest.campaignTitle }}
                         @if (campaignExecutionRequest.datasetId) {
-                        ({{campaignExecutionRequest.datasetId}})
+                        (<span class="fa fa-table"></span>{{campaignExecutionRequest.datasetId}})
                         }
                         @if (campaignExecutionRequest.jiraId) {
-                        ({{ 'global.words.jira' | translate }} : {{campaignExecutionRequest.jiraId}})
+                        (<span class="fa fa-jira"></span>{{campaignExecutionRequest.jiraId}})
                         }
                       </span>
                     </div>
