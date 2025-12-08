@@ -27,6 +27,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     environments: string[];
     environmentsLoaded = false;
+    jiraLink = false;
     datasets: Array<Dataset>;
     filteredDatasets: Array<Dataset>;
 

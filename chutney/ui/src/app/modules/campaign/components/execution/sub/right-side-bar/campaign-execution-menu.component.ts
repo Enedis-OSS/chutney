@@ -118,6 +118,7 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
 
         const modalRef = this.ngbModalService.open(ScenarioExecuteModalComponent, { centered: true, size: 'lg' });
         modalRef.componentInstance.environments = this.environments;
+        modalRef.componentInstance.jiraLink = true;
         modalRef.componentInstance.executeCallback = executeCallback;
     }
 
