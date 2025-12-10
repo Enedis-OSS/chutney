@@ -46,6 +46,7 @@ public class JiraXrayService {
 
     public void updateTestExecution(ExecutionJiraLink executionJiraLink, ReportForJira report) {
         JiraXrayApi jiraXrayApi = createHttpJiraXrayImpl();
+        LOGGER.info("Test execution {} {}", executionJiraLink.campaignExecutionId(), executionJiraLink.scenarioId());
 
         String testExecutionKey = executionJiraLink.jiraId() != null ? executionJiraLink.jiraId() :
             jiraRepository.getByCampaignId(executionJiraLink.campaignId().toString());
@@ -62,7 +63,8 @@ public class JiraXrayService {
         }
 
         if (!testKey.isEmpty() && !testExecutionKey.isEmpty()) {
-            LOGGER.info("Update xray test {} of test execution {}", testKey, testExecutionKey);
+            LOGGER.info("Update xray test {} of test execution {} for campaign execution {}",
+                testKey, testExecutionKey, executionJiraLink.campaignExecutionId().toString());
             jiraRepository.saveForCampaignExecution(executionJiraLink.campaignExecutionId().toString(), testExecutionKey);
             sendJiraRequest(report, testKey, testExecutionKey, jiraXrayApi);
         }

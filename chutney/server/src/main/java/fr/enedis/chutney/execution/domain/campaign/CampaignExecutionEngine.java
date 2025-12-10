@@ -282,6 +282,7 @@ public class CampaignExecutionEngine {
             try {
                 ScenarioExecutionCampaign scenarioExecution;
                 // Is stop requested ?
+                LOGGER.info("executeScenarioInCampaign for execution {} and testcase {}", campaignExecution.executionId, testCaseDataset.testcase().id());
                 if (!currentCampaignExecutionsStopRequests.get(campaignExecution.executionId)) {
                     // Init scenario execution in campaign report
                     campaignExecution.startScenarioExecution(testCaseDataset, campaign.executionEnvironment());
