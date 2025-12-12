@@ -117,6 +117,7 @@ public class CampaignExecutionEngine {
         return executeByName(campaignName, environment, null, userId);
     }
 
+    // called by tests only
     public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId) {
         return this.executeById(campaignId, environment, dataset, userId, null);
     }
@@ -125,9 +126,11 @@ public class CampaignExecutionEngine {
         return ofNullable(campaignRepository.findById(campaignId))
             .map(campaign -> selectExecutionEnvironment(campaign, environment))
             .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset, jiraId))
+            .map(campaignExecution -> this.linkCampaignExecution(campaignExecution, jiraId))
             .orElseThrow(() -> new CampaignNotFoundException(campaignId));
     }
 
+    // called by tests only
     public CampaignExecution executeById(Long campaignId, String userId) {
         return executeById(campaignId, null, null, userId, null);
     }
@@ -184,14 +187,17 @@ public class CampaignExecutionEngine {
         return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset, campaignExecution.jiraId);
     }
 
+    // called by tests only
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, null, null);
     }
 
+    // called by executeByName only
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, null);
     }
 
+    // called by executeById
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset, String jiraId) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, jiraId);
     }
@@ -307,6 +313,11 @@ public class CampaignExecutionEngine {
                 LOGGER.error("Error in scenario execution for campaign execution {}", campaignExecution.executionId, e);
             }
         };
+    }
+
+    private CampaignExecution linkCampaignExecution(CampaignExecution campaignExecution, String jiraId) {
+        jiraXrayEmbeddedApi.linkCampaignExecution(campaignExecution.executionId, jiraId);
+        return campaignExecution;
     }
 
     private void updateJira(Campaign campaign, CampaignExecution campaignExecution, ScenarioExecutionCampaign serc, ExecutionHistory.Execution execution) {

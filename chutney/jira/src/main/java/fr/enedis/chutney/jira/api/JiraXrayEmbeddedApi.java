@@ -27,6 +27,10 @@ public class JiraXrayEmbeddedApi {
         }
     }
 
+    public void linkCampaignExecution(Long campaignExecutionId, String jiraId) {
+
+    }
+
     public List<XrayTestExecTest> getTestStatusInTestExec(String testExec) { // TODO - Only used in a test ?
         return jiraXrayService.getTestExecutionScenarios(testExec);
     }

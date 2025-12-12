@@ -203,6 +203,12 @@ class JiraXrayEmbeddedApiTest {
         assertThat(xrayValue.getTests().getFirst().getTestKey()).isEqualTo(expectedTestKey);
     }
 
+    void linkCampaignExecution() {
+        jiraXrayEmbeddedApi.linkCampaignExecution(4L, "CHT-87");
+
+
+    }
+
     private static Object[] datatableListParameters() {
         return new Object[]{
             new Object[]{

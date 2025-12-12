@@ -438,6 +438,7 @@ public class CampaignExecutionEngineTest {
         verify(campaignRepository).findById(campaign.id);
         assertThat(execution.dataset.id).isEqualTo(executionDataset.id);
         assertThat(execution.jiraId).isEqualTo("JIRA-6");
+        verify(jiraXrayPlugin).linkCampaignExecution(execution.executionId, "JIRA-6");
     }
 
     @Test
