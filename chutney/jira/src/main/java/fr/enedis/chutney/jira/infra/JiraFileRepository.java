@@ -117,11 +117,6 @@ public class JiraFileRepository implements JiraRepository {
     }
 
     @Override
-    public void removeForCampaignExecution(String campaignExecutionId) {
-        remove(CAMPAIGN_EXECUTION_FILE, campaignExecutionId);
-    }
-
-    @Override
     public JiraServerConfiguration loadServerConfiguration() {
         JiraTargetConfigurationDto dto = doLoadServerConfiguration();
         return new JiraServerConfiguration(dto.url, dto.username, dto.password, dto.urlProxy, dto.userProxy, dto.passwordProxy);

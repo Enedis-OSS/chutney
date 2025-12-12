@@ -38,8 +38,6 @@ public interface JiraRepository {
 
     void saveForCampaignExecution(String campaignExecutionId, String jiraId);
 
-    void removeForCampaignExecution(String campaignExecutionId);
-
     JiraServerConfiguration loadServerConfiguration();
 
     void saveServerConfiguration(JiraServerConfiguration jiraServerConfiguration);
