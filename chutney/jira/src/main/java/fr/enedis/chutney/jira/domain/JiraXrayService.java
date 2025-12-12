@@ -86,6 +86,10 @@ public class JiraXrayService {
         jiraXrayApi.updateRequest(xray);
     }
 
+    public void linkCampaignExecution(Long campaignExecutionId, String jiraId) {
+        jiraRepository.saveCampaignExecutionOverriddenLink(campaignExecutionId.toString(), jiraId);
+    }
+
     public List<XrayTestExecTest> getTestExecutionScenarios(String testExecutionId) {
         JiraXrayApi jiraXrayApi = createHttpJiraXrayImpl();
 

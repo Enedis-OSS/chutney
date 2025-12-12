@@ -40,6 +40,8 @@ public interface JiraRepository {
 
     void saveCampaignExecutionOverriddenLink(String campaignExecutionId, String jiraId);
 
+    String getCampaignExecutionOverriddenLink(String campaignExecutionId);
+
     JiraServerConfiguration loadServerConfiguration();
 
     void saveServerConfiguration(JiraServerConfiguration jiraServerConfiguration);

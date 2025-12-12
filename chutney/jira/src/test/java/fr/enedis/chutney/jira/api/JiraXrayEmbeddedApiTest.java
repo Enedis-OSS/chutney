@@ -156,7 +156,7 @@ class JiraXrayEmbeddedApiTest {
 
         Xray xrayValue = xrayArgumentCaptor.getValue();
         assertThat(xrayValue.getTestExecutionKey()).isEqualTo("JIRA-22");
-        jiraRepository.getByCampaignExecutionId("1").equals("JIRA-22");
+        assertThat(jiraRepository.getByCampaignExecutionId("1")).isEqualTo("JIRA-22");
     }
 
     @Test
@@ -203,10 +203,12 @@ class JiraXrayEmbeddedApiTest {
         assertThat(xrayValue.getTests().getFirst().getTestKey()).isEqualTo(expectedTestKey);
     }
 
+    @Test
     void linkCampaignExecution() {
         jiraXrayEmbeddedApi.linkCampaignExecution(4L, "CHT-87");
 
-
+        var jiraId = jiraRepository.getCampaignExecutionOverriddenLink("4");
+        assertThat(jiraId).isEqualTo("CHT-87");
     }
 
     private static Object[] datatableListParameters() {

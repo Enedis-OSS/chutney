@@ -31,7 +31,7 @@ public class JiraFileRepository implements JiraRepository {
     private static final String SCENARIO_DATASET_FILE = "scenario_dataset_link" + FILE_EXTENSION;
     private static final String CAMPAIGN_FILE = "campaign_link" + FILE_EXTENSION;
     private static final String CAMPAIGN_EXECUTION_FILE = "campaign_execution_link" + FILE_EXTENSION;
-    private static final String CAMPAIGN_EXECUTION_OVERRIDDEN_LINK = "campaign_execution_overridden_link" + FILE_EXTENSION;
+    private static final String CAMPAIGN_EXECUTION_OVERRIDDEN_LINK_FILE = "campaign_execution_overridden_link" + FILE_EXTENSION;
     private static final String CONFIGURATION_FILE = "jira_config" + FILE_EXTENSION;
 
     private final Path storeFolderPath;
@@ -119,7 +119,12 @@ public class JiraFileRepository implements JiraRepository {
 
     @Override
     public void saveCampaignExecutionOverriddenLink(String campaignExecutionId, String jiraId) {
-        save(CAMPAIGN_EXECUTION_OVERRIDDEN_LINK, campaignExecutionId, jiraId);
+        save(CAMPAIGN_EXECUTION_OVERRIDDEN_LINK_FILE, campaignExecutionId, jiraId);
+    }
+
+    @Override
+    public String getCampaignExecutionOverriddenLink(String campaignExecutionId) {
+        return getById(CAMPAIGN_EXECUTION_OVERRIDDEN_LINK_FILE, campaignExecutionId);
     }
 
     @Override
