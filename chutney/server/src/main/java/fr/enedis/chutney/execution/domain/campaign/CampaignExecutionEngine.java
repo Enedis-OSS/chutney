@@ -316,7 +316,9 @@ public class CampaignExecutionEngine {
     }
 
     private CampaignExecution linkCampaignExecution(CampaignExecution campaignExecution, String jiraId) {
-        jiraXrayEmbeddedApi.linkCampaignExecution(campaignExecution.executionId, jiraId);
+        if(jiraId != null) {
+            jiraXrayEmbeddedApi.linkCampaignExecution(campaignExecution.executionId, jiraId);
+        }
         return campaignExecution;
     }
 

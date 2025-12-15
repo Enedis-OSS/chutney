@@ -1,0 +1,33 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<div class="modal-body" ngbAutofocus>
+    <p>{{ 'campaigns.execution.replayWithJiraLink.message' | translate }}</p>
+    <p>{{ 'campaigns.execution.replayWithJiraLink.choice' | translate }}</p>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div>
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" [inputId]="1" [value]="1" />
+            <label>{{ 'campaigns.execution.replayWithJiraLink.campaign' | translate }}</label>
+        </div>
+        <div>
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" [inputId]="2" [value]="2" />
+            <label>{{ 'campaigns.execution.replayWithJiraLink.execution' | translate }}</label>
+        </div>
+        <div>
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" [inputId]="3" [value]="3" />
+            <label>{{ 'campaigns.execution.replayWithJiraLink.newJiraId' | translate }}</label>
+            <div *ngIf="form.value.selectedJiraId === 3">
+                <input pInputText type="text" id="newJiraId" formControlName="newJiraId" />
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
+            <button type="button" class="btn btn-primary" (click)="onSubmit()" >{{ "global.actions.execute" | translate }}</button>
+        </div>
+    </form>
+</div>

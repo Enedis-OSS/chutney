@@ -5,6 +5,13 @@
  *
  */
 
+export class JiraExecutionLink {
+    constructor(
+        public campaignJiraId: string,
+        public executionJiraId: string) {
+    }
+}
+
 export class JiraScenario {
     constructor(
         public id: string,

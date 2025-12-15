@@ -216,6 +216,13 @@
                 "notexecuted": "Not executed"
             },
             "replay": "Replay failed scenarios",
+            "replayWithJiraLink": {
+                "message": "There is an issue jira lié à la dernière exécution de cette campagne.",
+                "choice": "Would you replay the last execution with :",
+                "campaign": "The jiraId linked to the campaign",
+                "execution": "The jiraId linked to the execution",
+                "newJiraId": "A new jiraId"
+            },
             "on_env": "on environment",
             "history": {
                 "title": "Execution history",
