@@ -60,6 +60,7 @@ class JiraControllerTest {
         jiraRepository.saveServerConfiguration(new JiraServerConfiguration("an url", "a username", "a password", null, null, null));
         jiraRepository.saveForCampaign("10", "JIRA-10");
         jiraRepository.saveForCampaign("20", "JIRA-20");
+        jiraRepository.saveCampaignExecutionOverriddenLink("13", "JIRA-13");
         jiraRepository.saveForScenario("1", "SCE-1");
         jiraRepository.saveForScenario("2", "SCE-2");
         jiraRepository.saveForScenario("3", "SCE-3");
@@ -146,6 +147,15 @@ class JiraControllerTest {
 
         assertThat(jiraDto.chutneyId()).isEqualTo("10");
         assertThat(jiraDto.id()).isEqualTo("JIRA-10");
+    }
+
+    @Test
+    void getJiraIdForReplay() {
+        ExecutionJiraLinkDto executionJiraLinkDto = getJiraController("/api/ui/jira/v1/campaign_execution/replay?campaignId=20&campaignExecutionId=13", new TypeReference<>() {
+        });
+
+        assertThat(executionJiraLinkDto.campaignJiraId()).isEqualTo("JIRA-20");
+        assertThat(executionJiraLinkDto.executionJiraId()).isEqualTo("JIRA-13");
     }
 
     @Test
