@@ -219,9 +219,9 @@
             "replayWithJiraLink": {
                 "message": "Il existe un id jira lié à la dernière exécution de cette campagne.",
                 "choice": "Soutaitez-vous relancer la dernière exécution avec :",
-                "campaign": "Le jiraId de la campagne",
-                "execution": "Le jiraId de l'exécution",
-                "newJiraId": "Un nouveau jiraId"
+                "campaign": "L'id jira de la campagne",
+                "execution": "L'id jira de l'exécution",
+                "newJiraId": "Un nouveau id jira"
             },
             "on_env": "sur l'environnement",
             "history": {

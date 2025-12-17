@@ -117,7 +117,10 @@ public class CampaignExecutionEngine {
         return executeByName(campaignName, environment, null, userId);
     }
 
-    // called by tests only
+    /**
+     * Called by tests only
+     */
+    @Deprecated
     public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId) {
         return this.executeById(campaignId, environment, dataset, userId, null);
     }
@@ -130,7 +133,10 @@ public class CampaignExecutionEngine {
             .orElseThrow(() -> new CampaignNotFoundException(campaignId));
     }
 
-    // called by tests only
+    /**
+     * Called by tests only
+     */
+    @Deprecated
     public CampaignExecution executeById(Long campaignId, String userId) {
         return executeById(campaignId, null, null, userId, null);
     }
@@ -187,17 +193,18 @@ public class CampaignExecutionEngine {
         return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset, campaignExecution.jiraId);
     }
 
-    // called by tests only
+    /**
+     * Called by tests only
+     */
+    @Deprecated
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, null, null);
     }
 
-    // called by executeByName only
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, null);
     }
 
-    // called by executeById
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset, String jiraId) {
         return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, jiraId);
     }
@@ -288,7 +295,6 @@ public class CampaignExecutionEngine {
             try {
                 ScenarioExecutionCampaign scenarioExecution;
                 // Is stop requested ?
-                LOGGER.info("executeScenarioInCampaign for execution {} and testcase {}", campaignExecution.executionId, testCaseDataset.testcase().id());
                 if (!currentCampaignExecutionsStopRequests.get(campaignExecution.executionId)) {
                     // Init scenario execution in campaign report
                     campaignExecution.startScenarioExecution(testCaseDataset, campaign.executionEnvironment());

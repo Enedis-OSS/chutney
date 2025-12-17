@@ -46,7 +46,6 @@ public class JiraXrayService {
 
     public void updateTestExecution(ExecutionJiraLink executionJiraLink, ReportForJira report) {
         JiraXrayApi jiraXrayApi = createHttpJiraXrayImpl();
-        LOGGER.info("Test execution {} {}", executionJiraLink.campaignExecutionId(), executionJiraLink.scenarioId());
 
         String testExecutionKey = executionJiraLink.jiraId() != null ? executionJiraLink.jiraId() :
             jiraRepository.getByCampaignId(executionJiraLink.campaignId().toString());
