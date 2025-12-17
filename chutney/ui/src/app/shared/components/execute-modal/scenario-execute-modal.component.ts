@@ -105,11 +105,6 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
         }
     }
 
-    selectJira(inputEvent: Event) {
-        const newValue = (inputEvent.target as HTMLInputElement).value;
-        this.selectedJiraId = newValue;
-    }
-
     async executeModal() {
         let dataset : Dataset = this.selectedDataset
         if (this.editionDataset) {
