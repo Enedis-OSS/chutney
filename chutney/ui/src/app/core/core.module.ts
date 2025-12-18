@@ -19,6 +19,7 @@ import { OAuth2ContentTypeInterceptor } from '@core/services/oauth2-content-type
 import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.interceptor';
 import { authAppInitializerFactory } from '@core/services/auth.app.initializer.factory';
 import { SsoService } from '@core/services/sso.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({ declarations: [
         LoginComponent,
@@ -27,6 +28,7 @@ import { SsoService } from '@core/services/sso.service';
         FormsModule,
         RouterModule,
         SharedModule,
+        NgbModule,
         TranslateModule], providers: [
         { provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [SsoService], multi: true },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },

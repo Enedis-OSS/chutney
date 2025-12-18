@@ -410,9 +410,11 @@
         "enter": "Saisir",
         "unauthorized": "Vous n'êtes pas autorisé à accéder à cette vue. Contacter votre administrateur.",
         "expired": "Session expirée. Reconnectez-vous.",
+        "userPassword": "User/mdp",
         "username": "Utilisateur",
         "password": "Mot de passe",
         "sso": {
+            "sso": "SSO",
             "userNotFound": "Utilisateur inconnu, contacter votre administrateur"
         }
     },

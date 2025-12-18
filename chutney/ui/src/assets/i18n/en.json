@@ -410,9 +410,11 @@
         "enter": "Enter",
         "unauthorized": "You are not authorized to access this view. Contact your administrator.",
         "expired": "Session expired. Sign in again.",
+        "userPassword": "User/password",
         "username": "Username",
         "password": "Password",
         "sso": {
+            "sso": "SSO",
             "userNotFound": "User not found, please contact your admin"
         }
     },
