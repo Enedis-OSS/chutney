@@ -116,6 +116,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
                         modalRef.componentInstance.campaignJiraId = link.campaignJiraId;
                         modalRef.componentInstance.executionJiraId = link.executionJiraId;
                         modalRef.componentInstance.executeCallback = this.refreshAfterReplay;
+                        modalRef.componentInstance.jiraUrl = this.jiraUrl;
                     } else {
                         this.replay().pipe(takeUntil(this.unsubscribeSub$)).subscribe();
                     }

@@ -27,6 +27,7 @@ export class ReplayExecutionWithJiraLinkComponent implements OnInit, OnDestroy {
     @Input() dataset: Dataset;
     @Input() campaignJiraId: string;
     @Input() executionJiraId: string;
+    @Input() jiraUrl: string;
 
     @Input() executeCallback: () => void;
 
