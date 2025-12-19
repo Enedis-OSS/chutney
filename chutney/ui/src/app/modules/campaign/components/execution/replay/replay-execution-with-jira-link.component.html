@@ -10,16 +10,16 @@
     <p>{{ 'campaigns.execution.replayWithJiraLink.choice' | translate }}</p>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div>
-            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" [inputId]="1" [value]="1" />
-            <label>{{ 'campaigns.execution.replayWithJiraLink.campaign' | translate }}</label>
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="campaign" [value]="1" />
+            <label for="campaign">{{ 'campaigns.execution.replayWithJiraLink.campaign' | translate }}</label>
         </div>
         <div>
-            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" [inputId]="2" [value]="2" />
-            <label>{{ 'campaigns.execution.replayWithJiraLink.execution' | translate }}</label>
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="execution" [value]="2" />
+            <label for="execution">{{ 'campaigns.execution.replayWithJiraLink.execution' | translate }}</label>
         </div>
         <div>
-            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" [inputId]="3" [value]="3" />
-            <label>{{ 'campaigns.execution.replayWithJiraLink.newJiraId' | translate }}</label>
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="newJira" [value]="3" />
+            <label for="newJira">{{ 'campaigns.execution.replayWithJiraLink.newJiraId' | translate }}</label>
             <div *ngIf="form.value.selectedJiraId === 3">
                 <input pInputText type="text" id="newJiraId" formControlName="newJiraId" />
             </div>
