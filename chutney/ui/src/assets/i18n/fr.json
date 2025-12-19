@@ -221,7 +221,7 @@
                 "choice": "Soutaitez-vous relancer la dernière exécution avec :",
                 "campaign": "L'id jira de la campagne",
                 "execution": "L'id jira de l'exécution",
-                "newJiraId": "Un nouveau id jira"
+                "newJiraId": "Un nouvel id jira"
             },
             "on_env": "sur l'environnement",
             "history": {

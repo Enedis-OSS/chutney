@@ -9,18 +9,20 @@
     <p>{{ 'campaigns.execution.replayWithJiraLink.message' | translate }}</p>
     <p>{{ 'campaigns.execution.replayWithJiraLink.choice' | translate }}</p>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div>
+        <div class="d-flex gap-2">
             <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="campaign" [value]="1" />
-            <label for="campaign">{{ 'campaigns.execution.replayWithJiraLink.campaign' | translate }}</label>
+            <label for="campaign" class="form-label">{{ 'campaigns.execution.replayWithJiraLink.campaign' | translate }}</label>
         </div>
-        <div>
+        <div class="d-flex gap-2">
             <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="execution" [value]="2" />
-            <label for="execution">{{ 'campaigns.execution.replayWithJiraLink.execution' | translate }}</label>
+            <label for="execution" class="form-label">{{ 'campaigns.execution.replayWithJiraLink.execution' | translate }}</label>
         </div>
-        <div>
-            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="newJira" [value]="3" />
-            <label for="newJira">{{ 'campaigns.execution.replayWithJiraLink.newJiraId' | translate }}</label>
-            <div *ngIf="form.value.selectedJiraId === 3">
+        <div class="d-flex flex-column">
+            <div class="d-inline-flex align-items-center gap-2">
+                <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="newJira" [value]="3" />
+                <label for="newJira" class="form-label mb-0">{{ 'campaigns.execution.replayWithJiraLink.newJiraId' | translate }}</label>
+            </div>
+            <div *ngIf="form.value.selectedJiraId === 3" class="mt-2">
                 <input pInputText type="text" id="newJiraId" formControlName="newJiraId" />
             </div>
         </div>
