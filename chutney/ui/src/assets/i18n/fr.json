@@ -216,6 +216,13 @@
                 "notexecuted": "Non executés"
             },
             "replay": "Rejouer les scénarios en échec",
+            "replayWithJiraLink": {
+                "message": "Il existe un id jira lié à la dernière exécution de cette campagne.",
+                "choice": "Soutaitez-vous relancer la dernière exécution avec :",
+                "campaign": "L'id jira de la campagne",
+                "execution": "L'id jira de l'exécution",
+                "newJiraId": "Un nouvel id jira"
+            },
             "on_env": "sur l'environnement",
             "history": {
                 "title": "Historique des executions",
@@ -290,7 +297,7 @@
             "jiraLinkedTest": "Scénarios lié à jira",
             "jiraIdInfo": {
                 "testPlan": "Si l'id est celui d'un test plan: cela créé un nouveau test exec pour chaque exécution de campagne.",
-                "testExec": "Si l'id est celui d'un test exec: cela met à jour les status des tests pour ce test exec."
+                "testExec": "Si l'id est celui d'un test exec: cela met à jour les statuts des tests pour ce test exec."
             },
             "selectTag": "Sélectionner tag",
             "selectJiraTag": "Sélectionner statut d'execution jira",
@@ -525,6 +532,7 @@
         },
         "words": {
             "dataset": "Dataset",
+            "jira": "Jira",
             "loading": "Chargement..."
         }
     },

@@ -28,6 +28,7 @@ public class CampaignExecutionReportMapper {
             campaignReport.executionEnvironment,
             DataSetMapper.toDto(campaignReport.dataset),
             campaignReport.userId,
+            campaignReport.jiraId,
             campaignReport.getDuration());
     }
 

@@ -11,6 +11,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputTextModule } from 'primeng/inputtext';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -26,6 +29,7 @@ import {
     CampaignExecutionsHistoryComponent
 } from './components/execution/history/campaign-executions-history.component';
 import { CampaignExecutionsComponent } from './components/execution/history/list/campaign-executions.component';
+import { ReplayExecutionWithJiraLinkComponent } from './components/execution/replay/replay-execution-with-jira-link.component';
 import {
     CampaignExecutionMenuComponent
 } from './components/execution/sub/right-side-bar/campaign-execution-menu.component';
@@ -45,14 +49,16 @@ const ROUTES = [
         RouterModule.forChild(ROUTES),
         FormsModule,
         ReactiveFormsModule,
+        RadioButtonModule,
+        InputTextModule,
         SharedModule,
         NgbModule,
         MomentModule,
         TranslateModule,
         NgMultiSelectDropDownModule.forRoot(),
         MoleculesModule,
-        CdkDropList, 
-        CdkDrag, 
+        CdkDropList,
+        CdkDrag,
         CdkDragPlaceholder
     ],
     declarations: [
@@ -62,7 +68,8 @@ const ROUTES = [
         CampaignExecutionComponent,
         CampaignSchedulingComponent,
         CampaignExecutionsHistoryComponent,
-        CampaignExecutionMenuComponent
+        CampaignExecutionMenuComponent,
+        ReplayExecutionWithJiraLinkComponent
     ],
     providers: [
         DateFormatPipe

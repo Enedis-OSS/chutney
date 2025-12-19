@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -119,6 +120,20 @@ public class JiraController {
         return ImmutableJiraDto.builder()
             .id(jiraId)
             .chutneyId(campaignId)
+            .build();
+    }
+
+    @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
+    @GetMapping(path = BASE_CAMPAIGN_EXEC_URL + "/replay", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ExecutionJiraLinkDto jiraIdForReplay(
+        @RequestParam("campaignId") String campaignId,
+        @RequestParam("campaignExecutionId") String campaignExecutionId
+    ) {
+        String campaignJiraId = jiraRepository.getByCampaignId(campaignId);
+        String executionJiraId = jiraRepository.getCampaignExecutionOverriddenLink(campaignExecutionId);
+        return ImmutableExecutionJiraLinkDto.builder()
+            .campaignJiraId(campaignJiraId)
+            .executionJiraId(executionJiraId)
             .build();
     }
 

@@ -20,6 +20,7 @@ import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.jira.api.JiraXrayEmbeddedApi;
+import fr.enedis.chutney.jira.api.ExecutionJiraLink;
 import fr.enedis.chutney.jira.domain.exception.NoJiraConfigurationException;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.ExecutionRequest;
@@ -116,23 +117,36 @@ public class CampaignExecutionEngine {
         return executeByName(campaignName, environment, null, userId);
     }
 
+    /**
+     * Called by tests only
+     */
+    @Deprecated
     public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId) {
+        return this.executeById(campaignId, environment, dataset, userId, null);
+    }
+
+    public CampaignExecution executeById(Long campaignId, String environment, DataSet dataset, String userId, String jiraId) {
         return ofNullable(campaignRepository.findById(campaignId))
             .map(campaign -> selectExecutionEnvironment(campaign, environment))
-            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset))
+            .map(campaign -> executeScenarioInCampaign(campaign, userId, dataset, jiraId))
+            .map(campaignExecution -> this.linkCampaignExecution(campaignExecution, jiraId))
             .orElseThrow(() -> new CampaignNotFoundException(campaignId));
     }
 
+    /**
+     * Called by tests only
+     */
+    @Deprecated
     public CampaignExecution executeById(Long campaignId, String userId) {
-        return executeById(campaignId, null, null, userId);
+        return executeById(campaignId, null, null, userId, null);
     }
 
-    public void executeScheduledCampaign(Long campaignId, String environment, String datasetId, String userId) {
+    public void executeScheduledCampaign(Long campaignId, String environment, String datasetId, String userId, String jiraId) {
         DataSet dataset = datasetRepository.findById(datasetId);
         if (!DataSet.NO_DATASET.equals(dataset)) {
-            executeById(campaignId, environment, dataset, userId);
+            executeById(campaignId, environment, dataset, userId, jiraId);
         } else {
-            executeById(campaignId, environment, null, userId);
+            executeById(campaignId, environment, null, userId, jiraId);
         }
     }
 
@@ -176,18 +190,26 @@ public class CampaignExecutionEngine {
         }
         Campaign campaign = campaignRepository.findById(campaignExecution.campaignId);
         campaign.executionEnvironment(campaignExecution.executionEnvironment);
-        return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset);
+        return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset, campaignExecution.jiraId);
     }
 
+    /**
+     * Called by tests only
+     */
+    @Deprecated
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId) {
-        return executeScenarioInCampaign(emptyList(), campaign, userId, null);
+        return executeScenarioInCampaign(emptyList(), campaign, userId, null, null);
     }
 
     CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset) {
-        return executeScenarioInCampaign(emptyList(), campaign, userId, dataset);
+        return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, null);
     }
 
-    CampaignExecution executeScenarioInCampaign(List<ScenarioExecutionCampaign> failedExecutions, Campaign campaign, String userId, DataSet dataset) {
+    CampaignExecution executeScenarioInCampaign(Campaign campaign, String userId, DataSet dataset, String jiraId) {
+        return executeScenarioInCampaign(emptyList(), campaign, userId, dataset, jiraId);
+    }
+
+    CampaignExecution executeScenarioInCampaign(List<ScenarioExecutionCampaign> failedExecutions, Campaign campaign, String userId, DataSet dataset, String jiraId) {
         verifyHasScenarios(campaign);
         verifyNotAlreadyRunning(campaign);
         Long executionId = campaignExecutionRepository.generateCampaignExecutionId(campaign.id, campaign.executionEnvironment(), dataset);
@@ -200,6 +222,7 @@ public class CampaignExecutionEngine {
             .environment(campaign.executionEnvironment())
             .dataset(ofNullable(dataset).orElse(ofNullable(campaign.executionDataset()).map(ds -> DataSet.builder().withId(ds).withName("").build()).orElse(null)))
             .userId(userId)
+            .jiraId(jiraId)
             .build();
 
         campaignExecutionRepository.startExecution(campaign.id, campaignExecution);
@@ -298,6 +321,13 @@ public class CampaignExecutionEngine {
         };
     }
 
+    private CampaignExecution linkCampaignExecution(CampaignExecution campaignExecution, String jiraId) {
+        if(jiraId != null) {
+            jiraXrayEmbeddedApi.linkCampaignExecution(campaignExecution.executionId, jiraId);
+        }
+        return campaignExecution;
+    }
+
     private void updateJira(Campaign campaign, CampaignExecution campaignExecution, ScenarioExecutionCampaign serc, ExecutionHistory.Execution execution) {
         if (isScenarioCompletelyExecuted(serc.status())) {
             try {
@@ -305,7 +335,7 @@ public class CampaignExecutionEngine {
                     .dataset()
                     .map(dataset -> ofNullable(dataset.id).orElse(""))
                     .orElse("");
-                jiraXrayEmbeddedApi.updateTestExecution(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, JiraReportMapper.from(execution.report(), objectMapper));
+                jiraXrayEmbeddedApi.updateTestExecution(new ExecutionJiraLink(campaign.id, campaignExecution.executionId, serc.scenarioId(), datasetId, campaignExecution.jiraId), JiraReportMapper.from(execution.report(), objectMapper));
             } catch (NoJiraConfigurationException e) { // Silent
             } catch (Exception e) {
                 LOGGER.warn("Update JIRA failed", e);

@@ -12,7 +12,6 @@ import static fr.enedis.chutney.dataset.api.DataSetMapper.fromExecutionDatasetDt
 
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportMapper;
-import fr.enedis.chutney.dataset.api.ExecutionDatasetDto;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.execution.api.report.surefire.SurefireCampaignExecutionReportBuilder;
 import fr.enedis.chutney.execution.api.report.surefire.SurefireScenarioExecutionReportBuilder;
@@ -112,11 +111,11 @@ public class CampaignExecutionUiController {
     public CampaignExecutionReportDto executeCampaignById(
         @PathVariable("campaignId") Long campaignId,
         @PathVariable("env") Optional<String> environment,
-        @RequestBody ExecutionDatasetDto dataset
+        @RequestBody ExecutionParamsDto executionParamsDto
     ) {
         String userId = userService.currentUserId();
-        DataSet ds = fromExecutionDatasetDto(dataset, datasetRepository::findById);
-        CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId);
+        DataSet ds = fromExecutionDatasetDto(executionParamsDto.dataset(), datasetRepository::findById);
+        CampaignExecution report = campaignExecutionEngine.executeById(campaignId, environment.orElse(null), ds, userId, executionParamsDto.jiraId());
         return toDto(report);
     }
 }
