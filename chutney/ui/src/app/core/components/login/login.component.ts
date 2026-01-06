@@ -69,7 +69,6 @@ export class LoginComponent implements OnDestroy, OnInit {
             this.enableSso = this.ssoService.getEnableSso
             console.log("sso " + this.enableSso)
 
-            this.enableUserPassword = this.enableUserPassword && !this.enableSso
             this.active = this.enableSso ? 2 : 1;
         }
     }
