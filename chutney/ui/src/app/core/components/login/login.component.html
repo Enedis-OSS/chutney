@@ -54,6 +54,10 @@
         <ng-container *ngTemplateOutlet="sso"></ng-container>
       }
 
+      @if (!this.enableUserPassword && !this.enableSso) {
+        <p>{{ 'login.missingConf' | translate }}</p>
+      }
+
       <ng-template #userPassword>
         <div id="userpassword">
           <form name="form" (ngSubmit)="login()">
