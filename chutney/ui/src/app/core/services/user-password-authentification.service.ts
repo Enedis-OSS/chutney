@@ -11,7 +11,7 @@ import { environment } from "@env/environment";
 import { map, Subject, takeUntil } from "rxjs";
 
 interface UserPasswordAuthenticationConfig {
-    userPassword: boolean
+    enableUserPassword: boolean
 }
 
 @Injectable({
@@ -23,13 +23,11 @@ export class UserPasswordAuthenticationService implements OnDestroy {
 
     private resourceUrl = '/api/v1/authentication/config';
 
-    private userPasswordAuthenticationActive: boolean;
+    private enableUserPassword: boolean;
 
     constructor(
         private http: HttpClient
-    ) {
-
-    }
+    ) {}
 
     ngOnDestroy(): void {
         this.unsubscribeSub$.next();
@@ -40,14 +38,14 @@ export class UserPasswordAuthenticationService implements OnDestroy {
         return this.http.get<UserPasswordAuthenticationConfig>(environment.backend + this.resourceUrl).pipe(
             takeUntil(this.unsubscribeSub$),
             map(authenticationConfig => {
-                this.userPasswordAuthenticationActive = authenticationConfig.userPassword;
+                this.enableUserPassword = authenticationConfig.enableUserPassword;
                 return authenticationConfig;
             }),
         ).subscribe();
     }
 
-    get getUserPasswordAuthenticationActive() {
-        return this.userPasswordAuthenticationActive;
+    get getEnableUserPassword() {
+        return this.enableUserPassword;
     }
 
 

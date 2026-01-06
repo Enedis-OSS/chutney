@@ -34,7 +34,7 @@ export class LoginComponent implements OnDestroy, OnInit {
 
     enableUserPassword = false;
     enableSso = false;
-    active = 1;
+    activeTab = 1;
 
     constructor(
         loginService: LoginService,
@@ -62,14 +62,11 @@ export class LoginComponent implements OnDestroy, OnInit {
         if (this.loginService.isAuthenticated()) {
             this.loginService.navigateAfterLogin();
         } else {
-            const active = this.userPasswordAuthenticationService.getUserPasswordAuthenticationActive;
-            console.log("user:password " + active)
-            this.enableUserPassword = this.userPasswordAuthenticationService.getUserPasswordAuthenticationActive;
+            this.enableUserPassword = this.userPasswordAuthenticationService.getEnableUserPassword;
 
             this.enableSso = this.ssoService.getEnableSso
-            console.log("sso " + this.enableSso)
 
-            this.active = this.enableSso ? 2 : 1;
+            this.activeTab = this.enableSso ? 2 : 1;
         }
     }
 

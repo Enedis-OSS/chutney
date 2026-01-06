@@ -7,5 +7,5 @@
 
 package fr.enedis.chutney.security.api;
 
-public record AuthenticationConfigDto(boolean userPassword) {
+public record AuthenticationConfigDto(boolean enableUserPassword) {
 }

@@ -87,7 +87,7 @@ import { UserPasswordAuthenticationService } from '@core/services/user-password-
 })
 export class ChutneyAppModule {
     constructor(private ssoOpenIdConnectService: SsoService,
-        private userPasswordAuthenticationService: UserPasswordAuthenticationService
+                private userPasswordAuthenticationService: UserPasswordAuthenticationService
     ) {
         this.ssoOpenIdConnectService.fetchSsoConfig()
         this.userPasswordAuthenticationService.fetchConfig()
