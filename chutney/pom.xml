@@ -53,7 +53,7 @@
         <mapstruct.version>1.6.2</mapstruct.version>
         <immutables.version>2.11.6</immutables.version>
         <commonstext.version>1.13.1</commonstext.version>
-        <commonsio.version>2.20.0</commonsio.version>
+        <commonsio.version>2.21.0</commonsio.version>
         <hjson.version>3.1.0</hjson.version>
         <jsr305.version>3.0.2</jsr305.version>
         <liquibase.version>5.0.1</liquibase.version>
