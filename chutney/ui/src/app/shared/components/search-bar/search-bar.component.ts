@@ -74,14 +74,10 @@ export class SearchBarComponent {
 
             const fullUrl = `${baseHref}#${serializedUrl}`;
             window.open(fullUrl, '_blank');
-        } else {
+            this.isSearchExpanded = false;
+        } else if(event.button === 0) {
             this.router.navigate([item.what, this.sanitizeMark(item.id)]);
-        }
-
-        if (!(event.ctrlKey || event.metaKey || event.button === 1)) {
-            setTimeout(() => {
-                this.isSearchExpanded = false;
-            }, 200);
+            this.isSearchExpanded = false;
         }
     }
 
