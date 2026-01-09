@@ -5,7 +5,6 @@
   ~
   -->
 
-<div>
 <div class="modal-body" ngbAutofocus>
   @if (errorMessage) {
   <div class="alert alert-dismissible alert-danger mt-3">
@@ -23,6 +22,21 @@
 
       </p-floatLabel>
   </div>
+  }
+
+  @if (jiraLink) {
+    <div class="row px-2 mt-3">
+    <p-floatlabel>
+      <input type="text" id="jiraId" pInputText class="form-control me-2 small-text"
+            [(ngModel)]="selectedJiraId"/>
+      <label for="jiraId" class="p-2">{{'menu.principal.jiraId' | translate}}</label>
+    </p-floatlabel>
+    <ng-template #jiraFieldHelp>{{'campaigns.edition.jiraIdInfo.testPlan' | translate}}<br>{{'campaigns.edition.jiraIdInfo.testExec' | translate}}</ng-template>
+    <button type="button" class="btn display-flex"
+      [ngbPopover]="jiraFieldHelp" triggers="mouseenter:mouseleave">
+      <span class="fa fa-info-circle" aria-hidden="true"></span>
+    </button>
+    </div>
   }
 
   <div class="row px-2 mt-3">
@@ -140,9 +154,11 @@
         </div>
     </ng-container>
     }
+
+
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-light" (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
   <button type="button" class="btn btn-primary" (click)="executeModal()" [disabled]="!environmentsLoaded">{{ "global.actions.execute" | translate }}</button>
 </div>
-</div>
+

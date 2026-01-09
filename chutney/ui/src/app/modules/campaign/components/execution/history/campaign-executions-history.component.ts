@@ -9,12 +9,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { empty, EMPTY, forkJoin, Observable, of, Subject, Subscription, timer, zip } from 'rxjs';
-import { delay, map, repeat, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { delay, map, repeat, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { NgbModal, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign, CampaignReport } from '@model';
-import { CampaignService, JiraPluginConfigurationService } from '@core/services';
+import { CampaignService, JiraPluginConfigurationService, JiraPluginService } from '@core/services';
 import { EventManagerService } from '@shared';
+import { ReplayExecutionWithJiraLinkComponent } from '../replay/replay-execution-with-jira-link.component';
 
 @Component({
     selector: 'chutney-campaign-executions-history',
@@ -45,8 +46,10 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private campaignService: CampaignService,
+                private jiraPluginService: JiraPluginService,
                 private eventManagerService: EventManagerService,
-                private jiraPluginConfigurationService: JiraPluginConfigurationService) {
+                private jiraPluginConfigurationService: JiraPluginConfigurationService,
+                private ngbModalService: NgbModal) {
     }
 
     ngOnInit(): void {
@@ -59,7 +62,7 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
                     executeEvent: this.eventManagerService.listen('execute', () => this.refreshCampaign()),
                     errorEvent: this.eventManagerService.listen('error', (event) => of(this.onMenuError(event))),
                     replayEvent: this.eventManagerService.listen('replay', () => this.refreshCampaign()),
-                    executeLastEvent: this.eventManagerService.listen('executeLast', () => this.replay()),
+                    executeLastEvent: this.eventManagerService.listen('executeLast', () => of(this.askForReplay())),
                     campaigns: this.campaign$().pipe(switchMap(() => this.openTabs$()))
                 })
             ),
@@ -99,9 +102,37 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
             .subscribe(url => this.jiraUrl = url);
     }
 
+    private askForReplay(): void {
+        const lastReport = this.campaignReports[0]
+        this.jiraPluginService.findJiraIdForReplay(this.campaign.id, lastReport.report.executionId)
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe(link =>
+                {
+                    if(link.executionJiraId) {
+                        const modalRef = this.ngbModalService.open(ReplayExecutionWithJiraLinkComponent, { centered: true, size: 'lg' });
+                        modalRef.componentInstance.campaignId = this.campaign.id;
+                        modalRef.componentInstance.environment = lastReport.report.executionEnvironment;
+                        modalRef.componentInstance.dataset = lastReport.report.dataset;
+                        modalRef.componentInstance.campaignJiraId = link.campaignJiraId;
+                        modalRef.componentInstance.executionJiraId = link.executionJiraId;
+                        modalRef.componentInstance.executeCallback = this.refreshAfterReplay;
+                        modalRef.componentInstance.jiraUrl = this.jiraUrl;
+                    } else {
+                        this.replay().pipe(takeUntil(this.unsubscribeSub$)).subscribe();
+                    }
+                })
+    }
+
+    private refreshAfterReplay = (): void => {
+        timer(1000).pipe(
+            switchMap(() => this.refreshCampaign()),
+            take(1)
+        ).subscribe();
+    }
+
     private replay(): Observable<any> {
         const lastReport = this.campaignReports[0]
-        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset)
+        this.campaignService.executeCampaign(this.campaign.id, lastReport.report.executionEnvironment, lastReport.report.dataset, lastReport.report.jiraId)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe()
         return timer(1000).pipe(

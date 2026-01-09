@@ -216,6 +216,13 @@
                 "notexecuted": "Not executed"
             },
             "replay": "Replay failed scenarios",
+            "replayWithJiraLink": {
+                "message": "There is a jira id linked to the last execution of this campaign.",
+                "choice": "Would you replay the last execution with :",
+                "campaign": "The jira id linked to the campaign",
+                "execution": "The jira id linked to the execution",
+                "newJiraId": "A new jira id"
+            },
             "on_env": "on environment",
             "history": {
                 "title": "Execution history",
@@ -525,6 +532,7 @@
         },
         "words": {
             "dataset": "Dataset",
+            "jira": "Jira",
             "loading": "Loading..."
         }
     },

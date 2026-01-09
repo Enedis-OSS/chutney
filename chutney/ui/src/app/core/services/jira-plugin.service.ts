@@ -10,7 +10,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { JiraScenario, JiraScenarioLinks, JiraTestExecutionScenarios } from '@model';
+import { JiraExecutionLink, JiraScenario, JiraScenarioLinks, JiraTestExecutionScenarios } from '@model';
 
 
 @Injectable({
@@ -35,6 +35,11 @@ export class JiraPluginService {
     public findCampaigns(): Observable<Map<string, string>> {
         return this.http.get<any>(environment.backend + this.campaignUrl )
         .pipe(map((res: Object) => new Map(Object.entries(res))));
+    }
+
+    public findJiraIdForReplay(campaignId: number, executionId: number): Observable<JiraExecutionLink> {
+        return this.http.get<any>(environment.backend + this.campaignExecutionUrl + "/replay", {params: {campaignId: campaignId, campaignExecutionId: executionId}} )
+        .pipe(map((res: JiraExecutionLink) => res));
     }
 
     public findTestExecScenarios(testExecId: string): Observable<JiraScenario[]> {

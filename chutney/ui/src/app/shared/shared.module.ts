@@ -61,6 +61,7 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
 import { ScenarioExecutionComponent } from './components/scenario-execution/execution.component';
 import { RxFor } from '@rx-angular/template/for';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
     imports: [
@@ -75,6 +76,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
         NgbDropdownModule,
         SelectModule,
         FloatLabelModule,
+        InputTextModule,
         InputGroupModule,
         InputGroupAddonModule,
         TypeaheadModule.forRoot(),

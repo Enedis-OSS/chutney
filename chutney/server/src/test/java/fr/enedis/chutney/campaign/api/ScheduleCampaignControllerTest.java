@@ -54,7 +54,7 @@ class ScheduleCampaignControllerTest {
     @WithMockUser(authorities = "CAMPAIGN_READ")
     void should_get_all_scheduled_campaigns() throws Exception {
 
-        CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "datasetId");
+        CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "datasetId", "JIRA-5");
         when(scheduledCampaignRepository.getAll()).thenReturn(List.of(
             new PeriodicScheduledCampaign(1L, LocalDateTime.of(2024, 10, 12, 14, 30, 45), Frequency.DAILY, "PROD", List.of(request))
         ));
@@ -70,6 +70,7 @@ class ScheduleCampaignControllerTest {
             .andExpect(jsonPath("$[0].campaignExecutionRequest[0].campaignId").value(1L))
             .andExpect(jsonPath("$[0].campaignExecutionRequest[0].campaignTitle").value("title"))
             .andExpect(jsonPath("$[0].campaignExecutionRequest[0].datasetId").value("datasetId"))
+            .andExpect(jsonPath("$[0].campaignExecutionRequest[0].jiraId").value("JIRA-5"))
             .andExpect(jsonPath("$[0].schedulingDate[0]").value(2024))
             .andExpect(jsonPath("$[0].schedulingDate[1]").value(10))
             .andExpect(jsonPath("$[0].schedulingDate[2]").value(12))
@@ -94,14 +95,13 @@ class ScheduleCampaignControllerTest {
                                 "frequency":"Daily",
                                 "environment":"PROD",
                                 "campaignExecutionRequest":[
-                                    {"campaignId":1,"campaignTitle":"title","datasetId":"datasetId"}
+                                    {"campaignId":1,"campaignTitle":"title","datasetId":"datasetId", "jiraId":"JIRA-67"}
                                 ]
                             }
                         """))
             .andExpect(status().isOk());
 
         ArgumentCaptor<PeriodicScheduledCampaign> captor = ArgumentCaptor.forClass(PeriodicScheduledCampaign.class);
-
 
         verify(scheduledCampaignRepository).add(captor.capture());
 
@@ -120,8 +120,8 @@ class ScheduleCampaignControllerTest {
         assertThat(capturedCampaign.campaignExecutionRequests)
             .hasSize(1)
             .first()
-            .extracting("campaignId", "campaignTitle", "datasetId")
-            .containsExactly(1L, "title", "datasetId");
+            .extracting("campaignId", "campaignTitle", "datasetId", "jiraId")
+            .containsExactly(1L, "title", "datasetId", "JIRA-67");
     }
 
     @Test

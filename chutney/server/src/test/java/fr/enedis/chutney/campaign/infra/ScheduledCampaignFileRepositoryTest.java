@@ -49,10 +49,12 @@ public class ScheduledCampaignFileRepositoryTest {
     void add_get_and_remove_scheduled_campaign() {
         //// ADD
         // Given
-        PeriodicScheduledCampaign sc1 = create(11L, "campaign title 1", of(2020, 2, 4, 7, 10));
+        PeriodicScheduledCampaign sc1 = create(null, List.of(11L), List.of("campaign title 1"), of(2020, 2, 4, 7, 10),
+            null, null, List.of("jira"));
         PeriodicScheduledCampaign sc2 = create(22L, "campaign title 2", of(2021, 3, 5, 8, 11));
         PeriodicScheduledCampaign sc3 = create(33L, "campaign title 3", of(2022, 4, 6, 9, 12));
-        PeriodicScheduledCampaign sc4 = create(null, List.of(55L, 66L), List.of("campaign title 5", "campaign title 6"), of(2022, 4, 6, 9, 12), null, null);
+        PeriodicScheduledCampaign sc4 = create(null, List.of(55L, 66L), List.of("campaign title 5", "campaign title 6"), of(2022, 4, 6, 9, 12),
+            null, null, List.of("J452", "J133"));
         String expectedAdded =
             """
                 {
@@ -61,28 +63,32 @@ public class ScheduledCampaignFileRepositoryTest {
                     "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
-                    "datasetsId" : [ "" ]
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "jira" ]
                   },
                   "2" : {
                     "id" : "2",
                     "schedulingDate" : [ 2021, 3, 5, 8, 11 ],
                     "campaignsId" : [ 22 ],
                     "campaignsTitle" : [ "campaign title 2" ],
-                    "datasetsId" : [ "" ]
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "" ]
                   },
                   "3" : {
                     "id" : "3",
                     "schedulingDate" : [ 2022, 4, 6, 9, 12 ],
                     "campaignsId" : [ 33 ],
                     "campaignsTitle" : [ "campaign title 3" ],
-                    "datasetsId" : [ "" ]
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "" ]
                   },
                   "4" : {
                     "id" : "4",
                     "schedulingDate" : [ 2022, 4, 6, 9, 12 ],
                     "campaignsId" : [ 55, 66 ],
                     "campaignsTitle" : [ "campaign title 5", "campaign title 6" ],
-                    "datasetsId" : [ "", "" ]
+                    "datasetsId" : [ "", "" ],
+                    "jiraIds" : [ "J452", "J133" ]
                   }
                 }
                 """;
@@ -107,14 +113,16 @@ public class ScheduledCampaignFileRepositoryTest {
                      "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
                      "campaignsId" : [ 11 ],
                      "campaignsTitle" : [ "campaign title 1" ],
-                     "datasetsId" : [ "" ]
+                     "datasetsId" : [ "" ],
+                     "jiraIds" : [ "jira" ]
                    },
                    "3" : {
                      "id" : "3",
                      "schedulingDate" : [ 2022, 4, 6, 9, 12 ],
                      "campaignsId" : [ 33 ],
                      "campaignsTitle" : [ "campaign title 3" ],
-                     "datasetsId" : [ "" ]
+                     "datasetsId" : [ "" ],
+                     "jiraIds" : [ "" ]
                    }
                  }
             """;
@@ -133,7 +141,8 @@ public class ScheduledCampaignFileRepositoryTest {
 
         // Then
         assertThat(periodicScheduledCampaigns).hasSize(2);
-        PeriodicScheduledCampaign sc1WithId = create(1L, 11L, "campaign title 1", of(2020, 2, 4, 7, 10));
+        PeriodicScheduledCampaign sc1WithId = create(1L, List.of(11L), List.of("campaign title 1"), of(2020, 2, 4, 7, 10),
+            null, null, List.of("jira"));
         PeriodicScheduledCampaign sc3WithId = create(3L, 33L, "campaign title 3", of(2022, 4, 6, 9, 12));
 
         assertThat(periodicScheduledCampaigns).contains(sc1WithId, sc3WithId);
@@ -153,7 +162,8 @@ public class ScheduledCampaignFileRepositoryTest {
                     "schedulingDate" : [ 2024, 2, 4, 7, 10 ],
                     "campaignsId" : [ 1, 3 ],
                     "campaignsTitle" : [ "campaign title 1", "campaign title 3" ],
-                    "datasetsId" : [ "", "" ]
+                    "datasetsId" : [ "", "" ],
+                    "jiraIds" : [ "", "" ]
                   }
                 }
                 """;
@@ -181,7 +191,8 @@ public class ScheduledCampaignFileRepositoryTest {
                         "schedulingDate" : [ 2021, 3, 5, 8, 11 ],
                         "campaignsId" : [ 22 ],
                         "campaignsTitle" : [ "campaign title 2" ],
-                        "datasetsId" : [ "" ]
+                        "datasetsId" : [ "" ],
+                        "jiraIds" : [ "" ]
                       }
                     }
                 """;
@@ -243,7 +254,8 @@ public class ScheduledCampaignFileRepositoryTest {
         FileUtils.writeContent(SCHEDULING_CAMPAIGN_FILE, old_scheduled_campaign);
 
         PeriodicScheduledCampaign oldSchedule = create(1L, 11L, "campaign title 1", of(2020, 2, 4, 7, 10));
-        PeriodicScheduledCampaign newSchedule = create(2L, List.of(22L, 33L, 44L), List.of("campaign title 2", "campaign title 3", "campaign title 4"), of(2021, 3, 5, 8, 11), "MY_ENV", List.of("FIRST_DATASET", "SECOND_DATASET", ""));
+        PeriodicScheduledCampaign newSchedule = create(2L, List.of(22L, 33L, 44L), List.of("campaign title 2", "campaign title 3", "campaign title 4"),
+            of(2021, 3, 5, 8, 11), "MY_ENV", List.of("FIRST_DATASET", "SECOND_DATASET", ""), List.of("J21", "", ""));
         // When
          List<PeriodicScheduledCampaign> periodicScheduledCampaigns = sut.getAll();
         //Then
@@ -268,7 +280,8 @@ public class ScheduledCampaignFileRepositoryTest {
                     "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
-                    "datasetsId" : [ "" ]
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "" ]
                   },
                   "2" : {
                     "id" : "2",
@@ -276,7 +289,8 @@ public class ScheduledCampaignFileRepositoryTest {
                     "environment" : "MY_ENV",
                     "campaignsId" : [ 22, 33, 44 ],
                     "campaignsTitle" : [ "campaign title 2", "campaign title 3", "campaign title 4" ],
-                    "datasetsId" : [ "FIRST_DATASET", "SECOND_DATASET", "" ]
+                    "datasetsId" : [ "FIRST_DATASET", "SECOND_DATASET", "" ],
+                    "jiraIds" : [ "J21", "", "" ]
                   }
                 }
                 """;
@@ -292,11 +306,11 @@ public class ScheduledCampaignFileRepositoryTest {
         return create(null, campaignId, campaignTitle, nextExecutionDate);
     }
 
-    private PeriodicScheduledCampaign create(Long campaignId, String campaignTitle, LocalDateTime nextExecutionDate, String environment, String datasetId) {
-        return create(null, List.of(campaignId), List.of(campaignTitle), nextExecutionDate, environment, List.of(datasetId));
+    private PeriodicScheduledCampaign create(Long id, List<Long> campaignsId, List<String> campaignsTitle, LocalDateTime nextExecutionDate, String environment, final List<String> datasetIds) {
+        return create(id, campaignsId, campaignsTitle, nextExecutionDate, environment, datasetIds, null);
     }
 
-    private PeriodicScheduledCampaign create(Long id, List<Long> campaignsId, List<String> campaignsTitle, LocalDateTime nextExecutionDate, String environment, final List<String> datasetIds) {
+    private PeriodicScheduledCampaign create(Long id, List<Long> campaignsId, List<String> campaignsTitle, LocalDateTime nextExecutionDate, String environment, final List<String> datasetIds, List<String> jiraIds) {
         List<CampaignExecutionRequest> campaignExecutionRequests =
             IntStream.range(0, campaignsId.size())
                 .mapToObj(i -> {
@@ -304,10 +318,15 @@ public class ScheduledCampaignFileRepositoryTest {
                     if(datasetIds == null) {
                         tmpDatasetIdList = campaignsId.stream().map(c -> "").toList();
                     }
+                    var tmpJiraIdList = jiraIds;
+                    if(jiraIds == null) {
+                        tmpJiraIdList = campaignsId.stream().map(c -> "").toList();
+                    }
                     return new CampaignExecutionRequest(
                         campaignsId.get(i),
                         campaignsTitle.get(i),
-                        tmpDatasetIdList.get(i));
+                        tmpDatasetIdList.get(i),
+                        tmpJiraIdList.get(i));
                 })
                 .toList();
         return new PeriodicScheduledCampaign(id, nextExecutionDate, Frequency.EMPTY, environment, campaignExecutionRequests);

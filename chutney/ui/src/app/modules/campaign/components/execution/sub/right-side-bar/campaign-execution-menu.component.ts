@@ -106,8 +106,8 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
     }
 
     private executeCampaign() {
-        const executeCallback = (env: string, dataset: Dataset) => {
-            this.broadcastCatchError(this.campaignService.executeCampaign(this.campaign.id, env, dataset))
+        const executeCallback = (env: string, dataset: Dataset, jiraId: string) => {
+            this.broadcastCatchError(this.campaignService.executeCampaign(this.campaign.id, env, dataset, jiraId))
                 .pipe(takeUntil(this.unsubscribeSub$))
                 .subscribe();
             timer(1000).pipe(
@@ -118,6 +118,7 @@ export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDest
 
         const modalRef = this.ngbModalService.open(ScenarioExecuteModalComponent, { centered: true, size: 'lg' });
         modalRef.componentInstance.environments = this.environments;
+        modalRef.componentInstance.jiraLink = true;
         modalRef.componentInstance.executeCallback = executeCallback;
     }
 

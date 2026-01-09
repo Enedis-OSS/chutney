@@ -1,0 +1,51 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2024 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<div class="modal-body" ngbAutofocus>
+    <p>{{ 'campaigns.execution.replayWithJiraLink.message' | translate }}</p>
+    <p>{{ 'campaigns.execution.replayWithJiraLink.choice' | translate }}</p>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="d-flex gap-2">
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="campaign" [value]="1" />
+            <label for="campaign" class="form-label">
+                {{ 'campaigns.execution.replayWithJiraLink.campaign' | translate }}
+                (
+                <a target="_blank" rel="noopener noreferrer" href="{{ jiraUrl +'/browse/' + this.campaignJiraId }}">
+                <span class="fa-brands fa-jira"></span>
+                {{ this.campaignJiraId }}
+                </a>
+                )
+            </label>
+        </div>
+        <div class="d-flex gap-2">
+            <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="execution" [value]="2" />
+            <label for="execution" class="form-label">
+                {{ 'campaigns.execution.replayWithJiraLink.execution' | translate }}
+                (
+                <a target="_blank" rel="noopener noreferrer" href="{{ jiraUrl +'/browse/' + this.executionJiraId }}">
+                <span class="fa-brands fa-jira"></span>
+                {{ this.executionJiraId }}
+                </a>
+                )
+            </label>
+        </div>
+        <div class="d-flex flex-column">
+            <div class="d-inline-flex align-items-center gap-2">
+                <p-radiobutton formControlName="selectedJiraId" name="selectedJiraId" inputId="newJira" [value]="3" />
+                <label for="newJira" class="form-label mb-0">{{ 'campaigns.execution.replayWithJiraLink.newJiraId' | translate }}</label>
+            </div>
+            <div *ngIf="form.value.selectedJiraId === 3" class="mt-2">
+                <input pInputText type="text" id="newJiraId" formControlName="newJiraId" />
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
+            <button type="button" class="btn btn-primary" (click)="onSubmit()" >{{ "global.actions.execute" | translate }}</button>
+        </div>
+    </form>
+</div>

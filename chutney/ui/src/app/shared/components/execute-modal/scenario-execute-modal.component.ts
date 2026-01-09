@@ -27,11 +27,13 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     environments: string[];
     environmentsLoaded = false;
+    jiraLink = false;
     datasets: Array<Dataset>;
     filteredDatasets: Array<Dataset>;
 
     selectedEnv: string = null;
     selectedDataset: Dataset = null;
+    selectedJiraId: string = null;
     datasetDetails: Dataset = null;
     createDataset: Dataset = null;
 
@@ -42,7 +44,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     Authorization = Authorization;
 
-    @Input() executeCallback: (env: string, dataset: Dataset) => void;
+    @Input() executeCallback: (env: string, dataset: Dataset, jiraId: string) => void;
 
     isCollapsed = true;
 
@@ -131,7 +133,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
     execute(dataset: Dataset) {
         if (this.selectedEnv) {
-            this.executeCallback(this.selectedEnv, dataset)
+            this.executeCallback(this.selectedEnv, dataset, this.selectedJiraId)
             this.activeModal.close();
         } else {
             this.translateService.get('scenarios.execution.errors.environment').subscribe((res: string) => {

@@ -27,6 +27,7 @@ public class CampaignExecutionReportDto {
     private final DataSetDto dataset;
     @JsonProperty("user")
     private final String userId;
+    private final String jiraId;
     private final Long duration;
 
     public CampaignExecutionReportDto(Long executionId,
@@ -38,6 +39,7 @@ public class CampaignExecutionReportDto {
                                       String executionEnvironment,
                                       DataSetDto dataset,
                                       String userId,
+                                      String jiraId,
                                       Long duration) {
         this.executionId = executionId;
         this.scenarioExecutionReports = scenarioExecutionReports;
@@ -48,6 +50,7 @@ public class CampaignExecutionReportDto {
         this.executionEnvironment = executionEnvironment;
         this.dataset = dataset;
         this.userId = userId;
+        this.jiraId = jiraId;
         this.duration = duration;
     }
 
@@ -92,6 +95,10 @@ public class CampaignExecutionReportDto {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getJiraId() {
+        return jiraId;
     }
 
     public DataSetDto getDataset() {

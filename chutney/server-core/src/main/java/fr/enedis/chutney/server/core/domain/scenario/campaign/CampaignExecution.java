@@ -44,6 +44,7 @@ public class CampaignExecution {
     private ServerReportStatus status;
     private final List<ScenarioExecutionCampaign> scenarioExecutions;
     public final Long campaignId;
+    public final String jiraId;
 
     CampaignExecution(
         Long executionId,
@@ -55,7 +56,8 @@ public class CampaignExecution {
         DataSet dataset,
         LocalDateTime startDate,
         ServerReportStatus status,
-        List<ScenarioExecutionCampaign> scenarioExecutions
+        List<ScenarioExecutionCampaign> scenarioExecutions,
+        String jiraId
     ) {
         this.executionId = executionId;
         this.campaignId = campaignId;
@@ -65,6 +67,7 @@ public class CampaignExecution {
         this.dataset = dataset;
         this.userId = userId;
         this.scenarioExecutions = scenarioExecutions;
+        this.jiraId = jiraId;
 
         if (scenarioExecutions.isEmpty()) {
             this.startDate = ofNullable(startDate).orElseGet(LocalDateTime::now);
@@ -239,6 +242,7 @@ public class CampaignExecution {
             .startDate(startDate)
             .status(status)
             .scenarioExecutionReport(filterRetry(scenarioExecutions))
+            .jiraId(jiraId)
             .build();
     }
 
