@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@Profile("mem-auth")
 public class InMemorySecurityConfiguration {
 
     @Bean
@@ -27,13 +28,11 @@ public class InMemorySecurityConfiguration {
     }
 
     @Bean
-    @Profile("mem-auth")
     public InMemoryUserDetailsService inMemoryUserDetailsService(InMemoryUsersProperties users, AuthenticationService authenticationService) {
         return new InMemoryUserDetailsService(users, authenticationService);
     }
 
     @Bean
-    @Profile("mem-auth")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
