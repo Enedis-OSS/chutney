@@ -7,34 +7,36 @@
 
 package fr.enedis.chutney.security.api;
 
-import fr.enedis.chutney.security.infra.memory.InMemoryUsersProperties;
-import java.util.Optional;
+import static fr.enedis.chutney.security.api.SsoOpenIdConnectMapper.toDto;
+
+import fr.enedis.chutney.security.infra.ChutneyAuth;
+import fr.enedis.chutney.security.infra.sso.SsoOpenIdConnectConfigProperties;
 import org.springframework.http.MediaType;
-import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @RestController
 @RequestMapping(AuthenticationConfigController.BASE_URL)
 public class AuthenticationConfigController {
 
     public static final String BASE_URL = "/api/v1/authentication";
 
-    private final Optional<LdapContextSource> contextSource;
-    private final Optional<InMemoryUsersProperties> users;
+    private final ChutneyAuth chutneyAuth;
+    private final SsoOpenIdConnectConfigProperties ssoOpenIdConnectConfigProperties;
 
-    public AuthenticationConfigController(Optional<LdapContextSource> contextSource, Optional<InMemoryUsersProperties> users) {
-        this.contextSource = contextSource;
-        this.users = users;
+    public AuthenticationConfigController(ChutneyAuth chutneyAuth,
+                                          @Nullable SsoOpenIdConnectConfigProperties ssoOpenIdConnectConfigProperties) {
+        this.chutneyAuth = chutneyAuth;
+        this.ssoOpenIdConnectConfigProperties = ssoOpenIdConnectConfigProperties;
     }
 
     @GetMapping(path = "/config", produces = MediaType.APPLICATION_JSON_VALUE)
     public AuthenticationConfigDto getAuthenticationConfig() {
-        boolean ldapContextSourceDefined = contextSource.isPresent();
-        boolean inMemoryConfigDefined = users.map(u -> u.getUsers() != null && !users.get().getUsers().isEmpty()).orElse(false);
-        return new AuthenticationConfigDto(ldapContextSourceDefined || inMemoryConfigDefined);
+        return new AuthenticationConfigDto(chutneyAuth.isEnableUserPassword(),
+            chutneyAuth.isEnableSso(),
+            toDto(ssoOpenIdConnectConfigProperties));
     }
 
 }

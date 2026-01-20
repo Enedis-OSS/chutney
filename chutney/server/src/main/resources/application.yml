@@ -14,6 +14,11 @@ server:
     trust-store: 'classpath:security/https/truststore.jks'
     trust-store-password: truststore
 
+chutney:
+  auth:
+    enable-user-password: true
+    enable-sso: true
+
 management:
   endpoints:
     web:
@@ -54,3 +59,4 @@ spring:
       - undertow-https-redirect
       - mem-auth
       - db-sqlite
+      - sso-auth

@@ -19,6 +19,7 @@ import fr.enedis.chutney.security.api.SsoOpenIdConnectController;
 import fr.enedis.chutney.security.api.UserController;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
+import fr.enedis.chutney.security.infra.ChutneyAuth;
 import fr.enedis.chutney.security.infra.jwt.ChutneyJwtAuthenticationConverter;
 import fr.enedis.chutney.security.infra.jwt.ChutneyJwtProperties;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
@@ -78,7 +79,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties({OAuth2AuthorizationServerProperties.class, SsoOpenIdConnectConfigProperties.class})
+@EnableConfigurationProperties({OAuth2AuthorizationServerProperties.class, ChutneyAuth.class, SsoOpenIdConnectConfigProperties.class})
 @ConditionalOnProperty(value = "chutney.security.enabled", havingValue = "true", matchIfMissing = true)
 public class ChutneyWebSecurityConfig {
 

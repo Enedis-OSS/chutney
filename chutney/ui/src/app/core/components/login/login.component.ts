@@ -12,7 +12,7 @@ import { of, Subject, Subscription } from 'rxjs';
 import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
 import { catchError, takeUntil } from 'rxjs/operators';
-import { UserPasswordAuthenticationService } from '@core/services/user-password-authentification.service';
+import { AuthenticationConfigService } from '@core/services/authentification-config.service';
 
 @Component({
     selector: 'chutney-login',
@@ -41,7 +41,7 @@ export class LoginComponent implements OnDestroy, OnInit {
         private infoService: InfoService,
         private route: ActivatedRoute,
         private ssoService: SsoService,
-        private userPasswordAuthenticationService: UserPasswordAuthenticationService
+        private authenticationConfigService: AuthenticationConfigService
     ) {
         this.loginService = loginService
         this.route.params
@@ -62,9 +62,9 @@ export class LoginComponent implements OnDestroy, OnInit {
         if (this.loginService.isAuthenticated()) {
             this.loginService.navigateAfterLogin();
         } else {
-            this.enableUserPassword = this.userPasswordAuthenticationService.getEnableUserPassword;
+            this.enableUserPassword = this.authenticationConfigService.getEnableUserPassword;
 
-            this.enableSso = this.ssoService.getEnableSso
+            this.enableSso = this.authenticationConfigService.getEnableSso
 
             this.activeTab = this.enableSso ? 2 : 1;
         }

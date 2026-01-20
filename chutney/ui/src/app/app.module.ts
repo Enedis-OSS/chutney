@@ -31,7 +31,7 @@ import { SsoService } from "@core/services/sso.service";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
-import { UserPasswordAuthenticationService } from '@core/services/user-password-authentification.service';
+import { AuthenticationConfigService } from '@core/services/authentification-config.service';
 
 @NgModule({
     declarations: [
@@ -87,10 +87,10 @@ import { UserPasswordAuthenticationService } from '@core/services/user-password-
 })
 export class ChutneyAppModule {
     constructor(private ssoOpenIdConnectService: SsoService,
-                private userPasswordAuthenticationService: UserPasswordAuthenticationService
+                private authenticationConfigService: AuthenticationConfigService
     ) {
         this.ssoOpenIdConnectService.fetchSsoConfig()
-        this.userPasswordAuthenticationService.fetchConfig()
+        this.authenticationConfigService.fetchConfig()
     }
 }
 

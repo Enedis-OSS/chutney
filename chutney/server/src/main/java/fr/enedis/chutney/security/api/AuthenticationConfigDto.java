@@ -7,5 +7,7 @@
 
 package fr.enedis.chutney.security.api;
 
-public record AuthenticationConfigDto(boolean enableUserPassword) {
+public record AuthenticationConfigDto(boolean enableUserPassword,
+                                      boolean enableSso,
+                                      SsoOpenIdConnectConfigDto ssoOpenIdConnectConfigDto) {
 }
