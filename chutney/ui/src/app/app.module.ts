@@ -86,12 +86,6 @@ import { AuthenticationConfigService } from '@core/services/authentification-con
     ]
 })
 export class ChutneyAppModule {
-    constructor(private ssoOpenIdConnectService: SsoService,
-                private authenticationConfigService: AuthenticationConfigService
-    ) {
-        this.ssoOpenIdConnectService.fetchSsoConfig()
-        this.authenticationConfigService.fetchConfig()
-    }
 }
 
 

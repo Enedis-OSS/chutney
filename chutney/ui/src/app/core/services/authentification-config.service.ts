@@ -8,8 +8,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "@env/environment";
-import { AuthConfig } from "angular-oauth2-oidc";
-import { map, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, Observable, switchMap, takeUntil } from "rxjs";
+import { shareReplay } from "rxjs/operators";
 
 interface SsoAuthConfig {
     issuer: string,
@@ -25,10 +25,10 @@ interface SsoAuthConfig {
     oidc: boolean
 }
 
-interface UserPasswordAuthenticationConfig {
+interface AuthenticationConfig {
     enableUserPassword: boolean,
     enableSso: boolean,
-    ssoConfig: SsoAuthConfig
+    ssoOpenIdConnectConfigDto: SsoAuthConfig
 }
 
 @Injectable({
@@ -36,70 +36,22 @@ interface UserPasswordAuthenticationConfig {
 })
 export class AuthenticationConfigService implements OnDestroy {
 
-    private unsubscribeSub$: Subject<void> = new Subject();
-
+    private readonly authenticationSubject$ = new BehaviorSubject<void>(undefined);
+    
     private resourceUrl = '/api/v1/authentication/config';
 
-    private enableUserPassword: boolean;
-    private enableSso: boolean;
-    private ssoConfig: SsoAuthConfig;
+    readonly authenticationConfig$: Observable<AuthenticationConfig> = this.authenticationSubject$.pipe(
+        switchMap(() => this.http.get<AuthenticationConfig>(environment.backend + this.resourceUrl)),
+        shareReplay({ bufferSize: 1, refCount: false })
+    );
 
     constructor(
         private http: HttpClient
     ) {}
 
     ngOnDestroy(): void {
-        this.unsubscribeSub$.next();
-        this.unsubscribeSub$.complete();
-    }
-
-    fetchConfig() {
-        return this.http.get<UserPasswordAuthenticationConfig>(environment.backend + this.resourceUrl).pipe(
-            takeUntil(this.unsubscribeSub$),
-            map(authenticationConfig => {
-                this.enableUserPassword = authenticationConfig.enableUserPassword;
-                this.enableSso = authenticationConfig.enableSso;
-                if (Object.keys(authenticationConfig.ssoConfig).length === 0) {
-                    localStorage.removeItem('ssoConfig')
-                } else {
-                    this.ssoConfig = authenticationConfig.ssoConfig
-                    localStorage.setItem('ssoConfig', JSON.stringify(this.ssoConfig))
-                    // ?? return this.getAuthConfigFromSsoAuthConfig(this.ssoConfig)
-                }
-                return authenticationConfig;
-            }),
-        ).subscribe();
-    }
-
-    private getAuthConfigFromSsoAuthConfig(ssoConfig: SsoAuthConfig) {
-            return {
-                issuer: ssoConfig.issuer,
-                clientId: ssoConfig.clientId,
-                responseType: ssoConfig.responseType,
-                scope: ssoConfig.scope,
-                redirectUri: ssoConfig.redirectBaseUrl + '/',
-                dummyClientSecret: ssoConfig.clientSecret,
-                oidc: ssoConfig.oidc,
-                useHttpBasicAuth: true,
-                postLogoutRedirectUri: ssoConfig.redirectBaseUrl + '/',
-                sessionChecksEnabled: true,
-                logoutUrl: ssoConfig.redirectBaseUrl + '/',
-                customQueryParams: ssoConfig.additionalQueryParams,
-                redirectUriAsPostLogoutRedirectUriFallback: true,
-                requireHttps: false,
-                showDebugInformation: true,
-                clearHashAfterLogin: false,
-                silentRefreshTimeout: 0,
-                useSilentRefresh: true
-            } as AuthConfig
-        }
-
-    get getEnableUserPassword() {
-        return this.enableUserPassword;
-    }
-
-    get getEnableSso() {
-        return this.enableSso;
+        this.authenticationSubject$.next();
+        this.authenticationSubject$.complete();
     }
 
 

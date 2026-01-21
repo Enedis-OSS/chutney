@@ -24,42 +24,20 @@
 
     <div class="shadow p-4 w-75 rounded bg-light bg-opacity-75">
 
-      @if (this.enableUserPassword && this.enableSso) {
-        <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav nav-tabs flex-row">
-          <li [ngbNavItem]="1" class="nav-item px-2 mx-2">
-            <a ngbNavLink class="nav-link bg-secondary-subtle rounded fw-semibold" (click)="this.activeTab=1" aria-controls="userpassword">
-               {{ 'login.userPassword' | translate }}
-            </a>
-            <ng-template ngbNavContent>
-              <ng-container *ngTemplateOutlet="userPassword"></ng-container>
-            </ng-template>
-          </li>
-          <li [ngbNavItem]="2" class="nav-item px-2 mx-2">
-            <a ngbNavLink class="nav-link bg-secondary-subtle rounded fw-semibold" (click)="this.activeTab=2" aria-controls="sso">
-               {{ 'login.sso.sso' | translate }}
-            </a>
-            <ng-template ngbNavContent>
-              <ng-container *ngTemplateOutlet="sso"></ng-container>
-            </ng-template>
-          </li>
-        </ul>
-        <div [ngbNavOutlet]="nav" class="mt-2"></div>
-      }
-
-      @if (this.enableUserPassword && !this.enableSso) {
-        <ng-container *ngTemplateOutlet="userPassword"></ng-container>
-      }
-
-      @if (!this.enableUserPassword && this.enableSso) {
-        <ng-container *ngTemplateOutlet="sso"></ng-container>
-      }
-
       @if (!this.enableUserPassword && !this.enableSso) {
         <p>{{ 'login.missingConf' | translate }}</p>
       }
 
+      @if (this.enableUserPassword) {
+        <ng-container *ngTemplateOutlet="userPassword"></ng-container>
+      }
+
+      @if (this.enableSso) {
+        <ng-container *ngTemplateOutlet="sso"></ng-container>
+      }
+
       <ng-template #userPassword>
-        <div id="userpassword">
+        <div id="userpassword" class="mb-4">
           <form name="form" (ngSubmit)="login()">
 
           <div class="form-floating mb-2 mt-4">

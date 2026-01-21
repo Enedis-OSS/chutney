@@ -13,6 +13,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { JwtService } from '@core/services/jwt.service';
+import { AuthenticationConfigService } from './authentification-config.service';
+import { config } from 'ace-builds';
 
 
 interface SsoAuthConfig {
@@ -49,6 +51,7 @@ export class SsoService implements OnDestroy {
 
 
     constructor(
+        private authenticationConfigService: AuthenticationConfigService,
         private oauthService: OAuthService,
         private http: HttpClient,
         private router: Router,
@@ -110,7 +113,19 @@ export class SsoService implements OnDestroy {
     }
 
     public async runInitialLoginSequence(): Promise<void> {
-        return firstValueFrom(this.fetchSsoConfig())
+        return firstValueFrom(this.authenticationConfigService.authenticationConfig$)
+            .then(authenticationConfig => {
+                const ssoConfig = authenticationConfig.ssoOpenIdConnectConfigDto;
+                if (Object.keys(ssoConfig).length === 0) {
+                    localStorage.removeItem('ssoConfig')
+                    return null
+                } else {
+                    this.ssoConfig = ssoConfig;
+                    this.enableSso = true;
+                    localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig));
+                    return this.getAuthConfigFromSsoAuthConfig(ssoConfig);
+                }
+            })
             .then(config => this.oauthService.configure(config))
             .then(() => this.oauthService.loadDiscoveryDocument())
             .then(() => this.oauthService.tryLogin())
@@ -151,23 +166,6 @@ export class SsoService implements OnDestroy {
                 }
             })
             .catch(() => this.isDoneLoadingSubject$.next(true));
-    }
-
-    fetchSsoConfig() {
-        return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
-            takeUntil(this.unsubscribeSub$),
-            map(ssoConfig => {
-                if (Object.keys(ssoConfig).length === 0) {
-                    localStorage.removeItem('ssoConfig')
-                    return null
-                } else {
-                    this.ssoConfig = ssoConfig
-                    this.enableSso = true
-                    localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig))
-                    return this.getAuthConfigFromSsoAuthConfig(ssoConfig)
-                }
-            }),
-        )
     }
 
     private getAuthConfigFromSsoAuthConfig(ssoConfig: SsoAuthConfig) {
