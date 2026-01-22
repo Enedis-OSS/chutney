@@ -17,7 +17,7 @@ server:
 chutney:
   auth:
     enable-user-password: true
-    enable-sso: true
+    enable-sso: false
 
 management:
   endpoints:
@@ -59,4 +59,3 @@ spring:
       - undertow-https-redirect
       - mem-auth
       - db-sqlite
-      - sso-auth
