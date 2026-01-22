@@ -7,11 +7,12 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, Subscription } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
 import { catchError, takeUntil } from 'rxjs/operators';
+import { AuthenticationConfigService } from '@core/services/authentification-config.service';
 
 @Component({
     selector: 'chutney-login',
@@ -31,11 +32,15 @@ export class LoginComponent implements OnDestroy, OnInit {
     version = '';
     applicationName = '';
 
+    enableUserPassword = false;
+    enableSso = false;
+
     constructor(
         loginService: LoginService,
         private infoService: InfoService,
         private route: ActivatedRoute,
-        private ssoService: SsoService
+        private ssoService: SsoService,
+        private authenticationConfigService: AuthenticationConfigService
     ) {
         this.loginService = loginService
         this.route.params
@@ -55,6 +60,13 @@ export class LoginComponent implements OnDestroy, OnInit {
     ngOnInit() {
         if (this.loginService.isAuthenticated()) {
             this.loginService.navigateAfterLogin();
+        } else {
+            this.authenticationConfigService.authenticationConfig$.pipe(
+                takeUntil(this.unsubscribeSub$))
+                .subscribe(authenticationConfig => {
+                    this.enableUserPassword = authenticationConfig.enableUserPassword;
+                    this.enableSso = authenticationConfig.enableSso;
+                })
         }
     }
 
