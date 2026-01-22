@@ -62,8 +62,8 @@ import fr.enedis.chutney.index.api.SearchController;
 import fr.enedis.chutney.jira.api.JiraController;
 import fr.enedis.chutney.scenario.api.AggregatedTestCaseController;
 import fr.enedis.chutney.scenario.api.GwtTestCaseController;
+import fr.enedis.chutney.security.api.AuthenticationConfigController;
 import fr.enedis.chutney.security.api.AuthorizationController;
-import fr.enedis.chutney.security.api.SsoOpenIdConnectController;
 import fr.enedis.chutney.security.api.UserController;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.Authorizations;
@@ -309,7 +309,7 @@ public class SecuredControllerSpringBootIntegrationTest {
             {GET, InfoController.BASE_URL + "/appname", null, null, OK},
 
             {GET, FeatureController.BASE_URL, "AUTHENTICATED", null, OK},
-            {GET, SsoOpenIdConnectController.BASE_URL + "/config", null, null, OK},
+            {GET, AuthenticationConfigController.BASE_URL + "/config", null, null, OK},
         };
     }
 

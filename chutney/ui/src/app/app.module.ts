@@ -27,11 +27,9 @@ import { ThemeService } from '@core/theme/theme.service';
 import { DefaultMissingTranslationHandler, HttpLoaderFactory } from '@core/initializer/app.translate.factory';
 import { themeInitializer } from '@core/initializer/theme.initializer';
 import { OAuthModule } from 'angular-oauth2-oidc';
-import { SsoService } from "@core/services/sso.service";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
-import { AuthenticationConfigService } from '@core/services/authentification-config.service';
 
 @NgModule({
     declarations: [

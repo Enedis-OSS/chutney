@@ -8,10 +8,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "@env/environment";
-import { BehaviorSubject, Observable, switchMap, takeUntil } from "rxjs";
+import { BehaviorSubject, Observable, switchMap } from "rxjs";
 import { shareReplay } from "rxjs/operators";
 
-interface SsoAuthConfig {
+export interface SsoAuthConfig {
     issuer: string,
     clientId: string,
     clientSecret: string,

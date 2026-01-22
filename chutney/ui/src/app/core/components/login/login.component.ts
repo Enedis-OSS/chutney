@@ -7,7 +7,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, Subscription } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
