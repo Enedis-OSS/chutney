@@ -11,6 +11,7 @@ import { Hit } from '@core/model/search/hit.model';
 import { SearchService } from '@core/services/search.service';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'chutney-search-bar',
@@ -29,6 +30,7 @@ export class SearchBarComponent {
 
     constructor(
         private searchService: SearchService,
+        private location: Location,
         private router: Router
     ) {
         this.isMacOS = navigator.platform.toUpperCase().includes('MAC');
@@ -67,21 +69,23 @@ export class SearchBarComponent {
     }
 
     navigateToDetail(event: MouseEvent, item: any) {
-        if (event.ctrlKey || event.metaKey || event.button === 1) {
-            const baseHref = document.getElementsByTagName('base')[0].href;
-            const urlTree = this.router.createUrlTree([item.what, this.sanitizeMark(item.id)]);
-            const serializedUrl = this.router.serializeUrl(urlTree);
+        const urlTree = this.router.createUrlTree([
+            item.what,
+            this.sanitizeMark(item.id),
+        ]);
+        const serializedUrl = this.router.serializeUrl(urlTree);
 
-            const fullUrl = `${baseHref}#${serializedUrl}`;
-            window.open(fullUrl, '_blank');
-        } else {
-            this.router.navigate([item.what, this.sanitizeMark(item.id)]);
-        }
-
-        if (!(event.ctrlKey || event.metaKey || event.button === 1)) {
-            setTimeout(() => {
-                this.isSearchExpanded = false;
-            }, 200);
+        const isMiddleClick = event.button === 1;
+        const isLeftClick = event.button === 0;
+        const openInNewTab = event.ctrlKey || event.metaKey || isMiddleClick;
+        if (openInNewTab) {
+            event.preventDefault();
+            const externalUrl = this.location.prepareExternalUrl(serializedUrl);
+            window.open(externalUrl, '_blank', 'noopener');
+            return;
+        } else if(isLeftClick) {
+            this.router.navigateByUrl(urlTree);
+            this.isSearchExpanded = false;
         }
     }
 
