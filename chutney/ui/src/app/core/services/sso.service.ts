@@ -6,30 +6,13 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-import { environment } from '@env/environment';
-import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, of, Subject } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { filter, takeUntil } from 'rxjs/operators';
 import { JwtService } from '@core/services/jwt.service';
-import { AuthenticationConfigService } from './authentification-config.service';
-import { config } from 'ace-builds';
-
-
-interface SsoAuthConfig {
-    issuer: string,
-    clientId: string,
-    clientSecret: string,
-    responseType: string,
-    scope: string,
-    redirectBaseUrl: string,
-    ssoProviderName: string,
-    ssoProviderImageUrl: string,
-    headers: { [name: string]: string | string[]; },
-    additionalQueryParams: { [name: string]: string | string[]; }
-    oidc: boolean
-}
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { AuthenticationConfigService, SsoAuthConfig } from './authentification-config.service';
 
 @Injectable({
     providedIn: 'root'
@@ -43,7 +26,6 @@ export class SsoService implements OnDestroy {
     private isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
     public isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
 
-    private resourceUrl = '/api/v1/sso/config';
     private ssoConfig: SsoAuthConfig
     private enableSso = false
 
