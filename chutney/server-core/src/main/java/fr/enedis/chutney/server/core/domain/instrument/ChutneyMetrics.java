@@ -20,4 +20,6 @@ public interface ChutneyMetrics {
     void onCampaignExecutionEnded(Campaign campaign, CampaignExecution campaignExecution);
 
     void onHttpError(HttpStatusCode status);
+
+    void onJiraRestClientError(HttpStatusCode status);
 }

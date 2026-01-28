@@ -19,6 +19,7 @@ import fr.enedis.chutney.jira.xrayapi.XrayEvidence;
 import fr.enedis.chutney.jira.xrayapi.XrayInfo;
 import fr.enedis.chutney.jira.xrayapi.XrayTest;
 import fr.enedis.chutney.jira.xrayapi.XrayTestExecTest;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,10 +38,12 @@ public class JiraXrayService {
     private final JiraRepository jiraRepository;
     private final JiraXrayClientFactory jiraXrayImplFactory;
     private JiraServerConfiguration jiraServerConfiguration;
+    private final ChutneyMetrics metrics;
 
-    public JiraXrayService(JiraRepository jiraRepository, JiraXrayClientFactory jiraXrayImplFactory) {
+    public JiraXrayService(JiraRepository jiraRepository, JiraXrayClientFactory jiraXrayImplFactory, ChutneyMetrics metrics) {
         this.jiraRepository = jiraRepository;
         this.jiraXrayImplFactory = jiraXrayImplFactory;
+        this.metrics = metrics;
         loadJiraServerConfiguration();
     }
 
@@ -112,7 +115,7 @@ public class JiraXrayService {
         if (!loadJiraServerConfiguration()) {
             throw new NoJiraConfigurationException();
         }
-        return jiraXrayImplFactory.create(jiraServerConfiguration);
+        return jiraXrayImplFactory.create(jiraServerConfiguration, metrics);
     }
 
     private List<String> getErrors(ReportForJira report) {

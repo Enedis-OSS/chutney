@@ -27,6 +27,7 @@ import fr.enedis.chutney.jira.infra.JiraFileRepository;
 import fr.enedis.chutney.jira.xrayapi.Xray;
 import fr.enedis.chutney.jira.xrayapi.XrayTest;
 import fr.enedis.chutney.jira.xrayapi.XrayTestExecTest;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
@@ -41,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 class JiraXrayEmbeddedApiTest {
 
@@ -57,9 +59,9 @@ class JiraXrayEmbeddedApiTest {
         jiraRepository = new JiraFileRepository(Files.createTempDirectory("jira").toString());
         jiraRepository.saveServerConfiguration(jiraServerConfiguration);
 
-        JiraXrayService jiraXrayService = new JiraXrayService(jiraRepository, jiraXrayFactory);
+        JiraXrayService jiraXrayService = new JiraXrayService(jiraRepository, jiraXrayFactory, Mockito.mock(ChutneyMetrics.class));
 
-        when(jiraXrayFactory.create(any())).thenReturn(jiraXrayApiMock);
+        when(jiraXrayFactory.create(any(), any())).thenReturn(jiraXrayApiMock);
 
         jiraXrayEmbeddedApi = new JiraXrayEmbeddedApi(jiraXrayService);
     }
