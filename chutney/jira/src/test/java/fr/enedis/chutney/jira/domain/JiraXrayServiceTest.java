@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import fr.enedis.chutney.jira.domain.exception.NoJiraConfigurationException;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.lang.reflect.Field;
 import org.junit.jupiter.api.Test;
 
@@ -28,10 +29,11 @@ class JiraXrayServiceTest {
         when(jiraRepository.loadServerConfiguration()).thenReturn(initialJiraConfiguration);
 
         var jiraXrayClientFactory = mock(JiraXrayClientFactory.class);
+        var metrics = mock(ChutneyMetrics.class);
         var jiraXrayApi = mock(JiraXrayApi.class);
-        when(jiraXrayClientFactory.create(any())).thenReturn(jiraXrayApi);
+        when(jiraXrayClientFactory.create(any(), any())).thenReturn(jiraXrayApi);
 
-        JiraXrayService sut = new JiraXrayService(jiraRepository, jiraXrayClientFactory);
+        JiraXrayService sut = new JiraXrayService(jiraRepository, jiraXrayClientFactory, metrics);
         Field jiraConfigurationField = sut.getClass().getDeclaredField("jiraServerConfiguration");
         jiraConfigurationField.setAccessible(true);
 

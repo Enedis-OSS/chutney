@@ -22,6 +22,7 @@ import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import fr.enedis.chutney.jira.xrayapi.Xray;
 import fr.enedis.chutney.jira.xrayapi.XrayInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.net.UnknownHostException;
 import java.util.Base64;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.mockito.Mockito;
 
 public class HttpJiraXrayImplTest {
 
@@ -58,7 +60,7 @@ public class HttpJiraXrayImplTest {
             );
 
             // When/Then
-            HttpJiraXrayImpl httpJiraXray = new HttpJiraXrayImpl(config);
+            HttpJiraXrayImpl httpJiraXray = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
             assertThatThrownBy(() ->
                 httpJiraXray.updateRequest(new Xray("test", List.of(), new XrayInfo(List.of())))
             )
@@ -82,7 +84,7 @@ public class HttpJiraXrayImplTest {
             );
 
             // When/Then
-            var sut = new HttpJiraXrayImpl(config);
+            var sut = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
             assertThatThrownBy(() ->
                 sut.isTestPlan(issueId)
             )
@@ -104,7 +106,7 @@ public class HttpJiraXrayImplTest {
                 "",
                 ""
             );
-            var sut = new HttpJiraXrayImpl(config);
+            var sut = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
 
             // When
             boolean result = sut.isTestPlan(issueId);
@@ -135,7 +137,7 @@ public class HttpJiraXrayImplTest {
             );
 
             // When
-            HttpJiraXrayImpl httpJiraXray = new HttpJiraXrayImpl(config);
+            HttpJiraXrayImpl httpJiraXray = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
             httpJiraXray.updateRequest(new Xray("test", List.of(), new XrayInfo(List.of())));
 
             // Then
@@ -220,7 +222,7 @@ public class HttpJiraXrayImplTest {
             );
 
             // When
-            var sut = new HttpJiraXrayImpl(config);
+            var sut = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
             boolean isTestPlan = sut.isTestPlan(issueId);
 
             // Then
@@ -254,7 +256,7 @@ public class HttpJiraXrayImplTest {
             );
 
             // When
-            HttpJiraXrayImpl httpJiraXray = new HttpJiraXrayImpl(config);
+            HttpJiraXrayImpl httpJiraXray = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
             httpJiraXray.updateRequest(new Xray("test", List.of(), new XrayInfo(List.of())));
 
             // Then
@@ -339,7 +341,7 @@ public class HttpJiraXrayImplTest {
             );
 
             // When
-            var sut = new HttpJiraXrayImpl(config);
+            var sut = new HttpJiraXrayImpl(config, Mockito.mock(ChutneyMetrics.class));
             boolean isTestPlan = sut.isTestPlan(issueId);
 
             // Then

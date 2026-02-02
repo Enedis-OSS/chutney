@@ -82,6 +82,12 @@ public class MicrometerMetrics implements ChutneyMetrics {
         httpErrorCount.increment();
     }
 
+    @Override
+    public void onJiraRestClientError(HttpStatusCode status) {
+        final Counter jiraRestClientErrorCount = this.meterRegistry.counter("jira_rest_client_error", List.of(of("status", String.valueOf(status.value()))));
+        jiraRestClientErrorCount.increment();
+    }
+
     private void updateMetrics(Map<ServerReportStatus, Long> scenarioCountByStatus, Map<ServerReportStatus, AtomicLong> cachedMetrics) {
         cachedMetrics.forEach((key, value) -> {
             final Long valueInCache = scenarioCountByStatus.get(key);
