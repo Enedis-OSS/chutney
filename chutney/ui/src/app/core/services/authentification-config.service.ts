@@ -28,7 +28,7 @@ export interface SsoAuthConfig {
 interface AuthenticationConfig {
     enableUserPassword: boolean,
     enableSso: boolean,
-    ssoOpenIdConnectConfigDto: SsoAuthConfig
+    ssoAuthConfig: SsoAuthConfig
 }
 
 @Injectable({
@@ -37,21 +37,27 @@ interface AuthenticationConfig {
 export class AuthenticationConfigService implements OnDestroy {
 
     private readonly authenticationSubject$ = new BehaviorSubject<void>(undefined);
-    
+
     private resourceUrl = '/api/v1/authentication/config';
 
-    readonly authenticationConfig$: Observable<AuthenticationConfig> = this.authenticationSubject$.pipe(
-        switchMap(() => this.http.get<AuthenticationConfig>(environment.backend + this.resourceUrl)),
-        shareReplay({ bufferSize: 1, refCount: false })
-    );
+    readonly authenticationConfig$: Observable<AuthenticationConfig>;
 
     constructor(
         private http: HttpClient
-    ) {}
+    ) {
+        this.authenticationConfig$ = this.authenticationObservable();
+    }
 
     ngOnDestroy(): void {
         this.authenticationSubject$.next();
         this.authenticationSubject$.complete();
+    }
+
+    private authenticationObservable(): Observable<AuthenticationConfig> {
+        return this.authenticationSubject$.pipe(
+            switchMap(() => this.http.get<AuthenticationConfig>(environment.backend + this.resourceUrl)),
+            shareReplay({ bufferSize: 1, refCount: false })
+        );
     }
 
 

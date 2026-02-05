@@ -14,11 +14,6 @@ server:
     trust-store: 'classpath:security/https/truststore.jks'
     trust-store-password: truststore
 
-chutney:
-  auth:
-    enable-user-password: true
-    enable-sso: false
-
 management:
   endpoints:
     web:

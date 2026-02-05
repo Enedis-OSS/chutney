@@ -28,7 +28,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         FormsModule,
         RouterModule,
         SharedModule,
-        NgbModule,
         TranslateModule], providers: [
         { provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [SsoService], multi: true },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },

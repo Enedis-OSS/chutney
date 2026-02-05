@@ -97,7 +97,7 @@ export class SsoService implements OnDestroy {
     public async runInitialLoginSequence(): Promise<void> {
         return firstValueFrom(this.authenticationConfigService.authenticationConfig$)
             .then(authenticationConfig => {
-                const ssoConfig = authenticationConfig.ssoOpenIdConnectConfigDto;
+                const ssoConfig = authenticationConfig.ssoAuthConfig;
                 if (Object.keys(ssoConfig).length === 0) {
                     localStorage.removeItem('ssoConfig')
                     return null

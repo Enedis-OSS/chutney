@@ -78,7 +78,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties({OAuth2AuthorizationServerProperties.class, ChutneyAuth.class, SsoOpenIdConnectConfigProperties.class})
+@EnableConfigurationProperties({OAuth2AuthorizationServerProperties.class, SsoOpenIdConnectConfigProperties.class})
 @ConditionalOnProperty(value = "chutney.security.enabled", havingValue = "true", matchIfMissing = true)
 public class ChutneyWebSecurityConfig {
 
