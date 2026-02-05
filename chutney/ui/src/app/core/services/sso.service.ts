@@ -6,28 +6,13 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-import { environment } from '@env/environment';
-import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, of, Subject } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { filter, takeUntil } from 'rxjs/operators';
 import { JwtService } from '@core/services/jwt.service';
-
-
-interface SsoAuthConfig {
-    issuer: string,
-    clientId: string,
-    clientSecret: string,
-    responseType: string,
-    scope: string,
-    redirectBaseUrl: string,
-    ssoProviderName: string,
-    ssoProviderImageUrl: string,
-    headers: { [name: string]: string | string[]; },
-    additionalQueryParams: { [name: string]: string | string[]; }
-    oidc: boolean
-}
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { AuthenticationConfigService, SsoAuthConfig } from './authentification-config.service';
 
 @Injectable({
     providedIn: 'root'
@@ -41,7 +26,6 @@ export class SsoService implements OnDestroy {
     private isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
     public isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
 
-    private resourceUrl = '/api/v1/sso/config';
     private ssoConfig: SsoAuthConfig
     private enableSso = false
 
@@ -49,6 +33,7 @@ export class SsoService implements OnDestroy {
 
 
     constructor(
+        private authenticationConfigService: AuthenticationConfigService,
         private oauthService: OAuthService,
         private http: HttpClient,
         private router: Router,
@@ -110,7 +95,19 @@ export class SsoService implements OnDestroy {
     }
 
     public async runInitialLoginSequence(): Promise<void> {
-        return firstValueFrom(this.fetchSsoConfig())
+        return firstValueFrom(this.authenticationConfigService.authenticationConfig$)
+            .then(authenticationConfig => {
+                const ssoConfig = authenticationConfig.ssoAuthConfig;
+                if (Object.keys(ssoConfig).length === 0) {
+                    localStorage.removeItem('ssoConfig')
+                    return null
+                } else {
+                    this.ssoConfig = ssoConfig;
+                    this.enableSso = true;
+                    localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig));
+                    return this.getAuthConfigFromSsoAuthConfig(ssoConfig);
+                }
+            })
             .then(config => this.oauthService.configure(config))
             .then(() => this.oauthService.loadDiscoveryDocument())
             .then(() => this.oauthService.tryLogin())
@@ -151,23 +148,6 @@ export class SsoService implements OnDestroy {
                 }
             })
             .catch(() => this.isDoneLoadingSubject$.next(true));
-    }
-
-    fetchSsoConfig() {
-        return this.http.get<SsoAuthConfig>(environment.backend + this.resourceUrl).pipe(
-            takeUntil(this.unsubscribeSub$),
-            map(ssoConfig => {
-                if (Object.keys(ssoConfig).length === 0) {
-                    localStorage.removeItem('ssoConfig')
-                    return null
-                } else {
-                    this.ssoConfig = ssoConfig
-                    this.enableSso = true
-                    localStorage.setItem('ssoConfig', JSON.stringify(ssoConfig))
-                    return this.getAuthConfigFromSsoAuthConfig(ssoConfig)
-                }
-            }),
-        )
     }
 
     private getAuthConfigFromSsoAuthConfig(ssoConfig: SsoAuthConfig) {

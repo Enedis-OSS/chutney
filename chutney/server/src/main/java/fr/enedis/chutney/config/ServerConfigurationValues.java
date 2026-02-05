@@ -12,6 +12,8 @@ public final class ServerConfigurationValues {
     public static final String SERVER_INSTANCE_NAME_VALUE = "${server.instance-name:${spring.application.name}}";
     public static final String SERVER_SSL_ENABLED_SPRING_VALUE = "${server.ssl.enabled:true}";
     public static final String SERVER_HTTP_INTERFACE_SPRING_VALUE = "${server.http.interface:0.0.0.0}";
+    public static final String CHUTNEY_AUTH_ENABLE_USER_PASSWORD = "${chutney.auth.enable-user-password:true}";
+    public static final String CHUTNEY_AUTH_ENABLE_SSO = "${chutney.auth.enable-sso:false}";
     public static final String WORKSPACE_SPRING_VALUE = "${chutney.workspace:${user.home}/.chutney}";
     public static final String CONFIGURATION_FOLDER_SPRING_VALUE = "#{'" + WORKSPACE_SPRING_VALUE + "' + '/conf'}";
     public static final String ENGINE_REPORTER_PUBLISHER_TTL_SPRING_VALUE = "${chutney.engine.reporter.publisher.ttl:5}";
