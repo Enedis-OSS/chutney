@@ -410,6 +410,8 @@
         "enter": "Enter",
         "unauthorized": "You are not authorized to access this view. Contact your administrator.",
         "expired": "Session expired. Sign in again.",
+        "missingConf": "Oops, there isn't any configuration for authentication : a configuration has to be defined, either via SSO, LDAP or in memory",
+        "OR": "OR",
         "username": "Username",
         "password": "Password",
         "sso": {

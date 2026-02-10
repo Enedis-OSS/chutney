@@ -18,6 +18,6 @@ chutney:
       clientSecret: 'my-client-secret'
       responseType: 'code'
       scope: 'openid profile email'
-      redirectBaseUrl: "https://${server.http.interface}:4200"
+      redirectBaseUrl: "https://localhost:8443"
       ssoProviderName: 'SSO OpenID Connect'
       oidc: true

@@ -410,6 +410,8 @@
         "enter": "Saisir",
         "unauthorized": "Vous n'êtes pas autorisé à accéder à cette vue. Contacter votre administrateur.",
         "expired": "Session expirée. Reconnectez-vous.",
+        "missingConf": "Oups, aucune configuration n'est définie pour l'authentification : il faut définir une configuration SSO, LDAP ou en mémoire",
+        "OR": "OU",
         "username": "Utilisateur",
         "password": "Mot de passe",
         "sso": {
