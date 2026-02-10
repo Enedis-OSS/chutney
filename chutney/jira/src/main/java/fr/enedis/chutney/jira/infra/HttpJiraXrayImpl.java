@@ -26,6 +26,7 @@ import fr.enedis.chutney.jira.infra.atlassian.jira.rest.client.internal.async.As
 import fr.enedis.chutney.jira.xrayapi.JiraIssueType;
 import fr.enedis.chutney.jira.xrayapi.Xray;
 import fr.enedis.chutney.jira.xrayapi.XrayTestExecTest;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
@@ -55,8 +56,10 @@ import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -67,12 +70,15 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
     private static final int MS_TIMEOUT = 10 * 1000; // 10 s
 
     private final JiraServerConfiguration jiraServerConfiguration;
+    private final ChutneyMetrics metrics;
 
-    public HttpJiraXrayImpl(JiraServerConfiguration jiraServerConfiguration) {
+    public HttpJiraXrayImpl(JiraServerConfiguration jiraServerConfiguration,
+                            ChutneyMetrics metrics) {
         this.jiraServerConfiguration = jiraServerConfiguration;
         if (!jiraServerConfiguration.isValid()) {
             throw new NoJiraConfigurationException();
         }
+        this.metrics = metrics;
     }
 
     @Override
@@ -89,6 +95,9 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
             } else {
                 LOGGER.error(response.toString());
             }
+        } catch (HttpClientErrorException e) {
+            metrics.onJiraRestClientError(e.getStatusCode());
+            throw new RuntimeException("Unable to update test execution [" + xray.getTestExecutionKey() + "] : ", e);
         } catch (RestClientException e) {
             throw new RuntimeException("Unable to update test execution [" + xray.getTestExecutionKey() + "] : ", e);
         }
@@ -110,6 +119,9 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
             } else {
                 LOGGER.error(response.toString());
             }
+        } catch (HttpClientErrorException e) {
+            metrics.onJiraRestClientError(e.getStatusCode());
+            throw new RuntimeException("Unable to get xray test execution[" + xrayId + "] scenarios : ", e);
         } catch (RestClientException e) {
             throw new RuntimeException("Unable to get xray test execution[" + xrayId + "] scenarios : ", e);
         }
@@ -124,6 +136,9 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
         RestTemplate restTemplate = buildRestTemplate();
         try {
             restTemplate.put(uri, null);
+        } catch (HttpClientErrorException e) {
+            metrics.onJiraRestClientError(e.getStatusCode());
+            throw new RuntimeException("Unable to update xray testRuntId[" + testRuntId + "] with status[" + executionStatus + "] : ", e);
         } catch (RestClientException e) {
             throw new RuntimeException("Unable to update xray testRuntId[" + testRuntId + "] with status[" + executionStatus + "] : ", e);
         }
@@ -144,6 +159,9 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
                 LOGGER.error(response.toString());
                 throw new RuntimeException("Unable to associate test execution [" + testExecutionId + "] from test plan [" + testPlanId + "]");
             }
+        } catch (HttpClientErrorException e) {
+            metrics.onJiraRestClientError(e.getStatusCode());
+            throw new RuntimeException("Unable to associate test execution [" + testExecutionId + "] from test plan [" + testPlanId + "] : ", e);
         } catch (RestClientException e) {
             throw new RuntimeException("Unable to associate test execution [" + testExecutionId + "] from test plan [" + testPlanId + "] : ", e);
         }
@@ -164,6 +182,11 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
             BasicIssue issue = jiraRestClient.getIssueClient().createIssue(issueInput).claim();
             associateTestExecutionFromTestPlan(testPlanId, issue.getKey());
             return issue.getKey();
+        } catch (com.atlassian.jira.rest.client.api.RestClientException e) {
+            if(e.getStatusCode().isPresent()) {
+                metrics.onJiraRestClientError(HttpStatusCode.valueOf(e.getStatusCode().get()));
+            }
+            throw new RuntimeException("Unable to create test execution issue from test plan [" + testPlanId + "] : ", e);
         } catch (Exception e) {
             throw new RuntimeException("Unable to create test execution issue from test plan [" + testPlanId + "] : ", e);
         }
@@ -180,6 +203,11 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
     private Issue getIssue(String issueKey) {
         try (JiraRestClient jiraRestClient = getJiraRestClient()) {
             return jiraRestClient.getIssueClient().getIssue(issueKey).claim();
+        } catch (com.atlassian.jira.rest.client.api.RestClientException e) {
+            if(e.getStatusCode().isPresent()) {
+                metrics.onJiraRestClientError(HttpStatusCode.valueOf(e.getStatusCode().get()));
+            }
+            throw new RuntimeException("Unable to get issue [" + issueKey + "] : ", e);
         } catch (Exception e) {
             throw new RuntimeException("Unable to get issue [" + issueKey + "] : ", e);
         }
@@ -199,6 +227,9 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
             } else {
                 LOGGER.error(response.toString());
             }
+        } catch (HttpClientErrorException e) {
+            metrics.onJiraRestClientError(e.getStatusCode());
+            throw new RuntimeException("Unable to get issues type list : ", e);
         } catch (RestClientException e) {
             throw new RuntimeException("Unable to get issues type list : ", e);
         }

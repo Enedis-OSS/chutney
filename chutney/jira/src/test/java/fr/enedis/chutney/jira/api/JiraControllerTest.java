@@ -28,6 +28,7 @@ import fr.enedis.chutney.jira.domain.JiraXrayClientFactory;
 import fr.enedis.chutney.jira.domain.JiraXrayService;
 import fr.enedis.chutney.jira.infra.JiraFileRepository;
 import fr.enedis.chutney.jira.xrayapi.XrayTestExecTest;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -53,9 +54,9 @@ class JiraControllerTest {
     @BeforeEach
     public void setUp() throws IOException {
         jiraRepository = new JiraFileRepository(Files.createTempDirectory("jira").toString());
-        JiraXrayService jiraXrayService = new JiraXrayService(jiraRepository, jiraXrayFactory);
+        JiraXrayService jiraXrayService = new JiraXrayService(jiraRepository, jiraXrayFactory, mock(ChutneyMetrics.class));
 
-        when(jiraXrayFactory.create(any())).thenReturn(mockJiraXrayApi);
+        when(jiraXrayFactory.create(any(), any())).thenReturn(mockJiraXrayApi);
 
         jiraRepository.saveServerConfiguration(new JiraServerConfiguration("an url", "a username", "a password", null, null, null));
         jiraRepository.saveForCampaign("10", "JIRA-10");

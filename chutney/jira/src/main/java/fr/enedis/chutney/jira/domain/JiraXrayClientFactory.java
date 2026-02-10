@@ -7,8 +7,10 @@
 
 package fr.enedis.chutney.jira.domain;
 
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
+
 public interface JiraXrayClientFactory {
 
-    JiraXrayApi create(JiraServerConfiguration jiraServerConfiguration);
+    JiraXrayApi create(JiraServerConfiguration jiraServerConfiguration, ChutneyMetrics metrics);
 
 }

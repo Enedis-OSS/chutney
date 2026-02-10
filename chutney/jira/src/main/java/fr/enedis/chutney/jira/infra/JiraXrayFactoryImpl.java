@@ -10,12 +10,13 @@ package fr.enedis.chutney.jira.infra;
 import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import fr.enedis.chutney.jira.domain.JiraXrayApi;
 import fr.enedis.chutney.jira.domain.JiraXrayClientFactory;
+import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 
 public class JiraXrayFactoryImpl implements JiraXrayClientFactory {
 
     @Override
-    public JiraXrayApi create(JiraServerConfiguration jiraServerConfiguration) {
-        return new HttpJiraXrayImpl(jiraServerConfiguration);
+    public JiraXrayApi create(JiraServerConfiguration jiraServerConfiguration, ChutneyMetrics metrics) {
+        return new HttpJiraXrayImpl(jiraServerConfiguration, metrics);
     }
 
 }
