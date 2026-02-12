@@ -7,6 +7,45 @@
 
 # Changelog
 
+## What's Changed
+### 🚀 Implemented enhancements:
+* Override jira id on execution by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/256
+* Disable ldap authentication when no config is defined by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/273
+### 🐛 Fixed bugs:
+* Fix authorization for scenario execution delete by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/259
+* Single click to remove global search table results by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/285
+### 🔧 Technical enhancements:
+* Remove duplicate checkout in GitHub actions by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/260
+* Resolve Idea plugin build timeout in GitHub actions by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/258
+* Add metrics on Jira calls failures by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/286
+### 👒 Dependencies:
+* chore(deps): Bump org.codehaus.mojo:exec-maven-plugin from 3.5.1 to 3.6.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/272
+* chore(deps): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.1 to 3.6.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/270
+* chore(deps): Bump org.liquibase:liquibase-core from 4.32.0 to 5.0.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/240
+* chore(deps): Bump lucene.version from 10.3.1 to 10.3.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/266
+* chore(deps): Bump com.google.errorprone:error_prone_annotations from 2.39.0 to 2.45.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/268
+* chore(deps): Bump org.bouncycastle:bcpkix-jdk18on from 1.80 to 1.83 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/269
+* chore(deps): Bump com.google.guava:guava from 31.0.1-jre to 33.5.0-jre in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/271
+* chore(deps): Bump activemq.version from 5.19.0 to 5.19.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/265
+* chore(deps): Bump org.wiremock:wiremock-standalone from 3.13.1 to 3.13.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/267
+* chore(deps): Bump org.apache.maven.plugins:maven-resources-plugin from 3.3.1 to 3.4.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/276
+* chore(deps): Bump commons-io:commons-io from 2.20.0 to 2.21.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/280
+* chore(deps): Bump org.scala-lang:scala-library from 2.13.15 to 2.13.18 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/281
+* chore(deps): Bump org.bouncycastle:bcprov-jdk18on from 1.81 to 1.83 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/283
+* chore(deps): Bump org.apache.maven.plugins:maven-jar-plugin from 3.4.1 to 3.5.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/274
+* chore(deps): Bump org.testcontainers:testcontainers-bom from 1.21.3 to 2.0.3 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/277
+* chore(deps): Bump org.checkerframework:checker-qual from 3.49.5 to 3.52.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/278
+* chore(deps): Bump org.apache.cxf:cxf-xjc-plugin from 4.0.1 to 4.1.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/282
+* chore(deps): Bump org.scala-lang:scala-reflect from 2.13.15 to 2.13.18 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/290
+* chore(deps): Bump org.codehaus.mojo:exec-maven-plugin from 3.6.2 to 3.6.3 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/294
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-compiler-plugin from 3.14.0 to 3.14.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/291
+* chore(deps): Bump org.apache.maven.plugins:maven-source-plugin from 3.3.1 to 3.4.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/292
+* chore(deps): Bump commons-validator:commons-validator from 1.9.0 to 1.10.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/293
+* chore(deps): Bump sshd.version from 2.16.0 to 2.17.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/289
+* chore(deps): Bump com.github.eirslett:frontend-maven-plugin from 1.15.4 to 2.0.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/295
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/4.0.0...4.1.0
+
 ## [4.0.0](https://github.com/Enedis-OSS/chutney/tree/4.0.0)
 ### ⚡ Breaking changes:
 * Boot jar from server module by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/217
