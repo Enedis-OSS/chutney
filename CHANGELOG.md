@@ -7,17 +7,17 @@
 
 # Changelog
 
-## [4.1.0](https://github.com/Enedis-OSS/chutney/tree/4.1.0)
+## What's Changed
 ### 🚀 Implemented enhancements:
 * Override jira id on execution by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/256
-* Single click to remove global search table results by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/285
 * Disable ldap authentication when no config is defined by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/273
-* Add metrics on Jira calls failures by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/286
 ### 🐛 Fixed bugs:
 * Fix authorization for scenario execution delete by @boddissattva in https://github.com/Enedis-OSS/chutney/pull/259
+* Single click to remove global search table results by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/285
 ### 🔧 Technical enhancements:
 * Remove duplicate checkout in GitHub actions by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/260
 * Resolve Idea plugin build timeout in GitHub actions by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/258
+* Add metrics on Jira calls failures by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/286
 ### 👒 Dependencies:
 * chore(deps): Bump org.codehaus.mojo:exec-maven-plugin from 3.5.1 to 3.6.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/272
 * chore(deps): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.1 to 3.6.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/270
