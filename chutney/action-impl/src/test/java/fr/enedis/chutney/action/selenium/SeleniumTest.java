@@ -17,6 +17,7 @@ import fr.enedis.chutney.action.selenium.driver.SeleniumChromeDriverInitAction;
 import fr.enedis.chutney.action.selenium.driver.SeleniumEdgeDriverInitAction;
 import fr.enedis.chutney.action.selenium.driver.SeleniumFirefoxDriverInitAction;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,6 +31,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class SeleniumTest {
 
     private final Network network = Network.newNetwork();
+
+    @BeforeAll
+    static void beforeAll() {
+        System.setProperty("api.version", "1.44");
+    }
 
     @Test
     public void selenium_firefox_remote_driver_integration_test() {

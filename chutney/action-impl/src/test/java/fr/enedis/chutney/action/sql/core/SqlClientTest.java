@@ -38,6 +38,7 @@ public class SqlClientTest {
     class H2SqlClientTest extends AllTests {
         @BeforeAll
         static void beforeAll() {
+            System.setProperty("api.version", "1.44");
             sqlTarget = TestTarget.TestTargetBuilder.builder()
                 .withTargetId("sql")
                 .withUrl("jdbc:h2:mem")
@@ -71,6 +72,7 @@ public class SqlClientTest {
 
         @BeforeAll
         static void beforeAll() {
+            System.setProperty("api.version", "1.44");
             oracle.start();
             sqlTarget = TestTarget.TestTargetBuilder.builder()
                 .withTargetId("sql")
@@ -90,6 +92,10 @@ public class SqlClientTest {
         protected static final String DB_NAME = "test_" + SqlClientTest.class;
         protected static Target sqlTarget;
 
+        @BeforeAll
+        static void beforeAll() {
+            System.setProperty("api.version", "1.44");
+        }
 
         @Test
         public void should_return_headers_and_rows_on_select_query() throws SQLException {
