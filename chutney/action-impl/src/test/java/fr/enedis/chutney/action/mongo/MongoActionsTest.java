@@ -28,6 +28,7 @@ import fr.enedis.chutney.tools.CloseableResource;
 import java.util.List;
 import java.util.function.Consumer;
 import org.bson.BsonDocument;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
@@ -49,6 +50,11 @@ public class MongoActionsTest {
     private final TestLogger logger = new TestLogger();
 
     private final MongoDatabase database = Mockito.mock(MongoDatabase.class, Mockito.RETURNS_DEEP_STUBS);
+
+    @BeforeAll
+    static void beforeAll() {
+        System.setProperty("api.version", "1.44");
+    }
 
     @Test
     public void insertDocument() {
