@@ -332,6 +332,7 @@
                     <jmxPort>${jmx.port.chutney-server}</jmxPort>
                     <image>
                         <builder>paketobuildpacks/builder-jammy-base</builder>
+                        <verboseLogging>true</verboseLogging>
                     </image>
                 </configuration>
                 <executions>
@@ -387,6 +388,7 @@
                                     <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
                                 </env>
                                 <builder>paketobuildpacks/builder-jammy-base</builder>
+                                <verboseLogging>true</verboseLogging>
                             </image>
                         </configuration>
                     </execution>
