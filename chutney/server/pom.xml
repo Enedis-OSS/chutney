@@ -331,7 +331,7 @@
                 <configuration>
                     <jmxPort>${jmx.port.chutney-server}</jmxPort>
                     <image>
-                        <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
+                        <builder>paketobuildpacks/builder-jammy-base</builder>
                     </image>
                 </configuration>
                 <executions>
@@ -386,7 +386,7 @@
                                 <env>
                                     <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
                                 </env>
-                                <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
+                                <builder>paketobuildpacks/builder-jammy-base</builder>
                             </image>
                         </configuration>
                     </execution>
