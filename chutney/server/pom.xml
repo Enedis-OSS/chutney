@@ -330,6 +330,9 @@
                 <version>${springboot.version}</version>
                 <configuration>
                     <jmxPort>${jmx.port.chutney-server}</jmxPort>
+                    <image>
+                        <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
+                    </image>
                 </configuration>
                 <executions>
                     <execution>
