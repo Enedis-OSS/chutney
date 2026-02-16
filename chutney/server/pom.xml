@@ -330,9 +330,6 @@
                 <version>${springboot.version}</version>
                 <configuration>
                     <jmxPort>${jmx.port.chutney-server}</jmxPort>
-                    <image>
-                        <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
-                    </image>
                 </configuration>
                 <executions>
                     <execution>
@@ -386,7 +383,6 @@
                                 <env>
                                     <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
                                 </env>
-                                <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
                             </image>
                         </configuration>
                     </execution>
