@@ -44,7 +44,6 @@ public class DefaultMongoDatabaseFactoryTest {
 
     @BeforeAll
     static void beforeAll() {
-        System.setProperty("api.version", "1.44");
         try {
             TRUSTSTORE_JKS = Paths.get(DefaultMongoDatabaseFactoryTest.class.getResource(CLIENT_TRUSTSTORE_PATH).toURI()).toString();
             KEYSTORE_JKS = Paths.get(DefaultMongoDatabaseFactoryTest.class.getResource(CLIENT_KEYSTORE_PATH).toURI()).toString();

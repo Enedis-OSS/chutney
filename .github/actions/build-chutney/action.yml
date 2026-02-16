@@ -28,7 +28,7 @@ runs:
     - name: Set api.version
       shell: bash
       run: |
-        echo "api.version=1.44" >> ~/.docker-java.properties
+        echo api.version=1.44 >> ~/.docker-java.properties
 
     - name: Add the current IP address, long hostname and short hostname record to /etc/hosts file
       if: ${{ ! contains(inputs.goals, '-DskipTests') }}
