@@ -386,6 +386,7 @@
                                 <env>
                                     <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
                                 </env>
+                                <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
                             </image>
                         </configuration>
                     </execution>
