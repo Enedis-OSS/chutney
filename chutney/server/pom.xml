@@ -380,6 +380,7 @@
                             <image>
                                 <name>${acceptance-tests-docker-image-name}</name>
                                 <runImage>eclipse-temurin:${maven.compiler.target}-jre</runImage>
+                                <builder>paketobuildpacks/builder-noble-java-tiny:0.0.100</builder>
                                 <env>
                                     <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
                                 </env>

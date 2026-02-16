@@ -25,6 +25,11 @@ runs:
 
     - uses: actions/checkout@v4
 
+    - name: Set docker client api.version in ~/.docker-java.properties (needed by testcontainers)
+      shell: bash
+      run: |
+        echo api.version=1.44 >> ~/.docker-java.properties
+
     - name: Add the current IP address, long hostname and short hostname record to /etc/hosts file
       if: ${{ ! contains(inputs.goals, '-DskipTests') }}
       shell: bash
