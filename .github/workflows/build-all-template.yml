@@ -46,7 +46,7 @@ on:
     outputs:
       PROJECT_VERSION:
         description: "Chutney Version"
-        value: ${{ jobs.all.outputs.PROJECT_VERSION }}
+        value: ${{ jobs.chutney.outputs.PROJECT_VERSION }}
 
 defaults:
   run:
