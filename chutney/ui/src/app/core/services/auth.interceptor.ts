@@ -6,27 +6,45 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { authenticationConfigResourceUrl } from '@core/services/authentification-config.service';
+
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    constructor() {}
+    constructor() {
+    }
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
-        if (!req.url.includes('/api/') && !req.url.includes('/prometheus')) {
-            return next.handle(req);
-        }
-        const token = localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
-
-        if (token) {
-            const cloned = req.clone({
-                headers: req.headers.set('Authorization', `Bearer ${token}`),
-            });
-            return next.handle(cloned);
+        if (this.isProtectedUrl(req.url)) {
+            const token = this.retrieveAccessToken();
+            if (token) {
+                const clonedReq = req.clone({
+                    headers: req.headers.set('Authorization', `Bearer ${token}`),
+                });
+                return next.handle(clonedReq);
+            }
         }
         return next.handle(req);
+    }
+
+    private retrieveAccessToken() {
+        return localStorage.getItem('jwt') || sessionStorage.getItem('access_token');
+    }
+
+    private isApiRequest(url: string): boolean {
+        return url.startsWith('/api/');
+    }
+
+    private isOpenApiRequest(url: string): boolean {
+        const openApiUrls = [authenticationConfigResourceUrl];
+        return openApiUrls.some(openApiUrl => url.startsWith(openApiUrl));
+    }
+
+    private isProtectedUrl(url: string): boolean {
+        return this.isApiRequest(url) && !this.isOpenApiRequest(url);
     }
 }
 
@@ -46,3 +64,4 @@ export class TokenInterceptor implements HttpInterceptor {
         );
     }
 }
+
