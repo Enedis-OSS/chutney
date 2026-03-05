@@ -70,7 +70,7 @@ object HttpClient {
         val credentialsProvider = buildCredentialProvider(serverInfo, targetHost, proxyHost)
         val httpClientContext = buildHttpClientContext(serverInfo, targetHost, proxyHost, credentialsProvider)
         val httpRequest = buildHttpRequest(requestMethod, query, body)
-        val httpClient = buildHttpClient(proxyHost, credentialsProvider)
+        val httpClient = buildHttpClient(proxyHost)
 
         httpClient.use { client ->
             val httpResponse = client.execute(targetHost, httpRequest, httpClientContext)
@@ -154,8 +154,7 @@ object HttpClient {
     }
 
     fun buildHttpClient(
-        proxyHost: HttpHost?,
-        credentialsProvider: CredentialsProvider
+        proxyHost: HttpHost?
     ): CloseableHttpClient {
         val httpClientBuilder = HttpClients.custom()
 
