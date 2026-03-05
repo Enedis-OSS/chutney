@@ -168,7 +168,6 @@ object HttpClient {
 
         httpClientBuilder
             .setConnectionManager(connectionManager)
-            .setDefaultCredentialsProvider(credentialsProvider)
 
         return httpClientBuilder.build()
     }
