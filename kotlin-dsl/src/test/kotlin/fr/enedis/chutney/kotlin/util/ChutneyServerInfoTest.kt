@@ -32,7 +32,7 @@ class ChutneyServerInfoTest {
         assertThat(serverInfo.url).isEqualTo("http://host.name:1234")
         assertThat(serverInfo.user).isEqualTo("user")
         assertThat(serverInfo.password).isEqualTo("password")
-        assertThat(serverInfo.auth).isNull();
+        assertThat(serverInfo.auth).isNull()
     }
 
     @Test

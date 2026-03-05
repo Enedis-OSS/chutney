@@ -36,6 +36,38 @@ class HttpsClientTest {
         .build()
 
     @Nested
+    @DisplayName("Use bearer token authentication")
+    inner class UseBearerTokenAuth {
+        @Test
+        fun chutney() {
+            // Given
+            val serverInfo = ChutneyServerInfo.createWithToken(
+                wireMockServer.baseUrl(),
+                "token_a"
+            )
+
+            wireMockServer.stubFor(
+                get(urlPathMatching("/pre"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody("456")
+                    )
+            )
+
+            // When
+            HttpClient.get<Any>(serverInfo, "/pre")
+
+            // Then
+            wireMockServer.verify(
+                1, getRequestedFor(urlPathMatching("/pre"))
+                    .withHeader("Authorization", equalTo("Bearer token_a"))
+            )
+        }
+    }
+
+    @Nested
     @DisplayName("Use preemptive basic authentication")
     inner class UsePreemptiveBasicAuth {
         @Test

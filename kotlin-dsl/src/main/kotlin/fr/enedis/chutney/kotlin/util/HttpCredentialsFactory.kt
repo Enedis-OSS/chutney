@@ -18,3 +18,7 @@ fun credentials(chutneyServerInfo: ChutneyServerInfo): Credentials {
         chutneyServerInfo.password.toCharArray())
     else BearerToken((chutneyServerInfo.auth as AuthMethod.Bearer).token)
 }
+
+fun basicAuth(chutneyServerInfo: ChutneyServerInfo): Boolean {
+    return (chutneyServerInfo.auth == null) || chutneyServerInfo.auth is AuthMethod.Basic
+}

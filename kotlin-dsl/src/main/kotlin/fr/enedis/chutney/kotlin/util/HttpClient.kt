@@ -13,10 +13,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.paranamer.ParanamerModule
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import org.apache.hc.client5.http.ContextBuilder
-import org.apache.hc.client5.http.auth.AuthScope
-import org.apache.hc.client5.http.auth.CredentialsProvider
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials
+import org.apache.hc.client5.http.auth.*
 import org.apache.hc.client5.http.classic.methods.*
 import org.apache.hc.client5.http.impl.auth.CredentialsProviderBuilder
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
@@ -69,7 +68,7 @@ object HttpClient {
         val targetHost = HttpHost(serverInfo.uri.protocol, serverInfo.uri.host, serverInfo.uri.port)
         val credentialsProvider = buildCredentialProvider(serverInfo, targetHost, proxyHost)
         val httpClientContext = buildHttpClientContext(serverInfo, targetHost, proxyHost, credentialsProvider)
-        val httpRequest = buildHttpRequest(requestMethod, query, body)
+        val httpRequest = buildHttpRequest(requestMethod, query, body, serverInfo)
         val httpClient = buildHttpClient(proxyHost)
 
         httpClient.use { client ->
@@ -118,19 +117,25 @@ object HttpClient {
                 credentialProvider.getCredentials(AuthScope(proxyHost), null) as UsernamePasswordCredentials?
             )
         }
-        contextBuilder.preemptiveBasicAuth(
+
+        if(basicAuth(serverInfo)) {
+            contextBuilder.preemptiveBasicAuth(
                 targetHost,
                 credentialProvider.getCredentials(AuthScope(targetHost), null) as UsernamePasswordCredentials?
             )
+        }
+
         return contextBuilder.build()
     }
 
     fun buildHttpRequest(
         requestMethod: HttpMethod,
         uri: String,
-        body: String
+        body: String,
+        serverInfo: ChutneyServerInfo
     ): ClassicHttpRequest {
         val httpRequest: ClassicHttpRequest
+
         when (requestMethod) {
             HttpMethod.POST -> {
                 httpRequest = HttpPost(uri)
@@ -150,6 +155,11 @@ object HttpClient {
             HttpMethod.DELETE -> httpRequest = HttpDelete(uri)
             HttpMethod.GET -> httpRequest = HttpGet(uri)
         }
+
+        if(!basicAuth(serverInfo)) {
+            httpRequest.addHeader("Authorization", "Bearer " + (serverInfo.auth as AuthMethod.Bearer).token)
+        }
+
         return httpRequest
     }
 
@@ -185,7 +195,7 @@ object HttpClient {
         }
         credentialsProvider.add(
             AuthScope(targetHost),
-            UsernamePasswordCredentials(serverInfo.user, serverInfo.password.toCharArray())
+            credentials(serverInfo)
         )
         return credentialsProvider.build()
     }

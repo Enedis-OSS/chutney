@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class HttpCredentialsFactoryTest {
 
     @Test
-    fun buildBasicAuth() {
+    fun build_basic_auth() {
         val chutneyServerInfo = ChutneyServerInfo(
             "http://localhost",
             "user",
@@ -32,7 +32,7 @@ class HttpCredentialsFactoryTest {
     }
 
     @Test
-    fun buildBearerAuth() {
+    fun build_bearer_auth() {
         val chutneyServerInfo = ChutneyServerInfo.createWithToken(
             "http://localhost",
             "=Za0"
