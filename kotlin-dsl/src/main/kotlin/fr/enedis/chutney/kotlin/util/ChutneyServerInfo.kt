@@ -7,12 +7,14 @@
 
 package fr.enedis.chutney.kotlin.util
 
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import java.net.URL
 
 data class ChutneyServerInfo(
     val url: String,
     val user: String,
     val password: String,
+    val auth: AuthMethod?,
     val proxyUrl: String?,
     val proxyUser: String?,
     val proxyPassword: String?
@@ -22,6 +24,7 @@ data class ChutneyServerInfo(
             url,
             user,
             password,
+            null,
             proxyUrlFromProperties(),
             proxyUserFromProperties(),
             proxyPasswordFromProperties()
@@ -29,6 +32,14 @@ data class ChutneyServerInfo(
 
     val uri: URL = URL(url)
     val proxyUri: URL? = proxyUrl?.let { URL(it) }
+
+    companion object Factory {
+        fun createWithToken(url: String, token: String): ChutneyServerInfo = ChutneyServerInfo(
+            url, "", "", AuthMethod.Bearer(token),
+            proxyUrlFromProperties(),
+            proxyUserFromProperties(),
+            proxyPasswordFromProperties())
+    }
 }
 
 private enum class ProxyProtocol { http, https }

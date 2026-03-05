@@ -81,6 +81,7 @@ class HttpsClientTest {
                     "http://chutney.server:456",
                     "user",
                     "password",
+                    null,
                     wireMockServer.baseUrl(),
                     "proxyUer",
                     "proxyPassword"
