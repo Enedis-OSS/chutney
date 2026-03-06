@@ -7,7 +7,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Metric } from '@core/model/metric.model';
-import { PrometheusService } from '@core/services/prometheus.service';
+import { MetricsService } from '@core/services/metrics.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { filterOnTextContent } from '@shared/tools';
 import { interval, Subscription } from 'rxjs';
@@ -34,7 +34,7 @@ export class MetricsComponent implements OnInit, OnDestroy {
     private prometheusServiceSubscription: Subscription;
 
     constructor(
-        private prometheusService: PrometheusService) {
+        private prometheusService: MetricsService) {
     }
 
     ngOnInit(): void {

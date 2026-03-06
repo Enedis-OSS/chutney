@@ -14,14 +14,14 @@ import { Metric } from '@core/model/metric.model';
 @Injectable({
     providedIn: 'root'
 })
-export class PrometheusService {
+export class MetricsService {
 
-    private url = '/actuator';
+    private resourceUrl = '/api/actuator';
     constructor(private http: HttpClient) {
     }
 
     public getMetrics(): Observable<Metric[]> {
-        return this.http.get(environment.backend + this.url + '/prometheus', { responseType: 'text' })
+        return this.http.get(environment.backend + this.resourceUrl + '/prometheus', { responseType: 'text' })
         .pipe(map((res: string) => {
             const metricRegex = new RegExp('(?<name>[^{]*)(?<tags>{.*})? (?<value>.*)');
             return res.split('\n')

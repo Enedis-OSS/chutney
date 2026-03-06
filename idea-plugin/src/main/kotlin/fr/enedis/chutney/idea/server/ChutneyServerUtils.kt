@@ -29,7 +29,7 @@ object ChutneyServerUtils {
         }
         return try { //TODO cleanup
 //return HttpRequests.request(serverUrl.replaceAll("/$", "") + "/cmd?listBrowsers").connect(new HttpRequests.RequestProcessor<ChutneyServerFetchResult>() {
-            HttpRequests.request(serverUrl.replace("/$".toRegex(), "") + "/actuator/health")
+            HttpRequests.request(serverUrl.replace("/$".toRegex(), "") + "/api/actuator/health")
                 .useProxy(false) //.forceHttps(true)
                 .connect { request: HttpRequests.Request ->
                     val badResponse = "Malformed server response received"

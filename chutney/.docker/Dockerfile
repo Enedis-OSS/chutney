@@ -8,9 +8,6 @@ EXPOSE 8443
 
 LABEL org.opencontainers.image.source=https://github.com/Enedis-OSS/chutney
 
-HEALTHCHECK --timeout=5s --start-period=10s \
-  CMD curl -fsSk https://localhost:8443/actuator/health | grep -q '"status":"UP"' || exit 1
-
 ARG JAR_PATH=server/target
 COPY $JAR_PATH/chutney-server-*-boot.jar app.jar
 
