@@ -19,6 +19,8 @@ data class ChutneyServerInfo(
     val proxyUser: String?,
     val proxyPassword: String?
 ) {
+    @Deprecated("For backward compatibility",
+        replaceWith = ReplaceWith("Factory.createWithToken"))
     constructor(url: String, user: String, password: String) :
         this(
             url,
