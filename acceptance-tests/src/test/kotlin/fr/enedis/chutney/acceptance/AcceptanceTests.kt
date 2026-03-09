@@ -83,7 +83,7 @@ class AcceptanceTests {
     val chutneyServerHost = chutneyServer!!.host
     val chutneyServerPort = chutneyServer!!.getMappedPort(8443)
     chutneyServerInfo = ChutneyServerInfo(
-      "https://$chutneyServerHost:$chutneyServerPort", "admin", "admin",
+      "https://$chutneyServerHost:$chutneyServerPort", "admin", "admin", null,
       null, null, null
     )
 
