@@ -8,11 +8,11 @@
 package fr.enedis.chutney.kotlin.util
 
 import fr.enedis.chutney.kotlin.authentication.AuthMethod
-import util.ChutneyServerInfoClearProperties
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import util.ChutneyServerInfoClearProperties
 import java.net.MalformedURLException
 
 class ChutneyServerInfoTest {
@@ -33,6 +33,16 @@ class ChutneyServerInfoTest {
         assertThat(serverInfo.user).isEqualTo("user")
         assertThat(serverInfo.password).isEqualTo("password")
         assertThat(serverInfo.auth).isNull()
+    }
+
+    @Test
+    fun build_with_basic_auth() {
+        val serverInfo = ChutneyServerInfo.createWithBasicAuth("http://host.name:1234", "user", "password")
+
+        assertThat(serverInfo.url).isEqualTo("http://host.name:1234")
+        assertThat(serverInfo.auth).isInstanceOf(AuthMethod.Basic::class.java)
+        assertThat((serverInfo.auth as AuthMethod.Basic).user).isEqualTo("user")
+        assertThat((serverInfo.auth as AuthMethod.Basic).password).isEqualTo("password")
     }
 
     @Test
