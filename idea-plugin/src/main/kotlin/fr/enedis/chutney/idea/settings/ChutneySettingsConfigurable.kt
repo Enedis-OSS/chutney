@@ -84,6 +84,7 @@ class ChutneySettingsConfigurable :
                 val serverInfo = ChutneyServerInfo(
                     url.text,
                     user.text,
+                  null,
                     String(password.password),
                     proxyUrl.text.ifBlank { null },
                     proxyUser.text.ifBlank { null },

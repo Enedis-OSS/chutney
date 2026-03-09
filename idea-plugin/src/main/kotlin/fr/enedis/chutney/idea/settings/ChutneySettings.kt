@@ -36,6 +36,7 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
                         url = url!!,
                         user = user ?: "",
                         password = password ?: "",
+                      null,
                         proxyUrl = proxyUrl.takeIf { ! it.isNullOrBlank() },
                         proxyUser = proxyUser.takeIf { ! it.isNullOrBlank() },
                         proxyPassword = proxyPassword.takeIf { ! it.isNullOrBlank() }
