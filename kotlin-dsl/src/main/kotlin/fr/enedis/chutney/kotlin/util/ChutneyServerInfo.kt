@@ -36,6 +36,12 @@ data class ChutneyServerInfo(
     val proxyUri: URL? = proxyUrl?.let { URL(it) }
 
     companion object Factory {
+        fun createWithBasicAuth(url: String, user: String, password: String): ChutneyServerInfo = ChutneyServerInfo(
+            url, "", "", AuthMethod.Basic(user, password),
+            proxyUrlFromProperties(),
+            proxyUserFromProperties(),
+            proxyPasswordFromProperties())
+
         fun createWithToken(url: String, token: String): ChutneyServerInfo = ChutneyServerInfo(
             url, "", "", AuthMethod.Bearer(token),
             proxyUrlFromProperties(),

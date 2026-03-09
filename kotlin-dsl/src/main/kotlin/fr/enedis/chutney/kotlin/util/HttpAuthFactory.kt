@@ -13,10 +13,21 @@ import org.apache.hc.client5.http.auth.Credentials
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials
 
 fun credentials(chutneyServerInfo: ChutneyServerInfo): Credentials {
-    return if (chutneyServerInfo.auth == null)
-        UsernamePasswordCredentials(chutneyServerInfo.user,
-        chutneyServerInfo.password.toCharArray())
-    else BearerToken((chutneyServerInfo.auth as AuthMethod.Bearer).token)
+    return when (chutneyServerInfo.auth) {
+      null -> UsernamePasswordCredentials(
+          chutneyServerInfo.user,
+          chutneyServerInfo.password.toCharArray()
+      )
+      is AuthMethod.Basic -> {
+          UsernamePasswordCredentials(
+              chutneyServerInfo.auth.user,
+              chutneyServerInfo.auth.password.toCharArray()
+          )
+      }
+        else -> {
+            BearerToken((chutneyServerInfo.auth as AuthMethod.Bearer).token)
+        }
+    }
 }
 
 fun basicAuth(chutneyServerInfo: ChutneyServerInfo): Boolean {
