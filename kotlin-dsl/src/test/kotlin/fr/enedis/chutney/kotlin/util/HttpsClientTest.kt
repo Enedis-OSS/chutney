@@ -186,7 +186,7 @@ class HttpsClientTest {
             )
 
             val expectedAuthorization = Base64.getEncoder()
-                .encodeToString((serverInfo.user + ":" + serverInfo.password).toByteArray())
+                .encodeToString(("user:" + "password").toByteArray())
 
             wireMockServer.stubFor(
                 get(urlPathMatching("/pre"))

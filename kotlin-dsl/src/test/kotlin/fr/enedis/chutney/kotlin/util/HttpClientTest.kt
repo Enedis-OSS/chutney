@@ -104,10 +104,10 @@ class HttpClientTest {
             @Test
             fun implicit() {
                 // Given
-                System.setProperty("https.proxyHost", "localhost")
-                System.setProperty("https.proxyPort", wireMockServer.httpsPort.toString())
-                System.setProperty("https.proxyUser", "proxyUser")
-                System.setProperty("https.proxyPassword", "proxyPassword")
+                System.setProperty("http.proxyHost", "localhost")
+                System.setProperty("http.proxyPort", wireMockServer.port.toString())
+                System.setProperty("http.proxyUser", "proxyUser")
+                System.setProperty("http.proxyPassword", "proxyPassword")
 
                 val serverInfo = ChutneyServerInfo.createWithToken("http://chutney.server:456", "token_m")
 
@@ -181,7 +181,7 @@ class HttpClientTest {
             )
 
             val expectedAuthorization = Base64.getEncoder()
-                .encodeToString((serverInfo.user + ":" + serverInfo.password).toByteArray())
+                .encodeToString("user:password".toByteArray())
 
             wireMockServer.stubFor(
                 get(urlPathMatching("/pre"))
