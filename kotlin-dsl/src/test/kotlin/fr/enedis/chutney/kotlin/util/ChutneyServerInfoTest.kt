@@ -136,7 +136,7 @@ class ChutneyServerInfoTest {
         fun https() {
             System.setProperty("https.proxyHost", "proxyHost")
             System.setProperty("https.proxyPort", "5678")
-            System.setProperty("https.proxyUser", "proxyUer")
+            System.setProperty("https.proxyUser", "proxyUser")
             System.setProperty("https.proxyPassword", "proxyPassword")
 
             val serverInfo = ChutneyServerInfo("https://host.name:1234", "user", "password")
@@ -152,14 +152,14 @@ class ChutneyServerInfoTest {
         fun https_with_token() {
             System.setProperty("https.proxyHost", "proxyHost")
             System.setProperty("https.proxyPort", "5678")
-            System.setProperty("https.proxyUser", "proxyUer")
+            System.setProperty("https.proxyUser", "proxyUser")
             System.setProperty("https.proxyPassword", "proxyPassword")
 
             val serverInfo = ChutneyServerInfo.createWithToken("http://host.name:1234", "token")
 
-            assertThat(serverInfo.proxyUrl).isEqualTo("http://proxyHost:5678")
-            assertThat(serverInfo.proxyUser).isEqualTo(System.getProperty("http.proxyUser"))
-            assertThat(serverInfo.proxyPassword).isEqualTo(System.getProperty("http.proxyPassword"))
+            assertThat(serverInfo.proxyUrl).isEqualTo("https://proxyHost:5678")
+            assertThat(serverInfo.proxyUser).isEqualTo(System.getProperty("https.proxyUser"))
+            assertThat(serverInfo.proxyPassword).isEqualTo(System.getProperty("https.proxyPassword"))
 
             assertThat(serverInfo.proxyUri.toString()).isEqualTo(serverInfo.proxyUrl)
 
