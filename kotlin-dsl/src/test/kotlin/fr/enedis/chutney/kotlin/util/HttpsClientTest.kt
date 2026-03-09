@@ -145,9 +145,41 @@ class HttpsClientTest {
     @DisplayName("Use preemptive basic authentication")
     inner class UsePreemptiveBasicAuth {
         @Test
-        fun chutney() {
+        fun chutney_old_way() {
             // Given
             val serverInfo = ChutneyServerInfo(
+                wireMockServer.baseUrl(),
+                "user",
+                "password"
+            )
+
+            val expectedAuthorization = Base64.getEncoder()
+                .encodeToString((serverInfo.user + ":" + serverInfo.password).toByteArray())
+
+            wireMockServer.stubFor(
+                get(urlPathMatching("/pre"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody("456")
+                    )
+            )
+
+            // When
+            HttpClient.get<Any>(serverInfo, "/pre")
+
+            // Then
+            wireMockServer.verify(
+                1, getRequestedFor(urlPathMatching("/pre"))
+                    .withHeader("Authorization", equalTo("Basic $expectedAuthorization"))
+            )
+        }
+
+        @Test
+        fun chutney() {
+            // Given
+            val serverInfo = ChutneyServerInfo.createWithBasicAuth(
                 wireMockServer.baseUrl(),
                 "user",
                 "password"
