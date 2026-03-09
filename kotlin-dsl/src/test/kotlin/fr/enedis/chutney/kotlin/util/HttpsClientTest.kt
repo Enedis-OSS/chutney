@@ -11,6 +11,7 @@ import util.ChutneyServerInfoClearProperties
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -65,6 +66,79 @@ class HttpsClientTest {
                     .withHeader("Authorization", equalTo("Bearer token_a"))
             )
         }
+        @Nested
+        @DisplayName("Proxy")
+        inner class Proxy {
+
+            @Test
+            fun explicit() {
+                // Given
+                val serverInfo = ChutneyServerInfo(
+                    "http://chutney.server:456",
+                    "",
+                    "",
+                    AuthMethod.Bearer("token_1"),
+                    wireMockServer.baseUrl(),
+                    "proxyUser",
+                    "proxyPassword"
+                )
+
+                val expectedProxyAuthorization = Base64.getEncoder()
+                    .encodeToString((serverInfo.proxyUser + ":" + serverInfo.proxyPassword).toByteArray())
+
+                wireMockServer.stubFor(
+                    get(urlPathMatching("/pre"))
+                        .willReturn(
+                            aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("456")
+                        )
+                )
+
+                // When
+                HttpClient.get<Any>(serverInfo, "/pre")
+
+                // Then
+                wireMockServer.verify(
+                    1, getRequestedFor(urlPathMatching("/pre"))
+                        .withHeader("Proxy-Authorization", equalTo("Basic $expectedProxyAuthorization"))
+                )
+            }
+
+            @Test
+            fun implicit() {
+                // Given
+                System.setProperty("https.proxyHost", "localhost")
+                System.setProperty("https.proxyPort", wireMockServer.httpsPort.toString())
+                System.setProperty("https.proxyUser", "proxyUser")
+                System.setProperty("https.proxyPassword", "proxyPassword")
+
+                val serverInfo = ChutneyServerInfo.createWithToken("http://chutney.server:456", "token_m")
+
+                val expectedProxyAuthorization = Base64.getEncoder()
+                    .encodeToString((serverInfo.proxyUser + ":" + serverInfo.proxyPassword).toByteArray())
+
+                wireMockServer.stubFor(
+                    get(urlPathMatching("/pre"))
+                        .willReturn(
+                            aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("456")
+                        )
+                )
+
+                // When
+                HttpClient.get<Any>(serverInfo, "/pre")
+
+                // Then
+                wireMockServer.verify(
+                    1, getRequestedFor(urlPathMatching("/pre"))
+                        .withHeader("Proxy-Authorization", equalTo("Basic $expectedProxyAuthorization"))
+                )
+            }
+        }
     }
 
     @Nested
@@ -115,7 +189,7 @@ class HttpsClientTest {
                     "password",
                     null,
                     wireMockServer.baseUrl(),
-                    "proxyUer",
+                    "proxyUser",
                     "proxyPassword"
                 )
 
@@ -147,7 +221,7 @@ class HttpsClientTest {
                 // Given
                 System.setProperty("https.proxyHost", "localhost")
                 System.setProperty("https.proxyPort", wireMockServer.httpsPort.toString())
-                System.setProperty("https.proxyUser", "proxyUer")
+                System.setProperty("https.proxyUser", "proxyUser")
                 System.setProperty("https.proxyPassword", "proxyPassword")
 
                 val serverInfo = ChutneyServerInfo("http://chutney.server:456", "user", "password")
