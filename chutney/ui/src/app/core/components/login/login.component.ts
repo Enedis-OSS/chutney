@@ -13,6 +13,7 @@ import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { AuthenticationConfigService } from '@core/services/authentification-config.service';
+import { ThemeService } from '@core/theme/theme.service';
 
 @Component({
     selector: 'chutney-login',
@@ -34,13 +35,15 @@ export class LoginComponent implements OnDestroy, OnInit {
 
     enableUserPassword = false;
     enableSso = false;
+    showUserPassword = false;
 
     constructor(
         loginService: LoginService,
         private infoService: InfoService,
         private route: ActivatedRoute,
         private ssoService: SsoService,
-        private authenticationConfigService: AuthenticationConfigService
+        private authenticationConfigService: AuthenticationConfigService,
+        public themeService: ThemeService
     ) {
         this.loginService = loginService
         this.route.params

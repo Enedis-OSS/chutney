@@ -414,6 +414,10 @@
         "OR": "OR",
         "username": "Username",
         "password": "Password",
+        "welcome": "Welcome",
+        "ssoConnect": "Sign in with SSO",
+        "useUsernamePassword": "Use username and password",
+        "useSso": "Use SSO",
         "sso": {
             "userNotFound": "User not found, please contact your admin"
         }
