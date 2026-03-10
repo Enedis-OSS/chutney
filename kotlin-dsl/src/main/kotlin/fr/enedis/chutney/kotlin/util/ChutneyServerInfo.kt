@@ -12,7 +12,7 @@ import java.net.URL
 
 data class ChutneyServerInfo(
     val url: String,
-    val auth: AuthMethod?,
+    val auth: AuthMethod,
     val proxyUrl: String?,
     val proxyUser: String?,
     val proxyPassword: String?
@@ -48,7 +48,7 @@ data class ChutneyServerInfo(
             proxyPasswordFromProperties()
         )
 
-    constructor(url: String, auth: AuthMethod?) :
+    constructor(url: String, auth: AuthMethod) :
         this(
             url,
             auth,

@@ -183,7 +183,7 @@ class ChutneyServerInfoTest {
     }
 
     @Nested
-    @DisplayName("Use system properties for proxy setup")
+    @DisplayName("Returns which auth is used")
     @ChutneyServerInfoClearProperties
     inner class WhichAuth {
         @Test
