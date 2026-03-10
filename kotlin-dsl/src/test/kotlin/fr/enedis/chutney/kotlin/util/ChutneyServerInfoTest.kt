@@ -26,6 +26,7 @@ class ChutneyServerInfoTest {
     }
 
     @Test
+    @ChutneyServerInfoClearProperties
     fun build_with_user_password() {
         val serverInfo = ChutneyServerInfo("http://host.name:1234", "user", "password")
 
@@ -36,6 +37,7 @@ class ChutneyServerInfoTest {
     }
 
     @Test
+    @ChutneyServerInfoClearProperties
     fun build_with_auth_token() {
         val serverInfo = ChutneyServerInfo("http://host.name:1234", AuthMethod.Bearer("AAtokenB"))
 
@@ -178,5 +180,27 @@ class ChutneyServerInfoTest {
 
             assertThat(serverInfo.proxyUri.toString()).isEqualTo(serverInfo.proxyUrl)
         }
+    }
+
+    @Nested
+    @DisplayName("Use system properties for proxy setup")
+    @ChutneyServerInfoClearProperties
+    inner class WhichAuth {
+        @Test
+        fun build_with_user_password() {
+            val serverInfo = ChutneyServerInfo("http://host.name:1234", "user", "password")
+
+            assertThat(serverInfo.isBasicAuth()).isTrue
+            assertThat(serverInfo.isTokenAuth()).isFalse
+        }
+
+        @Test
+        fun build_with_token() {
+            val serverInfo = ChutneyServerInfo("http://host.name:1234", AuthMethod.Bearer("token"))
+
+            assertThat(serverInfo.isBasicAuth()).isFalse
+            assertThat(serverInfo.isTokenAuth()).isTrue
+        }
+
     }
 }

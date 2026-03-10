@@ -25,7 +25,3 @@ fun credentials(chutneyServerInfo: ChutneyServerInfo): Credentials {
         }
     }
 }
-
-fun basicAuth(chutneyServerInfo: ChutneyServerInfo): Boolean {
-    return (chutneyServerInfo.auth == null) || chutneyServerInfo.auth is AuthMethod.Basic
-}

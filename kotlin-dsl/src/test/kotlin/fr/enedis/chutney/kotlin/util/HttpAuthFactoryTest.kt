@@ -11,69 +11,37 @@ import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import org.apache.hc.client5.http.auth.BearerToken
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class HttpAuthFactoryTest {
 
-    @Nested
-    @DisplayName("Credentials")
-    inner class Credentials {
+    @Test
+    fun basic_auth_credentials() {
+        val chutneyServerInfo = ChutneyServerInfo(
+            "http://localhost", "user", "password"
+        )
 
-        @Test
-        fun build_basic_auth() {
-            val chutneyServerInfo = ChutneyServerInfo(
-                "http://localhost", "user", "password"
-            )
+        val credentials = credentials(chutneyServerInfo)
 
-            val credentials = credentials(chutneyServerInfo)
-
-            assertThat(credentials).isInstanceOf(UsernamePasswordCredentials::class.java)
-            assertThat((credentials as UsernamePasswordCredentials).userName)
-                .isEqualTo("user")
-            assertThat(String(credentials.userPassword))
-                .isEqualTo("password")
-        }
-
-        @Test
-        fun build_bearer_auth() {
-            val chutneyServerInfo = ChutneyServerInfo(
-                "http://localhost",
-                AuthMethod.Bearer("=Za0")
-            )
-
-            val credentials = credentials(chutneyServerInfo)
-
-            assertThat(credentials).isInstanceOf(BearerToken::class.java)
-            assertThat((credentials as BearerToken).token)
-                .isEqualTo("=Za0")
-        }
+        assertThat(credentials).isInstanceOf(UsernamePasswordCredentials::class.java)
+        assertThat((credentials as UsernamePasswordCredentials).userName)
+            .isEqualTo("user")
+        assertThat(String(credentials.userPassword))
+            .isEqualTo("password")
     }
 
-    @Nested
-    @DisplayName("IsBasicAuth")
-    inner class IsBasicAuth {
-        @Test
-        fun user_password_is_basic_auth() {
-            val chutneyServerInfo = ChutneyServerInfo(
-                "http://localhost",
-                "user",
-                "password"
-            )
+    @Test
+    fun bearer_auth_credentials() {
+        val chutneyServerInfo = ChutneyServerInfo(
+            "http://localhost",
+            AuthMethod.Bearer("=Za0")
+        )
 
-            assertThat(basicAuth(chutneyServerInfo)).isTrue
-        }
+        val credentials = credentials(chutneyServerInfo)
 
-        @Test
-        fun bearer_auth_is_not_basic_auth() {
-            val chutneyServerInfo = ChutneyServerInfo(
-                "http://localhost",
-                AuthMethod.Bearer("=Za0")
-            )
-
-            assertThat(basicAuth(chutneyServerInfo)).isFalse
-        }
+        assertThat(credentials).isInstanceOf(BearerToken::class.java)
+        assertThat((credentials as BearerToken).token)
+            .isEqualTo("=Za0")
     }
 
 

@@ -67,6 +67,9 @@ data class ChutneyServerInfo(
     fun password(): String? {
         return if(this.auth is AuthMethod.Basic) this.auth.password else "";
     }
+
+    fun isBasicAuth(): Boolean = auth is AuthMethod.Basic
+    fun isTokenAuth(): Boolean = auth is AuthMethod.Bearer
 }
 
 private enum class ProxyProtocol { http, https }

@@ -118,7 +118,7 @@ object HttpClient {
             )
         }
 
-        if(basicAuth(serverInfo)) {
+        if(serverInfo.isBasicAuth()) {
             contextBuilder.preemptiveBasicAuth(
                 targetHost,
                 credentialProvider.getCredentials(AuthScope(targetHost), null) as UsernamePasswordCredentials?
@@ -156,7 +156,7 @@ object HttpClient {
             HttpMethod.GET -> httpRequest = HttpGet(uri)
         }
 
-        if(!basicAuth(serverInfo)) {
+        if(serverInfo.isTokenAuth()) {
             httpRequest.addHeader("Authorization", "Bearer " + (serverInfo.auth as AuthMethod.Bearer).token)
         }
 
