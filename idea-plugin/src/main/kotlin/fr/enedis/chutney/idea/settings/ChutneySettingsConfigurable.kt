@@ -17,6 +17,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import java.awt.BorderLayout
 import java.awt.Color
 import javax.swing.JButton
@@ -66,8 +67,8 @@ class ChutneySettingsConfigurable :
     private fun initFields() {
         val serverInfo = chutneySettings.state.serverInfo()
         url.text = serverInfo?.url
-        user.text = serverInfo?.user
-        password.text = serverInfo?.password
+        user.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).user else ""
+        password.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).password else ""
         proxyUrl.text = serverInfo?.proxyUrl
         proxyUser.text = serverInfo?.proxyUser
         proxyPassword.text = serverInfo?.proxyPassword
@@ -83,9 +84,7 @@ class ChutneySettingsConfigurable :
             try {
                 val serverInfo = ChutneyServerInfo(
                     url.text,
-                    user.text,
-                    String(password.password),
-                  null,
+                    AuthMethod.Basic(user.text, String(password.password)),
                     proxyUrl.text.ifBlank { null },
                     proxyUser.text.ifBlank { null },
                     String(proxyPassword.password).ifBlank { null }

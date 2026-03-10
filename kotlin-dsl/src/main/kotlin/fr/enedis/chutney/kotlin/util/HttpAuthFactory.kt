@@ -14,10 +14,6 @@ import org.apache.hc.client5.http.auth.UsernamePasswordCredentials
 
 fun credentials(chutneyServerInfo: ChutneyServerInfo): Credentials {
     return when (chutneyServerInfo.auth) {
-      null -> UsernamePasswordCredentials(
-          chutneyServerInfo.user,
-          chutneyServerInfo.password.toCharArray()
-      )
       is AuthMethod.Basic -> {
           UsernamePasswordCredentials(
               chutneyServerInfo.auth.user,

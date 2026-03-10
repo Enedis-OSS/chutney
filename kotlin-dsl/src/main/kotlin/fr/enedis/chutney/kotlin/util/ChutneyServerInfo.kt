@@ -12,21 +12,46 @@ import java.net.URL
 
 data class ChutneyServerInfo(
     val url: String,
-    val user: String,
-    val password: String,
     val auth: AuthMethod?,
     val proxyUrl: String?,
     val proxyUser: String?,
     val proxyPassword: String?
 ) {
-    @Deprecated("For backward compatibility",
-        replaceWith = ReplaceWith("Factory"))
+    @Deprecated(
+        message = "This constructor is deprecated because authentication should now be provided via AuthMethod",
+        replaceWith = ReplaceWith("ChutneyServerInfo(url, AuthMethod.Basic(user, password), proxyUrl, proxyUser, proxyPassword)")
+    )
+    constructor(
+        url: String,
+        user: String,
+        password: String,
+        proxyUrl: String?,
+        proxyUser: String?,
+        proxyPassword: String?
+    ):
+        this(
+            url,
+            AuthMethod.Basic(user, password),
+            proxyUrl,
+            proxyUser,
+            proxyPassword
+        )
+
+    @Deprecated("This constructor is deprecated because authentication should now be provided via AuthMethod",
+        replaceWith = ReplaceWith("ChutneyServerInfo(url, AuthMethod.Basic(user, password))"))
     constructor(url: String, user: String, password: String) :
         this(
             url,
-            user,
-            password,
-            null,
+            AuthMethod.Basic(user, password),
+            proxyUrlFromProperties(),
+            proxyUserFromProperties(),
+            proxyPasswordFromProperties()
+        )
+
+    constructor(url: String, auth: AuthMethod?) :
+        this(
+            url,
+            auth,
             proxyUrlFromProperties(),
             proxyUserFromProperties(),
             proxyPasswordFromProperties()
@@ -35,18 +60,12 @@ data class ChutneyServerInfo(
     val uri: URL = URL(url)
     val proxyUri: URL? = proxyUrl?.let { URL(it) }
 
-    companion object Factory {
-        fun createWithBasicAuth(url: String, user: String, password: String): ChutneyServerInfo = ChutneyServerInfo(
-            url, "", "", AuthMethod.Basic(user, password),
-            proxyUrlFromProperties(),
-            proxyUserFromProperties(),
-            proxyPasswordFromProperties())
+    fun user(): String? {
+        return if(this.auth is AuthMethod.Basic) this.auth.user else "";
+    }
 
-        fun createWithToken(url: String, token: String): ChutneyServerInfo = ChutneyServerInfo(
-            url, "", "", AuthMethod.Bearer(token),
-            proxyUrlFromProperties(),
-            proxyUserFromProperties(),
-            proxyPasswordFromProperties())
+    fun password(): String? {
+        return if(this.auth is AuthMethod.Basic) this.auth.password else "";
     }
 }
 
