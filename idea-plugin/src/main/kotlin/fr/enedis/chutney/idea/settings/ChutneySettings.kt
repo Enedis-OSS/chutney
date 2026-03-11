@@ -36,12 +36,11 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
                         url = url!!,
                         user = user ?: "",
                         password = password ?: "",
-                      null,
                         proxyUrl = proxyUrl.takeIf { ! it.isNullOrBlank() },
                         proxyUser = proxyUser.takeIf { ! it.isNullOrBlank() },
                         proxyPassword = proxyPassword.takeIf { ! it.isNullOrBlank() }
                     )
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null;
                 }
             }
@@ -64,7 +63,9 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
 
         fun checkRemoteServerUrlConfig(project: Project): Boolean {
             val serverInfo = getInstance().state.serverInfo()
-            if (serverInfo == null || serverInfo.url.isBlank() || serverInfo.user.isBlank() || serverInfo.password.isBlank()) {
+            if (serverInfo == null || serverInfo.url.isBlank() || serverInfo.user()?.isBlank() == true || serverInfo.password()
+                ?.isBlank() == true
+            ) {
                 EventDataLogger.logError(
                     " <a href=\"configure\">Configure</a> Missing remote configuration server, please check url, user, password and proxy if needed",
                     project

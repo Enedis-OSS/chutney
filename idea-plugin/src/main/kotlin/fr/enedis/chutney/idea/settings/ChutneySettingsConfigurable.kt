@@ -7,32 +7,48 @@
 
 package fr.enedis.chutney.idea.settings
 
-import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
-import fr.enedis.chutney.kotlin.util.HttpClient
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPasswordField
+import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
 import fr.enedis.chutney.kotlin.authentication.AuthMethod
+import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
+import fr.enedis.chutney.kotlin.util.HttpClient
 import java.awt.BorderLayout
 import java.awt.Color
+import javax.swing.ButtonGroup
 import javax.swing.JButton
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JPanel
 
 class ChutneySettingsConfigurable :
     SearchableConfigurable, Configurable.NoScroll {
 
     val url: JBTextField = JBTextField()
+
     val user: JBTextField = JBTextField()
+    val userLabel: JLabel = JLabel("User: ")
     val password: JBPasswordField = JBPasswordField()
+    val passwordLabel: JLabel = JLabel("Password: ")
+
+    val token: JBTextField = JBTextField()
+    val tokenLabel: JLabel = JLabel("Token: ")
+
     val proxyUrl: JBTextField = JBTextField()
     val proxyUser: JBTextField = JBTextField()
     val proxyPassword: JBPasswordField = JBPasswordField()
+
+    val authModeLabel: JLabel = JLabel("Authentication mode")
+    val basicAuthButton = JBRadioButton("Basic");
+    val tokenAuthButton = JBRadioButton("Token");
+    val authButtonsGroup = ButtonGroup()
+
     val chutneySettings: ChutneySettings = ChutneySettings.getInstance()
 
     override fun isModified(): Boolean {
@@ -55,7 +71,25 @@ class ChutneySettingsConfigurable :
         this.chutneySettings.loadState(stateFromFields())
     }
 
-    private fun stateFromFields() = ChutneySettings.ChutneySettingsState(
+    private fun basicButtonSelected() {
+      updateAuthFields(isBasic = true, isToken = false)
+    }
+
+    private fun tokenButtonSelected() {
+      updateAuthFields(isBasic = false, isToken = true)
+    }
+
+    private fun updateAuthFields(isBasic: Boolean, isToken: Boolean) {
+      user.isVisible = isBasic
+      userLabel.isVisible = isBasic
+      password.isVisible = isBasic
+      passwordLabel.isVisible = isBasic
+
+      token.isVisible = isToken
+      tokenLabel.isVisible = isToken
+    }
+
+  private fun stateFromFields() = ChutneySettings.ChutneySettingsState(
         url = url.text,
         user = user.text,
         password = String(password.password),
@@ -69,6 +103,7 @@ class ChutneySettingsConfigurable :
         url.text = serverInfo?.url
         user.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).user else ""
         password.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).password else ""
+        token.text = if(serverInfo?.auth is AuthMethod.Bearer) (serverInfo.auth as AuthMethod.Bearer).token else ""
         proxyUrl.text = serverInfo?.proxyUrl
         proxyUser.text = serverInfo?.proxyUser
         proxyPassword.text = serverInfo?.proxyPassword
@@ -99,18 +134,34 @@ class ChutneySettingsConfigurable :
             checkLabel.isVisible = true
         }
 
+        authButtonsGroup.add(basicAuthButton)
+        authButtonsGroup.add(tokenAuthButton)
+
         val myWrapper = JPanel(BorderLayout())
         val centerPanel =
                 FormBuilder.createFormBuilder()
                         .addLabeledComponent("Server url : ", url)
-                        .addLabeledComponent("User: ", user)
-                        .addLabeledComponent("Password: ", password)
+                        .addVerticalGap(20)
+                        .addComponent(authModeLabel)
+                        .addComponent(basicAuthButton)
+                        .addComponent(tokenAuthButton)
+                        .addLabeledComponent(userLabel, user)
+                        .addLabeledComponent(passwordLabel, password)
+                        .addLabeledComponent(tokenLabel, token)
+                        .addVerticalGap(20)
                         .addLabeledComponent("Proxy url: ", proxyUrl)
                         .addLabeledComponent("Proxy user: ", proxyUser)
                         .addLabeledComponent("Proxy password: ", proxyPassword)
                         .addComponentToRightColumn(checkConnectionButton)
                         .addComponent(checkLabel)
                         .panel
+
+        basicAuthButton.addActionListener({ basicButtonSelected() })
+        tokenAuthButton.addActionListener({ tokenButtonSelected() })
+
+        basicAuthButton.setSelected(true)
+        updateAuthFields(isBasic = true, isToken = false)
+
         myWrapper.add(centerPanel, BorderLayout.NORTH)
         return myWrapper
     }
