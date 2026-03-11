@@ -91,8 +91,10 @@ class ChutneySettingsConfigurable :
 
   private fun stateFromFields() = ChutneySettings.ChutneySettingsState(
         url = url.text,
+        basicAuth = basicAuthButton.isSelected,
         user = user.text,
         password = String(password.password),
+        token = token.text,
         proxyUrl = proxyUrl.text,
         proxyUser = proxyUser.text,
         proxyPassword = String(proxyPassword.password)
@@ -101,12 +103,16 @@ class ChutneySettingsConfigurable :
     private fun initFields() {
         val serverInfo = chutneySettings.state.serverInfo()
         url.text = serverInfo?.url
+        basicAuthButton.isSelected = chutneySettings.state.basicAuth == true
+        tokenAuthButton.isSelected = chutneySettings.state.basicAuth == false
         user.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).user else ""
         password.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).password else ""
         token.text = if(serverInfo?.auth is AuthMethod.Bearer) (serverInfo.auth as AuthMethod.Bearer).token else ""
         proxyUrl.text = serverInfo?.proxyUrl
         proxyUser.text = serverInfo?.proxyUser
         proxyPassword.text = serverInfo?.proxyPassword
+
+        updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = tokenAuthButton.isSelected)
     }
 
     override fun createComponent(): JComponent {
@@ -119,7 +125,8 @@ class ChutneySettingsConfigurable :
             try {
                 val serverInfo = ChutneyServerInfo(
                     url.text,
-                    AuthMethod.Basic(user.text, String(password.password)),
+                  if(basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
+                    else AuthMethod.Bearer(token.text),
                     proxyUrl.text.ifBlank { null },
                     proxyUser.text.ifBlank { null },
                     String(proxyPassword.password).ifBlank { null }
@@ -158,9 +165,6 @@ class ChutneySettingsConfigurable :
 
         basicAuthButton.addActionListener({ basicButtonSelected() })
         tokenAuthButton.addActionListener({ tokenButtonSelected() })
-
-        basicAuthButton.setSelected(true)
-        updateAuthFields(isBasic = true, isToken = false)
 
         myWrapper.add(centerPanel, BorderLayout.NORTH)
         return myWrapper

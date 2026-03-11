@@ -15,6 +15,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 
 @State(name = "ChutneySettings", storages = [Storage("chutney.xml")])
 class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettingsState> {
@@ -22,20 +23,22 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
     private var settingsState: ChutneySettingsState = ChutneySettingsState()
 
     class ChutneySettingsState(
-        var url: String? = "",
-        var user: String? = "",
-        var password: String? = "",
-        var proxyUrl: String? = "",
-        var proxyUser: String? = "",
-        var proxyPassword: String? = ""
+      var url: String? = "",
+      var basicAuth: Boolean? = true,
+      var user: String? = "",
+      var password: String? = "",
+      var token: String? = "",
+      var proxyUrl: String? = "",
+      var proxyUser: String? = "",
+      var proxyPassword: String? = ""
     ) {
         fun serverInfo(): ChutneyServerInfo? {
             if (!url.isNullOrBlank()) {
                 return try {
                     ChutneyServerInfo(
                         url = url!!,
-                        user = user ?: "",
-                        password = password ?: "",
+                      if(basicAuth == true) AuthMethod.Basic(user.toString(), password.toString())
+                        else AuthMethod.Bearer(token.toString()),
                         proxyUrl = proxyUrl.takeIf { ! it.isNullOrBlank() },
                         proxyUser = proxyUser.takeIf { ! it.isNullOrBlank() },
                         proxyPassword = proxyPassword.takeIf { ! it.isNullOrBlank() }
@@ -63,11 +66,9 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
 
         fun checkRemoteServerUrlConfig(project: Project): Boolean {
             val serverInfo = getInstance().state.serverInfo()
-            if (serverInfo == null || serverInfo.url.isBlank() || serverInfo.user()?.isBlank() == true || serverInfo.password()
-                ?.isBlank() == true
-            ) {
+            if (serverInfo == null || serverInfo.url.isBlank()) {
                 EventDataLogger.logError(
-                    " <a href=\"configure\">Configure</a> Missing remote configuration server, please check url, user, password and proxy if needed",
+                    " <a href=\"configure\">Configure</a> Missing remote configuration server, please check url, authentication and proxy if needed",
                     project
                 ) { _, _ ->
                     ShowSettingsUtil.getInstance().showSettingsDialog(project, "Chutney")
