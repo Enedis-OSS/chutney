@@ -21,11 +21,8 @@ import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
 import java.awt.BorderLayout
 import java.awt.Color
-import javax.swing.ButtonGroup
-import javax.swing.JButton
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
+import javax.swing.*
+
 
 class ChutneySettingsConfigurable :
     SearchableConfigurable, Configurable.NoScroll {
@@ -144,14 +141,17 @@ class ChutneySettingsConfigurable :
         authButtonsGroup.add(basicAuthButton)
         authButtonsGroup.add(tokenAuthButton)
 
+        val authButtonsPanel = JPanel(BorderLayout())
+        authButtonsPanel.add(basicAuthButton, BorderLayout.WEST)
+        authButtonsPanel.add(tokenAuthButton, BorderLayout.CENTER)
+
         val myWrapper = JPanel(BorderLayout())
         val centerPanel =
                 FormBuilder.createFormBuilder()
                         .addLabeledComponent("Server url : ", url)
                         .addVerticalGap(20)
                         .addComponent(authModeLabel)
-                        .addComponent(basicAuthButton)
-                        .addComponent(tokenAuthButton)
+                        .addComponent(authButtonsPanel)
                         .addLabeledComponent(userLabel, user)
                         .addLabeledComponent(passwordLabel, password)
                         .addLabeledComponent(tokenLabel, token)
