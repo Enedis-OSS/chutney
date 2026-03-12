@@ -415,7 +415,6 @@
         "username": "Username",
         "password": "Password",
         "welcome": "Welcome",
-        "ssoConnect": "Sign in with SSO",
         "useUsernamePassword": "Use username and password",
         "useSso": "Use SSO",
         "sso": {

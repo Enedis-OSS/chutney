@@ -18,7 +18,7 @@
       <div class="text-center fs-3">
         {{ applicationName }}
       </div>
-      <div class="instance-img" alt="homepage image" 
+      <div class="instance-img" alt="homepage image"
            [style.background-image]="'url(/assets/img/' + (themeService.isLight() ? 'login-light.png' : 'login-dark.png') + ')'">
       </div>
     </div>
@@ -76,13 +76,15 @@
       </div>
 
       <ng-template #sso>
-        <div class="sso-method d-flex flex-column justify-content-center">
-          <button class="btn btn-light btn-lg sso-button w-100 d-flex align-items-center justify-content-center" (click)="connectSso()">
+        <div class="sso-method d-flex flex-column justify-content-center align-items-center">
+          <div class="sso-square-button clickable" [class.sso-no-image]="!getSsoProviderImageUrl()" (click)="connectSso()">
             @if (getSsoProviderImageUrl()) {
-              <img src="{{getSsoProviderImageUrl()}}" class="sso-image me-2" alt="sso"/>
+              <img src="{{getSsoProviderImageUrl()}}" class="sso-image" alt="sso"/>
             }
-            <span>{{ getSsoProviderName() || ('login.ssoConnect' | translate) }}</span>
-          </button>
+            <div class="sso-provider-overlay">
+              <span class="sso-provider-name">{{ getSsoProviderName() }}</span>
+            </div>
+          </div>
         </div>
       </ng-template>
 
