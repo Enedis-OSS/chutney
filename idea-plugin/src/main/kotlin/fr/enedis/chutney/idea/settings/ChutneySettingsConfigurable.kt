@@ -45,8 +45,8 @@ class ChutneySettingsConfigurable :
     val proxyPassword: JBPasswordField = JBPasswordField()
 
     val authModeLabel: JLabel = JLabel("Authentication mode")
-    val basicAuthButton = JBRadioButton("Basic");
-    val tokenAuthButton = JBRadioButton("Token");
+    val basicAuthButton = JBRadioButton("Basic")
+    val tokenAuthButton = JBRadioButton("Token")
     val authButtonsGroup = ButtonGroup()
 
     val chutneySettings: ChutneySettings = ChutneySettings.getInstance()
@@ -163,8 +163,8 @@ class ChutneySettingsConfigurable :
                         .addComponent(checkLabel)
                         .panel
 
-        basicAuthButton.addActionListener({ basicButtonSelected() })
-        tokenAuthButton.addActionListener({ tokenButtonSelected() })
+        basicAuthButton.addActionListener { basicButtonSelected() }
+        tokenAuthButton.addActionListener { tokenButtonSelected() }
 
         myWrapper.add(centerPanel, BorderLayout.NORTH)
         return myWrapper

@@ -23,8 +23,8 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
     private var settingsState: ChutneySettingsState = ChutneySettingsState()
 
     class ChutneySettingsState(
-      var url: String? = "",
-      var basicAuth: Boolean? = true,
+      var url: String = "",
+      var basicAuth: Boolean = true,
       var user: String? = "",
       var password: String? = "",
       var token: String? = "",
@@ -33,18 +33,18 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
       var proxyPassword: String? = ""
     ) {
         fun serverInfo(): ChutneyServerInfo? {
-            if (!url.isNullOrBlank()) {
+            if (url.isNotBlank()) {
                 return try {
                     ChutneyServerInfo(
-                        url = url!!,
-                      if(basicAuth == true) AuthMethod.Basic(user.toString(), password.toString())
-                        else AuthMethod.Bearer(token.toString()),
+                        url = url,
+                      if(basicAuth) AuthMethod.Basic(user.orEmpty(), password.orEmpty())
+                        else AuthMethod.Bearer(token.orEmpty()),
                         proxyUrl = proxyUrl.takeIf { ! it.isNullOrBlank() },
                         proxyUser = proxyUser.takeIf { ! it.isNullOrBlank() },
                         proxyPassword = proxyPassword.takeIf { ! it.isNullOrBlank() }
                     )
                 } catch (_: Exception) {
-                    null;
+                    null
                 }
             }
             return null
