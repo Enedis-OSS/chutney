@@ -104,4 +104,13 @@ export class LoginComponent implements OnDestroy, OnInit {
     getSsoProviderImageUrl() {
         return this.ssoService.getSsoProviderImageUrl()
     }
+
+    showUserPwdInputs() {
+        return (!this.enableSso && this.enableUserPassword) || this.showUserPassword
+    }
+
+    get backgroundImage(): string {
+        const theme = this.themeService.isLight() ? 'light' : 'dark';
+        return `url(/assets/img/login-${theme}.png)`;
+    }
 }

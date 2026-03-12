@@ -18,8 +18,7 @@
       <div class="text-center fs-3">
         {{ applicationName }}
       </div>
-      <div class="instance-img" alt="homepage image"
-           [style.background-image]="'url(/assets/img/' + (themeService.isLight() ? 'login-light.png' : 'login-dark.png') + ')'">
+        <div class="instance-img" [style.background-image]="backgroundImage">
       </div>
     </div>
 
@@ -41,7 +40,7 @@
             <ng-container *ngTemplateOutlet="sso"></ng-container>
           }
 
-          @if ((!this.enableSso && this.enableUserPassword) || showUserPassword) {
+          @if (this.showUserPwdInputs()) {
             <ng-container *ngTemplateOutlet="userPassword"></ng-container>
           }
         </div>
