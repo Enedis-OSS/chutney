@@ -7,21 +7,51 @@
 
 package fr.enedis.chutney.kotlin.util
 
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import java.net.URL
 
 data class ChutneyServerInfo(
     val url: String,
-    val user: String,
-    val password: String,
+    val auth: AuthMethod,
     val proxyUrl: String?,
     val proxyUser: String?,
     val proxyPassword: String?
 ) {
+    @Deprecated(
+        message = "This constructor is deprecated because authentication should now be provided via AuthMethod",
+        replaceWith = ReplaceWith("ChutneyServerInfo(url, AuthMethod.Basic(user, password), proxyUrl, proxyUser, proxyPassword)")
+    )
+    constructor(
+        url: String,
+        user: String,
+        password: String,
+        proxyUrl: String?,
+        proxyUser: String?,
+        proxyPassword: String?
+    ):
+        this(
+            url,
+            AuthMethod.Basic(user, password),
+            proxyUrl,
+            proxyUser,
+            proxyPassword
+        )
+
+    @Deprecated("This constructor is deprecated because authentication should now be provided via AuthMethod",
+        replaceWith = ReplaceWith("ChutneyServerInfo(url, AuthMethod.Basic(user, password))"))
     constructor(url: String, user: String, password: String) :
         this(
             url,
-            user,
-            password,
+            AuthMethod.Basic(user, password),
+            proxyUrlFromProperties(),
+            proxyUserFromProperties(),
+            proxyPasswordFromProperties()
+        )
+
+    constructor(url: String, auth: AuthMethod) :
+        this(
+            url,
+            auth,
             proxyUrlFromProperties(),
             proxyUserFromProperties(),
             proxyPasswordFromProperties()
@@ -29,6 +59,17 @@ data class ChutneyServerInfo(
 
     val uri: URL = URL(url)
     val proxyUri: URL? = proxyUrl?.let { URL(it) }
+
+    fun user(): String? {
+        return if(this.auth is AuthMethod.Basic) this.auth.user else "";
+    }
+
+    fun password(): String? {
+        return if(this.auth is AuthMethod.Basic) this.auth.password else "";
+    }
+
+    fun isBasicAuth(): Boolean = auth is AuthMethod.Basic
+    fun isTokenAuth(): Boolean = auth is AuthMethod.Bearer
 }
 
 private enum class ProxyProtocol { http, https }

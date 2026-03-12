@@ -11,6 +11,7 @@ import util.ChutneyServerInfoClearProperties
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.*
@@ -31,6 +32,109 @@ class HttpClientTest {
         .build()
 
     @Nested
+    @DisplayName("Use bearer token authentication")
+    inner class UseBearerTokenAuth {
+        @Test
+        fun chutney() {
+            // Given
+            val serverInfo = ChutneyServerInfo(
+                wireMockServer.baseUrl(),
+                AuthMethod.Bearer("token_a")
+            )
+
+            wireMockServer.stubFor(
+                get(urlPathMatching("/pre"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody("456")
+                    )
+            )
+
+            // When
+            HttpClient.get<Any>(serverInfo, "/pre")
+
+            // Then
+            wireMockServer.verify(
+                1, getRequestedFor(urlPathMatching("/pre"))
+                    .withHeader("Authorization", equalTo("Bearer token_a"))
+            )
+        }
+        @Nested
+        @DisplayName("Proxy")
+        inner class Proxy {
+
+            @Test
+            fun explicit() {
+                // Given
+                val serverInfo = ChutneyServerInfo(
+                    "http://chutney.server:456",
+                    AuthMethod.Bearer("token_1"),
+                    wireMockServer.baseUrl(),
+                    "proxyUser",
+                    "proxyPassword"
+                )
+
+                val expectedProxyAuthorization = Base64.getEncoder()
+                    .encodeToString((serverInfo.proxyUser + ":" + serverInfo.proxyPassword).toByteArray())
+
+                wireMockServer.stubFor(
+                    get(urlPathMatching("/pre"))
+                        .willReturn(
+                            aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("456")
+                        )
+                )
+
+                // When
+                HttpClient.get<Any>(serverInfo, "/pre")
+
+                // Then
+                wireMockServer.verify(
+                    1, getRequestedFor(urlPathMatching("/pre"))
+                        .withHeader("Proxy-Authorization", equalTo("Basic $expectedProxyAuthorization"))
+                )
+            }
+
+            @Test
+            fun implicit() {
+                // Given
+                System.setProperty("http.proxyHost", "localhost")
+                System.setProperty("http.proxyPort", wireMockServer.port.toString())
+                System.setProperty("http.proxyUser", "proxyUser")
+                System.setProperty("http.proxyPassword", "proxyPassword")
+
+                val serverInfo = ChutneyServerInfo("http://chutney.server:456", AuthMethod.Bearer("token_m"))
+
+                val expectedProxyAuthorization = Base64.getEncoder()
+                    .encodeToString((serverInfo.proxyUser + ":" + serverInfo.proxyPassword).toByteArray())
+
+                wireMockServer.stubFor(
+                    get(urlPathMatching("/pre"))
+                        .willReturn(
+                            aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("456")
+                        )
+                )
+
+                // When
+                HttpClient.get<Any>(serverInfo, "/pre")
+
+                // Then
+                wireMockServer.verify(
+                    1, getRequestedFor(urlPathMatching("/pre"))
+                        .withHeader("Proxy-Authorization", equalTo("Basic $expectedProxyAuthorization"))
+                )
+            }
+        }
+    }
+
+    @Nested
     @DisplayName("Use preemptive basic authentication")
     inner class UsePreemptiveBasicAuth {
         @Test
@@ -43,7 +147,7 @@ class HttpClientTest {
             )
 
             val expectedAuthorization = Base64.getEncoder()
-                .encodeToString((serverInfo.user + ":" + serverInfo.password).toByteArray())
+                .encodeToString(("user:password").toByteArray())
 
             wireMockServer.stubFor(
                 get(urlPathMatching("/pre"))
@@ -76,7 +180,7 @@ class HttpClientTest {
                     "user",
                     "password",
                     wireMockServer.baseUrl(),
-                    "proxyUer",
+                    "proxyUser",
                     "proxyPassword"
                 )
 
