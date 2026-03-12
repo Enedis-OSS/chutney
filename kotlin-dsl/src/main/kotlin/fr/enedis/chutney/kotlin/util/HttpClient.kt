@@ -193,10 +193,12 @@ object HttpClient {
                 UsernamePasswordCredentials(serverInfo.proxyUser, serverInfo.proxyPassword?.toCharArray())
             )
         }
-        credentialsProvider.add(
-            AuthScope(targetHost),
-            credentials(serverInfo)
-        )
+        if(serverInfo.isBasicAuth()) {
+            credentialsProvider.add(
+                AuthScope(targetHost),
+                UsernamePasswordCredentials(serverInfo.user(), serverInfo.password()?.toCharArray())
+            )
+        }
         return credentialsProvider.build()
     }
 }
