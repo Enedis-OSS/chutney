@@ -14,5 +14,4 @@ jobs:
     uses: ./.github/workflows/build-all-template.yml
     with:
       skipTests: ${{ startsWith(github.head_ref, 'release/') }}
-      cache-artifacts: |
-        idea-plugin/build/distributions/*.zip
+
