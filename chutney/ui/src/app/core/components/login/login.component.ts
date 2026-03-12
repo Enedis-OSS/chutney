@@ -8,10 +8,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
+import { catchError, takeUntil } from 'rxjs/operators';
 
 import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
-import { catchError, takeUntil } from 'rxjs/operators';
 import { AuthenticationConfigService } from '@core/services/authentification-config.service';
 import { ThemeService } from '@core/theme/theme.service';
 
@@ -21,15 +21,11 @@ import { ThemeService } from '@core/theme/theme.service';
     styleUrls: ['./login.component.scss'],
     standalone: false
 })
-export class LoginComponent implements OnDestroy, OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+    username = '';
+    password = '';
+    action = '';
 
-    username: string;
-    password: string;
-    action: string;
-
-    private unsubscribeSub$: Subject<void> = new Subject();
-    private forwardUrl: string;
-    loginService: LoginService
     version = '';
     applicationName = '';
 
@@ -37,80 +33,120 @@ export class LoginComponent implements OnDestroy, OnInit {
     enableSso = false;
     showUserPassword = false;
 
+    private readonly destroy$ = new Subject<void>();
+    private forwardUrl = '';
+
     constructor(
-        loginService: LoginService,
-        private infoService: InfoService,
-        private route: ActivatedRoute,
-        private ssoService: SsoService,
-        private authenticationConfigService: AuthenticationConfigService,
-        public themeService: ThemeService
+        public loginService: LoginService,
+        private readonly infoService: InfoService,
+        private readonly route: ActivatedRoute,
+        private readonly ssoService: SsoService,
+        private readonly authenticationConfigService: AuthenticationConfigService,
+        public readonly themeService: ThemeService
     ) {
-        this.loginService = loginService
         this.route.params
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe(params => this.action = params['action']);
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(params => {
+                this.action = params['action'] ?? '';
+            });
+
         this.route.queryParams
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe(params => this.forwardUrl = params['url']);
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(params => {
+                this.forwardUrl = params['url'] ?? '';
+            });
+
         this.infoService.getVersion()
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe(result => this.version = result);
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(version => {
+                this.version = version;
+            });
+
         this.infoService.getApplicationName()
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe(result => this.applicationName = result);
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(applicationName => {
+                this.applicationName = applicationName;
+            });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         if (this.loginService.isAuthenticated()) {
             this.loginService.navigateAfterLogin();
-        } else {
-            this.authenticationConfigService.authenticationConfig$.pipe(
-                takeUntil(this.unsubscribeSub$))
-                .subscribe(authenticationConfig => {
-                    this.enableUserPassword = authenticationConfig.enableUserPassword;
-                    this.enableSso = authenticationConfig.enableSso;
-                })
+            return;
         }
+
+        this.authenticationConfigService.authenticationConfig$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(config => {
+                this.enableUserPassword = config.enableUserPassword;
+                this.enableSso = config.enableSso;
+            });
     }
 
-    ngOnDestroy() {
-        this.unsubscribeSub$.next();
-        this.unsubscribeSub$.complete();
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
-    login() {
-        this.loginService.login(this.username, this.password).pipe(
-            takeUntil(this.unsubscribeSub$),
-            catchError((err => {
-                    this.loginService.connectionErrorMessage = err.error;
-                    this.action = null;
-                    return of(null)
+    login(): void {
+        this.loginService.login(this.username, this.password)
+            .pipe(
+                takeUntil(this.destroy$),
+                catchError(err => {
+                    this.loginService.connectionErrorMessage = err?.error ?? 'Login failed';
+                    this.action = '';
+                    return of(null);
                 })
-            ))
-            .subscribe(
-                (user) => {
+            )
+            .subscribe(user => {
+                if (user) {
                     this.loginService.navigateAfterLogin(this.forwardUrl);
                 }
-            );
+            });
     }
 
-    connectSso() {
-        this.ssoService.login(this.forwardUrl)
+    connectSso(): void {
+        this.ssoService.login(this.forwardUrl);
     }
 
-    getSsoProviderName() {
-        return this.ssoService.getSsoProviderName()
-    }
-    getSsoProviderImageUrl() {
-        return this.ssoService.getSsoProviderImageUrl()
-    }
-
-    showUserPwdInputs() {
-        return (!this.enableSso && this.enableUserPassword) || this.showUserPassword
+    toggleLoginMethod(showUserPassword: boolean): void {
+        this.showUserPassword = showUserPassword;
     }
 
     get backgroundImage(): string {
         const theme = this.themeService.isLight() ? 'light' : 'dark';
         return `url(/assets/img/login-${theme}.png)`;
+    }
+
+    get ssoProviderName(): string {
+        return this.ssoService.getSsoProviderName();
+    }
+
+    get ssoProviderImageUrl(): string {
+        return this.ssoService.getSsoProviderImageUrl();
+    }
+
+    get hasSsoProviderImage(): boolean {
+        return !!this.ssoProviderImageUrl;
+    }
+
+    get shouldShowUserPasswordInputs(): boolean {
+        return (!this.enableSso && this.enableUserPassword) || this.showUserPassword;
+    }
+
+    get hasMissingAuthConfig(): boolean {
+        return !this.enableUserPassword && !this.enableSso;
+    }
+
+    get shouldShowSso(): boolean {
+        return this.enableSso && !this.showUserPassword;
+    }
+
+    get canSwitchLoginMethod(): boolean {
+        return this.enableSso && this.enableUserPassword;
+    }
+
+    get shouldShowSsoLogout(): boolean {
+        return this.loginService.connectionErrorMessage === this.loginService.ssoUserNotFoundMessage;
     }
 }
