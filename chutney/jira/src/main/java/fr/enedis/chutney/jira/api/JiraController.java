@@ -39,12 +39,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(JiraController.BASE_URL)
 public class JiraController {
 
-    public static final String BASE_URL = "/api/ui/jira/v1/";
-    public static final String BASE_SCENARIO_URL = "scenario";
-    public static final String BASE_CAMPAIGN_URL = "campaign";
-    public static final String BASE_CAMPAIGN_EXEC_URL = "campaign_execution";
-    public static final String BASE_TEST_EXEC_URL = "testexec";
-    public static final String BASE_CONFIGURATION_URL = "configuration";
+    public static final String BASE_URL = "/api/ui/jira/v1";
+    public static final String BASE_SCENARIO_URL = "/scenario";
+    public static final String BASE_CAMPAIGN_URL = "/campaign";
+    public static final String BASE_CAMPAIGN_EXEC_URL = "/campaign_execution";
+    public static final String BASE_TEST_EXEC_URL = "/testexec";
+    public static final String BASE_CONFIGURATION_URL = "/configuration";
 
     private final JiraRepository jiraRepository;
     private final JiraXrayService jiraXrayService;
