@@ -8,7 +8,7 @@ scrape_configs:
       - targets: ["localhost:9090"]
 
   - job_name: 'spring-actuator'
-    metrics_path: '/actuator/prometheus'
+    metrics_path: '/api/actuator/prometheus'
     basic_auth:
       username: "admin"
       password: "Admin"

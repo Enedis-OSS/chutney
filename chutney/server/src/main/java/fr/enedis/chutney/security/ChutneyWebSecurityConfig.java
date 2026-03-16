@@ -18,7 +18,6 @@ import fr.enedis.chutney.security.api.AuthenticationConfigController;
 import fr.enedis.chutney.security.api.UserController;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
-import fr.enedis.chutney.security.infra.ChutneyAuth;
 import fr.enedis.chutney.security.infra.jwt.ChutneyJwtAuthenticationConverter;
 import fr.enedis.chutney.security.infra.jwt.ChutneyJwtProperties;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
@@ -167,9 +166,9 @@ public class ChutneyWebSecurityConfig {
                     .requestMatchers(new MvcRequestMatcher(introspector, LOGIN_URL)).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, InfoController.BASE_URL + "/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, AuthenticationConfigController.BASE_URL + "/**")).permitAll()
-                    .requestMatchers(new MvcRequestMatcher(introspector, API_BASE_URL_PATTERN)).authenticated()
                     .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/health/**")).permitAll()
                     .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
+                    .requestMatchers(new MvcRequestMatcher(introspector, API_BASE_URL_PATTERN)).authenticated()
                     .anyRequest().permitAll();
             })
             .oauth2ResourceServer(oauth2 -> oauth2

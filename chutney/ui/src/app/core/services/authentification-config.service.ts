@@ -5,11 +5,11 @@
  *
  */
 
-import { HttpClient } from "@angular/common/http";
-import { Injectable, OnDestroy } from "@angular/core";
-import { environment } from "@env/environment";
-import { BehaviorSubject, Observable, switchMap } from "rxjs";
-import { shareReplay } from "rxjs/operators";
+import { HttpClient } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import { environment } from '@env/environment';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 export interface SsoAuthConfig {
     issuer: string,
@@ -31,6 +31,8 @@ interface AuthenticationConfig {
     ssoAuthConfig: SsoAuthConfig
 }
 
+export const authenticationConfigResourceUrl = '/api/v1/authentication/config';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -38,7 +40,7 @@ export class AuthenticationConfigService implements OnDestroy {
 
     private readonly authenticationSubject$ = new BehaviorSubject<void>(undefined);
 
-    private resourceUrl = '/api/v1/authentication/config';
+
 
     readonly authenticationConfig$: Observable<AuthenticationConfig>;
 
@@ -55,7 +57,7 @@ export class AuthenticationConfigService implements OnDestroy {
 
     private authenticationObservable(): Observable<AuthenticationConfig> {
         return this.authenticationSubject$.pipe(
-            switchMap(() => this.http.get<AuthenticationConfig>(environment.backend + this.resourceUrl)),
+            switchMap(() => this.http.get<AuthenticationConfig>(environment.backend + authenticationConfigResourceUrl)),
             shareReplay({ bufferSize: 1, refCount: false })
         );
     }

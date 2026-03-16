@@ -37,7 +37,7 @@ val `Micrometer counter meter` = Scenario(title = "Micrometer counter meter") {
                                     {
                                         "sentence": "Request for counter meter",
                                         "implementation":{
-                                            "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.counter \n} \n}"
+                                            "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.counter \n} \n}"
                                         }
                                     },
                                     {
@@ -67,7 +67,7 @@ val `Micrometer counter meter` = Scenario(title = "Micrometer counter meter") {
                     {
                         "sentence": "Request for counter meter",
                         "implementation":{
-                            "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.counter \n} \n}"
+                            "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.counter \n} \n}"
                         }
                     },
                     {
@@ -103,7 +103,7 @@ val `Micrometer timer meter` = Scenario(title = "Micrometer timer meter") {
                                 {
                                     "sentence": "Request for timer meter",
                                     "implementation":{
-                                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.timer \n} \n}"
+                                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.timer \n} \n}"
                                     }
                                 },
                                 {
@@ -133,7 +133,7 @@ val `Micrometer timer meter` = Scenario(title = "Micrometer timer meter") {
                 {
                     "sentence": "Request for timer meter",
                     "implementation":{
-                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.timer \n} \n}"
+                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.timer \n} \n}"
                     }
                 },
                 {
@@ -199,7 +199,7 @@ val `Micrometer timer meter with start and stop` = Scenario(title = "Micrometer 
                 {
                     "sentence": "Request for timer meter",
                     "implementation":{
-                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.timer.start.stop \n} \n}"
+                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.timer.start.stop \n} \n}"
                     }
                 },
                 {
@@ -246,7 +246,7 @@ val `Micrometer gauge meter` = Scenario(title = "Micrometer gauge meter") {
                                 {
                                     "sentence": "Request for counter meter",
                                     "implementation":{
-                                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.gauge \n} \n}"
+                                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.gauge \n} \n}"
                                     }
                                 },
                                 {
@@ -276,7 +276,7 @@ val `Micrometer gauge meter` = Scenario(title = "Micrometer gauge meter") {
                 {
                     "sentence": "Request for counter meter",
                     "implementation":{
-                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.gauge \n} \n}"
+                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.gauge \n} \n}"
                     }
                 },
                 {
@@ -311,7 +311,7 @@ val `Micrometer distribution summary meter` = Scenario(title = "Micrometer distr
                                 {
                                     "sentence": "Request for distribution meter",
                                     "implementation":{
-                                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.summary \n} \n}"
+                                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.summary \n} \n}"
                                     }
                                 },
                                 {
@@ -347,7 +347,7 @@ val `Micrometer distribution summary meter` = Scenario(title = "Micrometer distr
                 {
                     "sentence": "Request for distribution meter",
                     "implementation":{
-                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /actuator/metrics/my.summary \n} \n}"
+                        "task":"{\n type: http-get \n target: chutney_local \n inputs: {\n uri: /api/actuator/metrics/my.summary \n} \n}"
                     }
                 },
                 {

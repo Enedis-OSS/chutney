@@ -128,9 +128,9 @@ public class SecuredControllerSpringBootIntegrationTest {
     private static Object[] securedEndPointList() {
         return new Object[][]{
             // Actuator
-            {GET, "/actuator", ADMIN_ACCESS.name(), null, OK},
-            {GET, "/actuator/health", ADMIN_ACCESS.name(), null, OK},
-            {GET, "/actuator/prometheus", ADMIN_ACCESS.name(), null, NOT_FOUND},
+            {GET, "/api/actuator", ADMIN_ACCESS.name(), null, OK},
+            {GET, "/api/actuator/health", ADMIN_ACCESS.name(), null, OK},
+            {GET, "/api/actuator/prometheus", ADMIN_ACCESS.name(), null, NOT_FOUND},
 
             // Server
             {GET, BackupController.BASE_URL, ADMIN_ACCESS.name(), null, OK},
