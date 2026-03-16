@@ -414,6 +414,9 @@
         "OR": "OU",
         "username": "Utilisateur",
         "password": "Mot de passe",
+        "welcome": "Bienvenue",
+        "useUsernamePassword": "Utiliser nom d'utilisateur et mot de passe",
+        "useSso": "Utiliser SSO",
         "sso": {
             "userNotFound": "Utilisateur inconnu, contacter votre administrateur"
         }

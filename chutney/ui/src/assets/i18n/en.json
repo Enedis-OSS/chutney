@@ -414,6 +414,9 @@
         "OR": "OR",
         "username": "Username",
         "password": "Password",
+        "welcome": "Welcome",
+        "useUsernamePassword": "Use username and password",
+        "useSso": "Use SSO",
         "sso": {
             "userNotFound": "User not found, please contact your admin"
         }

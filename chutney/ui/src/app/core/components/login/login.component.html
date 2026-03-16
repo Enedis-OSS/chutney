@@ -6,106 +6,148 @@
   -->
 
 <div class="wrapper">
-  <header class="d-flex flex-md-row py-3 px-4 bg-primary">
-    <div class="text-white me-4">
-      <img src="../../../assets/img/logo.png" class="logo" alt="chutney logo"/>
-      <strong class="title text-bottom">Chutney</strong>
-    </div>
-  </header>
-
-  <div class="login-container">
-    <div class="instance-info">
-      <div class="text-center fs-3">
-        {{ applicationName }}
-      </div>
-      <div class="instance-img" alt="homepage image">
-      </div>
-    </div>
-
-    <div class="shadow p-4 w-75 rounded bg-light bg-opacity-75">
-
-      @if (!this.enableUserPassword && !this.enableSso) {
-        <p>{{ 'login.missingConf' | translate }}</p>
-      }
-
-      @if (this.enableSso) {
-        <ng-container *ngTemplateOutlet="sso"></ng-container>
-      }
-
-      @if (this.enableSso && this.enableUserPassword) {
-        <p class="mt-4 d-flex justify-content-center fw-bold">{{ 'login.OR' | translate }}</p>
-      }
-
-      @if (this.enableUserPassword) {
-        <ng-container *ngTemplateOutlet="userPassword"></ng-container>
-      }
-
-      <ng-template #userPassword>
-        <div id="userpassword">
-          <form name="form" (ngSubmit)="login()">
-
-          <div class="form-floating mb-2 mt-4">
-            <input type="text" id="username" class="form-control"
-              placeholder="{{ 'login.enter' | translate }} {{ 'login.username' | translate }}"
-              [(ngModel)]="username" [ngModelOptions]="{standalone: true}"/>
-            <label class="form-label" for="username">{{ 'login.username' | translate }}</label>
-          </div>
-
-          <div class="form-floating mb-2">
-            <input type="password" id="password" class="form-control"
-              placeholder="{{ 'login.enter' | translate }} {{ 'login.password' | translate }}"
-              [(ngModel)]="password" [ngModelOptions]="{standalone: true}"/>
-            <label class="form-label" for="password">{{ 'login.password' | translate }}</label>
-          </div>
-
-          <div class="d-flex justify-content-center text-lg-start">
-            <button type="submit" class="btn btn-primary btn-lg w-50">Login</button>
-          </div>
-          </form>
+    <header class="d-flex flex-md-row py-3 px-4 bg-primary">
+        <div class="text-white me-4">
+            <img src="../../../assets/img/logo.png" class="logo" alt="chutney logo" />
+            <strong class="title text-bottom">Chutney</strong>
         </div>
-      </ng-template>
+    </header>
 
-      <ng-template #sso>
-        <div id="sso">
-          <div class="text-center text-lg-start d-flex justify-content-center">
-            <button class="btn btn-lg" [ngClass]="getSsoProviderName() ? 'btn-secondary' : ''" (click)="connectSso()">
-                @if (getSsoProviderImageUrl()) {
-                  <img src="{{getSsoProviderImageUrl()}}" class="ssoImage" alt="sso"/>
-                }
-                @if (getSsoProviderName()) {
-                  <span class="ms-2">{{getSsoProviderName()}}</span>
-                }
-            </button>
-          </div>
+    <div class="login-container">
+        <div class="instance-info">
+            <div class="text-center fs-3">
+                {{ applicationName }}
+            </div>
+
+            <div class="instance-img" [style.background-image]="backgroundImage"></div>
         </div>
-      </ng-template>
 
-      @if (loginService.connectionErrorMessage) {
-        <div class="alert alert-danger mt-4">
-            <div class="d-flex justify-content-between align-items-center m-0 p-0">
-                {{ loginService.connectionErrorMessage }}
-                @if (loginService.connectionErrorMessage === loginService.ssoUserNotFoundMessage) {
-                    <button class="btn btn-lg" (click)="loginService.logout()">
-                        Logout from SSO
-                    </button>
+        <div class="card shadow w-75 border-0 bg-primary text-white">
+            <div class="card-header login-box-header text-center border-white border-opacity-25">
+                <h4 class="mb-0 fw-bold text-white">{{ 'login.welcome' | translate }}</h4>
+            </div>
+
+            <div class="card-body p-4">
+                @if (hasMissingAuthConfig) {
+                    <div class="alert alert-warning">
+                        {{ 'login.missingConf' | translate }}
+                    </div>
+                }
+
+                <div class="d-flex align-items-center justify-content-center">
+                    @if (shouldShowSso) {
+                        <ng-container *ngTemplateOutlet="sso"></ng-container>
+                    }
+
+                    @if (shouldShowUserPasswordInputs) {
+                        <ng-container *ngTemplateOutlet="userPassword"></ng-container>
+                    }
+                </div>
+
+                @if (canSwitchLoginMethod) {
+                    <div class="switch-method-container">
+                        @if (!showUserPassword) {
+                            <a
+                                class="switch-link text-white text-opacity-75 cursor-pointer"
+                                (click)="toggleLoginMethod(true)">
+                                <i class="fas fa-user me-2"></i>{{ 'login.useUsernamePassword' | translate }}
+                            </a>
+                        }
+
+                        @if (showUserPassword) {
+                            <a
+                                class="switch-link text-white text-opacity-75 cursor-pointer"
+                                (click)="toggleLoginMethod(false)">
+                                <i class="fas fa-shield-alt me-2"></i>{{ 'login.useSso' | translate }}
+                            </a>
+                        }
+                    </div>
+                }
+
+                @if (loginService.connectionErrorMessage) {
+                    <div class="alert alert-danger mt-3 mb-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            {{ loginService.connectionErrorMessage }}
+
+                            @if (shouldShowSsoLogout) {
+                                <button class="btn btn-sm btn-outline-danger" (click)="loginService.logout()">
+                                    Logout from SSO
+                                </button>
+                            }
+                        </div>
+                    </div>
                 }
             </div>
+
+            <ng-template #sso>
+                <div class="sso-method d-flex flex-column justify-content-center align-items-center">
+                    <div
+                        class="sso-square-button clickable"
+                        [class.sso-no-image]="!hasSsoProviderImage"
+                        (click)="connectSso()">
+
+                        @if (hasSsoProviderImage) {
+                            <img [src]="ssoProviderImageUrl" class="sso-image" [alt]="ssoProviderName" />
+                        }
+
+                        <div class="sso-provider-overlay">
+                            <span class="sso-provider-name">{{ ssoProviderName }}</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template #userPassword>
+                <div class="userpassword-method d-flex flex-column justify-content-center">
+                    <form name="form" (ngSubmit)="login()">
+                        <div class="form-floating mb-3">
+                            <input
+                                type="text"
+                                id="username"
+                                class="form-control"
+                                [placeholder]="'login.username' | translate"
+                                [(ngModel)]="username"
+                                [ngModelOptions]="{ standalone: true }" />
+                            <label class="form-label d-flex align-items-center" for="username">
+                                <i class="fas fa-user me-2"></i>{{ 'login.username' | translate }}
+                            </label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input
+                                type="password"
+                                id="password"
+                                class="form-control"
+                                [placeholder]="'login.password' | translate"
+                                [(ngModel)]="password"
+                                [ngModelOptions]="{ standalone: true }" />
+                            <label class="form-label d-flex align-items-center" for="password">
+                                <i class="fas fa-lock me-2"></i>{{ 'login.password' | translate }}
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-light btn-lg w-100 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-sign-in-alt me-2"></i>{{ 'global.actions.login' | translate }}
+                        </button>
+                    </form>
+                </div>
+            </ng-template>
         </div>
-      }
-
-    </div>
-  </div>
-
-  <footer
-    class="d-flex flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-    <div class="text-white me-4">
-      <strong>Version</strong> - <small>{{ version }}</small>
     </div>
 
-    <div>
-      <a href="https://github.com/Enedis-OSS/chutney" rel="noopener noreferrer" target="_blank" class="text-white me-4">
-        <i class="fab fa-github fa-2x"></i>
-      </a>
-    </div>
-  </footer>
+    <footer class="d-flex flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+        <div class="text-white me-4">
+            <strong>Version</strong> - <small>{{ version }}</small>
+        </div>
+
+        <div>
+            <a
+                href="https://github.com/Enedis-OSS/chutney"
+                rel="noopener noreferrer"
+                target="_blank"
+                class="text-white me-4">
+                <i class="fab fa-github fa-2x"></i>
+            </a>
+        </div>
+    </footer>
 </div>

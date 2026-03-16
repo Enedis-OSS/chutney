@@ -6,66 +6,239 @@
  */
 
 .wrapper {
+    min-height: 100vh;
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(auto, 105px) auto minmax(auto, 80px);
-    height: 100vh;
+    grid-template-rows: auto 1fr auto;
 }
 
 .login-container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    gap: 0px 0px;
-    justify-items: center;
     align-items: center;
+    justify-items: center;
+    gap: 2rem;
+    padding: 2rem 1rem;
 }
 
 .logo {
     width: 40px;
-    margin: 0;
-    padding: 0;
     margin-right: 1rem;
     vertical-align: bottom;
 }
 
 .title {
-    font-size: 2em;
+    font-size: 2rem;
+    line-height: 1;
 }
+
 .instance-info {
     display: none;
+    width: 100%;
+    height: 100%;
 }
+
 .instance-img {
-    background-image: url("/assets/img/accueil.png"); // from https://www.manypixels.co/gallery
-    background-position: center;
+    width: 100%;
+    min-height: 280px;
     background-repeat: no-repeat;
-    width: 80%;
-    height: 80%;
+    background-position: center;
+    background-size: contain;
+}
+
+.card {
+    width: min(100%, 720px) !important;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.login-box-header {
+    background: transparent;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.sso-method,
+.userpassword-method {
+    width: 100%;
+    min-height: 200px;
+}
+
+.userpassword-method form {
+    width: 100%;
+}
+
+.sso-square-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 8rem;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid var(--bs-border-color);
+    border-radius: 0.75rem;
+    background-color: var(--bs-light);
+    box-shadow: 0 4px 12px rgba(var(--bs-emphasis-color-rgb), 0.2);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.sso-square-button:hover,
+.sso-square-button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(var(--bs-emphasis-color-rgb), 0.28);
+}
+
+.sso-square-button:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 3px;
+}
+
+.sso-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sso-provider-overlay {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 40%;
+    padding: 0.4rem 0.3rem;
+    background: linear-gradient(
+            to top,
+            rgba(var(--bs-dark-rgb), 0.92),
+            rgba(var(--bs-dark-rgb), 0.45),
+            transparent
+    );
+}
+
+.sso-provider-name {
+    color: var(--bs-white);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    word-break: break-word;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.sso-no-image {
+    background:
+        linear-gradient(
+                135deg,
+                rgba(var(--bs-primary-rgb), 0.08),
+                rgba(var(--bs-primary-rgb), 0.18)
+        ),
+        var(--bs-light);
+}
+
+.sso-no-image .sso-provider-overlay {
+    inset: 0;
+    min-height: auto;
+    padding: 1rem;
+    align-items: center;
+    background: transparent;
+}
+
+.sso-no-image .sso-provider-name {
+    color: var(--bs-body-color);
+    font-size: 1rem;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+.switch-method-container {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    text-align: center;
+    border-top: 1px solid rgba(var(--bs-white-rgb), 0.25);
+}
+
+.switch-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.switch-link:hover,
+.switch-link:focus-visible {
+    background-color: rgba(var(--bs-white-rgb), 0.12);
+    text-decoration: none;
+}
+
+.switch-link:focus-visible {
+    outline: 2px solid rgba(var(--bs-white-rgb), 0.6);
+    outline-offset: 2px;
 }
 
 @media (min-width: 992px) {
+    .login-container {
+        grid-template-columns: minmax(0, 1fr) minmax(420px, 640px);
+        gap: 3rem;
+        padding: 3rem 2rem;
+    }
+
     .instance-info {
         display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 10% auto;
-        justify-items: center;
+        grid-template-rows: auto 1fr;
         align-items: center;
-        height: 100%;
-        width: 100%;
+        justify-items: center;
+        gap: 1rem;
     }
-    .login-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: minmax(auto, calc(100vh - 105px - 80px));
-        gap: 0px 0px;
-        justify-items: center;
-        align-items: center;
+
+    .instance-img {
+        min-height: 560px;
+        max-height: 720px;
     }
 }
 
-.ssoImage {
-    height: 4rem;
-    border-radius: 10px;
-    border: solid 1px #d3d7d7;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+@media (max-width: 991.98px) {
+    .card {
+        width: 100% !important;
+    }
+
+    .sso-method,
+    .userpassword-method {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .login-container {
+        padding: 1.25rem 0.75rem;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+
+    .card-body {
+        padding: 1.25rem !important;
+    }
 }
