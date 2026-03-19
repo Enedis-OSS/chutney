@@ -10,6 +10,7 @@ package fr.enedis.chutney.server.core.domain.execution;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
@@ -19,23 +20,15 @@ import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReport
 import fr.enedis.chutney.server.core.domain.execution.state.ExecutionStateRepository;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import fr.enedis.chutney.server.core.domain.scenario.TestCase;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Ascii;
-import com.google.common.base.Joiner;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +39,11 @@ public class ScenarioExecutionEngineAsync {
     private static final long DEFAULT_RETENTION_DELAY_SECONDS = 5;
     private static final long DEFAULT_DEBOUNCE_MILLISECONDS = 100;
 
-    private final ObjectMapper reportObjectMapper;
-
     private final ExecutionHistoryRepository executionHistoryRepository;
     private final ServerTestEngine executionEngine;
     private final ExecutionStateRepository executionStateRepository;
     private final ChutneyMetrics metrics;
+    private final ExecutionReportSummarizer reportSummarizer;
 
     private final Map<Long, Pair<Observable<ScenarioExecutionReport>, Long>> scenarioExecutions = new ConcurrentHashMap<>();
     private long retentionDelaySeconds;
@@ -76,7 +68,7 @@ public class ScenarioExecutionEngineAsync {
         this.executionEngine = executionEngine;
         this.executionStateRepository = executionStateRepository;
         this.metrics = metrics;
-        this.reportObjectMapper = reportObjectMapper;
+        this.reportSummarizer = new ExecutionReportSummarizer(reportObjectMapper);
         this.retentionDelaySeconds = retentionDelaySeconds;
         this.debounceMilliSeconds = debounceMilliSeconds;
     }
@@ -281,38 +273,6 @@ public class ScenarioExecutionEngineAsync {
         updateHistory(execution.executionId(), executionRequest, scenarioExecutionReport);
     }
 
-    /**
-     * Build a {@link ExecutionHistory.DetachedExecution} to store via {@link ExecutionHistoryRepository}
-     *
-     * @param scenarioReport report to summarize
-     */
-    private ExecutionHistory.DetachedExecution summarize(ScenarioExecutionReport scenarioReport, ExecutionRequest executionRequest) {
-        return ImmutableExecutionHistory.DetachedExecution.builder()
-            .time(scenarioReport.report.startDate.atZone(ZoneId.systemDefault()).toLocalDateTime())
-            .duration(scenarioReport.report.duration)
-            .status(scenarioReport.report.status)
-            .info(joinAndTruncateMessages(searchInfo(scenarioReport.report)))
-            .error(searchErrors(scenarioReport.report).stream().findFirst().orElse(""))
-            .report(serialize(scenarioReport)) // TODO - type me and move serialization to infra
-            .testCaseTitle(scenarioReport.scenarioName)
-            .environment(executionRequest.environment)
-            .user(executionRequest.userId)
-            .dataset(ofNullable(executionRequest.dataset))
-            .build();
-    }
-
-    private String serialize(ScenarioExecutionReport stepExecutionReport) {
-        try {
-            return reportObjectMapper.writeValueAsString(stepExecutionReport);
-        } catch (JsonProcessingException e) {
-            LOGGER.error("Unable to serialize StepExecutionReport content with name='{}'", stepExecutionReport.report.name, e);
-            return "{}";
-        }
-    }
-
-    private Optional<String> joinAndTruncateMessages(Iterable<String> messages) {
-        return Optional.of(Ascii.truncate(Joiner.on(", ").useForNull("null").join(messages), 50, "...")).filter(s -> !s.isEmpty());
-    }
 
     private void notifyExecutionStart(long executionId, TestCase testCase) {
         LOGGER.trace("Notify start for execution {}", executionId);
@@ -347,7 +307,7 @@ public class ScenarioExecutionEngineAsync {
     private void updateHistory(long executionId, ExecutionRequest executionRequest, ScenarioExecutionReport report) {
         LOGGER.trace("Update history for execution {}", executionId);
         try {
-            executionHistoryRepository.update(executionRequest.testCase.id(), summarize(report, executionRequest).attach(executionId, executionRequest.testCase.id()));
+            executionHistoryRepository.update(executionRequest.testCase.id(), reportSummarizer.summarize(report, executionRequest).attach(executionId, executionRequest.testCase.id()));
         } catch (Exception e) {
             LOGGER.error("Update history for execution {} failed", executionId, e);
         }
@@ -361,28 +321,5 @@ public class ScenarioExecutionEngineAsync {
             LOGGER.error("Notify execution end {} failed", executionId, e);
         }
     }
-
-    private static List<String> searchInfo(StepExecutionReportCore report) {
-        if (report.information.isEmpty()) {
-            return report.steps.stream()
-                .map(ScenarioExecutionEngineAsync::searchInfo)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        } else {
-            return report.information;
-        }
-    }
-
-    private static List<String> searchErrors(StepExecutionReportCore report) {
-        if (report.errors.isEmpty() && report.status != ServerReportStatus.SUCCESS) {
-            return report.steps.stream()
-                .map(ScenarioExecutionEngineAsync::searchErrors)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        } else {
-            return report.errors;
-        }
-    }
-
 
 }
