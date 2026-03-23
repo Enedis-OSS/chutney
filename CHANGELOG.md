@@ -7,7 +7,32 @@
 
 # Changelog
 
-## What's Changed
+## [4.2.0](https://github.com/Enedis-OSS/chutney/tree/4.2.0)
+
+### 🚀 Implemented enhancements:
+* Auth with bearer token in synchronisation from kotlin-dsl by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/311
+* Improve login UI/UX by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/313
+### 🐛 Fixed bugs:
+* Never send auth token for open urls by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/310
+* Fix error extraction for retry scenarios by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/312
+### 🔧 Technical enhancements:
+* Fix build by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/298
+* Output version from build all action by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/300
+* Improve fix of final slashes in endpoints by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/314
+* Build with docker engine 29 by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/316
+### 👒 Dependencies:
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.4 to 3.5.5 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/302
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-compiler-plugin from 3.14.1 to 3.15.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/304
+* chore(deps): Bump org.apache.commons:commons-text from 1.13.1 to 1.15.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/305
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.4 to 3.5.5 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/307
+* chore(deps): Bump lucene.version from 10.3.2 to 10.4.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/306
+* chore(deps): Bump com.google.errorprone:error_prone_annotations from 2.45.0 to 2.48.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/308
+* chore(deps-dev): Bump com.oracle.database.jdbc:ojdbc11 from 23.9.0.25.07 to 23.26.1.0.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/303
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/4.1.0...4.2.0
+
+## [4.1.0](https://github.com/Enedis-OSS/chutney/tree/4.1.0)
 ### 🚀 Implemented enhancements:
 * Override jira id on execution by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/256
 * Disable ldap authentication when no config is defined by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/273
