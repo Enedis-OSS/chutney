@@ -15,6 +15,46 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Get chutney-artifacts from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: chutney-artifacts
+          path: artifacts
+
+      - name: Read artifacts
+        id: read-artifacts
+        run: |
+          pwd
+          ls
+          cd artifacts
+          ls
+          cd chutney-server
+          ls
+
+  upload-plugin-assets-to-release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Get plugin-artifacts from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-artifacts
+          path: artifacts
+
+      - name: Read artifacts
+        id: read-artifacts
+        run: |
+          pwd
+          ls
+          cd artifacts
+          ls
+
+  upload-assets-to-release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         include:
@@ -22,10 +62,6 @@ jobs:
             asset_path: artifacts/chutney-idea-plugin-4.2.0.zip
             asset_name: chutney-idea-plugin-4.2.0.zip
             asset_content_type: application/zip
-          - download_name: chutney-artifacts
-            asset_path: artifacts/chutney-server/4.2.0/maven-metadata-local.xml
-            asset_name: maven-metadata-local.xml
-            asset_content_type: application/xml
     steps:
       - name: Get ${{ matrix.download_name }} from build job
         uses: actions/download-artifact@v4
@@ -41,4 +77,6 @@ jobs:
           cd artifacts
           ls
           du -sh ${{ matrix.asset_path }}
+    
+  
 
