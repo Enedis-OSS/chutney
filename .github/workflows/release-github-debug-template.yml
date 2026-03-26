@@ -1,0 +1,41 @@
+#SPDX-FileCopyrightText: 2017-2024 Enedis
+#SPDX-License-Identifier: Apache-2.0
+
+name: "Debug Release on Github"
+
+on:
+  workflow_call:
+    inputs:
+      publish-to-github-maven-registry:
+        default: true
+        type: boolean
+        description: "Skip publish-to-github-maven-registry if false"
+jobs:
+  upload-assets-to-release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      matrix:
+        include:
+          - download_name: plugin-artifacts
+            asset_path: artifacts/idea-plugin/build/distributions/chutney-idea-plugin-${{ github.ref_name }}.zip
+            asset_name: chutney-idea-plugin-${{ github.ref_name }}.zip
+            asset_content_type: application/zip
+          - download_name: chutney-artifacts
+            asset_path: artifacts/chutney-server/${{ github.ref_name }}/chutney-server-${{ github.ref_name }}-boot.jar
+            asset_name: chutney-server-${{ github.ref_name }}-boot.jar
+            asset_content_type: application/java-archive
+    steps:
+      - name: Get ${{ matrix.download_name }} from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.download_name }}
+          path: artifacts
+
+      - name: Read artifacts
+        id: read-artifacts
+        run: |
+          pwd
+          du -sh ${{ matrix.asset_path }}
+
