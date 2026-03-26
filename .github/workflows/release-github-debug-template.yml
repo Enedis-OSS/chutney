@@ -19,12 +19,12 @@ jobs:
       matrix:
         include:
           - download_name: plugin-artifacts
-            asset_path: artifacts/idea-plugin/build/distributions/chutney-idea-plugin-${{ github.ref_name }}.zip
-            asset_name: chutney-idea-plugin-${{ github.ref_name }}.zip
+            asset_path: artifacts/idea-plugin/build/distributions/chutney-idea-plugin-4.2.0-SNAPSHOT.zip
+            asset_name: chutney-idea-plugin-4.2.0-SNAPSHOT.zip
             asset_content_type: application/zip
           - download_name: chutney-artifacts
-            asset_path: artifacts/chutney-server/${{ github.ref_name }}/chutney-server-${{ github.ref_name }}-boot.jar
-            asset_name: chutney-server-${{ github.ref_name }}-boot.jar
+            asset_path: artifacts/chutney-server/4.2.0-SNAPSHOT/chutney-server-4.2.0-SNAPSHOT-boot.jar
+            asset_name: chutney-server-4.2.0-SNAPSHOT-boot.jar
             asset_content_type: application/java-archive
     steps:
       - name: Get ${{ matrix.download_name }} from build job
