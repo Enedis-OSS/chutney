@@ -11,26 +11,15 @@ on:
         type: boolean
         description: "Skip publish-to-github-maven-registry if false"
 jobs:
-  upload-assets-to-release:
+  upload-chutney-server-assets-to-release:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    strategy:
-      matrix:
-        include:
-          - download_name: plugin-artifacts
-            asset_path: artifacts/idea-plugin/build/distributions/chutney-idea-plugin-4.2.0-SNAPSHOT.zip
-            asset_name: chutney-idea-plugin-4.2.0-SNAPSHOT.zip
-            asset_content_type: application/zip
-          - download_name: chutney-artifacts
-            asset_path: artifacts/chutney-server/4.2.0-SNAPSHOT/chutney-server-4.2.0-SNAPSHOT-boot.jar
-            asset_name: chutney-server-4.2.0-SNAPSHOT-boot.jar
-            asset_content_type: application/java-archive
     steps:
-      - name: Get ${{ matrix.download_name }} from build job
+      - name: Get chutney-artifacts from build job
         uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.download_name }}
+          name: chutney-artifacts
           path: artifacts
 
       - name: Read artifacts
@@ -39,9 +28,28 @@ jobs:
           pwd
           ls
           cd artifacts
+          ls
           cd chutney-server
           ls
-          cd 4.2.0-SNAPSHOT
+
+  upload-plugin-assets-to-release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Get plugin-artifacts from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-artifacts
+          path: artifacts
+
+      - name: Read artifacts
+        id: read-artifacts
+        run: |
+          pwd
           ls
-          du -sh ${{ matrix.asset_path }}
+          cd artifacts
+          ls
+    
+  
 
