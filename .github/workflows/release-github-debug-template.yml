@@ -39,6 +39,9 @@ jobs:
           pwd
           ls
           cd artifacts
+          cd chutney-server
+          ls
+          cd 4.2.0-SNAPSHOT
           ls
           du -sh ${{ matrix.asset_path }}
 
