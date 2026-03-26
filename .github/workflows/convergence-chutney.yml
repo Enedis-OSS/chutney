@@ -4,8 +4,10 @@
 name: "Chutney Dependency Convergence"
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
+    paths:
+      - 'chutney/**'
 
 defaults:
   run:
