@@ -5,5 +5,19 @@
  *
  */
 
-rootProject.name = "chutney-idea-plugin"
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+  }
+}
 
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+}
+
+rootProject.name = "chutney-idea-plugin"
