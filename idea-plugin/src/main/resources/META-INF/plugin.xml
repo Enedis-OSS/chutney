@@ -22,6 +22,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.plugins.yaml</depends>
+    <depends>com.intellij.modules.json</depends>
     <depends optional="true" config-file="kotlin-support-plugin.xml">org.jetbrains.kotlin</depends>
     <depends optional="true" config-file="spring-support-plugin.xml">com.intellij.spring</depends>
 
