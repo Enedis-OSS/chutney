@@ -24,6 +24,7 @@ configurations.all {
   }
 }
 
+
 // Configure project's dependencies
 repositories {
   mavenLocal()
@@ -35,9 +36,6 @@ repositories {
   }
 }
 
-/*configurations.named("runtimeOnly") {
-  shouldResolveConsistentlyWith(configurations.getByName("implementation"))
-}*/
 
 java {
   sourceCompatibility = JavaVersion.VERSION_21
