@@ -8,7 +8,7 @@
 import { ScenarioExecutionReportOutline } from '.';
 import { Execution } from '../scenario';
 import { ExecutionStatus } from '../scenario/execution-status';
-import { Dataset } from "@core/model";
+import { Dataset } from '@core/model';
 
 export interface CampaignExecutionReport {
     executionId?: number,
@@ -126,24 +126,5 @@ export class CampaignReport {
         return ExecutionStatus.RUNNING === this.report.status;
     }
 
-    isPaused() {
-        return ExecutionStatus.PAUSED === this.report.status;
-    }
 
-    isStopped() {
-        return ExecutionStatus.STOPPED === this.report.status;
-    }
-
-    refresh(campaignReport: CampaignReport) {
-        if (campaignReport.report.campaignId === this.report.campaignId && campaignReport.report.executionId === this.report.executionId) {
-            this.report = campaignReport.report;
-            this.notexecuted = campaignReport.notexecuted;
-            this.running = campaignReport.running;
-            this.passed = campaignReport.passed;
-            this.failed = campaignReport.failed;
-            this.stopped = campaignReport.stopped;
-            this.pause = campaignReport.pause;
-            this.total = campaignReport.total;
-        }
-    }
 }
