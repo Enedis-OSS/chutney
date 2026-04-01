@@ -8,8 +8,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { empty, EMPTY, forkJoin, Observable, of, Subject, Subscription, timer, zip } from 'rxjs';
-import { delay, map, repeat, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, forkJoin, Observable, of, Subject, Subscription, timer, zip } from 'rxjs';
+import { delay, repeat, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NgbModal, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign, CampaignReport } from '@model';
@@ -91,7 +91,8 @@ export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
     private refreshOpenTabs(): void {
         for(var i=0; i<this.tabs.length; i++) {
             if (this.tabs[i].isRunning()) {
-                this.tabs[i].refresh(this.campaignReports.find((cr) => cr.report.executionId === this.tabs[i].report.executionId));
+                let refreshedReport = this.campaignReports.find((cr) => cr.report.executionId === this.tabs[i].report.executionId);
+                this.tabs[i] =  new CampaignReport(refreshedReport.report);
             }
         }
     }

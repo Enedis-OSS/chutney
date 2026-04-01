@@ -5,8 +5,8 @@
  *
  */
 
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { forkJoin, Observable, of, Subject, switchMap, timer } from 'rxjs';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Observable, of, Subject, switchMap, timer } from 'rxjs';
 
 import {
     Authorization,
@@ -23,10 +23,10 @@ import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { EventManagerService } from '@shared';
 import { sortByAndOrder } from '@shared/tools';
 import { CampaignReportService } from '@core/services/campaign-report.service';
-import { DatasetUtils } from "@shared/tools/dataset-utils";
-import { map, takeUntil, tap } from "rxjs/operators";
-import { ScenarioExecutionService } from "src/app/core/services/scenario-execution.service";
-import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
+import { DatasetUtils } from '@shared/tools/dataset-utils';
+import { map, takeUntil, tap } from 'rxjs/operators';
+import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ExecutionDataset } from '@core/model/scenario/execution.dataset';
 
 @Component({
     selector: 'chutney-campaign-execution',
@@ -34,7 +34,7 @@ import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
     styleUrls: ['./campaign-execution.component.scss'],
     standalone: false
 })
-export class CampaignExecutionComponent implements OnInit, OnDestroy {
+export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input() campaignId: number;
     @Input() report: CampaignReport;
@@ -64,7 +64,12 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy {
         private campaignReportService: CampaignReportService,
         private scenarioExecutionService: ScenarioExecutionService,
         private datasetUtils: DatasetUtils
-    ) { }
+    ) {
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        this.sortBy();
+    }
 
     ngOnInit(): void {
         this.cleanJiraUrl();
@@ -207,17 +212,18 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy {
         return null;
     }
 
-    sortBy(property) {
+    sortBy(property?: string ) {
         if (this.orderBy === property) {
             this.reverseOrder = !this.reverseOrder;
         }
-        this.orderBy = property;
-
-        return sortByAndOrder(
-            this.report.report.scenarioExecutionReports,
-            (i) => i[property] == null ? '' : i[property],
-            this.reverseOrder
-        );
+        this.orderBy = property ? property : this.orderBy;
+        if(this.orderBy) {
+            sortByAndOrder(
+                this.report.report.scenarioExecutionReports,
+                (i) => i[this.orderBy] == null ? '' : i[this.orderBy],
+                this.reverseOrder
+            );
+        }
     }
 
     exportReport() {
