@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { authenticationConfigResourceUrl } from '@core/services/authentification-config.service';
+import { infosResourceUrl } from '@core/services/info.service';
 
 
 @Injectable()
@@ -39,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     private isOpenApiRequest(url: string): boolean {
-        const openApiUrls = [authenticationConfigResourceUrl];
+        const openApiUrls = [authenticationConfigResourceUrl, infosResourceUrl];
         return openApiUrls.some(openApiUrl => url.startsWith(openApiUrl));
     }
 
