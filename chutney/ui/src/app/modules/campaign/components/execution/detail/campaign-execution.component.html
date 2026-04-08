@@ -93,7 +93,7 @@
       <table class="table table-sm table-striped table-hover">
         <thead>
           <tr>
-            <th scope="col" class="filter w3 text-center" (click)="sortBy('scenarioId')">{{ 'campaigns.execution.scenarios.item.header.id' | translate }}
+            <th scope="col" class="w3 text-center cursor-pointer" (click)="sortBy('scenarioId')">{{ 'campaigns.execution.scenarios.item.header.id' | translate }}
               @if (orderBy == 'scenarioId' && reverseOrder) {
                 <span class="fa fa-caret-down"></span>
               }
@@ -101,7 +101,7 @@
                 <span class="fa fa-caret-up"></span>
               }
             </th>
-            <th scope="col" class="filter w5 text-center" (click)="sortBy('status')">{{ 'campaigns.execution.scenarios.item.header.state' | translate }}
+            <th scope="col" class="w5 text-center cursor-pointer" (click)="sortBy('status')">{{ 'campaigns.execution.scenarios.item.header.state' | translate }}
               @if (orderBy == 'status' && reverseOrder) {
                 <span class="fa fa-caret-down"></span>
               }
@@ -109,7 +109,7 @@
                 <span class="fa fa-caret-up"></span>
               }
             </th>
-            <th scope="col" class="filter w45" (click)="sortBy('scenarioName')">{{ 'campaigns.execution.scenarios.item.header.title' | translate }}
+            <th scope="col" class="w45 cursor-pointer" (click)="sortBy('scenarioName')">{{ 'campaigns.execution.scenarios.item.header.title' | translate }}
               @if (orderBy == 'scenarioName' && reverseOrder) {
                 <span class="fa fa-caret-down"></span>
               }
@@ -117,7 +117,7 @@
                 <span class="fa fa-caret-up"></span>
               }
             </th>
-            <th scope="col" class="filter" (click)="sortBy('error')">{{ 'campaigns.execution.scenarios.item.header.error' | translate }}
+            <th scope="col" class="cursor-pointer" (click)="sortBy('error')">{{ 'campaigns.execution.scenarios.item.header.error' | translate }}
               @if (orderBy == 'error' && reverseOrder) {
                 <span class="fa fa-caret-down"></span>
               }
@@ -131,7 +131,7 @@
             <th scope="col" class="w8 text-center">
                 {{ 'campaigns.execution.scenarios.item.header.dataset' | translate }}
             </th>
-            <th scope="col" class="filter w8 text-center" (click)="sortBy('duration')">{{ 'campaigns.execution.scenarios.item.header.duration' | translate }}
+            <th scope="col" class="w8 text-center" (click)="sortBy('duration')">{{ 'campaigns.execution.scenarios.item.header.duration' | translate }}
               @if (orderBy == 'duration' && reverseOrder) {
                 <span class="fa fa-caret-down"></span>
               }
