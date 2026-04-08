@@ -65,7 +65,7 @@ import org.springframework.security.oauth2.server.resource.introspection.SpringO
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
@@ -155,6 +155,7 @@ public class ChutneyWebSecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver, OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter, JwtUtil jwtUtil, CorsConfigurationSource corsConfigurationSource) throws Exception {
         configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
+        var path = PathPatternRequestMatcher.withDefaults();
         http
             .cors(Customizer.withDefaults())
             .anonymous(anonymousConfigurer -> anonymousConfigurer
@@ -163,12 +164,12 @@ public class ChutneyWebSecurityConfig {
             .authorizeHttpRequests(httpRequest -> {
                 HandlerMappingIntrospector introspector = new HandlerMappingIntrospector();
                 httpRequest
-                    .requestMatchers(new MvcRequestMatcher(introspector, LOGIN_URL)).permitAll()
-                    .requestMatchers(new MvcRequestMatcher(introspector, InfoController.BASE_URL + "/**")).permitAll()
-                    .requestMatchers(new MvcRequestMatcher(introspector, AuthenticationConfigController.BASE_URL + "/**")).permitAll()
-                    .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/health/**")).permitAll()
-                    .requestMatchers(new MvcRequestMatcher(introspector, actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
-                    .requestMatchers(new MvcRequestMatcher(introspector, API_BASE_URL_PATTERN)).authenticated()
+                    .requestMatchers(path.matcher(LOGIN_URL)).permitAll()
+                    .requestMatchers(path.matcher(InfoController.BASE_URL + "/**")).permitAll()
+                    .requestMatchers(path.matcher(AuthenticationConfigController.BASE_URL + "/**")).permitAll()
+                    .requestMatchers(path.matcher( actuatorBaseUrl + "/health/**")).permitAll()
+                    .requestMatchers(path.matcher( actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
+                    .requestMatchers(path.matcher( API_BASE_URL_PATTERN)).authenticated()
                     .anyRequest().permitAll();
             })
             .oauth2ResourceServer(oauth2 -> oauth2
