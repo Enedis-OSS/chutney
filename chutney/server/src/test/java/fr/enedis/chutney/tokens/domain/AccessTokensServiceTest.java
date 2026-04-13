@@ -77,4 +77,19 @@ class AccessTokensServiceTest {
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", encoded, Instant.now().minus(1, ChronoUnit.DAYS))));
         assertThat(sut.accessTokenFromRaw(token)).isEmpty();
     }
+
+    @Test
+    void match_right_token() {
+        var token = sut.createToken("tokyo");
+        var encoded = new BCryptPasswordEncoder().encode(token);
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
+        assertThat(sut.matchToken(token)).isTrue();
+    }
+
+    @Test
+    void does_not_match_right_token() {
+        var token = sut.createToken("tokyo");
+        when(accessTokensRepository.getTokens()).thenReturn(List.of("wrong"));
+        assertThat(sut.matchToken(token)).isFalse();
+    }
 }
