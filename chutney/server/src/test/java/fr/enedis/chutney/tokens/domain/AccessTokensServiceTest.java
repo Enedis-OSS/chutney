@@ -9,9 +9,12 @@ package fr.enedis.chutney.tokens.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 class AccessTokensServiceTest {
 
@@ -20,8 +23,23 @@ class AccessTokensServiceTest {
 
     @Test
     void create_token() {
-        String token = sut.createToken("ulysse");
+        var token = sut.createToken("ulysse");
         assertThat(token).isNotEmpty();
         verify(accessTokensRepository).createToken();
+    }
+
+    @Test
+    void match_right_token() {
+        var token = sut.createToken("tokyo");
+        var encoded = new BCryptPasswordEncoder().encode(token);
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
+        assertThat(sut.matchToken(token)).isTrue();
+    }
+
+    @Test
+    void does_not_match_right_token() {
+        var token = sut.createToken("tokyo");
+        when(accessTokensRepository.getTokens()).thenReturn(List.of("wrong"));
+        assertThat(sut.matchToken(token)).isFalse();
     }
 }

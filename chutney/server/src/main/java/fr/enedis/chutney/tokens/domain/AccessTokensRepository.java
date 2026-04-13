@@ -7,7 +7,11 @@
 
 package fr.enedis.chutney.tokens.domain;
 
+import java.util.Collection;
+
 public interface AccessTokensRepository {
 
     void createToken();
+
+    Collection<String> getTokens();
 }
