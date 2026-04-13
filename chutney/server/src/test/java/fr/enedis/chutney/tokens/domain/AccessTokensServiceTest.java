@@ -20,7 +20,7 @@ class AccessTokensServiceTest {
 
     @Test
     void create_token() {
-        String token = sut.crateToken("ulysse");
+        String token = sut.createToken("ulysse");
         assertThat(token).isNotEmpty();
         verify(accessTokensRepository).createToken();
     }
