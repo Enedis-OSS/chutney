@@ -29,6 +29,9 @@ class AccessTokensServiceTest {
     @Captor
     private final ArgumentCaptor<AccessToken> argumentCaptor = ArgumentCaptor.forClass(AccessToken.class);
 
+    @Captor
+    private final ArgumentCaptor<AccessToken> argumentCaptor = ArgumentCaptor.forClass(AccessToken.class);
+
     @Test
     void create_token() {
         var user = "ulysse";
@@ -80,16 +83,26 @@ class AccessTokensServiceTest {
 
     @Test
     void match_right_token() {
-        var token = sut.createToken("tokyo");
+        var user = "bach";
+        var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
         when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
-        assertThat(sut.matchToken(token)).isTrue();
+        assertThat(sut.matchToken(token, user)).isTrue();
     }
 
     @Test
-    void does_not_match_right_token() {
-        var token = sut.createToken("tokyo");
+    void does_not_match_wrong_token() {
+        String user = "bach";
+        var token = sut.createToken(user);
         when(accessTokensRepository.getTokens()).thenReturn(List.of("wrong"));
-        assertThat(sut.matchToken(token)).isFalse();
+        assertThat(sut.matchToken(token, user)).isFalse();
+    }
+
+    @Test
+    void does_not_match_token_for_wrong_user() {
+        var token = sut.createToken("bach");
+        var encoded = new BCryptPasswordEncoder().encode(token);
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
+        assertThat(sut.matchToken(token, "wrong")).isFalse();
     }
 }
