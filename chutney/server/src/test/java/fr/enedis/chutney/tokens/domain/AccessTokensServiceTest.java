@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -43,7 +45,7 @@ class AccessTokensServiceTest {
         var user = "bach";
         var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded)));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded, Instant.now())));
         assertThat(sut.matchToken(token, user)).isTrue();
     }
 
@@ -51,7 +53,7 @@ class AccessTokensServiceTest {
     void does_not_match_wrong_token() {
         String user = "bach";
         var token = sut.createToken(user);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, "wrong")));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, "wrong", Instant.now())));
         assertThat(sut.matchToken(token, user)).isFalse();
     }
 
@@ -60,7 +62,16 @@ class AccessTokensServiceTest {
         var user = "bach";
         var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded)));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded, Instant.now())));
         assertThat(sut.matchToken(token, "wrong")).isFalse();
+    }
+
+    @Test
+    void does_not_match_revoked_token() {
+        var user = "bach";
+        var token = sut.createToken(user);
+        var encoded = new BCryptPasswordEncoder().encode(token);
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded, Instant.now().minus(91, ChronoUnit.DAYS))));
+        assertThat(sut.matchToken(token, user)).isFalse();
     }
 }

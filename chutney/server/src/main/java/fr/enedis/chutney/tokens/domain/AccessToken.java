@@ -7,5 +7,7 @@
 
 package fr.enedis.chutney.tokens.domain;
 
-public record AccessToken(String id, String user, String hashedToken) {
+import java.time.Instant;
+
+public record AccessToken(String id, String user, String hashedToken, Instant createdAt) {
 }
