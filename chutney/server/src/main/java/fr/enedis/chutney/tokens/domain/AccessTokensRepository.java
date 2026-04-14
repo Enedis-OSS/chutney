@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public interface AccessTokensRepository {
 
-    void createToken();
+    void createToken(AccessToken accessToken);
 
     Collection<String> getTokens();
 }

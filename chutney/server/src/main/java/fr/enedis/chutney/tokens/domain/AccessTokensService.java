@@ -22,11 +22,11 @@ public class AccessTokensService {
     public String createToken(String user) {
         String rawKey = UUID.randomUUID().toString().replace("-", "");
         String token = new BCryptPasswordEncoder().encode(rawKey);
-        accessTokensRepository.createToken();
+        accessTokensRepository.createToken(new AccessToken(UUID.randomUUID().toString(), user, token));
         return token;
     }
 
-    public boolean matchToken(String token) {
+    public boolean matchToken(String token, String user) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Collection<String> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {

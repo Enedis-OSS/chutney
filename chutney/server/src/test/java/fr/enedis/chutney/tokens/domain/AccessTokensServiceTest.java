@@ -13,6 +13,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -21,25 +23,43 @@ class AccessTokensServiceTest {
     private final AccessTokensRepository accessTokensRepository = Mockito.mock(AccessTokensRepository.class);
     private final AccessTokensService sut = new AccessTokensService(accessTokensRepository);
 
+    @Captor
+    private final ArgumentCaptor<AccessToken> argumentCaptor = ArgumentCaptor.forClass(AccessToken.class);
+
     @Test
     void create_token() {
-        var token = sut.createToken("ulysse");
+        var user = "ulysse";
+        var token = sut.createToken(user);
+
         assertThat(token).isNotEmpty();
-        verify(accessTokensRepository).createToken();
+
+        verify(accessTokensRepository).createToken(argumentCaptor.capture());
+        AccessToken value = argumentCaptor.getValue();
+        assertThat(value.user()).isEqualTo(user);
     }
 
     @Test
     void match_right_token() {
-        var token = sut.createToken("tokyo");
+        var user = "bach";
+        var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
         when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
-        assertThat(sut.matchToken(token)).isTrue();
+        assertThat(sut.matchToken(token, user)).isTrue();
     }
 
     @Test
-    void does_not_match_right_token() {
-        var token = sut.createToken("tokyo");
+    void does_not_match_wrong_token() {
+        String user = "bach";
+        var token = sut.createToken(user);
         when(accessTokensRepository.getTokens()).thenReturn(List.of("wrong"));
-        assertThat(sut.matchToken(token)).isFalse();
+        assertThat(sut.matchToken(token, user)).isFalse();
+    }
+
+    @Test
+    void does_not_match_token_for_wrong_user() {
+        var token = sut.createToken("bach");
+        var encoded = new BCryptPasswordEncoder().encode(token);
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
+        assertThat(sut.matchToken(token, "wrong")).isFalse();
     }
 }
