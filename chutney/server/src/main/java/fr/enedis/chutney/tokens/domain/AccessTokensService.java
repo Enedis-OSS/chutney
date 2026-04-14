@@ -28,9 +28,9 @@ public class AccessTokensService {
 
     public boolean matchToken(String token, String user) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        Collection<String> tokens = accessTokensRepository.getTokens();
+        Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
-            if (encoder.matches(token, repoToken)) {
+            if (encoder.matches(token, repoToken.hashedToken()) && repoToken.user().equals(user)) {
                 return true;
             }
         }

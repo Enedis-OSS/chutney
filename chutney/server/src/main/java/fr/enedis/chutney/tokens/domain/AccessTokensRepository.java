@@ -13,5 +13,5 @@ public interface AccessTokensRepository {
 
     void createToken(AccessToken accessToken);
 
-    Collection<String> getTokens();
+    Collection<AccessToken> getTokens();
 }

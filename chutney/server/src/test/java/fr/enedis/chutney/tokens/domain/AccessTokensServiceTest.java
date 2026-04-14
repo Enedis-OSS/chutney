@@ -43,7 +43,7 @@ class AccessTokensServiceTest {
         var user = "bach";
         var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded)));
         assertThat(sut.matchToken(token, user)).isTrue();
     }
 
@@ -51,15 +51,16 @@ class AccessTokensServiceTest {
     void does_not_match_wrong_token() {
         String user = "bach";
         var token = sut.createToken(user);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of("wrong"));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, "wrong")));
         assertThat(sut.matchToken(token, user)).isFalse();
     }
 
     @Test
     void does_not_match_token_for_wrong_user() {
-        var token = sut.createToken("bach");
+        var user = "bach";
+        var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(encoded));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded)));
         assertThat(sut.matchToken(token, "wrong")).isFalse();
     }
 }
