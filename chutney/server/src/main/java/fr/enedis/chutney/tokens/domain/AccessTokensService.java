@@ -12,7 +12,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AccessTokensService {
 
     private final AccessTokensRepository accessTokensRepository;
