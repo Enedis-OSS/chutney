@@ -30,13 +30,12 @@ public class AccessTokensService {
         return token;
     }
 
-    public boolean matchToken(String token, String user) {
+    public boolean matchToken(String token) {
         var threeMonthsAgo = Instant.now().minus(90, ChronoUnit.DAYS);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
             if (encoder.matches(token, repoToken.hashedToken())
-                && repoToken.user().equals(user)
                 && repoToken.createdAt().isAfter(threeMonthsAgo)) {
                 return true;
             }
