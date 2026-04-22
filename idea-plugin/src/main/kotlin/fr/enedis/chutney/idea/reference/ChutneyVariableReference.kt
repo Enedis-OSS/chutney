@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.idea.reference
 
-import fr.enedis.chutney.idea.completion.JsonTraversal
 import com.intellij.json.psi.JsonProperty
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import fr.enedis.chutney.idea.completion.JsonTraversal
 
 
 class ChutneyVariableReference(

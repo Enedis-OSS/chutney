@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,9 +18,7 @@ import { MoleculesModule } from '../../molecules/molecules.module';
 import { ExecutionSearchComponent } from './components/execution-search.component';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {
-    ExecutionSearchListComponent
-} from './components/resultExecutionSearchList/execution-search-list.component';
+import { ExecutionSearchListComponent } from './components/resultExecutionSearchList/execution-search-list.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { RxFor } from '@rx-angular/template/for';
 
@@ -42,7 +40,7 @@ import { RxFor } from '@rx-angular/template/for';
   declarations: [
     ExecutionSearchComponent,
     ExecutionSearchListComponent,
-    
+
   ],
   providers: [DateFormatPipe]
 })

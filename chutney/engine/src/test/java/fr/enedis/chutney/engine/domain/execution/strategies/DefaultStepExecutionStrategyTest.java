@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Sets;
 import fr.enedis.chutney.ExecutionConfiguration;
 import fr.enedis.chutney.action.domain.ActionTemplateLoaders;
 import fr.enedis.chutney.action.domain.DefaultActionTemplateRegistry;
@@ -32,7 +33,6 @@ import fr.enedis.chutney.engine.domain.execution.engine.step.Step;
 import fr.enedis.chutney.engine.domain.execution.evaluation.SpelFunctions;
 import fr.enedis.chutney.engine.domain.execution.report.Status;
 import fr.enedis.chutney.tools.Jsons;
-import com.google.common.collect.Sets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;

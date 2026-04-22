@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,6 +9,7 @@ package fr.enedis.chutney.agent.domain.explore;
 
 import static fr.enedis.chutney.agent.domain.explore.ImmutableExploreResult.Links.of;
 
+import com.google.common.collect.ImmutableSet;
 import fr.enedis.chutney.agent.domain.AgentClient;
 import fr.enedis.chutney.agent.domain.TargetId;
 import fr.enedis.chutney.agent.domain.configure.ConfigurationState;
@@ -21,7 +22,6 @@ import fr.enedis.chutney.agent.domain.network.NetworkDescription;
 import fr.enedis.chutney.engine.domain.delegation.ConnectionChecker;
 import fr.enedis.chutney.engine.domain.delegation.NamedHostAndPort;
 import fr.enedis.chutney.environment.api.target.dto.TargetDto;
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;

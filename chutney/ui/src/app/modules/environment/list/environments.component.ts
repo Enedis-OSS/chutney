@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  */
 
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { Environment, Authorization } from '@model';
+import { Authorization, Environment } from '@model';
 import { ActivatedRoute } from '@angular/router';
 import { EnvironmentService, LoginService } from '@core/services';
 import { ValidationService } from '../../../molecules/validation/validation.service';

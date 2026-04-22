@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,10 +12,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import fr.enedis.chutney.action.TestTarget;
-import fr.enedis.chutney.action.spi.injectable.Target;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.ConnectionFactory;
+import fr.enedis.chutney.action.TestTarget;
+import fr.enedis.chutney.action.spi.injectable.Target;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -10,10 +10,10 @@ package fr.enedis.chutney.server.core.domain.execution;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
+import com.google.common.collect.Streams;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.scenario.TestCase;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
-import com.google.common.collect.Streams;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;

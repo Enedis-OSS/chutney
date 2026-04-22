@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,8 +7,6 @@
 
 package fr.enedis.chutney.idea.injection
 
-import fr.enedis.chutney.idea.ChutneyUtil.isChutneyJson
-import fr.enedis.chutney.idea.reference.SpringElTemplateParser
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.lang.Language
 import com.intellij.lang.injection.MultiHostInjector
@@ -18,6 +16,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.ThreeState
 import com.jetbrains.jsonSchema.impl.JsonOriginalPsiWalker
+import fr.enedis.chutney.idea.ChutneyUtil.isChutneyJson
+import fr.enedis.chutney.idea.reference.SpringElTemplateParser
 
 class ChutneySpELJsonValueInjector : MultiHostInjector {
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, context: PsiElement) {

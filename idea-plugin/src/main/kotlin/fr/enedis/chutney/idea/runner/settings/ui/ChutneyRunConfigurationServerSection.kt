@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,17 +7,17 @@
 
 package fr.enedis.chutney.idea.runner.settings.ui
 
-import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
-import fr.enedis.chutney.idea.runner.settings.ServerType
-import fr.enedis.chutney.idea.server.ChutneyServerUtils
-import fr.enedis.chutney.idea.util.SwingUtils
-import fr.enedis.chutney.idea.util.TextChangeListener
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.JBColor
 import com.intellij.util.Consumer
 import com.intellij.util.ui.FormBuilder
 import com.intellij.util.ui.SwingHelper
 import com.intellij.util.ui.UIUtil
+import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
+import fr.enedis.chutney.idea.runner.settings.ServerType
+import fr.enedis.chutney.idea.server.ChutneyServerUtils
+import fr.enedis.chutney.idea.util.SwingUtils
+import fr.enedis.chutney.idea.util.TextChangeListener
 import java.awt.Component
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener

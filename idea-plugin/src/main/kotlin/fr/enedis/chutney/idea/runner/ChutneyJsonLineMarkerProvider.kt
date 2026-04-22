@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,15 +7,14 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.ChutneyUtil
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.execution.Executor
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.icons.AllIcons
-import com.intellij.json.psi.JsonObject
 import com.intellij.json.psi.JsonProperty
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import fr.enedis.chutney.idea.ChutneyUtil
 import javax.swing.Icon
 
 

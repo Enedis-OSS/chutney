@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,8 +7,6 @@
 
 package fr.enedis.chutney.idea.reference
 
-import fr.enedis.chutney.idea.completion.JsonTraversal
-import fr.enedis.chutney.idea.removeAllQuotes
 import com.intellij.codeInsight.completion.CompletionUtil
 import com.intellij.json.JsonLanguage
 import com.intellij.json.psi.JsonFile
@@ -26,6 +24,8 @@ import com.intellij.util.ObjectUtils
 import com.intellij.util.ProcessingContext
 import com.jetbrains.jsonSchema.ide.JsonSchemaService
 import com.jetbrains.jsonSchema.impl.JsonPointerReferenceProvider
+import fr.enedis.chutney.idea.completion.JsonTraversal
+import fr.enedis.chutney.idea.removeAllQuotes
 
 
 class ChutneyJsonReferenceContributor : PsiReferenceContributor() {

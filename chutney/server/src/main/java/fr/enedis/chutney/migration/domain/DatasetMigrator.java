@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,11 +9,10 @@ package fr.enedis.chutney.migration.domain;
 import fr.enedis.chutney.dataset.infra.FileDatasetRepository;
 import fr.enedis.chutney.dataset.infra.index.DatasetIndexRepository;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class DatasetMigrator implements DataMigrator {

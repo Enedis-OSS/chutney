@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,10 +7,10 @@
 
 package fr.enedis.chutney.action.domain;
 
-import fr.enedis.chutney.action.domain.parameter.Parameter;
-import fr.enedis.chutney.action.spi.Action;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
+import fr.enedis.chutney.action.domain.parameter.Parameter;
+import fr.enedis.chutney.action.spi.Action;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;

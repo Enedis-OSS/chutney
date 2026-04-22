@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,10 +8,6 @@
 package fr.enedis.chutney.idea.runner
 
 
-import fr.enedis.chutney.idea.ChutneyUtil
-import fr.enedis.chutney.idea.server.ChutneyServer
-import fr.enedis.chutney.idea.server.ChutneyServerRegistry
-import fr.enedis.chutney.idea.util.WaitUntilUtils
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.testframework.TestConsoleProperties
 import com.intellij.execution.testframework.sm.runner.OutputToGeneralTestEventsConverter
@@ -25,6 +21,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.task.ProjectTaskManager
 import com.intellij.testFramework.LightVirtualFile
+import fr.enedis.chutney.idea.ChutneyUtil
+import fr.enedis.chutney.idea.server.ChutneyServer
+import fr.enedis.chutney.idea.server.ChutneyServerRegistry
+import fr.enedis.chutney.idea.util.WaitUntilUtils
 import java.util.concurrent.TimeUnit
 
 fun moduleIsUpToDate(module: Module): Boolean {

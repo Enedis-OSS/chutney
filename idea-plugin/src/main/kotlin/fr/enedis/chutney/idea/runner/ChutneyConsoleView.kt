@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,9 +7,6 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.server.ChutneyServer
-import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
-import fr.enedis.chutney.idea.server.ui.ChutneyToolWindowManager
 import com.intellij.execution.process.NopProcessHandler
 import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
@@ -24,6 +21,9 @@ import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import com.intellij.execution.testframework.sm.runner.ui.TestTreeRenderer
 import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.util.ObjectUtils
+import fr.enedis.chutney.idea.server.ChutneyServer
+import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
+import fr.enedis.chutney.idea.server.ui.ChutneyToolWindowManager
 
 
 class ChutneyConsoleView(

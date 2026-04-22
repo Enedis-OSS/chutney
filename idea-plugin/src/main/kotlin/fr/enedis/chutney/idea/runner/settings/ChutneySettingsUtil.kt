@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.idea.runner.settings
 
-import fr.enedis.chutney.idea.runner.TestType
 import com.google.common.collect.Lists
 import com.intellij.json.JsonFileType
 import com.intellij.openapi.project.IndexNotReadyException
@@ -20,6 +19,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopesCore
+import fr.enedis.chutney.idea.runner.TestType
 import java.io.File
 
 object ChutneySettingsUtil {

@@ -1,18 +1,17 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  */
 package fr.enedis.chutney.migration.domain;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-
-import java.util.List;
 
 public abstract class AbstractMigrator<T> implements DataMigrator {
     protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());

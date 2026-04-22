@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,15 +7,15 @@
 
 package fr.enedis.chutney.idea.runner.settings.ui
 
-import fr.enedis.chutney.idea.runner.ChutneyRunConfiguration
-import fr.enedis.chutney.idea.runner.TestType
-import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.util.ui.UIUtil
+import fr.enedis.chutney.idea.runner.ChutneyRunConfiguration
+import fr.enedis.chutney.idea.runner.TestType
+import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout

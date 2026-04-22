@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -29,16 +29,15 @@ import {
     CampaignExecutionsHistoryComponent
 } from './components/execution/history/campaign-executions-history.component';
 import { CampaignExecutionsComponent } from './components/execution/history/list/campaign-executions.component';
-import { ReplayExecutionWithJiraLinkComponent } from './components/execution/replay/replay-execution-with-jira-link.component';
+import {
+    ReplayExecutionWithJiraLinkComponent
+} from './components/execution/replay/replay-execution-with-jira-link.component';
 import {
     CampaignExecutionMenuComponent
 } from './components/execution/sub/right-side-bar/campaign-execution-menu.component';
 
-import {
-    CdkDrag,
-    CdkDragPlaceholder,
-    CdkDropList,
-  } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragPlaceholder, CdkDropList, } from '@angular/cdk/drag-drop';
+
 const ROUTES = [
     ...CampaignRoute
 ];

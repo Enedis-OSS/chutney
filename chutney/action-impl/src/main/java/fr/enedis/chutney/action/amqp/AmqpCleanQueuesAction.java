@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -13,14 +13,14 @@ import static fr.enedis.chutney.action.spi.validation.Validator.getErrorsFrom;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
+import com.rabbitmq.client.AMQP.Queue.PurgeOk;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
-import com.rabbitmq.client.AMQP.Queue.PurgeOk;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
