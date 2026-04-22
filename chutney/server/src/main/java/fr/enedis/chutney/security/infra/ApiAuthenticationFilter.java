@@ -27,6 +27,8 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
     private static final Collection<String> API_PATHS = List.of(
         GwtTestCaseController.BASE_URL + "/raw");
 
+    private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
+
     private final AuthenticationService authenticationService;
 
     public ApiAuthenticationFilter(AuthenticationService authenticationService) {
@@ -36,11 +38,15 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
         throws IOException {
-        String requestURI = ((HttpServletRequest) request).getRequestURI();
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String requestURI = httpServletRequest.getRequestURI();
         try {
             if(API_PATHS.contains(requestURI)) {
-                Authentication authentication = authenticationService.getAuthentication((HttpServletRequest) request);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
+                if(apiKey != null) {
+                    Authentication authentication = authenticationService.getAuthentication(apiKey, requestURI);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
             filterChain.doFilter(request, response);
         } catch (Exception e) {

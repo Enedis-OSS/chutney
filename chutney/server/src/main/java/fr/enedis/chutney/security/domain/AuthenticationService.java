@@ -15,7 +15,6 @@ import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +29,6 @@ public class AuthenticationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
-    private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
-
     public AuthenticationService(Authorizations authorizations,
                                  AccessTokensService accessTokensService) {
         this.authorizations = authorizations;
@@ -45,16 +42,15 @@ public class AuthenticationService {
         return userRoles.roleByName(user.roleName);
     }
 
-    public Authentication getAuthentication(HttpServletRequest request) {
-        String apiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
+    public Authentication getAuthentication(String apiKey, String requestURI) {
 
         Optional<AccessToken> user = accessTokensService.userFromToken(apiKey);
-        if (apiKey == null || user.isEmpty()) {
-            LOGGER.info("Wrong Api-key for request {}", request.getRequestURI());
+        if (user.isEmpty()) {
+            LOGGER.info("Wrong Api-key for request {}", requestURI);
             throw new BadCredentialsException("Invalid API Key");
         }
 
-        LOGGER.info("Api-key authentication success for user {} and for request {}", user.get(), request.getRequestURI());
+        LOGGER.info("Api-key authentication success for user {} and for request {}", user.get(), requestURI);
 
         return new ApiKeyAuthentication(user.get().user(), user.get().hashedToken(), AuthorityUtils.createAuthorityList(Authorization.SCENARIO_WRITE.name()));
     }

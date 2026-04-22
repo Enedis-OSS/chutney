@@ -9,7 +9,6 @@ package fr.enedis.chutney.security.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +20,6 @@ import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -83,13 +81,11 @@ class AuthenticationServiceTest {
 
     @Test
     void get_api_key_authentication() {
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         String token = "token";
-        when(httpServletRequest.getHeader(eq("X-API-KEY"))).thenReturn(token);
         when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(new AccessToken("id", "user", "hashed",
             Instant.now().minus(1, ChronoUnit.DAYS))));
 
-        Authentication authentication = sut.getAuthentication(httpServletRequest);
+        Authentication authentication = sut.getAuthentication("X-API-KEY", "/path");
 
         assertThat(authentication).isInstanceOf(ApiKeyAuthentication.class);
         assertThat(((ApiKeyAuthentication)authentication).getAuthorities())
@@ -98,11 +94,9 @@ class AuthenticationServiceTest {
 
     @Test
     void throw_exception_when_api_key_is_wrong() {
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         String token = "token";
-        when(httpServletRequest.getHeader(eq("X-API-KEY"))).thenReturn(token);
         when(accessTokensService.userFromToken(token)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> sut.getAuthentication(httpServletRequest)).isInstanceOf(BadCredentialsException.class);
+        assertThatThrownBy(() -> sut.getAuthentication("X-API-KEY", "/path")).isInstanceOf(BadCredentialsException.class);
     }
 }
