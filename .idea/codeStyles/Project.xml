@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: 2017-2026 Enedis
+SPDX-License-Identifier: Apache-2.0
+-->
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
     <option name="AUTODETECT_INDENTS" value="false" />

@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: 2017-2026 Enedis
+SPDX-License-Identifier: Apache-2.0
+-->
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="start_local_server" type="Application" factoryName="Application">
     <option name="ALTERNATIVE_JRE_PATH" value="21" />
