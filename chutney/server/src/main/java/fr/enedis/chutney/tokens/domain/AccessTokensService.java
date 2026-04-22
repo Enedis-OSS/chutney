@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AccessTokensService {
 
     private final AccessTokensRepository accessTokensRepository;
@@ -25,10 +25,10 @@ public class AccessTokensService {
     }
 
     public String createToken(String user) {
-        String rawKey = UUID.randomUUID().toString().replace("-", "");
-        String token = new BCryptPasswordEncoder().encode(rawKey);
-        accessTokensRepository.createToken(new AccessToken(UUID.randomUUID().toString(), user, token, Instant.now()));
-        return rawKey;
+        String token = UUID.randomUUID().toString().replace("-", "");
+        String hash = new BCryptPasswordEncoder().encode(token);
+        accessTokensRepository.createToken(new AccessToken(UUID.randomUUID().toString(), user, hash, Instant.now()));
+        return token;
     }
 
     public Optional<AccessToken> userFromToken(String token) {
