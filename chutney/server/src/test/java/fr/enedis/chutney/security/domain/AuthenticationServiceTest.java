@@ -22,6 +22,7 @@ import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -82,7 +83,7 @@ class AuthenticationServiceTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         String token = "token";
         when(httpServletRequest.getHeader(eq("X-API-KEY"))).thenReturn(token);
-        when(accessTokensService.matchToken(token)).thenReturn(true);
+        when(accessTokensService.userFromToken(token)).thenReturn(Optional.of("user"));
 
         Authentication authentication = sut.getAuthentication(httpServletRequest);
 
@@ -96,7 +97,7 @@ class AuthenticationServiceTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         String token = "token";
         when(httpServletRequest.getHeader(eq("X-API-KEY"))).thenReturn(token);
-        when(accessTokensService.matchToken(token)).thenReturn(false);
+        when(accessTokensService.userFromToken(token)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sut.getAuthentication(httpServletRequest)).isInstanceOf(BadCredentialsException.class);
     }
