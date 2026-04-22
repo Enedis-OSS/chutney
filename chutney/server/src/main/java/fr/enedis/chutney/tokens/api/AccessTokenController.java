@@ -10,10 +10,10 @@ package fr.enedis.chutney.tokens.api;
 import static fr.enedis.chutney.tokens.api.AccessTokenController.BASE_URL;
 
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
+import java.security.Principal;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +31,7 @@ public class AccessTokenController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','SCENARIO_WRITE','ENVIRONMENT_READ')")
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createToken(@RequestBody String user) {
-        return accessTokensService.createToken(user);
+    public String createToken(Principal principal) {
+        return accessTokensService.createToken(principal.getName());
     }
 }

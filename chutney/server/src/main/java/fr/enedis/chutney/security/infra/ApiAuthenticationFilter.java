@@ -34,7 +34,7 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         new ApiKeyEndpoint("POST", DataSetController.BASE_URL),
         new ApiKeyEndpoint("PUT", DataSetController.BASE_URL),
         new ApiKeyEndpoint("POST", CampaignController.BASE_URL),
-        new ApiKeyEndpoint("GET",EnvironmentController.BASE_URL));
+        new ApiKeyEndpoint("GET", EnvironmentController.BASE_URL));
 
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
