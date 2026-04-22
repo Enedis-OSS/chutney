@@ -31,14 +31,14 @@ public class AccessTokensService {
         return rawKey;
     }
 
-    public Optional<String> userFromToken(String token) {
+    public Optional<AccessToken> userFromToken(String token) {
         var threeMonthsAgo = Instant.now().minus(90, ChronoUnit.DAYS);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
             if (encoder.matches(token, repoToken.hashedToken())
                 && repoToken.createdAt().isAfter(threeMonthsAgo)) {
-                return Optional.of(repoToken.user());
+                return Optional.of(repoToken);
             }
         }
         return Optional.empty();

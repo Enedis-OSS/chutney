@@ -13,6 +13,7 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.RoleNotFoundException;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
+import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class AuthenticationService {
     public Authentication getAuthentication(HttpServletRequest request) {
         String apiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
 
-        Optional<String> user = accessTokensService.userFromToken(apiKey);
+        Optional<AccessToken> user = accessTokensService.userFromToken(apiKey);
         if (apiKey == null || user.isEmpty()) {
             LOGGER.info("Wrong Api-key for request {}", request.getRequestURI());
             throw new BadCredentialsException("Invalid API Key");
@@ -55,6 +56,6 @@ public class AuthenticationService {
 
         LOGGER.info("Api-key authentication success for user {} and for request {}", user.get(), request.getRequestURI());
 
-        return new ApiKeyAuthentication(user.get(), AuthorityUtils.createAuthorityList(Authorization.SCENARIO_WRITE.name()));
+        return new ApiKeyAuthentication(user.get().user(), user.get().hashedToken(), AuthorityUtils.createAuthorityList(Authorization.SCENARIO_WRITE.name()));
     }
 }

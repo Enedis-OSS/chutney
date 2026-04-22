@@ -19,8 +19,11 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.RoleNotFoundException;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
+import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +86,8 @@ class AuthenticationServiceTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         String token = "token";
         when(httpServletRequest.getHeader(eq("X-API-KEY"))).thenReturn(token);
-        when(accessTokensService.userFromToken(token)).thenReturn(Optional.of("user"));
+        when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(new AccessToken("id", "user", "hashed",
+            Instant.now().minus(1, ChronoUnit.DAYS))));
 
         Authentication authentication = sut.getAuthentication(httpServletRequest);
 
