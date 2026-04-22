@@ -7,6 +7,8 @@
 
 package fr.enedis.chutney.security.infra;
 
+import fr.enedis.chutney.campaign.api.CampaignController;
+import fr.enedis.chutney.dataset.api.DataSetController;
 import fr.enedis.chutney.scenario.api.GwtTestCaseController;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import jakarta.servlet.FilterChain;
@@ -25,7 +27,9 @@ import org.springframework.web.filter.GenericFilterBean;
 public class ApiAuthenticationFilter extends GenericFilterBean {
 
     private static final Collection<String> API_PATHS = List.of(
-        GwtTestCaseController.BASE_URL + "/raw");
+        GwtTestCaseController.BASE_URL + "/raw",
+        DataSetController.BASE_URL,
+        CampaignController.BASE_URL);
 
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
