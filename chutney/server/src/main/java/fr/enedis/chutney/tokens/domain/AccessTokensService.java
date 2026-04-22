@@ -27,7 +27,7 @@ public class AccessTokensService {
         String rawKey = UUID.randomUUID().toString().replace("-", "");
         String token = new BCryptPasswordEncoder().encode(rawKey);
         accessTokensRepository.createToken(new AccessToken(UUID.randomUUID().toString(), user, token, Instant.now()));
-        return token;
+        return rawKey;
     }
 
     public boolean matchToken(String token) {
