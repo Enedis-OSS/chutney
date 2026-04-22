@@ -31,7 +31,7 @@ class AccessTokensServiceTest {
     @Test
     void create_token() {
         var user = "ulysse";
-        var token = sut.createToken(user);
+        var token = sut.createToken(user, "note", Instant.now().plus(1, ChronoUnit.DAYS));
 
         assertThat(token).isNotEmpty();
 
@@ -43,7 +43,7 @@ class AccessTokensServiceTest {
     @Test
     void match_right_token() {
         var user = "bach";
-        var token = sut.createToken(user);
+        var token = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
         var encoded = new BCryptPasswordEncoder().encode(token);
         AccessToken accessToken = new AccessToken(user, "note", encoded, Instant.now().plus(1, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(accessToken));
@@ -53,7 +53,7 @@ class AccessTokensServiceTest {
     @Test
     void does_not_match_wrong_token() {
         String user = "bach";
-        var token = sut.createToken(user);
+        var token = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", "wrong", Instant.now().plus(1, ChronoUnit.DAYS))));
         assertThat(sut.userFromToken(token)).isEmpty();
     }
@@ -61,7 +61,7 @@ class AccessTokensServiceTest {
     @Test
     void does_not_match_revoked_token() {
         var user = "bach";
-        var token = sut.createToken(user);
+        var token = sut.createToken(user, "note", Instant.now());
         var encoded = new BCryptPasswordEncoder().encode(token);
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", encoded, Instant.now().minus(1, ChronoUnit.DAYS))));
         assertThat(sut.userFromToken(token)).isEmpty();

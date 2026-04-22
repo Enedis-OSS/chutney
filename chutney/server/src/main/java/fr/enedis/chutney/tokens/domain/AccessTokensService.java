@@ -8,11 +8,9 @@
 package fr.enedis.chutney.tokens.domain;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,20 +22,16 @@ public class AccessTokensService {
         this.accessTokensRepository = accessTokensRepository;
     }
 
-    public String createToken(String user) {
+    public String createToken(String user, String note, Instant expiresAt) {
         String token = UUID.randomUUID().toString().replace("-", "");
-        String hash = new BCryptPasswordEncoder().encode(token);
-        accessTokensRepository.createToken(new AccessToken(user, "note", hash, Instant.now().plus(1, ChronoUnit.DAYS)));
+        accessTokensRepository.createToken(AccessToken.create(user, note, token, expiresAt));
         return token;
     }
 
     public Optional<AccessToken> userFromToken(String token) {
-        var threeMonthsAgo = Instant.now().minus(90, ChronoUnit.DAYS);
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
-            if (encoder.matches(token, repoToken.hash())
-                && repoToken.expiresAt().isAfter(Instant.now())) {
+            if (repoToken.matchTokenAndIsValid(token)) {
                 return Optional.of(repoToken);
             }
         }

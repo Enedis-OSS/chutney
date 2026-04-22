@@ -34,7 +34,7 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
     @Override
     public Collection<AccessToken> getTokens() {
         return accessTokenJpaRepository.findAll().stream().map(accessTokenEntity ->
-            new AccessToken(accessTokenEntity.getOwner(), accessTokenEntity.getNote(),
-                accessTokenEntity.getHash(), Instant.ofEpochMilli(accessTokenEntity.getExpiresAt()))).toList();
+            new AccessToken(accessTokenEntity.getOwner(), accessTokenEntity.getNote(), accessTokenEntity.getHash(),
+                Instant.ofEpochMilli(accessTokenEntity.getExpiresAt()))).toList();
     }
 }
