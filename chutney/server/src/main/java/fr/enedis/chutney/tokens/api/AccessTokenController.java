@@ -29,7 +29,7 @@ public class AccessTokenController {
         this.accessTokensService = accessTokensService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','SCENARIO_WRITE')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','SCENARIO_WRITE','ENVIRONMENT_READ')")
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String createToken(@RequestBody String user) {
         return accessTokensService.createToken(user);

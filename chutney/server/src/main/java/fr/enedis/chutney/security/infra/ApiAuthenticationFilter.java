@@ -9,6 +9,7 @@ package fr.enedis.chutney.security.infra;
 
 import fr.enedis.chutney.campaign.api.CampaignController;
 import fr.enedis.chutney.dataset.api.DataSetController;
+import fr.enedis.chutney.environment.api.environment.EnvironmentController;
 import fr.enedis.chutney.scenario.api.GwtTestCaseController;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import jakarta.servlet.FilterChain;
@@ -29,7 +30,8 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
     private static final Collection<String> API_PATHS = List.of(
         GwtTestCaseController.BASE_URL + "/raw",
         DataSetController.BASE_URL,
-        CampaignController.BASE_URL);
+        CampaignController.BASE_URL,
+        EnvironmentController.BASE_URL);
 
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
