@@ -27,11 +27,14 @@ import org.springframework.web.filter.GenericFilterBean;
 
 public class ApiAuthenticationFilter extends GenericFilterBean {
 
-    private static final Collection<String> API_PATHS = List.of(
-        GwtTestCaseController.BASE_URL + "/raw",
-        DataSetController.BASE_URL,
-        CampaignController.BASE_URL,
-        EnvironmentController.BASE_URL);
+    private static final Collection<ApiKeyEndpoint> API_ENDPOINTS = List.of(
+        new ApiKeyEndpoint("GET", GwtTestCaseController.BASE_URL),
+        new ApiKeyEndpoint("POST", GwtTestCaseController.BASE_URL + "/raw"),
+        new ApiKeyEndpoint("GET", DataSetController.BASE_URL),
+        new ApiKeyEndpoint("POST", DataSetController.BASE_URL),
+        new ApiKeyEndpoint("PUT", DataSetController.BASE_URL),
+        new ApiKeyEndpoint("POST", CampaignController.BASE_URL),
+        new ApiKeyEndpoint("GET",EnvironmentController.BASE_URL));
 
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
@@ -47,7 +50,7 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String requestURI = httpServletRequest.getRequestURI();
         try {
-            if(API_PATHS.contains(requestURI)) {
+            if(API_ENDPOINTS.contains(new ApiKeyEndpoint(httpServletRequest.getMethod(), requestURI))) {
                 String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
                 if(apiKey != null) {
                     Authentication authentication = authenticationService.getAuthentication(apiKey, requestURI);
@@ -65,4 +68,6 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
             printWriter.close();
         }
     }
+
+    private record ApiKeyEndpoint(String method, String path){}
 }
