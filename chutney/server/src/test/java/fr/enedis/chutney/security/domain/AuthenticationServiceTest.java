@@ -85,7 +85,7 @@ class AuthenticationServiceTest {
         when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(new AccessToken("id", "user", "hashed",
             Instant.now().minus(1, ChronoUnit.DAYS))));
 
-        Authentication authentication = sut.getAuthentication("X-API-KEY", "/path");
+        Authentication authentication = sut.getAuthentication("token", "/path");
 
         assertThat(authentication).isInstanceOf(ApiKeyAuthentication.class);
         assertThat(((ApiKeyAuthentication)authentication).getAuthorities())
