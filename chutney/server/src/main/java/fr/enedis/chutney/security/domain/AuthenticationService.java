@@ -52,6 +52,6 @@ public class AuthenticationService {
 
         LOGGER.info("Api-key authentication success for user {} and for request {}", user.get(), requestURI);
 
-        return new ApiKeyAuthentication(user.get().user(), user.get().hashedToken(), AuthorityUtils.createAuthorityList(Authorization.SCENARIO_WRITE.name()));
+        return new ApiKeyAuthentication(user.get().user(), user.get().hash(), AuthorityUtils.createAuthorityList(Authorization.SCENARIO_WRITE.name()));
     }
 }

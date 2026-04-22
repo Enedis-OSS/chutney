@@ -82,8 +82,9 @@ class AuthenticationServiceTest {
     @Test
     void get_api_key_authentication() {
         String token = "token";
-        when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(new AccessToken("id", "user", "hashed",
-            Instant.now().minus(1, ChronoUnit.DAYS))));
+        when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(
+            new AccessToken("user", "note", "hash",
+            Instant.now().plus(1, ChronoUnit.DAYS))));
 
         Authentication authentication = sut.getAuthentication("token", "/path");
 

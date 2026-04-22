@@ -25,35 +25,42 @@ public class AccessTokenEntity implements Serializable {
     @Column(name = "OWNER", updatable = false)
     private String owner;
 
-    @Column(name = "HASHED_TOKEN", updatable = false)
-    private String hashedToken;
+    @Column(name = "NOTE", updatable = false)
+    private String note;
 
-    @Column(name = "CREATED_AT", updatable = false)
-    private Long createdAt;
+    @Column(name = "HASH", updatable = false)
+    private String hash;
+
+    @Column(name = "EXPIRES_AT", updatable = false)
+    private Long expiresAt;
 
     public AccessTokenEntity() {
     }
 
-    public AccessTokenEntity(Long id, String owner, String hashedToken, Long createdAt) {
-        this.id = id;
+    public AccessTokenEntity(String owner, String note, String hash, Long expiresAt) {
         this.owner = owner;
-        this.hashedToken = hashedToken;
-        this.createdAt = createdAt;
+        this.note = note;
+        this.hash = hash;
+        this.expiresAt = expiresAt;
     }
 
     public Long getId() {
         return id;
     }
 
+    public String getNote() {
+        return note;
+    }
+
     public String getOwner() {
         return owner;
     }
 
-    public String getHashedToken() {
-        return hashedToken;
+    public String getHash() {
+        return hash;
     }
 
-    public Long getCreatedAt() {
-        return createdAt;
+    public Long getExpiresAt() {
+        return expiresAt;
     }
 }

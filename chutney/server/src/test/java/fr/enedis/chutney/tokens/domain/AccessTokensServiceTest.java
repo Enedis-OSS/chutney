@@ -45,7 +45,7 @@ class AccessTokensServiceTest {
         var user = "bach";
         var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
-        AccessToken accessToken = new AccessToken("id", user, encoded, Instant.now());
+        AccessToken accessToken = new AccessToken(user, "note", encoded, Instant.now().plus(1, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(accessToken));
         assertThat(sut.userFromToken(token)).contains(accessToken);
     }
@@ -54,7 +54,7 @@ class AccessTokensServiceTest {
     void does_not_match_wrong_token() {
         String user = "bach";
         var token = sut.createToken(user);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, "wrong", Instant.now())));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", "wrong", Instant.now().plus(1, ChronoUnit.DAYS))));
         assertThat(sut.userFromToken(token)).isEmpty();
     }
 
@@ -63,7 +63,7 @@ class AccessTokensServiceTest {
         var user = "bach";
         var token = sut.createToken(user);
         var encoded = new BCryptPasswordEncoder().encode(token);
-        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken("id", user, encoded, Instant.now().minus(91, ChronoUnit.DAYS))));
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", encoded, Instant.now().minus(1, ChronoUnit.DAYS))));
         assertThat(sut.userFromToken(token)).isEmpty();
     }
 }

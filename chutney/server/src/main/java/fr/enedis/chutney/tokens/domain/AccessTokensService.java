@@ -27,7 +27,7 @@ public class AccessTokensService {
     public String createToken(String user) {
         String token = UUID.randomUUID().toString().replace("-", "");
         String hash = new BCryptPasswordEncoder().encode(token);
-        accessTokensRepository.createToken(new AccessToken(UUID.randomUUID().toString(), user, hash, Instant.now()));
+        accessTokensRepository.createToken(new AccessToken(user, "note", hash, Instant.now().plus(1, ChronoUnit.DAYS)));
         return token;
     }
 
@@ -36,8 +36,8 @@ public class AccessTokensService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
-            if (encoder.matches(token, repoToken.hashedToken())
-                && repoToken.createdAt().isAfter(threeMonthsAgo)) {
+            if (encoder.matches(token, repoToken.hash())
+                && repoToken.expiresAt().isAfter(Instant.now())) {
                 return Optional.of(repoToken);
             }
         }

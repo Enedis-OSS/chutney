@@ -27,8 +27,8 @@ class DatabaseAccessTokensDBRepositoryTest extends AbstractLocalDatabaseTest {
 
     @Test
     void get_tokens() {
-        sut.createToken(new AccessToken("id", "pedro", "87654",
-            Instant.now().minus(1, ChronoUnit.HOURS)));
+        sut.createToken(new AccessToken("pedro", "note", "87654",
+            Instant.now().plus(1, ChronoUnit.HOURS)));
         Collection<AccessToken> tokens = sut.getTokens();
         assertThat(tokens).hasSize(1);
     }

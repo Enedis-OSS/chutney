@@ -1122,10 +1122,13 @@
             <column name="OWNER" type="VARCHAR(300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="HASHED_TOKEN" type="VARCHAR(300)">
+            <column name="NOTE" type="VARCHAR(300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="CREATED_AT" type="NUMBER">
+            <column name="HASH" type="VARCHAR(300)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPIRES_AT" type="NUMBER">
                 <constraints nullable="false"/>
             </column>
         </createTable>

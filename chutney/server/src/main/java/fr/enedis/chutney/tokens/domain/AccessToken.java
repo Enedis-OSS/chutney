@@ -9,5 +9,5 @@ package fr.enedis.chutney.tokens.domain;
 
 import java.time.Instant;
 
-public record AccessToken(String id, String user, String hashedToken, Instant createdAt) {
+public record AccessToken(String user, String note, String hash, Instant expiresAt) {
 }
