@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.idea.completion
 
-import fr.enedis.chutney.idea.completion.field.model.Field
-import fr.enedis.chutney.idea.completion.value.model.Value
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.psi.PsiElement
+import fr.enedis.chutney.idea.completion.field.model.Field
+import fr.enedis.chutney.idea.completion.value.model.Value
 
 open class CompletionHelper(val psiElement: PsiElement, val traversal: JsonTraversal) {
 

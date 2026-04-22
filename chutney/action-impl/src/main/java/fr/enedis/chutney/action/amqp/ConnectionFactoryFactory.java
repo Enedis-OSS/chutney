@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -10,10 +10,10 @@ package fr.enedis.chutney.action.amqp;
 import static fr.enedis.chutney.action.common.SecurityUtils.buildSslContext;
 import static java.util.function.Predicate.not;
 
-import fr.enedis.chutney.action.spi.injectable.Target;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import fr.enedis.chutney.action.spi.injectable.Target;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;

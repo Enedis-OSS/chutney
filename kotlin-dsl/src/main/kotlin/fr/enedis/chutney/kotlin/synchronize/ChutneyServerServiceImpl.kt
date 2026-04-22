@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.kotlin.synchronize
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto
 import fr.enedis.chutney.kotlin.dsl.Campaign
 import fr.enedis.chutney.kotlin.dsl.ChutneyScenario
@@ -15,7 +16,6 @@ import fr.enedis.chutney.kotlin.dsl.Mapper
 import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
 import fr.enedis.chutney.kotlin.util.HttpClientException
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.text.StringEscapeUtils.escapeJson
 import java.util.*
 

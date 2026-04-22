@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,13 +7,13 @@
 
 package fr.enedis.chutney.idea.actions
 
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.diagnostic.Logger
 import fr.enedis.chutney.idea.ChutneyUtil
 import fr.enedis.chutney.idea.actions.converter.JsonSerializer
 import fr.enedis.chutney.idea.actions.converter.v2.ScenarioV2
 import fr.enedis.chutney.idea.actions.converter.v2.StepV2
 import fr.enedis.chutney.idea.logger.EventDataLogger
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.diagnostic.Logger
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 

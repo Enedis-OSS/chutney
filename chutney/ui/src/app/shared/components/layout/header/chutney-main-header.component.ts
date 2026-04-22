@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,7 @@
 
 import { Component, HostBinding } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User, Authorization } from '@model';
+import { Authorization, User } from '@model';
 import { LoginService } from '@core/services';
 import { ThemeService } from '@core/theme/theme.service';
 import { LayoutOptions } from '@core/layout/layout-options.service';

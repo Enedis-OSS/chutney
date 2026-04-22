@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.idea.runner.settings.ui
 
-import fr.enedis.chutney.idea.runner.settings.ui.ChutneyVariablesData.Companion.create
 import com.intellij.execution.util.EnvVariablesTable
 import com.intellij.execution.util.EnvironmentVariable
 import com.intellij.openapi.ui.DialogWrapper
@@ -17,9 +16,9 @@ import com.intellij.ui.UserActivityProviderComponent
 import com.intellij.util.EnvironmentUtil
 import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.io.IdeUtilIoBundle
+import fr.enedis.chutney.idea.runner.settings.ui.ChutneyVariablesData.Companion.create
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
-import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.event.ChangeEvent

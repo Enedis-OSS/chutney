@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,12 +7,12 @@
 
 package fr.enedis.chutney.idea.runner.settings
 
-import fr.enedis.chutney.idea.runner.TestType
-import fr.enedis.chutney.idea.runner.settings.ui.ChutneyVariablesData
-import fr.enedis.chutney.idea.util.EnumUtils
 import com.intellij.openapi.util.JDOMExternalizer
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.ObjectUtils
+import fr.enedis.chutney.idea.runner.TestType
+import fr.enedis.chutney.idea.runner.settings.ui.ChutneyVariablesData
+import fr.enedis.chutney.idea.util.EnumUtils
 import org.jdom.Element
 
 object ChutneyRunSettingsSerializationUtils {

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,10 +7,10 @@
 
 package fr.enedis.chutney.campaign.api.dto;
 
-import fr.enedis.chutney.dataset.api.DataSetDto;
-import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.enedis.chutney.dataset.api.DataSetDto;
+import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,6 +7,13 @@
 
 package fr.enedis.chutney.idea.vcs
 
+import com.intellij.ide.util.PropertiesComponent
+import com.intellij.notification.NotificationListener
+import com.intellij.openapi.vcs.CheckinProjectPanel
+import com.intellij.openapi.vcs.checkin.CheckinHandler
+import com.intellij.openapi.vcs.ui.RefreshableOnComponent
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.searches.ReferencesSearch
 import fr.enedis.chutney.idea.ChutneyUtil
 import fr.enedis.chutney.idea.ChutneyUtil.getChutneyScenarioDescriptionFromFileName
 import fr.enedis.chutney.idea.ChutneyUtil.getChutneyScenarioIdFromFileName
@@ -18,13 +25,6 @@ import fr.enedis.chutney.idea.logger.EventDataLogger
 import fr.enedis.chutney.idea.settings.ChutneySettings
 import fr.enedis.chutney.idea.util.StringUtils.escapeSql
 import fr.enedis.chutney.kotlin.util.HttpClient
-import com.intellij.ide.util.PropertiesComponent
-import com.intellij.notification.NotificationListener
-import com.intellij.openapi.vcs.CheckinProjectPanel
-import com.intellij.openapi.vcs.checkin.CheckinHandler
-import com.intellij.openapi.vcs.ui.RefreshableOnComponent
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.searches.ReferencesSearch
 import org.hjson.JsonValue
 import org.hjson.Stringify
 import java.awt.GridLayout

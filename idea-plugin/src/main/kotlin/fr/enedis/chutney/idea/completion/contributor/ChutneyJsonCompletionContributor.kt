@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,15 +7,15 @@
 
 package fr.enedis.chutney.idea.completion.contributor
 
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionResultSet
 import fr.enedis.chutney.idea.ChutneyUtil
 import fr.enedis.chutney.idea.completion.ChutneyJsonCompletionHelper
 import fr.enedis.chutney.idea.completion.ChutneyJsonPathResolver
 import fr.enedis.chutney.idea.completion.JsonTraversal
 import fr.enedis.chutney.idea.completion.field.ChutneyJsonFieldCompletionFactory
 import fr.enedis.chutney.idea.completion.value.ChutneyJsonValueCompletionFactory
-import com.intellij.codeInsight.completion.CompletionContributor
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionResultSet
 
 
 class ChutneyJsonCompletionContributor : CompletionContributor() {

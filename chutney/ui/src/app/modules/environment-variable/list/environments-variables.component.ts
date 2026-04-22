@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Environment, EnvironmentVariable, Authorization } from '@model';
+import { Authorization, Environment, EnvironmentVariable } from '@model';
 import { distinct, match } from '@shared/tools';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EnvironmentService, LoginService } from '@core/services';

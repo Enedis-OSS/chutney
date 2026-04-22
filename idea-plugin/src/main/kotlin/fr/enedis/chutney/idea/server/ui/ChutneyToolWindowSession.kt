@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,10 +7,6 @@
 
 package fr.enedis.chutney.idea.server.ui
 
-import fr.enedis.chutney.idea.server.ChutneyServer
-import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
-import fr.enedis.chutney.idea.server.ChutneyServerRegistry
-import fr.enedis.chutney.idea.server.ChutneyServerSettings
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -21,6 +17,10 @@ import com.intellij.ui.TabbedPaneWrapper
 import com.intellij.ui.border.CustomLineBorder
 import com.intellij.ui.tabs.TabInfo
 import com.intellij.util.ui.JBUI
+import fr.enedis.chutney.idea.server.ChutneyServer
+import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
+import fr.enedis.chutney.idea.server.ChutneyServerRegistry
+import fr.enedis.chutney.idea.server.ChutneyServerSettings
 import org.jetbrains.concurrency.Promise
 import java.awt.BorderLayout
 import javax.swing.JComponent

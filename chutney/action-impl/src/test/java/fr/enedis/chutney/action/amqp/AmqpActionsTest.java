@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -11,6 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.fail;
 
+import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.GetResponse;
+import com.rabbitmq.client.LongString;
+import com.rabbitmq.client.impl.LongStringHelper;
 import fr.enedis.chutney.action.TestFinallyActionRegistry;
 import fr.enedis.chutney.action.TestLogger;
 import fr.enedis.chutney.action.TestTarget;
@@ -19,13 +26,6 @@ import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.ActionExecutionResult.Status;
 import fr.enedis.chutney.action.spi.FinallyAction;
 import fr.enedis.chutney.action.spi.injectable.Target;
-import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.GetResponse;
-import com.rabbitmq.client.LongString;
-import com.rabbitmq.client.impl.LongStringHelper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;

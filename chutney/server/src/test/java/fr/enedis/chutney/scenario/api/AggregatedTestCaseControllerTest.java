@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,6 +14,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.scenario.api.raw.dto.GwtTestCaseMetadataDto;
 import fr.enedis.chutney.scenario.api.raw.dto.TestCaseIndexDto;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
@@ -21,8 +23,6 @@ import fr.enedis.chutney.server.core.domain.scenario.TestCase;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

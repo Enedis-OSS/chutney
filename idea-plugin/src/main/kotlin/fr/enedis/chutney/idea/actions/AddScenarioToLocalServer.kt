@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,23 +7,19 @@
 
 package fr.enedis.chutney.idea.actions
 
-import fr.enedis.chutney.idea.ChutneyUtil
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.LangDataKeys
+import com.intellij.openapi.diagnostic.Logger
 import fr.enedis.chutney.idea.ChutneyUtil.getChutneyScenarioDescriptionFromFileName
 import fr.enedis.chutney.idea.ChutneyUtil.getChutneyScenarioIdFromFileName
-import fr.enedis.chutney.idea.actions.converter.ScenarioV1ToV2Converter
 import fr.enedis.chutney.idea.logger.EventDataLogger
 import fr.enedis.chutney.idea.server.ChutneyServerRegistry
 import fr.enedis.chutney.idea.util.HJsonUtils
 import fr.enedis.chutney.idea.util.StringUtils.escapeSql
 import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.LangDataKeys
-import com.intellij.openapi.diagnostic.Logger
 import org.apache.commons.text.StringEscapeUtils
-import org.hjson.JsonValue
-import org.hjson.Stringify
 
 class AddScenarioToLocalServer : RemoteScenarioBaseAction() {
 

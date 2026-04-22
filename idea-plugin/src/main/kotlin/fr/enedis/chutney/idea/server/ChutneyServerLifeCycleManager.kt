@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,9 +7,6 @@
 
 package fr.enedis.chutney.idea.server
 
-import fr.enedis.chutney.idea.common.ChutneyCommonConstants
-import fr.enedis.chutney.idea.server.JsonUtil.getChildAsObject
-import fr.enedis.chutney.idea.server.JsonUtil.getChildAsString
 import com.google.gson.JsonObject
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
@@ -17,6 +14,9 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.ui.UIUtil
+import fr.enedis.chutney.idea.common.ChutneyCommonConstants
+import fr.enedis.chutney.idea.server.JsonUtil.getChildAsObject
+import fr.enedis.chutney.idea.server.JsonUtil.getChildAsString
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 

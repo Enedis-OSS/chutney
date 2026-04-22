@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,7 +8,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { pipe, Subject, Subscription, takeUntil, timer } from 'rxjs';
+import { Subject, Subscription, takeUntil, timer } from 'rxjs';
 
 import { Authorization, Campaign, CampaignExecutionReport, CampaignScheduling, SelectableTags } from '@model';
 import {

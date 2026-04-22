@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,8 +12,8 @@ import fr.enedis.chutney.acceptance.common.createScenario
 import fr.enedis.chutney.acceptance.common.executeScenario
 import fr.enedis.chutney.kotlin.dsl.ChutneyScenarioBuilder
 import fr.enedis.chutney.kotlin.dsl.Scenario
-import fr.enedis.chutney.kotlin.dsl.spEL
 import fr.enedis.chutney.kotlin.dsl.hjsonSpEL
+import fr.enedis.chutney.kotlin.dsl.spEL
 
 val `Execution by UI controller` = Scenario(title = "Execution by UI controller") {
   micrometerScenario(
