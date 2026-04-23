@@ -82,15 +82,27 @@ class AuthenticationServiceTest {
     @Test
     void get_api_key_authentication() {
         String token = "token";
+        String user = "user";
         when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(
-            new AccessToken("user", "note", "hash",
+            new AccessToken(user, "note", "hash",
             Instant.now().plus(1, ChronoUnit.DAYS))));
+        String role = "role";
+        when(authorizations.read()).thenReturn(
+            UserRoles.builder()
+                .withRoles(List.of(Role.builder()
+                    .withName(role)
+                    .withAuthorizations(List.of(Authorization.SCENARIO_WRITE.name()))
+                    .build()))
+                .withUsers(List.of(User.builder().withId(user).withRole(role).build()))
+                .build()
+        );
 
         Authentication authentication = sut.getAuthentication("token", "/path");
 
         assertThat(authentication).isInstanceOf(ApiKeyAuthentication.class);
         assertThat(((ApiKeyAuthentication)authentication).getAuthorities())
-            .containsExactly(new SimpleGrantedAuthority(Authorization.SCENARIO_WRITE.name()));
+            .containsExactly(new SimpleGrantedAuthority(Authorization.SCENARIO_WRITE.name()),
+                new SimpleGrantedAuthority(Authorization.SCENARIO_READ.name()));
     }
 
     @Test
