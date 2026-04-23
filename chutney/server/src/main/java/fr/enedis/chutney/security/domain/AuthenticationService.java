@@ -15,7 +15,10 @@ import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -50,11 +53,15 @@ public class AuthenticationService {
             throw new BadCredentialsException("Invalid API Key");
         }
 
-        LOGGER.info("Api-key authentication success for user {} and for request {}", user.get().user(), requestURI);
+        String userName = user.get().user();
+        LOGGER.info("Api-key authentication success for user {} and for request {}", userName, requestURI);
 
-        return new ApiKeyAuthentication(user.get().user(), user.get().hash(),
-            AuthorityUtils.createAuthorityList(
-                Authorization.SCENARIO_WRITE.name(),
-                Authorization.SCENARIO_READ.name()));
+        Set<Authorization> userAuthorizations = this.userRoleById(userName).authorizations;
+        List<String> authorities = userAuthorizations
+            .stream()
+            .map(Enum::name)
+            .collect(Collectors.toList());
+        return new ApiKeyAuthentication(userName, user.get().hash(),
+            AuthorityUtils.createAuthorityList(authorities));
     }
 }
