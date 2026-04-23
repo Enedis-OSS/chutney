@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import fr.enedis.chutney.tokens.infra.BCryptAccessTokenEncoder;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 class AccessTokensServiceTest {
 
     private final AccessTokensRepository accessTokensRepository = Mockito.mock(AccessTokensRepository.class);
-    private final AccessTokensService sut = new AccessTokensService(accessTokensRepository);
+    private final AccessTokensService sut = new AccessTokensService(accessTokensRepository, new BCryptAccessTokenEncoder());
 
     @Captor
     private final ArgumentCaptor<AccessToken> argumentCaptor = ArgumentCaptor.forClass(AccessToken.class);

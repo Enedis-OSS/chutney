@@ -17,21 +17,24 @@ import org.springframework.stereotype.Service;
 public class AccessTokensService {
 
     private final AccessTokensRepository accessTokensRepository;
+    private final AccessTokenEncoder accessTokenEncoder;
 
-    public AccessTokensService(AccessTokensRepository accessTokensRepository) {
+    public AccessTokensService(AccessTokensRepository accessTokensRepository,
+                               AccessTokenEncoder accessTokenEncoder) {
         this.accessTokensRepository = accessTokensRepository;
+        this.accessTokenEncoder = accessTokenEncoder;
     }
 
     public String createToken(String user, String note, Instant expiresAt) {
         String token = UUID.randomUUID().toString().replace("-", "");
-        accessTokensRepository.createToken(AccessToken.create(user, token, note, expiresAt));
+        accessTokensRepository.createToken(AccessToken.create(user, token, note, expiresAt, accessTokenEncoder));
         return token;
     }
 
     public Optional<AccessToken> userFromToken(String token) {
         Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
-            if (repoToken.matchTokenAndIsValid(token)) {
+            if (repoToken.matchTokenAndIsValid(token, accessTokenEncoder)) {
                 return Optional.of(repoToken);
             }
         }
