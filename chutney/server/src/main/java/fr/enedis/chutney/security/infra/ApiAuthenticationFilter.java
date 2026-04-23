@@ -18,30 +18,39 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class ApiAuthenticationFilter extends GenericFilterBean {
 
     private static final Collection<ApiKeyEndpoint> API_ENDPOINTS = List.of(
-        new ApiKeyEndpoint("GET", GwtTestCaseController.BASE_URL),
-        new ApiKeyEndpoint("POST", GwtTestCaseController.BASE_URL + "/raw"),
-        new ApiKeyEndpoint("GET", DataSetController.BASE_URL),
-        new ApiKeyEndpoint("POST", DataSetController.BASE_URL),
-        new ApiKeyEndpoint("PUT", DataSetController.BASE_URL),
-        new ApiKeyEndpoint("POST", CampaignController.BASE_URL),
-        new ApiKeyEndpoint("GET", EnvironmentController.BASE_URL));
+        new ApiKeyEndpoint(HttpMethod.GET, GwtTestCaseController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.POST, GwtTestCaseController.BASE_URL + "/raw"),
+        new ApiKeyEndpoint(HttpMethod.GET, GwtTestCaseController.BASE_URL + "/raw/**"),
+        new ApiKeyEndpoint(HttpMethod.GET, DataSetController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.POST, DataSetController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.PUT, DataSetController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.POST, CampaignController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.GET, EnvironmentController.BASE_URL));
 
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
     private final AuthenticationService authenticationService;
+    private final Collection<PathPatternRequestMatcher> matchers;
 
     public ApiAuthenticationFilter(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+
+        PathPatternRequestMatcher.Builder builder = PathPatternRequestMatcher.withDefaults();
+        matchers = new ArrayList<>();
+        API_ENDPOINTS.forEach(endpoint -> matchers.add(builder.matcher(endpoint.method, endpoint.path)));
     }
 
     @Override
@@ -50,7 +59,7 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String requestURI = httpServletRequest.getRequestURI();
         try {
-            if(API_ENDPOINTS.contains(new ApiKeyEndpoint(httpServletRequest.getMethod(), requestURI))) {
+            if(matchers.stream().anyMatch(matcher -> matcher.matches(httpServletRequest))) {
                 String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
                 if(apiKey != null) {
                     Authentication authentication = authenticationService.getAuthentication(apiKey, requestURI);
@@ -69,5 +78,5 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         }
     }
 
-    private record ApiKeyEndpoint(String method, String path){}
+    private record ApiKeyEndpoint(HttpMethod method, String path){}
 }

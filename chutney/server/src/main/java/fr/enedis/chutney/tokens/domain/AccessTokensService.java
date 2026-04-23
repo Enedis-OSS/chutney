@@ -24,7 +24,7 @@ public class AccessTokensService {
 
     public String createToken(String user, String note, Instant expiresAt) {
         String token = UUID.randomUUID().toString().replace("-", "");
-        accessTokensRepository.createToken(AccessToken.create(user, note, token, expiresAt));
+        accessTokensRepository.createToken(AccessToken.create(user, token, note, expiresAt));
         return token;
     }
 

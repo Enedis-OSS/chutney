@@ -1125,7 +1125,7 @@
             <column name="NOTE" type="VARCHAR(300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="HASH" type="VARCHAR(300)">
+            <column name="HASH" type="TEXT">
                 <constraints nullable="false"/>
             </column>
             <column name="EXPIRES_AT" type="NUMBER">

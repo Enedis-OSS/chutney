@@ -50,8 +50,11 @@ public class AuthenticationService {
             throw new BadCredentialsException("Invalid API Key");
         }
 
-        LOGGER.info("Api-key authentication success for user {} and for request {}", user.get(), requestURI);
+        LOGGER.info("Api-key authentication success for user {} and for request {}", user.get().user(), requestURI);
 
-        return new ApiKeyAuthentication(user.get().user(), user.get().hash(), AuthorityUtils.createAuthorityList(Authorization.SCENARIO_WRITE.name()));
+        return new ApiKeyAuthentication(user.get().user(), user.get().hash(),
+            AuthorityUtils.createAuthorityList(
+                Authorization.SCENARIO_WRITE.name(),
+                Authorization.SCENARIO_READ.name()));
     }
 }
