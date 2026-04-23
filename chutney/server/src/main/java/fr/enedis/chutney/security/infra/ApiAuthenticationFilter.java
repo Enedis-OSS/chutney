@@ -59,9 +59,9 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String requestURI = httpServletRequest.getRequestURI();
         try {
-            if(matchers.stream().anyMatch(matcher -> matcher.matches(httpServletRequest))) {
-                String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
-                if(apiKey != null) {
+            String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
+            if(apiKey != null) {
+                if(matchers.stream().anyMatch(matcher -> matcher.matches(httpServletRequest))) {
                     Authentication authentication = authenticationService.getAuthentication(apiKey, requestURI);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

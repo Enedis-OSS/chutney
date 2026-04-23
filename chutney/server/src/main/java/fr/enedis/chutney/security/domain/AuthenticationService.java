@@ -13,10 +13,8 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.RoleNotFoundException;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
-import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -47,7 +45,7 @@ public class AuthenticationService {
 
     public Authentication getAuthentication(String apiKey, String requestURI) {
 
-        Optional<AccessToken> user = accessTokensService.userFromToken(apiKey);
+        var user = accessTokensService.userFromToken(apiKey);
         if (user.isEmpty()) {
             LOGGER.info("Wrong Api-key for request {}", requestURI);
             throw new BadCredentialsException("Invalid API Key");
