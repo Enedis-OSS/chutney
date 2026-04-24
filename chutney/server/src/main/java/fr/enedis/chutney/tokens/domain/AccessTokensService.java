@@ -31,7 +31,7 @@ public class AccessTokensService {
         return token;
     }
 
-    public Optional<AccessToken> userFromToken(String token) {
+    public Optional<AccessToken> accessTokenFromRaw(String token) {
         Collection<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
             if (repoToken.matchTokenAndIsValid(token, accessTokenEncoder)) {

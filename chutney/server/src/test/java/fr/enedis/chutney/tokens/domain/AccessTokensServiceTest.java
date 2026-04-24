@@ -48,7 +48,7 @@ class AccessTokensServiceTest {
         var encoded = new BCryptPasswordEncoder().encode(token);
         AccessToken accessToken = new AccessToken(user, "note", encoded, Instant.now().plus(1, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(accessToken));
-        assertThat(sut.userFromToken(token)).contains(accessToken);
+        assertThat(sut.accessTokenFromRaw(token)).contains(accessToken);
     }
 
     @Test
@@ -56,7 +56,7 @@ class AccessTokensServiceTest {
         String user = "bach";
         var token = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", "wrong", Instant.now().plus(1, ChronoUnit.DAYS))));
-        assertThat(sut.userFromToken(token)).isEmpty();
+        assertThat(sut.accessTokenFromRaw(token)).isEmpty();
     }
 
     @Test
@@ -65,6 +65,6 @@ class AccessTokensServiceTest {
         var token = sut.createToken(user, "note", Instant.now());
         var encoded = new BCryptPasswordEncoder().encode(token);
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", encoded, Instant.now().minus(1, ChronoUnit.DAYS))));
-        assertThat(sut.userFromToken(token)).isEmpty();
+        assertThat(sut.accessTokenFromRaw(token)).isEmpty();
     }
 }

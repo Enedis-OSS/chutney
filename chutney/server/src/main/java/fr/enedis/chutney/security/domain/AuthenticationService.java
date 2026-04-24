@@ -45,7 +45,7 @@ public class AuthenticationService {
 
     public Authentication getAuthentication(String apiKey, String requestURI) {
 
-        var user = accessTokensService.userFromToken(apiKey);
+        var user = accessTokensService.accessTokenFromRaw(apiKey);
         if (user.isEmpty()) {
             LOGGER.info("Wrong Api-key for request {}", requestURI);
             throw new BadCredentialsException("Invalid API Key");

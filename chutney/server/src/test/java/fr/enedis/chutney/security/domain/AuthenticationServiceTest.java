@@ -83,7 +83,7 @@ class AuthenticationServiceTest {
     void get_api_key_authentication() {
         String token = "token";
         String user = "user";
-        when(accessTokensService.userFromToken(token)).thenReturn(Optional.of(
+        when(accessTokensService.accessTokenFromRaw(token)).thenReturn(Optional.of(
             new AccessToken(user, "note", "hash",
             Instant.now().plus(1, ChronoUnit.DAYS))));
         String role = "role";
@@ -108,7 +108,7 @@ class AuthenticationServiceTest {
     @Test
     void throw_exception_when_api_key_is_wrong() {
         String token = "token";
-        when(accessTokensService.userFromToken(token)).thenReturn(Optional.empty());
+        when(accessTokensService.accessTokenFromRaw(token)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sut.getAuthentication("X-API-KEY", "/path")).isInstanceOf(BadCredentialsException.class);
     }
