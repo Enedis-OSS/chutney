@@ -14,6 +14,7 @@ import fr.enedis.chutney.tokens.domain.AccessTokensRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import util.infra.AbstractLocalDatabaseTest;
@@ -21,19 +22,34 @@ import util.infra.EnableH2MemTestInfra;
 import util.infra.EnablePostgreSQLTestInfra;
 import util.infra.EnableSQLiteTestInfra;
 
-@EnableH2MemTestInfra
-@EnablePostgreSQLTestInfra
-@EnableSQLiteTestInfra
-class DatabaseAccessTokensDBRepositoryTest extends AbstractLocalDatabaseTest {
+class DatabaseAccessTokensDBRepositoryTest {
 
-    @Autowired
-    private AccessTokensRepository sut;
+    @Nested
+    @EnableH2MemTestInfra
+    class H2 extends DatabaseAccessTokensDBRepositoryTest.AllTests {
+    }
 
-    @Test
-    void get_tokens() {
-        sut.createToken(new AccessToken("pedro", "note", "hash",
-            Instant.now().plus(1, ChronoUnit.HOURS)));
-        Collection<AccessToken> tokens = sut.getTokens();
-        assertThat(tokens).hasSize(1);
+    @Nested
+    @EnableSQLiteTestInfra
+    class SQLite extends DatabaseAccessTokensDBRepositoryTest.AllTests {
+    }
+
+    @Nested
+    @EnablePostgreSQLTestInfra
+    class PostgreSQL extends DatabaseAccessTokensDBRepositoryTest.AllTests {
+    }
+
+    static abstract class AllTests extends AbstractLocalDatabaseTest {
+
+        @Autowired
+        private AccessTokensRepository sut;
+
+        @Test
+        void get_tokens() {
+            sut.createToken(new AccessToken("pedro", "note", "hash",
+                Instant.now().plus(1, ChronoUnit.HOURS)));
+            Collection<AccessToken> tokens = sut.getTokens();
+            assertThat(tokens).hasSize(1);
+        }
     }
 }
