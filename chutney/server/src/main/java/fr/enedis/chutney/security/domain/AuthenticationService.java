@@ -47,12 +47,12 @@ public class AuthenticationService {
 
         var user = accessTokensService.accessTokenFromRaw(apiKey);
         if (user.isEmpty()) {
-            LOGGER.info("Wrong Api-key for request {}", requestURI);
+            LOGGER.info("Wrong Api Key for request {}", requestURI);
             throw new BadCredentialsException("Invalid API Key");
         }
 
         String userName = user.get().user();
-        LOGGER.info("Api-key authentication success for user {} and for request {}", userName, requestURI);
+        LOGGER.info("Api Key authentication success for user {} and for request {}", userName, requestURI);
 
         Set<Authorization> userAuthorizations = this.userRoleById(userName).authorizations;
         List<String> authorities = userAuthorizations

@@ -18,8 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import util.infra.AbstractLocalDatabaseTest;
 import util.infra.EnableH2MemTestInfra;
+import util.infra.EnablePostgreSQLTestInfra;
+import util.infra.EnableSQLiteTestInfra;
 
 @EnableH2MemTestInfra
+@EnablePostgreSQLTestInfra
+@EnableSQLiteTestInfra
 class DatabaseAccessTokensDBRepositoryTest extends AbstractLocalDatabaseTest {
 
     @Autowired

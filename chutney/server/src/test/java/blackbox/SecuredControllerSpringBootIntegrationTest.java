@@ -10,6 +10,7 @@ package blackbox;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.ADMIN_ACCESS;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.CAMPAIGN_READ;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.CAMPAIGN_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.DATASET_READ;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.DATASET_WRITE;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.ENVIRONMENT_READ;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.ENVIRONMENT_WRITE;
@@ -302,7 +303,10 @@ public class SecuredControllerSpringBootIntegrationTest {
             {POST, AccessTokenController.BASE_URL, ADMIN_ACCESS.name(), "{\"user\":\"username\"}", OK},
             {POST, AccessTokenController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"user\":\"username\"}", OK},
             {POST, AccessTokenController.BASE_URL, DATASET_WRITE.name(), "{\"user\":\"username\"}", OK},
+            {POST, AccessTokenController.BASE_URL, DATASET_READ.name(), "{\"user\":\"username\"}", OK},
             {POST, AccessTokenController.BASE_URL, SCENARIO_WRITE.name(), "{\"user\":\"username\"}", OK},
+            {POST, AccessTokenController.BASE_URL, SCENARIO_READ.name(), "{\"user\":\"username\"}", OK},
+            {POST, AccessTokenController.BASE_URL, ENVIRONMENT_READ.name(), "{\"user\":\"username\"}", OK},
         };
     }
 

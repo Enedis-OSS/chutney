@@ -26,6 +26,7 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
     }
 
     @Override
+    @Transactional
     public void createToken(AccessToken accessToken) {
         accessTokenJpaRepository.save(new AccessTokenEntity(
             accessToken.user(), accessToken.note(), accessToken.hash(), accessToken.expiresAt().toEpochMilli()));
