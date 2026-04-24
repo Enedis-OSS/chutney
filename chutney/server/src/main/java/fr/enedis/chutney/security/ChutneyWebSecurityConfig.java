@@ -65,6 +65,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.client.RestOperations;
@@ -191,7 +192,7 @@ public class ChutneyWebSecurityConfig {
             )
             .httpBasic(Customizer.withDefaults())
             .addFilterBefore(new CorsFilter(corsConfigurationSource), BearerTokenAuthenticationFilter.class)
-            .addFilterBefore(apiAuthenticationFilter, BearerTokenAuthenticationFilter.class)
+            .addFilterBefore(apiAuthenticationFilter, AuthenticationFilter.class)
             .addFilterAfter(oAuth2TokenAuthenticationFilter, BearerTokenAuthenticationFilter.class);
         return http.build();
     }
