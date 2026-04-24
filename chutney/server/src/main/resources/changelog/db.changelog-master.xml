@@ -1122,7 +1122,9 @@
             <column name="OWNER" type="VARCHAR(300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="NOTE" type="VARCHAR(300)"/>
+            <column name="NOTE" type="VARCHAR(300)">
+                <constraints nullable="false"/>
+            </column>
             <column name="HASH" type="TEXT">
                 <constraints nullable="false"/>
             </column>
