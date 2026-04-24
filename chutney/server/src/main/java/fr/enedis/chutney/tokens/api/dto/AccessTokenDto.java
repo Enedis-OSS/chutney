@@ -9,12 +9,17 @@ package fr.enedis.chutney.tokens.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessTokenDto {
 
     private String note;
+
+    @JsonProperty(required = true)
+    @NotNull
     private LocalDate expiresAt;
 
     @JsonCreator
