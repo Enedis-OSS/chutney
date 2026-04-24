@@ -18,6 +18,7 @@ import fr.enedis.chutney.security.api.AuthenticationConfigController;
 import fr.enedis.chutney.security.api.UserController;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
+import fr.enedis.chutney.security.infra.ApiAuthenticationFilter;
 import fr.enedis.chutney.security.infra.jwt.ChutneyJwtAuthenticationConverter;
 import fr.enedis.chutney.security.infra.jwt.ChutneyJwtProperties;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
@@ -64,6 +65,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.client.RestOperations;
@@ -123,6 +125,11 @@ public class ChutneyWebSecurityConfig {
         return (request) -> useJwt(request) ? jwt : opaqueToken;
     }
 
+    @Bean
+    ApiAuthenticationFilter apiAuthenticationFilter(AuthenticationService authenticationService) {
+        return new ApiAuthenticationFilter(authenticationService);
+    }
+
     private boolean useJwt(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -152,7 +159,10 @@ public class ChutneyWebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver, OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter, JwtUtil jwtUtil, CorsConfigurationSource corsConfigurationSource) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver, OAuth2TokenAuthenticationFilter oAuth2TokenAuthenticationFilter,
+                                                   JwtUtil jwtUtil,
+                                                   ApiAuthenticationFilter apiAuthenticationFilter,
+                                                   CorsConfigurationSource corsConfigurationSource) throws Exception {
         configureBaseHttpSecurity(http);
         UserDto anonymous = anonymous();
         var path = PathPatternRequestMatcher.withDefaults();
@@ -182,6 +192,7 @@ public class ChutneyWebSecurityConfig {
             )
             .httpBasic(Customizer.withDefaults())
             .addFilterBefore(new CorsFilter(corsConfigurationSource), BearerTokenAuthenticationFilter.class)
+            .addFilterBefore(apiAuthenticationFilter, AuthenticationFilter.class)
             .addFilterAfter(oAuth2TokenAuthenticationFilter, BearerTokenAuthenticationFilter.class);
         return http.build();
     }

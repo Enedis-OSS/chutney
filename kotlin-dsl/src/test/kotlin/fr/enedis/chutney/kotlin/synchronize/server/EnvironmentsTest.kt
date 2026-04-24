@@ -16,7 +16,7 @@ class EnvironmentsTest : ChutneyServerServiceImplTest() {
     @Test
     fun get_environments() {
         wireMockServer.stubFor(
-            get(urlPathMatching("/api/v2/environment"))
+            get(urlPathMatching("/api/v2/environments"))
                 .willReturn(
                     okJson("[]")
                 )
@@ -26,7 +26,7 @@ class EnvironmentsTest : ChutneyServerServiceImplTest() {
 
         wireMockServer.verify(
             1,
-            getRequestedFor(urlPathMatching("/api/v2/environment"))
+            getRequestedFor(urlPathMatching("/api/v2/environments"))
         )
         Assertions.assertThat(environments).isEmpty()
     }
