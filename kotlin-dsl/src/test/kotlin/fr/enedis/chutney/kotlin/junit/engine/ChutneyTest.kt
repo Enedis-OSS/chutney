@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,8 +7,8 @@
 
 package fr.enedis.chutney.kotlin.junit.engine
 
-import fr.enedis.chutney.kotlin.dsl.*
 import fr.enedis.chutney.kotlin.annotations.ChutneyTest
+import fr.enedis.chutney.kotlin.dsl.*
 
 class ChutneyTest {
 

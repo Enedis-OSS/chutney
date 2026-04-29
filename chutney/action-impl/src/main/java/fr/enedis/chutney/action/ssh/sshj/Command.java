@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,8 +8,8 @@
 package fr.enedis.chutney.action.ssh.sshj;
 
 
-import fr.enedis.chutney.action.spi.time.Duration;
 import com.google.common.base.MoreObjects;
+import fr.enedis.chutney.action.spi.time.Duration;
 import java.io.IOException;
 import java.util.Optional;
 

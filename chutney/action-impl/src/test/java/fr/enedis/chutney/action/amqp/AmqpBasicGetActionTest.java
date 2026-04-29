@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -10,13 +10,13 @@ package fr.enedis.chutney.action.amqp;
 import static fr.enedis.chutney.action.amqp.AmqpActionsTest.mockConnectionFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
 import fr.enedis.chutney.action.TestLogger;
 import fr.enedis.chutney.action.TestTarget;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.ActionExecutionResult.Status;
 import fr.enedis.chutney.action.spi.injectable.Target;
-import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
 import org.junit.jupiter.api.Test;
 
 public class AmqpBasicGetActionTest {

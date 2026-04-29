@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  */
 
-import { TranslateService } from "@ngx-translate/core";
-import { Dataset, KeyValue } from "@model";
-import { Injectable } from "@angular/core";
+import { TranslateService } from '@ngx-translate/core';
+import { Dataset } from '@model';
+import { Injectable } from '@angular/core';
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +25,7 @@ export class DatasetUtils {
         if (datasetId) {
             if (Dataset.CUSTOM_ID === datasetId) {
                 return  this.translateService.instant("dataset.customLabel");
-            } 
+            }
             return datasetId;
         }
         return ''

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,13 +7,13 @@
 
 package fr.enedis.chutney.execution.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.Attached;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionProperties;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.WithScenario;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

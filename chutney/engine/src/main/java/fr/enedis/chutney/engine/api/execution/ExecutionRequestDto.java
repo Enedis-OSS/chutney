@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,12 +7,12 @@
 
 package fr.enedis.chutney.engine.api.execution;
 
-import fr.enedis.chutney.engine.api.execution.StepDefinitionDto.StepStrategyDefinitionDto;
-import fr.enedis.chutney.engine.api.execution.StepDefinitionDto.StrategyPropertiesDto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.enedis.chutney.engine.api.execution.StepDefinitionDto.StepStrategyDefinitionDto;
+import fr.enedis.chutney.engine.api.execution.StepDefinitionDto.StrategyPropertiesDto;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;

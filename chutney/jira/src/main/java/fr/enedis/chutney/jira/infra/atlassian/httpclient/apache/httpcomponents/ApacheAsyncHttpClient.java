@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -37,9 +37,9 @@ import com.atlassian.httpclient.base.event.HttpRequestCompletedEvent;
 import com.atlassian.httpclient.base.event.HttpRequestFailedEvent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.executor.ThreadLocalContextManager;
-import fr.enedis.chutney.jira.infra.atlassian.httpclient.api.factory.HttpClientOptions;
 import com.google.common.base.Throwables;
 import com.google.common.primitives.Ints;
+import fr.enedis.chutney.jira.infra.atlassian.httpclient.api.factory.HttpClientOptions;
 import io.atlassian.fugue.Suppliers;
 import io.atlassian.util.concurrent.ThreadFactories;
 import java.io.IOException;

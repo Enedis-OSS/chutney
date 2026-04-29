@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,9 +7,9 @@
 
 package fr.enedis.chutney.agent.domain.network;
 
+import com.google.common.collect.Sets;
 import fr.enedis.chutney.agent.domain.TargetId;
 import fr.enedis.chutney.engine.domain.delegation.NamedHostAndPort;
-import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;

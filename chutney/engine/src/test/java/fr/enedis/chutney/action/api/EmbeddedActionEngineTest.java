@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,12 +9,12 @@ package fr.enedis.chutney.action.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.Lists;
 import fr.enedis.chutney.action.domain.ActionTemplate;
 import fr.enedis.chutney.action.domain.ActionTemplateParserV2;
 import fr.enedis.chutney.action.domain.ActionTemplateRegistry;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
-import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,10 +7,10 @@
 
 package fr.enedis.chutney.security.infra.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.infra.UserDetailsServiceHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Set;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.jwt.Jwt;

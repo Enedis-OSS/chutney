@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,11 +8,6 @@
 package fr.enedis.chutney.idea.runner
 
 
-import fr.enedis.chutney.idea.server.ChutneyBrowserInfo
-import fr.enedis.chutney.idea.server.ChutneyServer
-import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
-import fr.enedis.chutney.idea.server.ChutneyServerRegistry
-import fr.enedis.chutney.idea.server.ui.ChutneyToolWindowManager.Companion.getInstance
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.RunProfile
 import com.intellij.execution.configurations.RunProfileState
@@ -26,6 +21,11 @@ import com.intellij.execution.runners.RunContentBuilder
 import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.util.Alarm
+import fr.enedis.chutney.idea.server.ChutneyBrowserInfo
+import fr.enedis.chutney.idea.server.ChutneyServer
+import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
+import fr.enedis.chutney.idea.server.ChutneyServerRegistry
+import fr.enedis.chutney.idea.server.ui.ChutneyToolWindowManager.Companion.getInstance
 import org.jetbrains.concurrency.Promise
 import org.jetbrains.concurrency.rejectedPromise
 import org.jetbrains.concurrency.resolvedPromise

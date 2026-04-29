@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,14 +7,14 @@
 
 package fr.enedis.chutney.idea.codeinsight
 
-import fr.enedis.chutney.idea.ChutneyUtil
-import fr.enedis.chutney.idea.completion.TargetsValueCompletionHelper
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.json.psi.JsonElementVisitor
 import com.intellij.json.psi.JsonObject
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.psi.PsiElementVisitor
+import fr.enedis.chutney.idea.ChutneyUtil
+import fr.enedis.chutney.idea.completion.TargetsValueCompletionHelper
 
 
 class ChutneyTargetNotFoundInspection : LocalInspectionTool() {

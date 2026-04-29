@@ -1,10 +1,10 @@
 /*!
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  */
- 
+
 /* Static search bar */
 .search-compact {
   display: flex;
@@ -124,7 +124,7 @@
   text-transform: uppercase;
   color: #999;
 
-} 
+}
 
 .search-item {
   cursor: pointer;
@@ -193,7 +193,7 @@
 .tooltip-content {
   display: none;
   position: absolute;
-  right: 120%; 
+  right: 120%;
   top: 50%;
   transform: translateY(-30%);
   background: #1f1f1f;

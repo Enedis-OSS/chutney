@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.idea.server
 
-import fr.enedis.chutney.idea.server.ChutneyServerSettings.RunnerMode
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.containers.ContainerUtil
+import fr.enedis.chutney.idea.server.ChutneyServerSettings.RunnerMode
 
 object ChutneyServerSettingsManager {
     private const val PREFIX = "Chutney.server.settings."

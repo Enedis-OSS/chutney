@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,10 +7,6 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
-import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettingsSerializationUtils
-import fr.enedis.chutney.idea.runner.settings.ui.ChutneyRunConfigurationEditor
-import fr.enedis.chutney.idea.util.ProjectRootUtils
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -20,6 +16,10 @@ import com.intellij.openapi.util.InvalidDataException
 import com.intellij.openapi.util.WriteExternalException
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.listeners.RefactoringElementListener
+import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
+import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettingsSerializationUtils
+import fr.enedis.chutney.idea.runner.settings.ui.ChutneyRunConfigurationEditor
+import fr.enedis.chutney.idea.util.ProjectRootUtils
 import org.jdom.Element
 import java.io.File
 

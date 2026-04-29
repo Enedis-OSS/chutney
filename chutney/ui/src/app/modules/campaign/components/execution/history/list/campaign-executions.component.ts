@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
-import { DatasetUtils } from "@shared/tools/dataset-utils";
+import { DatasetUtils } from '@shared/tools/dataset-utils';
 
 @Component({
     selector: 'chutney-campaign-executions',

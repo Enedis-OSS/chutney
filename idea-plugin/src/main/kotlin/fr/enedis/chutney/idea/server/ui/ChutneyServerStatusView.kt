@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,9 +7,6 @@
 
 package fr.enedis.chutney.idea.server.ui
 
-import fr.enedis.chutney.idea.server.ChutneyBrowserInfo
-import fr.enedis.chutney.idea.server.ChutneyServer
-import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
@@ -20,6 +17,9 @@ import com.intellij.ui.SideBorder
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ui.SwingHelper
 import com.intellij.util.ui.UIUtil
+import fr.enedis.chutney.idea.server.ChutneyBrowserInfo
+import fr.enedis.chutney.idea.server.ChutneyServer
+import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.datatransfer.StringSelection

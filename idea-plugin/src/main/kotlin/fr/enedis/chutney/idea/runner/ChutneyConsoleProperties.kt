@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.runner.settings.ChutneySettingsUtil
 import com.intellij.execution.Executor
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.testframework.TestConsoleProperties
@@ -22,6 +21,7 @@ import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import fr.enedis.chutney.idea.runner.settings.ChutneySettingsUtil
 
 
 class ChutneyConsoleProperties(

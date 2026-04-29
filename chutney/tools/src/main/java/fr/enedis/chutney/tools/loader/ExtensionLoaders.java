@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -11,9 +11,9 @@ import static fr.enedis.chutney.tools.loader.ExtensionLoaders.Mappers.instantiat
 import static fr.enedis.chutney.tools.loader.ExtensionLoaders.Mappers.splitByLine;
 import static fr.enedis.chutney.tools.loader.ExtensionLoaders.Sources.classpath;
 
+import com.google.common.io.CharStreams;
 import fr.enedis.chutney.tools.ThrowingFunction;
 import fr.enedis.chutney.tools.loader.ExtensionLoader.ExtensionLoaderSource;
-import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

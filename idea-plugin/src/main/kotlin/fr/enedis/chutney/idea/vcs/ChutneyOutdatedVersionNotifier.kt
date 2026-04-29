@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,12 +7,6 @@
 
 package fr.enedis.chutney.idea.vcs
 
-import fr.enedis.chutney.idea.ChutneyIcons
-import fr.enedis.chutney.idea.ChutneyUtil
-import fr.enedis.chutney.idea.settings.ChutneySettings
-import fr.enedis.chutney.idea.util.HJsonUtils
-import fr.enedis.chutney.kotlin.util.HttpClient
-import fr.enedis.chutney.kotlin.util.HttpClientException
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -21,6 +15,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotifications
+import fr.enedis.chutney.idea.ChutneyIcons
+import fr.enedis.chutney.idea.ChutneyUtil
+import fr.enedis.chutney.idea.settings.ChutneySettings
+import fr.enedis.chutney.idea.util.HJsonUtils
+import fr.enedis.chutney.kotlin.util.HttpClient
+import fr.enedis.chutney.kotlin.util.HttpClientException
 
 class ChutneyOutdatedVersionNotifier(val project: Project) : EditorNotifications.Provider<EditorNotificationPanel>(),
     DumbAware {

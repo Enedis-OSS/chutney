@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,10 +7,6 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
-import fr.enedis.chutney.idea.server.ChutneyServer
-import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
-import fr.enedis.chutney.idea.server.ChutneyServerRegistry
 import com.intellij.execution.DefaultExecutionResult
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.ExecutionResult
@@ -25,6 +21,10 @@ import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
+import fr.enedis.chutney.idea.server.ChutneyServer
+import fr.enedis.chutney.idea.server.ChutneyServerLifeCycleAdapter
+import fr.enedis.chutney.idea.server.ChutneyServerRegistry
 
 
 class ChutneyRunProfileState(

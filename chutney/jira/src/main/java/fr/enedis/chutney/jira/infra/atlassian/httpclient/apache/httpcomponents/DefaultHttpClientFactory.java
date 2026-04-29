@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,8 +12,8 @@ import com.atlassian.event.api.EventPublisher;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.executor.ThreadLocalContextManager;
-import fr.enedis.chutney.jira.infra.atlassian.httpclient.api.factory.HttpClientOptions;
 import com.google.common.annotations.VisibleForTesting;
+import fr.enedis.chutney.jira.infra.atlassian.httpclient.api.factory.HttpClientOptions;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Nonnull;

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,13 +7,6 @@
 
 package fr.enedis.chutney.idea.gutter
 
-import fr.enedis.chutney.idea.ChutneyUtil
-import fr.enedis.chutney.idea.logger.EventDataLogger
-import fr.enedis.chutney.idea.runner.ChutneyKotlinJsr223JvmLocalScriptEngineFactory
-import fr.enedis.chutney.idea.runner.getFullyQualifiedMethodName
-import fr.enedis.chutney.idea.runner.moduleIsUpToDate
-import fr.enedis.chutney.idea.settings.ChutneySettings
-import fr.enedis.chutney.kotlin.util.HttpClient
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.notification.NotificationListener
@@ -31,6 +24,13 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.task.ProjectTaskManager
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.ui.UIUtil
+import fr.enedis.chutney.idea.ChutneyUtil
+import fr.enedis.chutney.idea.logger.EventDataLogger
+import fr.enedis.chutney.idea.runner.ChutneyKotlinJsr223JvmLocalScriptEngineFactory
+import fr.enedis.chutney.idea.runner.getFullyQualifiedMethodName
+import fr.enedis.chutney.idea.runner.moduleIsUpToDate
+import fr.enedis.chutney.idea.settings.ChutneySettings
+import fr.enedis.chutney.kotlin.util.HttpClient
 import org.apache.commons.text.StringEscapeUtils
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import java.awt.Component

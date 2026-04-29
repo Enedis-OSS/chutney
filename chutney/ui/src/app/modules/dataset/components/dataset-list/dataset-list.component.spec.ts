@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -22,7 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { RouterModule } from '@angular/router';
-import { OAuthService } from "angular-oauth2-oidc";
+import { OAuthService } from 'angular-oauth2-oidc';
 import { AlertService } from '@shared';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.idea.actions
 
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.*
 import fr.enedis.chutney.idea.ChutneyUtil
 import fr.enedis.chutney.idea.settings.ChutneySettings
 import fr.enedis.chutney.kotlin.util.HttpClient
-import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.*
 
 class DynamicActionGroup : ActionGroup() {
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,12 +7,12 @@
 
 package fr.enedis.chutney.idea.completion.field
 
-import fr.enedis.chutney.idea.completion.CompletionHelper
-import fr.enedis.chutney.idea.completion.field.model.Field
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import fr.enedis.chutney.idea.completion.CompletionHelper
+import fr.enedis.chutney.idea.completion.field.model.Field
 
 abstract class FieldCompletion(
     protected val completionHelper: CompletionHelper,

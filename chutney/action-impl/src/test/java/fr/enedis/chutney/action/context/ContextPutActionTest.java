@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,10 +12,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import fr.enedis.chutney.action.spi.Action;
-import fr.enedis.chutney.action.spi.injectable.Logger;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import fr.enedis.chutney.action.spi.Action;
+import fr.enedis.chutney.action.spi.injectable.Logger;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

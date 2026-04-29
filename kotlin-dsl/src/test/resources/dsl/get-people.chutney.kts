@@ -1,16 +1,11 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
 */
 
 
-import fr.enedis.chutney.kotlin.dsl.ContextPutAction
-import fr.enedis.chutney.kotlin.dsl.HttpGetAction
-import fr.enedis.chutney.kotlin.dsl.JsonAssertAction
-import fr.enedis.chutney.kotlin.dsl.RetryTimeOutStrategy
-import fr.enedis.chutney.kotlin.dsl.Scenario
-import fr.enedis.chutney.kotlin.dsl.elEval
+import fr.enedis.chutney.kotlin.dsl.*
 
 Scenario(title = "swapi GET people record") {
     Given("I set get people service api endpoint") {

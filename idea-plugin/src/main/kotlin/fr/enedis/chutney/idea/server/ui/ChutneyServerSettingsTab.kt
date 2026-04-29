@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,9 +7,6 @@
 
 package fr.enedis.chutney.idea.server.ui
 
-import fr.enedis.chutney.idea.server.ChutneyServerSettings
-import fr.enedis.chutney.idea.server.ChutneyServerSettings.RunnerMode
-import fr.enedis.chutney.idea.server.ChutneyServerSettingsManager
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.Disposer
@@ -19,7 +16,9 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.tabs.TabInfo
 import com.intellij.util.ObjectUtils
 import com.intellij.util.ui.FormBuilder
-import com.intellij.util.ui.SwingHelper
+import fr.enedis.chutney.idea.server.ChutneyServerSettings
+import fr.enedis.chutney.idea.server.ChutneyServerSettings.RunnerMode
+import fr.enedis.chutney.idea.server.ChutneyServerSettingsManager
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.text.ParseException

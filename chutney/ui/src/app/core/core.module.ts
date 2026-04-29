@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -19,7 +19,6 @@ import { OAuth2ContentTypeInterceptor } from '@core/services/oauth2-content-type
 import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.interceptor';
 import { authAppInitializerFactory } from '@core/services/auth.app.initializer.factory';
 import { SsoService } from '@core/services/sso.service';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({ declarations: [
         LoginComponent,

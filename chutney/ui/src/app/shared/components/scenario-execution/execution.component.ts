@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -43,7 +43,7 @@ import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { StringifyPipe } from '@shared/pipes';
 import { findScrollContainer } from '@shared/tools';
 import { parse, stringify } from 'lossless-json'
-import { DatasetUtils } from "@shared/tools/dataset-utils";
+import { DatasetUtils } from '@shared/tools/dataset-utils';
 
 @Component({
     selector: 'chutney-scenario-execution',

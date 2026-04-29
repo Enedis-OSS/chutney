@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,11 +12,11 @@ import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.google.common.collect.Lists;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.engine.domain.environment.TargetImpl;
 import fr.enedis.chutney.engine.domain.execution.engine.DefaultStepExecutor;
 import fr.enedis.chutney.engine.domain.execution.engine.StepExecutor;
-import com.google.common.collect.Lists;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

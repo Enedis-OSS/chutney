@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -13,6 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.condition.OS.LINUX;
 
+import com.github.fridujo.rabbitmq.mock.MockChannel;
+import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
+import com.google.common.collect.ImmutableMap;
 import fr.enedis.chutney.action.TestFinallyActionRegistry;
 import fr.enedis.chutney.action.TestLogger;
 import fr.enedis.chutney.action.TestTarget;
@@ -21,9 +24,6 @@ import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.ActionExecutionResult.Status;
 import fr.enedis.chutney.action.spi.injectable.Target;
-import com.github.fridujo.rabbitmq.mock.MockChannel;
-import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

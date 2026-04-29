@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,11 +7,10 @@
 
 package fr.enedis.chutney.idea.runner
 
-import fr.enedis.chutney.idea.ChutneyUtil
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import org.jetbrains.annotations.NotNull
+import fr.enedis.chutney.idea.ChutneyUtil
 
 class ChutneyYamlLineMarkerProvider : ChutneyLineMarkerProvider() {
     override fun getLineMarkerInfo(psiElement: PsiElement): LineMarkerInfo<*>? {

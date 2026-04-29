@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DurationPipe } from '@shared/pipes';
 import jsPDF from 'jspdf';
 import autoTable, { CellHookData } from 'jspdf-autotable';
-import { ExecutionDataset } from "@core/model/scenario/execution.dataset";
+import { ExecutionDataset } from '@core/model/scenario/execution.dataset';
 
 @Injectable({
     providedIn: 'root'

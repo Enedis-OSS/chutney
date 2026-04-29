@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.kotlin.synchronize.server
 
+import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery.forStubMapping
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import fr.enedis.chutney.kotlin.dsl.Campaign
 import fr.enedis.chutney.kotlin.dsl.Campaign.CampaignScenario
 import fr.enedis.chutney.kotlin.synchronize.ChutneyServerServiceImpl
-import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery.forStubMapping
-import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

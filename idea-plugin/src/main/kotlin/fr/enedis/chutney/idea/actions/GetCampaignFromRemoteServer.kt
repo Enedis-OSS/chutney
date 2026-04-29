@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,12 +7,6 @@
 
 package fr.enedis.chutney.idea.actions
 
-import fr.enedis.chutney.idea.actions.ui.ValueLabelComboBox
-import fr.enedis.chutney.idea.logger.EventDataLogger
-import fr.enedis.chutney.idea.settings.ChutneySettings
-import fr.enedis.chutney.idea.util.HJsonUtils
-import fr.enedis.chutney.idea.util.sanitizeFilename
-import fr.enedis.chutney.kotlin.util.HttpClient
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.intellij.json.JsonFileType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -34,6 +28,12 @@ import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.util.ui.FormBuilder
+import fr.enedis.chutney.idea.actions.ui.ValueLabelComboBox
+import fr.enedis.chutney.idea.logger.EventDataLogger
+import fr.enedis.chutney.idea.settings.ChutneySettings
+import fr.enedis.chutney.idea.util.HJsonUtils
+import fr.enedis.chutney.idea.util.sanitizeFilename
+import fr.enedis.chutney.kotlin.util.HttpClient
 import java.awt.BorderLayout
 import java.nio.file.Paths
 import javax.swing.JPanel

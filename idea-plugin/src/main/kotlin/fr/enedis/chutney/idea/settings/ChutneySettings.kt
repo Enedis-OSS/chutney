@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,15 +7,15 @@
 
 package fr.enedis.chutney.idea.settings
 
-import fr.enedis.chutney.idea.logger.EventDataLogger
-import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
+import fr.enedis.chutney.idea.logger.EventDataLogger
 import fr.enedis.chutney.kotlin.authentication.AuthMethod
+import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 
 @State(name = "ChutneySettings", storages = [Storage("chutney.xml")])
 class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettingsState> {

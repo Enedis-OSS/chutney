@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -10,15 +10,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, } from '@angular/cdk/drag-drop';
-import { Campaign, CampaignScenario, Dataset, JiraScenario, JiraScenarioLinks, ScenarioIndex, Authorization } from '@model';
+import {
+    Authorization,
+    Campaign,
+    CampaignScenario,
+    Dataset,
+    JiraScenario,
+    JiraScenarioLinks,
+    ScenarioIndex
+} from '@model';
 import {
     CampaignService,
     DataSetService,
     EnvironmentService,
     JiraPluginConfigurationService,
     JiraPluginService,
-    ScenarioService,
-    LoginService
+    LoginService,
+    ScenarioService
 } from '@core/services';
 import { distinct, flatMap, newInstance } from '@shared/tools/array-utils';
 import { isNotEmpty } from '@shared';

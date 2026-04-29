@@ -1,5 +1,5 @@
 @REM
-@REM SPDX-FileCopyrightText: 2017-2024 Enedis
+@REM SPDX-FileCopyrightText: 2017-2026 Enedis
 @REM
 @REM SPDX-License-Identifier: Apache-2.0
 @REM

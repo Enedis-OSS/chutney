@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,11 +8,6 @@
 package fr.enedis.chutney.idea.runner.settings.ui
 
 
-import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
-import fr.enedis.chutney.idea.runner.settings.ChutneySettingsUtil
-import fr.enedis.chutney.idea.util.ProjectRootUtils
-import fr.enedis.chutney.idea.util.SwingUtils
-import fr.enedis.chutney.idea.util.TextChangeListener
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
@@ -24,6 +19,11 @@ import com.intellij.ui.components.JBList
 import com.intellij.util.ArrayUtil
 import com.intellij.util.ObjectUtils
 import com.intellij.util.ui.UIUtil
+import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
+import fr.enedis.chutney.idea.runner.settings.ChutneySettingsUtil
+import fr.enedis.chutney.idea.util.ProjectRootUtils
+import fr.enedis.chutney.idea.util.SwingUtils
+import fr.enedis.chutney.idea.util.TextChangeListener
 import java.awt.*
 import java.io.File
 import javax.swing.*

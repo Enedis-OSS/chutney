@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.idea.runner.settings.ui
 
-import fr.enedis.chutney.idea.runner.settings.ChutneySettingsUtil
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.project.Project
@@ -23,6 +22,7 @@ import com.intellij.util.Consumer
 import com.intellij.util.PathUtil
 import com.intellij.util.SmartList
 import com.intellij.util.containers.ContainerUtil
+import fr.enedis.chutney.idea.runner.settings.ChutneySettingsUtil
 import java.io.File
 import java.util.*
 import javax.swing.DefaultListModel

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,7 +8,10 @@
 package fr.enedis.chutney.acceptance.tests.actions
 
 import fr.enedis.chutney.acceptance.common.*
-import fr.enedis.chutney.kotlin.dsl.*
+import fr.enedis.chutney.kotlin.dsl.JsonAssertAction
+import fr.enedis.chutney.kotlin.dsl.Scenario
+import fr.enedis.chutney.kotlin.dsl.hjsonSpEL
+import fr.enedis.chutney.kotlin.dsl.spEL
 
 
 val `Register simple success action` = Scenario(title = "Register simple success action") {
