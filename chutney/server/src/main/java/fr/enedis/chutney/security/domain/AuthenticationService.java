@@ -19,9 +19,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 
 public class AuthenticationService {
 
@@ -43,23 +40,24 @@ public class AuthenticationService {
         return userRoles.roleByName(user.roleName);
     }
 
-    public Authentication getAuthentication(String apiKey, String requestURI) {
+    /**
+     * @throws InvalidApiKeyException if the api key is incorrect or expired
+     */
+    public ApiKeyAuthentication getAuthentication(String apiKey) {
 
-        var user = accessTokensService.accessTokenFromRaw(apiKey);
-        if (user.isEmpty()) {
-            LOGGER.info("Wrong Api Key for request {}", requestURI);
-            throw new BadCredentialsException("Invalid API Key");
+        var accessToken = accessTokensService.accessTokenFromRaw(apiKey);
+        if (accessToken.isEmpty()) {
+            throw new InvalidApiKeyException();
         }
 
-        String userName = user.get().user();
-        LOGGER.info("Api Key authentication success for user {} and for request {}", userName, requestURI);
+        String userName = accessToken.get().user();
+        LOGGER.info("Api Key authentication success for user {}", userName);
 
         Set<Authorization> userAuthorizations = this.userRoleById(userName).authorizations;
         List<String> authorities = userAuthorizations
             .stream()
             .map(Enum::name)
             .collect(Collectors.toList());
-        return new ApiKeyAuthentication(userName, user.get().hash(),
-            AuthorityUtils.createAuthorityList(authorities));
+        return new ApiKeyAuthentication(userName, accessToken.get().hash(), authorities);
     }
 }

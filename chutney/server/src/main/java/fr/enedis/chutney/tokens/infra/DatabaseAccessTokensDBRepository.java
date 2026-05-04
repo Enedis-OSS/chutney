@@ -11,7 +11,7 @@ import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensRepository;
 import fr.enedis.chutney.tokens.infra.jpa.AccessTokenEntity;
 import java.time.Instant;
-import java.util.Collection;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
     }
 
     @Override
-    public Collection<AccessToken> getTokens() {
+    public List<AccessToken> getTokens() {
         return accessTokenJpaRepository.findAll().stream().map(accessTokenEntity ->
             new AccessToken(accessTokenEntity.getOwner(), accessTokenEntity.getNote(), accessTokenEntity.getHash(),
                 Instant.ofEpochMilli(accessTokenEntity.getExpiresAt()))).toList();

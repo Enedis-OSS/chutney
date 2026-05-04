@@ -60,7 +60,7 @@ class AccessTokensServiceTest {
     }
 
     @Test
-    void does_not_match_revoked_token() {
+    void does_not_match_expired_token() {
         var user = "bach";
         var token = sut.createToken(user, "note", Instant.now());
         var encoded = new BCryptPasswordEncoder().encode(token);

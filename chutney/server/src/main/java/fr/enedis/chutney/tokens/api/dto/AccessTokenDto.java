@@ -16,6 +16,8 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessTokenDto {
 
+    @JsonProperty(required = true)
+    @NotNull
     private String note;
 
     @JsonProperty(required = true)

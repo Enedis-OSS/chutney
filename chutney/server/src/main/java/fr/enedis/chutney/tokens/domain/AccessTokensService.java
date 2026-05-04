@@ -8,7 +8,7 @@
 package fr.enedis.chutney.tokens.domain;
 
 import java.time.Instant;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,14 @@ public class AccessTokensService {
     }
 
     public String createToken(String user, String note, Instant expiresAt) {
-        String token = UUID.randomUUID().toString().replace("-", "");
-        accessTokensRepository.createToken(AccessToken.create(user, token, note, expiresAt, accessTokenEncoder));
+        var token = UUID.randomUUID().toString().replace("-", "");
+        var hash = accessTokenEncoder.encode(token);
+        accessTokensRepository.createToken(AccessToken.create(user, note, expiresAt, hash));
         return token;
     }
 
     public Optional<AccessToken> accessTokenFromRaw(String token) {
-        Collection<AccessToken> tokens = accessTokensRepository.getTokens();
+        List<AccessToken> tokens = accessTokensRepository.getTokens();
         for (var repoToken : tokens) {
             if (repoToken.matchTokenAndIsValid(token, accessTokenEncoder)) {
                 return Optional.of(repoToken);

@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.tokens.domain;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface AccessTokensRepository {
 
     void createToken(AccessToken accessToken);
 
-    Collection<AccessToken> getTokens();
+    List<AccessToken> getTokens();
 }

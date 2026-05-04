@@ -11,8 +11,7 @@ import java.time.Instant;
 
 public record AccessToken(String user, String note, String hash, Instant expiresAt) {
 
-    public static AccessToken create(String user, String token, String note, Instant expiresAt, AccessTokenEncoder encoder) {
-        var hash = encoder.encode(token);
+    public static AccessToken create(String user, String note, Instant expiresAt, String hash) {
         return new AccessToken(user, note, hash, expiresAt);
     }
 

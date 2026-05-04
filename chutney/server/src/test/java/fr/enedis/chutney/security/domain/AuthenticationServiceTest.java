@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 class AuthenticationServiceTest {
@@ -97,10 +95,10 @@ class AuthenticationServiceTest {
                 .build()
         );
 
-        Authentication authentication = sut.getAuthentication("token", "/path");
+        ApiKeyAuthentication authentication = sut.getAuthentication("token");
 
         assertThat(authentication).isInstanceOf(ApiKeyAuthentication.class);
-        assertThat(((ApiKeyAuthentication)authentication).getAuthorities())
+        assertThat(authentication.getAuthorities())
             .containsExactly(new SimpleGrantedAuthority(Authorization.SCENARIO_WRITE.name()),
                 new SimpleGrantedAuthority(Authorization.SCENARIO_READ.name()));
     }
@@ -110,6 +108,6 @@ class AuthenticationServiceTest {
         String token = "token";
         when(accessTokensService.accessTokenFromRaw(token)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> sut.getAuthentication("X-API-KEY", "/path")).isInstanceOf(BadCredentialsException.class);
+        assertThatThrownBy(() -> sut.getAuthentication("X-API-KEY")).isInstanceOf(InvalidApiKeyException.class);
     }
 }

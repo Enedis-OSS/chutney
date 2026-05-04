@@ -13,7 +13,7 @@ import fr.enedis.chutney.tokens.domain.AccessToken;
 import fr.enedis.chutney.tokens.domain.AccessTokensRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ class DatabaseAccessTokensDBRepositoryTest {
         void get_tokens() {
             sut.createToken(new AccessToken("pedro", "note", "hash",
                 Instant.now().plus(1, ChronoUnit.HOURS)));
-            Collection<AccessToken> tokens = sut.getTokens();
+            List<AccessToken> tokens = sut.getTokens();
             assertThat(tokens).hasSize(1);
         }
     }

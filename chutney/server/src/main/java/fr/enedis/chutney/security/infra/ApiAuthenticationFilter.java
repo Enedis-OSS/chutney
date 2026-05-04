@@ -12,6 +12,7 @@ import fr.enedis.chutney.dataset.api.DataSetController;
 import fr.enedis.chutney.environment.api.environment.EnvironmentController;
 import fr.enedis.chutney.scenario.api.GwtTestCaseController;
 import fr.enedis.chutney.security.domain.AuthenticationService;
+import fr.enedis.chutney.security.domain.InvalidApiKeyException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -39,6 +42,8 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         new ApiKeyEndpoint(HttpMethod.PUT, DataSetController.BASE_URL),
         new ApiKeyEndpoint(HttpMethod.POST, CampaignController.BASE_URL),
         new ApiKeyEndpoint(HttpMethod.GET, EnvironmentController.BASE_URL));
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiAuthenticationFilter.class);
 
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
@@ -62,12 +67,15 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
             String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
             if(apiKey != null) {
                 if(matchers.stream().anyMatch(matcher -> matcher.matches(httpServletRequest))) {
-                    Authentication authentication = authenticationService.getAuthentication(apiKey, requestURI);
+                    Authentication authentication = authenticationService.getAuthentication(apiKey);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
             filterChain.doFilter(request, response);
         } catch (Exception e) {
+            if(e instanceof InvalidApiKeyException) {
+                LOGGER.info("Wrong Api Key for request {}", requestURI);
+            }
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
