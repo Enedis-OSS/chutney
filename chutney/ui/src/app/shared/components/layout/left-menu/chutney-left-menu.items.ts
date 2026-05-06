@@ -70,6 +70,17 @@ export const allMenuItems: MenuItem [] = [
         label: '',
         children: [
             {
+                label: 'menu.principal.tokens',
+                link: '/tokens',
+                iconClass: 'fa fa-brands fa-envira',
+                authorizations: [Authorization.ENVIRONMENT_READ]
+            }
+        ]
+    },
+    {
+        label: '',
+        children: [
+            {
                 label: 'menu.principal.plugins',
                 link: '/admin/plugins',
                 iconClass: 'fa fa-cogs',

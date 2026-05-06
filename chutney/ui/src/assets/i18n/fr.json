@@ -12,6 +12,7 @@
             "component": "Composants",
             "variable": "Variable",
             "envVariable": "Variables",
+            "tokens": "Personal token",
             "vacuum": "Vacuum",
             "dataset": "Dataset",
             "jiraId": "Identifiant jira",
@@ -326,6 +327,13 @@
                 "date": "Date"
             },
             "nothing": "Aucune planification"
+        }
+    },
+    "tokens": {
+        "list": {
+            "actions": {
+                "create": "Générer un nouveau token"
+            }
         }
     },
     "admin": {
