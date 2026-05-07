@@ -34,7 +34,7 @@ public class AccessTokenController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','DATASET_READ','SCENARIO_WRITE','SCENARIO_READ','ENVIRONMENT_READ')")
-    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String createToken(Principal principal, @Valid @RequestBody AccessTokenDto accessTokenDto) {
         return accessTokensService.createToken(principal.getName(), accessTokenDto.getNote(),
             accessTokenDto.getExpiresAt() != null ?
