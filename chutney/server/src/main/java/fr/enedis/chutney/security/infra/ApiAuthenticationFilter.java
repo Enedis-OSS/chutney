@@ -14,6 +14,7 @@ import fr.enedis.chutney.scenario.api.GwtTestCaseController;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.domain.InvalidApiKeyException;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,30 +61,32 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
-        throws IOException {
+        throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String requestURI = httpServletRequest.getRequestURI();
+        String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
+        if(apiKey != null) {
+            if(matchers.stream().anyMatch(matcher -> matcher.matches(httpServletRequest))) {
+                apiKeyAuthentication((HttpServletResponse) response, apiKey, requestURI);
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private void apiKeyAuthentication(HttpServletResponse httpServletResponse, String apiKey, String requestURI) throws IOException {
+        Authentication authentication = null;
         try {
-            String apiKey = httpServletRequest.getHeader(AUTH_TOKEN_HEADER_NAME);
-            if(apiKey != null) {
-                if(matchers.stream().anyMatch(matcher -> matcher.matches(httpServletRequest))) {
-                    Authentication authentication = authenticationService.getAuthentication(apiKey);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
-            filterChain.doFilter(request, response);
-        } catch (Exception e) {
-            if(e instanceof InvalidApiKeyException) {
-                LOGGER.info("Wrong Api Key for request {}", requestURI);
-            }
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            var printWriter = httpResponse.getWriter();
+            authentication = authenticationService.getAuthentication(apiKey);
+        } catch (InvalidApiKeyException e) {
+            LOGGER.info("Wrong Api Key for request {}", requestURI);
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            var printWriter = httpServletResponse.getWriter();
             printWriter.print(e.getMessage());
             printWriter.flush();
             printWriter.close();
         }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private record ApiKeyEndpoint(HttpMethod method, String path){}
