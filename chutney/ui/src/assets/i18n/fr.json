@@ -334,6 +334,15 @@
             "actions": {
                 "create": "Générer un nouveau token"
             }
+        },
+        "creation": {
+            "form": {
+                "note": {
+                    "label": "Note",
+                    "required": "La note est obligatoire."
+                },
+                "expirationDate": "Date d'expiration"
+            }
         }
     },
     "admin": {

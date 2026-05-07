@@ -1,3 +1,19 @@
-<button type="button" class="btn btn-primary" (click)="createToken()">
-    <span class="fa fa-plus" aria-hidden="true"></span> {{ 'tokens.list.actions.create' | translate }}
-</button>
+<form [formGroup]="tokenForm" (ngSubmit)="saveToken()" autocomplete="off">
+    <label for="note">{{ 'tokens.creation.form.note.label' | translate }}</label>
+    <input type="text" id="note" class="form-control" formControlName="note">
+    @if (submitted && this.tokenForm.hasError('required', 'note')) {
+        <div class="error-message">
+            {{ 'tokens.creation.form.note.required' | translate }}
+        </div>
+    }
+
+    <label for="expirationDate">{{ 'tokens.creation.form.expirationDate' | translate }}</label>
+    <input id="expirationDate" class="form-control" placeholder="yyyy-mm-dd"
+                  name="expirationDate" formControlName="expirationDate" ngbDatepicker #d="ngbDatepicker">
+            <button class="btn btn-primary bi bi-calendar-event" (click)="d.toggle()"
+            type="button"></button>
+
+    <button type="submit" [disabled]="(submitted && tokenForm.invalid)" class="btn btn-primary m-2">
+        <span>{{ 'global.actions.record' | translate }}</span>
+    </button>
+ </form>
