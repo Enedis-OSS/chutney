@@ -61,7 +61,7 @@ export class TokenCreationComponent implements OnInit {
                     .pipe(takeUntil(this.unsubscribeSub$))
                     .subscribe({
                         next: (response) => {
-                            console.log("ok")
+                            console.log("ok " + response)
                         },
                         error: (error) => {
                             console.log(error);
