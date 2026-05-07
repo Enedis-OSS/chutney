@@ -29,13 +29,14 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
     @Transactional
     public void createToken(AccessToken accessToken) {
         accessTokenJpaRepository.save(new AccessTokenEntity(
-            accessToken.user(), accessToken.note(), accessToken.hash(), accessToken.expiresAt().toEpochMilli()));
+            accessToken.user(), accessToken.note(), accessToken.hash(),
+            accessToken.expiresAt() != null ? accessToken.expiresAt().toEpochMilli() : null));
     }
 
     @Override
     public List<AccessToken> getTokens() {
         return accessTokenJpaRepository.findAll().stream().map(accessTokenEntity ->
             new AccessToken(accessTokenEntity.getOwner(), accessTokenEntity.getNote(), accessTokenEntity.getHash(),
-                Instant.ofEpochMilli(accessTokenEntity.getExpiresAt()))).toList();
+                accessTokenEntity.getExpiresAt() != null ? Instant.ofEpochMilli(accessTokenEntity.getExpiresAt()) : null)).toList();
     }
 }

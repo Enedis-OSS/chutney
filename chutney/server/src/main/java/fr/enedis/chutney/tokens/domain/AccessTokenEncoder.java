@@ -9,6 +9,6 @@ package fr.enedis.chutney.tokens.domain;
 
 public interface AccessTokenEncoder {
 
-    String encode(CharSequence token);
-    boolean matches(CharSequence token, String hash);
+    String encode(String token);
+    boolean matches(String token, String hash);
 }

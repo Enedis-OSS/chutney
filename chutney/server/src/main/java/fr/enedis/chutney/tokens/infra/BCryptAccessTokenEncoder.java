@@ -17,12 +17,12 @@ public class BCryptAccessTokenEncoder implements AccessTokenEncoder {
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public String encode(CharSequence token) {
+    public String encode(String token) {
         return bCryptPasswordEncoder.encode(token);
     }
 
     @Override
-    public boolean matches(CharSequence token, String hash) {
+    public boolean matches(String token, String hash) {
         return bCryptPasswordEncoder.matches(token, hash);
     }
 }

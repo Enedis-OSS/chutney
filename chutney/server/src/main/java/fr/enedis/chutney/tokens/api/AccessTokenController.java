@@ -37,7 +37,8 @@ public class AccessTokenController {
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String createToken(Principal principal, @Valid @RequestBody AccessTokenDto accessTokenDto) {
         return accessTokensService.createToken(principal.getName(), accessTokenDto.getNote(),
-            accessTokenDto.getExpiresAt().atStartOfDay(ZoneId.systemDefault()).toInstant()
+            accessTokenDto.getExpiresAt() != null ?
+                accessTokenDto.getExpiresAt().atStartOfDay(ZoneId.systemDefault()).toInstant() : null
         );
     }
 }

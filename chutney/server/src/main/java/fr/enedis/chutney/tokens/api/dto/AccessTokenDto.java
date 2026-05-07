@@ -20,8 +20,6 @@ public class AccessTokenDto {
     @NotNull
     private String note;
 
-    @JsonProperty(required = true)
-    @NotNull
     private LocalDate expiresAt;
 
     @JsonCreator

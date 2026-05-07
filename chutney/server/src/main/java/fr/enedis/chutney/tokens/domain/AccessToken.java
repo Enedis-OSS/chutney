@@ -16,6 +16,7 @@ public record AccessToken(String user, String note, String hash, Instant expires
     }
 
     public boolean matchTokenAndIsValid(String token, AccessTokenEncoder encoder) {
-        return encoder.matches(token, this.hash) && this.expiresAt.isAfter(Instant.now());
+        return encoder.matches(token, this.hash)
+            && (this.expiresAt == null || this.expiresAt.isAfter(Instant.now()));
     }
 }

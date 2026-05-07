@@ -52,6 +52,16 @@ class AccessTokensServiceTest {
     }
 
     @Test
+    void match_right_token_without_expired_date() {
+        var user = "bach";
+        var token = sut.createToken(user, "note", null);
+        var encoded = new BCryptPasswordEncoder().encode(token);
+        AccessToken accessToken = new AccessToken(user, "note", encoded, null);
+        when(accessTokensRepository.getTokens()).thenReturn(List.of(accessToken));
+        assertThat(sut.accessTokenFromRaw(token)).contains(accessToken);
+    }
+
+    @Test
     void does_not_match_wrong_token() {
         String user = "bach";
         var token = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
