@@ -307,6 +307,13 @@ public class SecuredControllerSpringBootIntegrationTest {
             {POST, AccessTokenController.BASE_URL, SCENARIO_WRITE.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
             {POST, AccessTokenController.BASE_URL, SCENARIO_READ.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
             {POST, AccessTokenController.BASE_URL, ENVIRONMENT_READ.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {GET, AccessTokenController.BASE_URL + "/user", ADMIN_ACCESS.name(), null, OK},
+            {GET, AccessTokenController.BASE_URL + "/user", CAMPAIGN_WRITE.name(), null, OK},
+            {GET, AccessTokenController.BASE_URL + "/user", DATASET_WRITE.name(), null, OK},
+            {GET, AccessTokenController.BASE_URL + "/user", DATASET_READ.name(), null, OK},
+            {GET, AccessTokenController.BASE_URL + "/user", SCENARIO_WRITE.name(), null, OK},
+            {GET, AccessTokenController.BASE_URL + "/user", SCENARIO_READ.name(), null, OK},
+            {GET, AccessTokenController.BASE_URL + "/user", ENVIRONMENT_READ.name(), null, OK},
         };
     }
 

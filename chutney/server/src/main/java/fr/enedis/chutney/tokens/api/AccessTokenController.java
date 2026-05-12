@@ -13,9 +13,14 @@ import fr.enedis.chutney.tokens.api.dto.AccessTokenDto;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
 import jakarta.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,5 +45,14 @@ public class AccessTokenController {
             accessTokenDto.getExpiresAt() != null ?
                 accessTokenDto.getExpiresAt().atStartOfDay(ZoneId.systemDefault()).toInstant() : null
         );
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','DATASET_READ','SCENARIO_WRITE','SCENARIO_READ','ENVIRONMENT_READ')")
+    @GetMapping(path = "/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AccessTokenDto> getTokensForUser(@PathVariable("user") String user) {
+        return accessTokensService.getTokensForUser(user).stream()
+            .map(token -> new AccessTokenDto(token.note(),
+                LocalDate.ofInstant(token.expiresAt(), ZoneId.systemDefault())))
+            .collect(Collectors.toList());
     }
 }
