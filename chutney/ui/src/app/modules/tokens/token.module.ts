@@ -19,6 +19,7 @@ import { TokenCreationComponent } from './creation/tokens-creation.component';
 import { TokenListComponent } from './list/tokens.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TokenService } from '@core/services/token.service';
+import { TokenDisplayComponent } from './display/tokens-display.component';
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import { TokenService } from '@core/services/token.service';
     ],
     declarations: [
         TokenListComponent,
-        TokenCreationComponent
+        TokenCreationComponent,
+        TokenDisplayComponent
     ],
     providers: [
         TokenService

@@ -11,6 +11,7 @@ import { Authorization } from '@model';
 import { TokenListComponent } from '@modules/tokens/list/tokens.component';
 import { TokenCreationComponent } from './creation/tokens-creation.component';
 import { authGuard } from '@core/guards';
+import { TokenDisplayComponent } from './display/tokens-display.component';
 
 export const tokensRoutes: Routes = [
     {
@@ -25,4 +26,10 @@ export const tokensRoutes: Routes = [
         canActivate: [authGuard],
         data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
     },
+    {
+        path: 'display',
+        component: TokenDisplayComponent,
+        canActivate: [authGuard],
+        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
+    }
 ];

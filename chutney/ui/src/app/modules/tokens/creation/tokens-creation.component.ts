@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
 import { NgbDatepickerConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -23,6 +24,7 @@ export class TokenCreationComponent implements OnInit {
     constructor(
         private tokenService: TokenService,
         private formBuilder: FormBuilder,
+        private router: Router,
         private configDate: NgbDatepickerConfig,
     ) {
         const currentDate = new Date();
@@ -62,6 +64,10 @@ export class TokenCreationComponent implements OnInit {
                     .subscribe({
                         next: (response) => {
                             console.log("ok " + response)
+                            this.router.navigate(['/tokens', 'display'],
+                                {
+                                    state: { token: response }
+                                });
                         },
                         error: (error) => {
                             console.log(error);
