@@ -48,11 +48,11 @@ public class AccessTokenController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','DATASET_READ','SCENARIO_WRITE','SCENARIO_READ','ENVIRONMENT_READ')")
-    @GetMapping(path = "/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AccessTokenDto> getTokensForUser(@PathVariable("user") String user) {
-        return accessTokensService.getTokensForUser(user).stream()
-            .map(token -> new AccessTokenDto(token.note(),
-                LocalDate.ofInstant(token.expiresAt(), ZoneId.systemDefault())))
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AccessTokenDto> getTokensForUser(Principal principal) {
+        return accessTokensService.getTokensForUser(principal.getName()).stream()
+            .map(accessToken -> new AccessTokenDto(accessToken.note(),
+                accessToken.expiresAt() != null ? LocalDate.ofInstant(accessToken.expiresAt(), ZoneId.systemDefault()) : null))
             .collect(Collectors.toList());
     }
 }

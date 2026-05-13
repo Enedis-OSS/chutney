@@ -1,3 +1,7 @@
 <button type="button" class="btn btn-primary" (click)="createToken()">
     <span class="fa fa-plus" aria-hidden="true"></span> {{ 'tokens.list.actions.create' | translate }}
 </button>
+
+@for (token of tokens; track token) {
+    <span>{{ token.note }}</span> <span>{{ token.expiresAt }}</span>
+}
