@@ -11,18 +11,18 @@ import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_INT
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_SSL_ENABLED_SPRING_VALUE;
 
-import io.undertow.servlet.api.SecurityConstraint;
-import io.undertow.servlet.api.SecurityInfo;
-import io.undertow.servlet.api.TransportGuaranteeType;
-import io.undertow.servlet.api.WebResourceCollection;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile({"undertow-https-redirect"})
+@Profile({"https-redirect"})
 public class UndertowConfig {
 
     @Value(SERVER_PORT_SPRING_VALUE)
@@ -35,22 +35,24 @@ public class UndertowConfig {
     private Boolean sslEnabled;
 
     @Bean
-    public UndertowServletWebServerFactory servletWebServerFactory() {
-        UndertowServletWebServerFactory factory = new UndertowServletWebServerFactory();
-        // Add http listener
-        if (sslEnabled && securePort == 443) {
-            factory.getBuilderCustomizers().add(builder -> builder.addHttpListener(80, httpInterface));
-        }
-        // Redirect rule to secure port
-        factory.getDeploymentInfoCustomizers().add(deploymentInfo ->
-            deploymentInfo.addSecurityConstraint(
-                new SecurityConstraint()
-                    .addWebResourceCollection(new WebResourceCollection().addUrlPattern("/*"))
-                    .setTransportGuaranteeType(TransportGuaranteeType.CONFIDENTIAL)
-                    .setEmptyRoleSemantic(SecurityInfo.EmptyRoleSemantic.PERMIT))
-                .setConfidentialPortManager(
-                    exchange -> securePort
-                ));
-        return factory;
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> httpsRedirectCustomizer() {
+        return factory -> {
+            if (sslEnabled && securePort == 443) {
+                Connector httpConnector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+                httpConnector.setPort(80);
+                httpConnector.setRedirectPort(443);
+                httpConnector.setProperty("address", httpInterface);
+                factory.addAdditionalTomcatConnectors(httpConnector);
+
+                factory.addContextCustomizers(context -> {
+                    SecurityConstraint constraint = new SecurityConstraint();
+                    constraint.setUserConstraint("CONFIDENTIAL");
+                    SecurityCollection collection = new SecurityCollection();
+                    collection.addPattern("/*");
+                    constraint.addCollection(collection);
+                    context.addConstraint(constraint);
+                });
+            }
+        };
     }
 }

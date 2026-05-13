@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.action.jms.jackson;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.module.SimpleModule;
 import org.apache.activemq.broker.BrokerService;
 
 public class BrokerMQModule extends SimpleModule {

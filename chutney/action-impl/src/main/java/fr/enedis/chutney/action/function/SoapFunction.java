@@ -17,8 +17,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.ws.security.message.WSSecHeader;
-import org.apache.ws.security.message.WSSecUsernameToken;
+import org.apache.wss4j.dom.message.WSSecHeader;
+import org.apache.wss4j.dom.message.WSSecUsernameToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +35,15 @@ public class SoapFunction {
     public static String soapInsertWSUsernameToken(final String user, final String password, final String envelope) {
         if (!user.isEmpty()) {
             try {
-                WSSecUsernameToken builder = new WSSecUsernameToken();
-                builder.setUserInfo(user, password);
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setNamespaceAware(true);
                 DocumentBuilder builderDoc = factory.newDocumentBuilder();
                 org.w3c.dom.Document doc = builderDoc.parse(new ByteArrayInputStream(envelope.getBytes()));
-                WSSecHeader secHeader = new WSSecHeader();
-                secHeader.insertSecurityHeader(doc);
-                org.w3c.dom.Document signedDoc = builder.build(doc, secHeader);
+                WSSecHeader secHeader = new WSSecHeader(doc);
+                secHeader.insertSecurityHeader();
+                WSSecUsernameToken builder = new WSSecUsernameToken(secHeader);
+                builder.setUserInfo(user, password);
+                org.w3c.dom.Document signedDoc = builder.build();
                 return fromDocumentToString(signedDoc);
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(),e);

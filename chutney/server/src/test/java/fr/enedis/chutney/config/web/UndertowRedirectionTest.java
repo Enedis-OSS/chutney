@@ -31,7 +31,7 @@ class UndertowRedirectionTest {
     @Test
     void should_redirect_http_80_to_https_443() throws Exception {
         var appNamePath = "/api/v1/info/appname";
-        var httpUrl = "http://localhost" + appNamePath ;
+        var httpUrl = "http://localhost" + appNamePath;
 
         // Act
         var request = HttpRequest.newBuilder(URI.create(httpUrl)).GET().build();

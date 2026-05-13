@@ -110,11 +110,11 @@
         </dependency>
         <!-- HTTP task -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <!-- JMS Task -->
@@ -199,8 +199,7 @@
             <artifactId>spring-kafka</artifactId>
             <exclusions>
                 <!--
-                    Spring Kafka does not use the same version as parent pom (3.0.2 vs 3.1.2).
-                    So exclude here and import below.
+                    Exclude Kafka artifacts managed by Spring Kafka BOM to control the exact version imported below.
                 -->
                 <exclusion>
                     <groupId>org.apache.kafka</groupId>
@@ -295,8 +294,8 @@
             <artifactId>micrometer-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.ws.security</groupId>
-            <artifactId>wss4j</artifactId>
+            <groupId>org.apache.wss4j</groupId>
+            <artifactId>wss4j-ws-security-dom</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -401,8 +400,8 @@
                 <version>${radius.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.ws.security</groupId>
-                <artifactId>wss4j</artifactId>
+                <groupId>org.apache.wss4j</groupId>
+                <artifactId>wss4j-ws-security-dom</artifactId>
                 <version>${wss4j.version}</version>
             </dependency>
         </dependencies>

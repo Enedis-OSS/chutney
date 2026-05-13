@@ -74,7 +74,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableWebSecurity
@@ -171,17 +170,15 @@ public class ChutneyWebSecurityConfig {
             .anonymous(anonymousConfigurer -> anonymousConfigurer
                 .principal(anonymous)
                 .authorities(new ArrayList<>(anonymous.getAuthorities())))
-            .authorizeHttpRequests(httpRequest -> {
-                HandlerMappingIntrospector introspector = new HandlerMappingIntrospector();
-                httpRequest
+            .authorizeHttpRequests(httpRequest -> httpRequest
                     .requestMatchers(path.matcher(LOGIN_URL)).permitAll()
                     .requestMatchers(path.matcher(InfoController.BASE_URL + "/**")).permitAll()
                     .requestMatchers(path.matcher(AuthenticationConfigController.BASE_URL + "/**")).permitAll()
-                    .requestMatchers(path.matcher( actuatorBaseUrl + "/health/**")).permitAll()
-                    .requestMatchers(path.matcher( actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
-                    .requestMatchers(path.matcher( API_BASE_URL_PATTERN)).authenticated()
-                    .anyRequest().permitAll();
-            })
+                    .requestMatchers(path.matcher(actuatorBaseUrl + "/health/**")).permitAll()
+                    .requestMatchers(path.matcher(actuatorBaseUrl + "/**")).hasAuthority(Authorization.ADMIN_ACCESS.name())
+                    .requestMatchers(path.matcher(API_BASE_URL_PATTERN)).authenticated()
+                    .anyRequest().permitAll()
+            )
             .oauth2ResourceServer(oauth2 -> oauth2
                 .authenticationManagerResolver(tokenAuthenticationManagerResolver)
             )
