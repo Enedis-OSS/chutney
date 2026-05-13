@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories(
     basePackages = {
+        "fr.enedis.chutney.tokens.infra",
         "fr.enedis.chutney.scenario.infra",
         "fr.enedis.chutney.campaign.infra",
         "fr.enedis.chutney.execution.infra.storage"
@@ -23,6 +24,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 )
 @ComponentScan(
     basePackages = {
+        "fr.enedis.chutney.tokens.infra",
         "fr.enedis.chutney.campaign.infra",
         "fr.enedis.chutney.scenario.infra",
         "fr.enedis.chutney.execution.infra.storage"

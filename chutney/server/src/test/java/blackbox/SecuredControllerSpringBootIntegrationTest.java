@@ -10,6 +10,8 @@ package blackbox;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.ADMIN_ACCESS;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.CAMPAIGN_READ;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.CAMPAIGN_WRITE;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.DATASET_READ;
+import static fr.enedis.chutney.server.core.domain.security.Authorization.DATASET_WRITE;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.ENVIRONMENT_READ;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.ENVIRONMENT_WRITE;
 import static fr.enedis.chutney.server.core.domain.security.Authorization.EXECUTION_READ;
@@ -71,6 +73,7 @@ import fr.enedis.chutney.security.infra.jwt.JwtUtil;
 import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
+import fr.enedis.chutney.tokens.api.AccessTokenController;
 import fr.enedis.chutney.tools.file.FileUtils;
 import java.io.File;
 import java.util.List;
@@ -296,6 +299,14 @@ public class SecuredControllerSpringBootIntegrationTest {
 
             // Must be at the end because the network configuration is in wrong state, why ??
             {POST, NodeNetworkController.WRAP_UP_URL, ADMIN_ACCESS.name(), "{\"agentsGraph\":{\"agents\":[]},\"networkConfiguration\":{\"creationDate\":\"2021-09-06T10:08:36.569227Z\",\"agentNetworkConfiguration\":[],\"environmentsConfiguration\":[]}}", OK},
+
+            {POST, AccessTokenController.BASE_URL, ADMIN_ACCESS.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {POST, AccessTokenController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {POST, AccessTokenController.BASE_URL, DATASET_WRITE.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {POST, AccessTokenController.BASE_URL, DATASET_READ.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {POST, AccessTokenController.BASE_URL, SCENARIO_WRITE.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {POST, AccessTokenController.BASE_URL, SCENARIO_READ.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
+            {POST, AccessTokenController.BASE_URL, ENVIRONMENT_READ.name(), "{\"note\":\"note\",\"expiresAt\":\"2026-06-30\"}", OK},
         };
     }
 

@@ -135,7 +135,7 @@ object ChutneyServerServiceImpl : ChutneyServerService {
     }
 
     override fun getEnvironments(serverInfo: ChutneyServerInfo): Set<EnvironmentDto> {
-        return HttpClient.get(serverInfo, "/api/v2/environment")
+        return HttpClient.get(serverInfo, "/api/v2/environments")
     }
 
     private const val chutneyDatasetEndpoint = "/api/v1/datasets"

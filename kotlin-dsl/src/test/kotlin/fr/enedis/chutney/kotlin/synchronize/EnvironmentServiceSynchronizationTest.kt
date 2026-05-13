@@ -42,7 +42,7 @@ class EnvironmentServiceSynchronizationTest : HttpTestBase() {
                     ]
                     """.trimIndent()
         stubFor(
-            get(urlEqualTo("/api/v2/environment"))
+            get(urlEqualTo("/api/v2/environments"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
