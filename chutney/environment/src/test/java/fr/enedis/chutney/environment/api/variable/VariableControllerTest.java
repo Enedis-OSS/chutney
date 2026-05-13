@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import fr.enedis.chutney.environment.api.EnvironmentRestExceptionHandler;
 import fr.enedis.chutney.environment.api.TestHelper;
 import fr.enedis.chutney.environment.domain.Environment;
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -63,11 +63,11 @@ public class VariableControllerTest extends TestHelper {
 
     @BeforeEach
     public void setUp() {
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        mappingJackson2HttpMessageConverter.setObjectMapper(new ObjectMapper().findAndRegisterModules());
+        
+        JacksonJsonHttpMessageConverter converter = new JacksonJsonHttpMessageConverter();
         mockMvc = MockMvcBuilders.standaloneSetup(sut)
             .setControllerAdvice(new EnvironmentRestExceptionHandler())
-            .setMessageConverters(mappingJackson2HttpMessageConverter)
+            .setMessageConverters(converter)
             .build();
     }
 

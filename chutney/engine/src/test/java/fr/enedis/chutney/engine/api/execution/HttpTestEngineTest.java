@@ -19,14 +19,13 @@ import fr.enedis.chutney.engine.domain.execution.report.Status;
 import fr.enedis.chutney.engine.domain.execution.report.StepExecutionReport;
 import fr.enedis.chutney.engine.domain.execution.report.StepExecutionReportBuilder;
 import fr.enedis.chutney.tools.Jsons;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -39,12 +38,11 @@ public class HttpTestEngineTest {
     @Test
     public void controller_maps_anemic_request_and_call_engine() throws Exception {
         TestEngine engine = mock(TestEngine.class);
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        mappingJackson2HttpMessageConverter.setObjectMapper(new ObjectMapper().findAndRegisterModules());
+        JacksonJsonHttpMessageConverter converter = new JacksonJsonHttpMessageConverter();
 
         MockMvc mvc = MockMvcBuilders
             .standaloneSetup(new HttpTestEngine(engine))
-            .setMessageConverters(mappingJackson2HttpMessageConverter)
+            .setMessageConverters(converter)
             .build();
 
         StepExecutionReport report = new StepExecutionReportBuilder()

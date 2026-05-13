@@ -7,21 +7,17 @@
 
 package fr.enedis.chutney.tools;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public final class Jsons {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().findAndRegisterModules();
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().findAndAddModules().build();
 
     private Jsons() {
     }
 
     public static <T> T loadJsonFromClasspath(String path, Class<T> targetClass) {
-        try {
-            return OBJECT_MAPPER.readValue(Jsons.class.getClassLoader().getResourceAsStream(path), targetClass);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot deserialize " + path + " to " + targetClass.getSimpleName(), e);
-        }
+        return OBJECT_MAPPER.readValue(Jsons.class.getClassLoader().getResourceAsStream(path), targetClass);
     }
 
     public static ObjectMapper objectMapper() {

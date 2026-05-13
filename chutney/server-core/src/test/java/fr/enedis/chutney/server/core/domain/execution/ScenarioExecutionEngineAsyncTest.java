@@ -32,7 +32,8 @@ import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import fr.enedis.chutney.server.core.domain.scenario.TestCase;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadataImpl;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.observers.TestObserver;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
@@ -51,7 +52,7 @@ import org.mockito.ArgumentCaptor;
 
 public class ScenarioExecutionEngineAsyncTest {
 
-    private final ObjectMapper om = new ObjectMapper().findAndRegisterModules();
+    private final ObjectMapper om = JsonMapper.builder().findAndAddModules().build();
     private final ExecutionHistoryRepository executionHistoryRepository = mock(ExecutionHistoryRepository.class);
     private final ServerTestEngine executionEngine = mock(ServerTestEngine.class);
     private final ExecutionStateRepository executionStateRepository = mock(ExecutionStateRepository.class);

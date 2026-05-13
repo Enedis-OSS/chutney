@@ -58,14 +58,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.EmbeddedKafkaZKBroker;
+import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
+
 
 public class KafkaBasicConsumeActionIntegrationTest {
 
     private final String GROUP = "mygroup";
     private String uniqueTopic;
 
-    private final static EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true);
+    private final static EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaKraftBroker(1, 1);
     private static Producer<Integer, String> producer;
     private final TestTarget.TestTargetBuilder targetBuilder;
 

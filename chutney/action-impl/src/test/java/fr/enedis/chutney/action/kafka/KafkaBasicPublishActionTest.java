@@ -51,7 +51,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.EmbeddedKafkaZKBroker;
+import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
+
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -61,7 +62,7 @@ public class KafkaBasicPublishActionTest {
     private static final String TOPIC = "topic";
     private static final String PAYLOAD = "payload";
     private static final String GROUP = "mygroup";
-    private static final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true, TOPIC);
+    private static final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaKraftBroker(1, 1, TOPIC);
 
     private TestLogger logger;
 

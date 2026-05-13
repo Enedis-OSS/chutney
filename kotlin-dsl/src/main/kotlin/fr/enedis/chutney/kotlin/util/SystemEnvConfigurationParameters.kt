@@ -21,7 +21,7 @@ class SystemEnvConfigurationParameters()  {
      */
     private val delegate = LauncherDiscoveryRequestBuilder.request().build().configurationParameters;
 
-    fun get(key: String?): Optional<String> {
+    fun get(key: String): Optional<String> {
         val delegateValue = delegate?.get(key) ?: empty()
         return if (delegateValue.isEmpty) {
             ofNullable(env[key])
@@ -30,7 +30,7 @@ class SystemEnvConfigurationParameters()  {
         }
     }
 
-    fun getBoolean(key: String?): Optional<Boolean> {
+    fun getBoolean(key: String): Optional<Boolean> {
         val delegateValue = delegate?.getBoolean(key) ?: empty()
         return if (delegateValue.isEmpty) {
             ofNullable(env[key]).map { it.toBoolean() }

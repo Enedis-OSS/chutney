@@ -158,7 +158,7 @@ public class HttpActionTest {
         assertThat(executionResult.status).isEqualTo(ActionExecutionResult.Status.Success);
         assertThat((Integer) executionResult.outputs.get("status")).isEqualTo(expectedStatus);
         assertThat((String) executionResult.outputs.get("body")).isEqualTo(expectedBody);
-        assertThat((HttpHeaders) executionResult.outputs.get("headers")).containsAllEntriesOf(expectedHeaders);
+        assertThat(((HttpHeaders) executionResult.outputs.get("headers")).asMultiValueMap()).containsAllEntriesOf(expectedHeaders.asMultiValueMap());
     }
 
     @Test

@@ -11,13 +11,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
-import com.fasterxml.jackson.core.util.DefaultIndenter
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
-import com.fasterxml.jackson.core.util.Separators
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.core.util.DefaultIndenter
+import tools.jackson.core.util.DefaultPrettyPrinter
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 @DslMarker
 annotation class ChutneyScenarioDsl
@@ -147,25 +146,20 @@ object Mapper {
     private val pp = object : DefaultPrettyPrinter() {
         init {
             val indenter: Indenter = DefaultIndenter()
-            indentObjectsWith(indenter) // Indent JSON objects
-            indentArraysWith(indenter) // Indent JSON arrays
+            indentObjectsWith(indenter)
+            indentArraysWith(indenter)
         }
 
         override fun createInstance(): DefaultPrettyPrinter {
-            return DefaultPrettyPrinter(this);
-        }
-
-        override fun withSeparators(separators: Separators?): DefaultPrettyPrinter {
-            _separators = separators
-            _objectFieldValueSeparatorWithSpaces = "" + separators!!.objectFieldValueSeparator + " "
-            return this
+            return DefaultPrettyPrinter(this)
         }
     }
 
-    private val mapper: ObjectMapper = jacksonObjectMapper()
-        .setDefaultPrettyPrinter(pp)
+    private val mapper: ObjectMapper = jacksonMapperBuilder()
+        .defaultPrettyPrinter(pp)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .enable(SerializationFeature.INDENT_OUTPUT)
+        .build()
 
     fun toJson(value: Any): String {
         var json = mapper.writeValueAsString(value)

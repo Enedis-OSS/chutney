@@ -35,10 +35,8 @@ class ConsoleLogScenarioReportExecutionListener :
         }
     }
 
-    override fun reportingEntryPublished(testIdentifier: TestIdentifier?, entry: ReportEntry?) {
-        entry?.let {
-            printScenarioReport(it)
-        }
+    override fun reportingEntryPublished(testIdentifier: TestIdentifier, entry: ReportEntry) {
+        printScenarioReport(entry)
     }
 
     private fun printScenarioReport(entry: ReportEntry) {
@@ -71,10 +69,8 @@ class ConsoleLogStepReportExecutionListener : EnabledTestExecutionListener(enabl
         }
     }
 
-    override fun reportingEntryPublished(testIdentifier: TestIdentifier?, entry: ReportEntry?) {
-        entry?.let {
-            printStepReport(it)
-        }
+    override fun reportingEntryPublished(testIdentifier: TestIdentifier, entry: ReportEntry) {
+        printStepReport(entry)
     }
 
     private fun printStepReport(entry: ReportEntry) {
@@ -104,10 +100,8 @@ class FileWriterScenarioReportExecutionListener :
         }
     }
 
-    override fun reportingEntryPublished(testIdentifier: TestIdentifier?, entry: ReportEntry?) {
-        entry?.let {
-            writeScenarioReport(it)
-        }
+    override fun reportingEntryPublished(testIdentifier: TestIdentifier, entry: ReportEntry) {
+        writeScenarioReport(entry)
     }
 
     private fun writeScenarioReport(entry: ReportEntry) {
@@ -126,7 +120,7 @@ class FileWriterScenarioReportExecutionListener :
 
 class SiteGeneratorExecutionListener : EnabledTestExecutionListener(enabledProperty = listOf(CONFIG_REPORT_SITE)) {
 
-    override fun testPlanExecutionFinished(testPlan: TestPlan?) {
+    override fun testPlanExecutionFinished(testPlan: TestPlan) {
         if (enabled()) {
             SiteGenerator().generateSite()
         }

@@ -127,7 +127,7 @@ class ChutneyTestEngineTest {
     }
 
     open class MyPostDiscoveryFilter : PostDiscoveryFilter {
-        override fun apply(`object`: TestDescriptor?): FilterResult {
+        override fun apply(`object`: TestDescriptor): FilterResult {
             return FilterResult.includedIf(true)
         }
     }
