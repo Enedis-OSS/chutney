@@ -331,11 +331,14 @@
     },
     "tokens": {
         "list": {
+            "title": "Vos tokens",
+            "expiresAt": "Expire le ",
             "actions": {
                 "create": "Générer un nouveau token"
             }
         },
         "creation": {
+            "title": "Générer un nouveau token",
             "form": {
                 "note": {
                     "label": "Note",

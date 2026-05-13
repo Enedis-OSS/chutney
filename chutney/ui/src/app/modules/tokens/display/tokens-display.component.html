@@ -1,6 +1,15 @@
 @if (display) {
-    {{ 'tokens.display.token' | translate }} : {{ token}}
-    {{ 'tokens.display.keepIt' | translate }}
+    <p class="mb-2">
+        <strong>{{ 'tokens.display.token' | translate }}</strong>
+    </p>
+    <p class="p-2 border rounded">
+        {{ token}}
+    </p>
+    <p class="text-muted mt-2">
+        {{ 'tokens.display.keepIt' | translate }}
+    </p>
 } @else {
-    {{ 'tokens.display.nothing' | translate }}
+    <p class="text-muted">
+        {{ 'tokens.display.nothing' | translate }}
+    </p>
 }
