@@ -18,18 +18,18 @@ export const tokensRoutes: Routes = [
         path: '',
         component: TokenListComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.TARGET_READ ] }
+        data: { 'authorizations': [ Authorization.ADMIN_ACCESS, Authorization.CAMPAIGN_WRITE, Authorization.DATASET_WRITE, Authorization.DATASET_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_READ, Authorization.ENVIRONMENT_READ ] }
     },
     {
         path: 'creation',
         component: TokenCreationComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
+        data: { 'authorizations': [ Authorization.ADMIN_ACCESS, Authorization.CAMPAIGN_WRITE, Authorization.DATASET_WRITE, Authorization.DATASET_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_READ, Authorization.ENVIRONMENT_READ ] }
     },
     {
         path: 'display',
         component: TokenDisplayComponent,
         canActivate: [authGuard],
-        data: { 'authorizations': [ Authorization.CAMPAIGN_READ ] }
+        data: { 'authorizations': [ Authorization.ADMIN_ACCESS, Authorization.CAMPAIGN_WRITE, Authorization.DATASET_WRITE, Authorization.DATASET_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_READ, Authorization.ENVIRONMENT_READ ] }
     }
 ];

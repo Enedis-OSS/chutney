@@ -1,5 +1,4 @@
-import { Component, inject, Input, OnInit, signal } from "@angular/core";
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit } from "@angular/core";
 @Component({
     selector: 'chutney-tokens-display',
     templateUrl: './tokens-display.component.html',

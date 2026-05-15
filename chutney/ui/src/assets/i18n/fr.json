@@ -12,7 +12,7 @@
             "component": "Composants",
             "variable": "Variable",
             "envVariable": "Variables",
-            "tokens": "Personal token",
+            "tokens": "Jetons personnels",
             "vacuum": "Vacuum",
             "dataset": "Dataset",
             "jiraId": "Identifiant jira",

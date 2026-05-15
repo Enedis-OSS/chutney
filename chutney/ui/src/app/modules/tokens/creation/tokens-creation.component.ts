@@ -54,7 +54,6 @@ export class TokenCreationComponent implements OnInit {
         const expirationDate: NgbDate = formValue['expirationDate'];
         const date = expirationDate != null ? 
             new Date(expirationDate.year, expirationDate.month, expirationDate.day, 0, 0, 0, 0) : null;
-        console.log("save token date " + date)
 
         const token: AccessToken = new AccessToken(note, date)
         
@@ -62,7 +61,6 @@ export class TokenCreationComponent implements OnInit {
                     .pipe(takeUntil(this.unsubscribeSub$))
                     .subscribe({
                         next: (response) => {
-                            console.log("ok " + response)
                             this.router.navigate(['/tokens', 'display'],
                                 {
                                     state: { token: response }
