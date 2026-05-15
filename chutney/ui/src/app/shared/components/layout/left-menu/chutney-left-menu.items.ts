@@ -72,8 +72,8 @@ export const allMenuItems: MenuItem [] = [
             {
                 label: 'menu.principal.tokens',
                 link: '/tokens',
-                iconClass: 'fa fa-brands fa-envira',
-                authorizations: [Authorization.ENVIRONMENT_READ]
+                iconClass: 'fa fa-solid fa-key',
+                authorizations: [Authorization.ADMIN_ACCESS, Authorization.CAMPAIGN_WRITE, Authorization.DATASET_WRITE, Authorization.DATASET_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_READ, Authorization.ENVIRONMENT_READ]
             }
         ]
     },
