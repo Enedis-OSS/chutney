@@ -14,6 +14,7 @@ import fr.enedis.chutney.tokens.domain.AccessTokensRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +45,33 @@ class DatabaseAccessTokensDBRepositoryTest {
         @Autowired
         private AccessTokensRepository sut;
 
+        @AfterEach
+        void afterEach() {
+            clearTables();
+        }
+
         @Test
         void get_tokens() {
             sut.createToken(new AccessToken("pedro", "note", "hash",
                 Instant.now().plus(1, ChronoUnit.HOURS)));
             List<AccessToken> tokens = sut.getTokens();
             assertThat(tokens).hasSize(1);
+        }
+
+        @Test
+        void get_tokens_for_user() {
+            String user = "pedro";
+            sut.createToken(new AccessToken(user, "note1", "hash1",
+                Instant.now().plus(1, ChronoUnit.HOURS)));
+            sut.createToken(new AccessToken("pablo", "note2", "hash2",
+                Instant.now().plus(2, ChronoUnit.HOURS)));
+            sut.createToken(new AccessToken(user, "note3", "hash3",
+                Instant.now().plus(3, ChronoUnit.HOURS)));
+
+            List<AccessToken> tokens = sut.getTokensForUser(user);
+
+            assertThat(tokens).hasSize(2)
+                .allMatch(token -> user.equals(token.user()));
         }
     }
 }

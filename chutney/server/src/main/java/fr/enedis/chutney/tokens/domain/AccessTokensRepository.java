@@ -14,4 +14,6 @@ public interface AccessTokensRepository {
     void createToken(AccessToken accessToken);
 
     List<AccessToken> getTokens();
+
+    List<AccessToken> getTokensForUser(String user);
 }

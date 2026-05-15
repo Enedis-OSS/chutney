@@ -43,7 +43,6 @@ export class TokenCreationComponent implements OnInit {
     }
 
     saveToken() {
-        console.log("save token")
         this.submitted = true;
         const formValue = this.tokenForm.value;
 

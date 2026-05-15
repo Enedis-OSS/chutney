@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import fr.enedis.chutney.tokens.infra.BCryptAccessTokenEncoder;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -76,5 +77,17 @@ class AccessTokensServiceTest {
         var encoded = new BCryptPasswordEncoder().encode(token);
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(user, "note", encoded, Instant.now().minus(1, ChronoUnit.DAYS))));
         assertThat(sut.accessTokenFromRaw(token)).isEmpty();
+    }
+
+    @Test
+    void get_tokens_for_user() {
+        var user = "bach";
+        AccessToken token1 = new AccessToken(user, "note1", "hash1", Instant.now().minus(1, ChronoUnit.DAYS));
+        AccessToken token2 = new AccessToken(user, "note2", "hash2", Instant.now().minus(2, ChronoUnit.DAYS));
+        when(accessTokensRepository.getTokensForUser(user)).thenReturn(
+            List.of(token1, token2));
+
+        Collection<AccessToken> tokensForUser = sut.getTokensForUser(user);
+        assertThat(tokensForUser).hasSize(2).containsExactly(token1, token2);
     }
 }
