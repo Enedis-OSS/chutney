@@ -7,16 +7,16 @@
 
 package fr.enedis.chutney.kotlin.synchronize.server
 
+import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery.forStubMapping
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import fr.enedis.chutney.kotlin.dsl.Scenario
 import fr.enedis.chutney.kotlin.dsl.SuccessAction
 import fr.enedis.chutney.kotlin.synchronize.ChutneyServerServiceImpl
-import com.fasterxml.jackson.databind.JsonNode
-import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery.forStubMapping
-import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.groups.Tuple.tuple
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import tools.jackson.databind.JsonNode
 
 class ScenariosTest : ChutneyServerServiceImplTest() {
     @Test

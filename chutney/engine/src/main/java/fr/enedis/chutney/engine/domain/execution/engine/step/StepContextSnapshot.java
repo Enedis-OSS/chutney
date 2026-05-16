@@ -11,9 +11,9 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 
 import fr.enedis.chutney.engine.domain.execution.engine.step.jackson.ReportObjectMapperConfiguration;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.HashMap;
 import java.util.Map;
+import tools.jackson.core.JacksonException;
 
 class StepContextSnapshot {
     private final Map<String, Object> inputsSnapshot;
@@ -44,7 +44,7 @@ class StepContextSnapshot {
                 String stringObject = ReportObjectMapperConfiguration.reportObjectMapper().writeValueAsString(value);
                 Object jsonObject = ReportObjectMapperConfiguration.reportObjectMapper().readTree(stringObject);
                 stringMap.put(key, jsonObject);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw new RuntimeException(e);
             }
         });

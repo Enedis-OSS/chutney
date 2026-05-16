@@ -7,8 +7,6 @@
 
 package fr.enedis.chutney.execution.api;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.Attached;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionProperties;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
@@ -18,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.immutables.value.Value;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Value.Immutable
 @JsonSerialize(as= ImmutableExecutionSummaryDto.class)

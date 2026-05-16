@@ -9,19 +9,25 @@ package fr.enedis.chutney.scenario.api.raw.dto;
 
 import static java.util.Collections.emptyList;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fr.enedis.chutney.execution.api.ExecutionSummaryDto;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import org.immutables.value.Value;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableTestCaseIndexDto.class)
-@JsonDeserialize(as = ImmutableTestCaseIndexDto.class)
 public interface TestCaseIndexDto {
 
+    @JsonUnwrapped
     GwtTestCaseMetadataDto metadata();
+
+    @JsonCreator
+    static TestCaseIndexDto of(@JsonUnwrapped GwtTestCaseMetadataDto metadata) {
+        return ImmutableTestCaseIndexDto.builder().metadata(metadata).build();
+    }
 
     static TestCaseIndexDto from(TestCaseMetadata testCaseMetadata) {
         return ImmutableTestCaseIndexDto.builder()
@@ -37,6 +43,7 @@ public interface TestCaseIndexDto {
             )
             .build();
     }
+
     static TestCaseIndexDto from(TestCaseMetadata testCaseMetadata, ExecutionSummaryDto execution) {
         return ImmutableTestCaseIndexDto.builder()
             .metadata(ImmutableGwtTestCaseMetadataDto.builder()

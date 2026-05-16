@@ -11,9 +11,6 @@ import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_F
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.design.domain.plugins.linkifier.Linkifier;
 import fr.enedis.chutney.design.domain.plugins.linkifier.Linkifiers;
 import java.io.IOException;
@@ -27,6 +24,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class LinkifierFileRepository implements Linkifiers {
@@ -37,10 +38,11 @@ public class LinkifierFileRepository implements Linkifiers {
     private final Path storeFolderPath;
     private final Path resolvedFilePath;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-        .findAndRegisterModules()
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
         .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
 
     LinkifierFileRepository(@Value(CONFIGURATION_FOLDER_SPRING_VALUE) String storeFolderPath) throws UncheckedIOException {
         this.storeFolderPath = Paths.get(storeFolderPath).resolve(ROOT_DIRECTORY_NAME);
@@ -93,15 +95,11 @@ public class LinkifierFileRepository implements Linkifiers {
     }
 
     private void writeOnDisk(Path filePath, Map<String, LinkifierDto> linkifiers) {
+        byte[] bytes = objectMapper.writeValueAsBytes(linkifiers);
         try {
-            byte[] bytes = objectMapper.writeValueAsBytes(linkifiers);
-            try {
-                Files.write(filePath, bytes);
-            } catch (IOException e) {
-                throw new UncheckedIOException("Cannot write in configuration directory: " + storeFolderPath, e);
-            }
+            Files.write(filePath, bytes);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot serialize " + linkifiers, e);
+            throw new UncheckedIOException("Cannot write in configuration directory: " + storeFolderPath, e);
         }
     }
 

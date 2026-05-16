@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Maps;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
@@ -22,8 +23,6 @@ import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReport
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecutionReportBuilder;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,11 +38,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class SurefireCampaignExecutionReportBuilderTest {
 
     private ExecutionHistoryRepository executionHistoryRepository = mock(ExecutionHistoryRepository.class);
-    private ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();;
     private SurefireScenarioExecutionReportBuilder surefireScenarioExecutionReportBuilder = new SurefireScenarioExecutionReportBuilder(objectMapper, executionHistoryRepository);
     private final SurefireCampaignExecutionReportBuilder surefireCampaignExecutionReportBuilder = new SurefireCampaignExecutionReportBuilder(surefireScenarioExecutionReportBuilder);
 
@@ -129,7 +130,7 @@ public class SurefireCampaignExecutionReportBuilderTest {
             assertThat(files).hasSize(4).containsKeys("test Campaign Title/123_test ♥ Scenario Title ok.xml", "test Campaign Title/123_test Scenario Title ko.xml", "test Campaign Title 2/123_test Scenario Title ko.xml", "test Campaign Title 2/123_test ♥ Scenario Title ok.xml");
 
             // assert That XML have been serialized:
-            assertThat(files.values()).allSatisfy(s -> assertThat(s).startsWith("<?xml version=\"1.0\" ?><testsuite"));
+            assertThat(files.values()).allSatisfy(s -> assertThat(s).startsWith("<?xml version='1.0' encoding='UTF-8'?><testsuite"));
         }
     }
 

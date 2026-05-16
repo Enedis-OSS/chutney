@@ -24,7 +24,6 @@ import fr.enedis.chutney.action.spi.injectable.Target;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.exec.util.MapUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.CommonErrorHandler;
@@ -89,9 +88,8 @@ public class KafkaConsumerFactory {
 
     private static Map<String, String> filterAndMergeProperties(Target target, Map<String, String> config) {
         Set<String> consumerConfigKeys = ConsumerConfig.configDef().configKeys().keySet();
-        return MapUtils.merge(
-            filterMapFrom(consumerConfigKeys, target.prefixedProperties("")),
-            filterMapFrom(consumerConfigKeys, config)
-        );
+        Map<String, String> result = new HashMap<>(filterMapFrom(consumerConfigKeys, target.prefixedProperties("")));
+        result.putAll(filterMapFrom(consumerConfigKeys, config));
+        return result;
     }
 }

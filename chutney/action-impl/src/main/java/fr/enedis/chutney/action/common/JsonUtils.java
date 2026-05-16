@@ -7,13 +7,13 @@
 
 package fr.enedis.chutney.action.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 public final class JsonUtils {
 
@@ -33,7 +33,7 @@ public final class JsonUtils {
         } else {
             try {
                 return om.writeValueAsString(obj);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw new IllegalStateException("Can't convert obj as json string: " + obj, e);
             }
         }

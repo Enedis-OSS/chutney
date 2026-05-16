@@ -13,17 +13,18 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
-import org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Located by the <b>spring-boot-maven-plugin</b> Maven plugin.
  */
-@SpringBootApplication(exclude = {LdapAutoConfiguration.class, LiquibaseAutoConfiguration.class, ActiveMQAutoConfiguration.class, MongoAutoConfiguration.class})
+@SpringBootApplication(excludeName = {
+    "org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration",
+    "org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration",
+    "org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration",
+    "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration"
+})
 public class ServerBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerBootstrap.class);

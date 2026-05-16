@@ -8,8 +8,8 @@
 package fr.enedis.chutney.environment.infra;
 
 import fr.enedis.chutney.environment.domain.Target;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Map;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(using = TargetJsonDeserializer.class)
 public class JsonTarget {

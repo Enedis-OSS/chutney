@@ -19,7 +19,6 @@ import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_MINIMU
 import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_NB_LOGGED_ROW;
 import static fr.enedis.chutney.config.ServerConfigurationValues.TASK_SQL_NB_LOGGED_ROW_SPRING_VALUE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.ExecutionConfiguration;
 import fr.enedis.chutney.action.api.EmbeddedActionEngine;
 import fr.enedis.chutney.campaign.domain.CampaignEnvironmentUpdateHandler;
@@ -50,6 +49,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.task.support.ExecutorServiceAdapter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class ExecutionsConfiguration {

@@ -12,6 +12,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.collect.Lists;
 import fr.enedis.chutney.engine.api.execution.ExecutionRequestDto;
 import fr.enedis.chutney.engine.api.execution.StepExecutionReportDto;
 import fr.enedis.chutney.engine.domain.delegation.CannotDelegateException;
@@ -22,16 +24,14 @@ import fr.enedis.chutney.engine.domain.execution.engine.Dataset;
 import fr.enedis.chutney.engine.domain.execution.engine.Environment;
 import fr.enedis.chutney.engine.domain.execution.engine.step.Step;
 import fr.enedis.chutney.engine.domain.execution.report.StepExecutionReport;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.collect.Lists;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 /* TODO all -
     An agent receiving a scenario fragment with a finally action will execute that teardown as soon as it finnish.
@@ -51,12 +51,13 @@ public class HttpClient implements DelegationClient {
         this.restTemplate = new RestTemplate();
         this.connectionChecker = new TcpConnectionChecker();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.findAndRegisterModules();
+        JsonMapper objectMapper = JsonMapper.builder()
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .findAndAddModules()
+            .build();
 
-        restTemplate.setMessageConverters(Lists.newArrayList(new MappingJackson2HttpMessageConverter(objectMapper)));
+        restTemplate.setMessageConverters(Lists.newArrayList(new JacksonJsonHttpMessageConverter(objectMapper)));
         addBasicAuth(username, password);
     }
 

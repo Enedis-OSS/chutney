@@ -11,14 +11,6 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toCollection;
 
 import fr.enedis.chutney.campaign.infra.SchedulingCampaignDto.CampaignExecutionRequestDto;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +18,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.json.JsonMapper;
 
 class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampaignDto> {
 
@@ -34,7 +33,7 @@ class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampa
     }
 
     @Override
-    public SchedulingCampaignDto deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    public SchedulingCampaignDto deserialize(JsonParser parser, DeserializationContext context) throws JacksonException {
         JsonNode node = parser.readValueAsTree();
 
         String id = node.get("id").asText();
@@ -84,8 +83,8 @@ class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampa
             .collect(toCollection(ArrayList::new));
     }
 
-    private LocalDateTime getSchedulingDate(JsonNode node) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private LocalDateTime getSchedulingDate(JsonNode node) throws JacksonException {
+        ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
         return objectMapper.readValue(node.get("schedulingDate").toString(), LocalDateTime.class);
     }
 

@@ -9,14 +9,14 @@ package fr.enedis.chutney.action.function;
 
 import static java.util.Objects.requireNonNull;
 
-import fr.enedis.chutney.action.common.JsonUtils;
-import fr.enedis.chutney.action.spi.SpelFunction;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import fr.enedis.chutney.action.common.JsonUtils;
+import fr.enedis.chutney.action.spi.SpelFunction;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 public class JsonFunctions {
 
@@ -34,7 +34,7 @@ public class JsonFunctions {
     }
 
     @SpelFunction
-    public static String jsonSerialize(Object obj) throws JsonProcessingException {
+    public static String jsonSerialize(Object obj) throws JacksonException {
         return om.writeValueAsString(requireNonNull(obj));
     }
 

@@ -43,7 +43,7 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -197,52 +197,18 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-            <exclusions>
-                <!--
-                    Exclude Kafka artifacts managed by Spring Kafka BOM to control the exact version imported below.
-                -->
-                <exclusion>
-                    <groupId>org.apache.kafka</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.13</artifactId> <!-- Divergence on dependencies scala-library and scala-reflect-->
-        </dependency>
+        <!-- spring-kafka-test in compile scope: needed by KafkaBrokerStartAction / KafkaBrokerStopAction in main code -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
             <scope>compile</scope>
             <exclusions>
-                <!--
-                    Spring Kafka Test does not use the same version as parent pom (3.0.2 vs 3.1.2).
-                    So exclude here and import below.
-                -->
-                <exclusion>
-                    <groupId>org.apache.kafka</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <classifier>test</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.13</artifactId> <!-- Divergence on dependencies scala-library and scala-reflect-->
-            <classifier>test</classifier>
         </dependency>
         <!-- Selemnium tasks-->
         <dependency>
@@ -328,12 +294,12 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>selenium</artifactId>
+            <artifactId>testcontainers-selenium</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>oracle-free</artifactId>
+            <artifactId>testcontainers-oracle-free</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

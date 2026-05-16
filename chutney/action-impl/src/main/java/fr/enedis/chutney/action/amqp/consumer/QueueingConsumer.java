@@ -9,11 +9,10 @@ package fr.enedis.chutney.action.amqp.consumer;
 
 import static fr.enedis.chutney.action.amqp.utils.AmqpUtils.convertMapLongStringToString;
 
-import fr.enedis.chutney.action.amqp.utils.JsonPathEvaluator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Delivery;
+import fr.enedis.chutney.action.amqp.utils.JsonPathEvaluator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 public class QueueingConsumer {
 
@@ -103,7 +104,7 @@ public class QueueingConsumer {
         Object payload;
         try {
             payload = OBJECT_MAPPER.readValue(new String(delivery.getBody()), Map.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             LOGGER.warn("Received a message, however cannot read it as Json fallback as String.", e);
             payload = new String(delivery.getBody());
         }

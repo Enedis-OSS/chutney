@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.kotlin.synchronize.server
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery.forStubMapping
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import fr.enedis.chutney.kotlin.dsl.Dataset
@@ -17,6 +16,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import tools.jackson.databind.JsonNode
 
 class DatasetsTest : ChutneyServerServiceImplTest() {
     @ParameterizedTest()

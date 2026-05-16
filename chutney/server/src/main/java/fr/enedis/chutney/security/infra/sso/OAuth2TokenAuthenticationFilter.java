@@ -11,8 +11,6 @@ import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.infra.UserDetailsServiceHelper;
 import fr.enedis.chutney.security.infra.jwt.JwtUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,12 +22,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final AuthenticationService authenticationService;
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
     public OAuth2TokenAuthenticationFilter(JwtUtil jwtUtil, AuthenticationService authenticationService) {
         this.jwtUtil = jwtUtil;

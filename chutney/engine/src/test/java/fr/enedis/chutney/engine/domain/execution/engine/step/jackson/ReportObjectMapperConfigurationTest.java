@@ -10,9 +10,9 @@ package fr.enedis.chutney.engine.domain.execution.engine.step.jackson;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jdom2.Element;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 class ReportObjectMapperConfigurationTest {
     @Test

@@ -23,6 +23,7 @@ import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
 import fr.enedis.chutney.config.web.RestExceptionHandler;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,13 +32,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 class ScheduleCampaignControllerTest {
 
     private MockMvc mockMvc;
+
+    private final JsonMapper objectMapper = (JsonMapper) new WebConfiguration().webObjectMapper();
 
     private final ScheduledCampaignRepository scheduledCampaignRepository = mock(ScheduledCampaignRepository.class);
 
@@ -46,6 +51,7 @@ class ScheduleCampaignControllerTest {
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(scheduleCampaignController)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(objectMapper))
             .setControllerAdvice(new RestExceptionHandler(Mockito.mock(ChutneyMetrics.class)))
             .build();
     }
@@ -71,12 +77,7 @@ class ScheduleCampaignControllerTest {
             .andExpect(jsonPath("$[0].campaignExecutionRequest[0].campaignTitle").value("title"))
             .andExpect(jsonPath("$[0].campaignExecutionRequest[0].datasetId").value("datasetId"))
             .andExpect(jsonPath("$[0].campaignExecutionRequest[0].jiraId").value("JIRA-5"))
-            .andExpect(jsonPath("$[0].schedulingDate[0]").value(2024))
-            .andExpect(jsonPath("$[0].schedulingDate[1]").value(10))
-            .andExpect(jsonPath("$[0].schedulingDate[2]").value(12))
-            .andExpect(jsonPath("$[0].schedulingDate[3]").value(14))
-            .andExpect(jsonPath("$[0].schedulingDate[4]").value(30))
-            .andExpect(jsonPath("$[0].schedulingDate[5]").value(45));
+            .andExpect(jsonPath("$[0].schedulingDate").value("2024-10-12T14:30:45"));
 
         verify(scheduledCampaignRepository).getAll();
     }
@@ -91,7 +92,7 @@ class ScheduleCampaignControllerTest {
                     """
                             {
                                 "id":1,
-                                "schedulingDate":[2024,10,12,14,30,45],
+                                "schedulingDate":"2024-10-12T14:30:45",
                                 "frequency":"Daily",
                                 "environment":"PROD",
                                 "campaignExecutionRequest":[

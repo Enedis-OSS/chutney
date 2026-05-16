@@ -10,8 +10,6 @@ package fr.enedis.chutney.config;
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,6 +20,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class ServerConfiguration {
@@ -45,11 +47,13 @@ public class ServerConfiguration {
     // TODO - To move in infra when it will not be used in domain (ScenarioExecutionEngineAsync)
     @Bean
     public ObjectMapper reportObjectMapper() {
-        return new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        JsonMapper.Builder builder = JsonMapper.builder()
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .findAndRegisterModules();
+            .findAndAddModules();
+        fr.enedis.chutney.config.web.ImmutablesJacksonMixins.register(builder);
+        return builder.build();
     }
 
     @Bean

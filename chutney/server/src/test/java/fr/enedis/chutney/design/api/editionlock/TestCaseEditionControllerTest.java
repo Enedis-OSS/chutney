@@ -18,8 +18,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.design.domain.editionlock.TestCaseEdition;
@@ -35,16 +33,19 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 public class TestCaseEditionControllerTest {
 
     private final TestCaseEditionsService testCaseEditionService = mock(TestCaseEditionsService.class);
     private final SpringUserService userService = mock(SpringUserService.class);
     private MockMvc mockMvc;
-    private final ObjectMapper om = new WebConfiguration().webObjectMapper();
+    private final JsonMapper om = (JsonMapper) new WebConfiguration().webObjectMapper();
     private final UserDto currentUser = new UserDto();
 
     @BeforeEach
@@ -52,6 +53,7 @@ public class TestCaseEditionControllerTest {
         TestCaseEditionController sut = new TestCaseEditionController(testCaseEditionService, userService);
 
         mockMvc = MockMvcBuilders.standaloneSetup(sut)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(om))
             .setControllerAdvice(new RestExceptionHandler(Mockito.mock(ChutneyMetrics.class)))
             .build();
 

@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static util.WaitUtils.awaitDuring;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.campaign.api.dto.CampaignDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignDto.CampaignScenarioDto;
 import fr.enedis.chutney.campaign.api.dto.CampaignExecutionReportDto;
@@ -30,8 +29,7 @@ import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.dataset.api.DataSetDto;
 import fr.enedis.chutney.dataset.domain.DatasetService;
-import fr.enedis.chutney.scenario.api.raw.dto.ImmutableTestCaseIndexDto;
-import fr.enedis.chutney.scenario.api.raw.dto.TestCaseIndexDto;
+import fr.enedis.chutney.scenario.api.raw.dto.GwtTestCaseMetadataDto;
 import fr.enedis.chutney.scenario.infra.TestCaseRepositoryAggregator;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
@@ -54,6 +52,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -61,6 +60,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 public class CampaignControllerTest {
 
@@ -76,7 +76,7 @@ public class CampaignControllerTest {
     private MockMvc mockMvc;
     private ResultExtractor resultExtractor;
     private CampaignDto existingCampaign;
-    private final ObjectMapper om = new WebConfiguration().webObjectMapper();
+    private final JsonMapper om = (JsonMapper) new WebConfiguration().webObjectMapper();
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -85,6 +85,7 @@ public class CampaignControllerTest {
         repositoryAggregator = mock(TestCaseRepositoryAggregator.class);
         CampaignController campaignController = new CampaignController(repositoryAggregator, repository, datasetService, repository, executionHistoryRepository, new CampaignService(repository));
         mockMvc = MockMvcBuilders.standaloneSetup(campaignController)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(om))
             .setControllerAdvice(new RestExceptionHandler(Mockito.mock(ChutneyMetrics.class)))
             .build();
 
@@ -365,9 +366,9 @@ public class CampaignControllerTest {
         // When
         execute(MockMvcRequestBuilders.get(BASE_URL + "/2/scenarios"))
             .andExpect(MockMvcResultMatchers.status().isOk());
-        TestCaseIndexDto[] scenarios = resultExtractor.scenarios();
+        GwtTestCaseMetadataDto[] scenarios = resultExtractor.scenarios();
 
-        List<String> ids = Arrays.stream(scenarios).map(c -> c.metadata().id().get()).collect(Collectors.toList());
+        List<String> ids = Arrays.stream(scenarios).map(c -> c.id().get()).collect(Collectors.toList());
 
         // Then
         Assertions.assertThat(ids).containsExactly(
@@ -460,8 +461,8 @@ public class CampaignControllerTest {
             return om.readValue(content(), CampaignDto[].class);
         }
 
-        private TestCaseIndexDto[] scenarios() throws IOException {
-            return om.readValue(content(), ImmutableTestCaseIndexDto[].class);
+        private GwtTestCaseMetadataDto[] scenarios() throws IOException {
+            return om.readValue(content(), GwtTestCaseMetadataDto[].class);
         }
 
         private CampaignExecutionReportDto[] reports() throws IOException {

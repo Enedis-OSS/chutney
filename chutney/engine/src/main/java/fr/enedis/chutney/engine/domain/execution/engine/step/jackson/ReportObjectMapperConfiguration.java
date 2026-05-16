@@ -7,13 +7,15 @@
 
 package fr.enedis.chutney.engine.domain.execution.engine.step.jackson;
 
-import fr.enedis.chutney.tools.MyMixInForIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import fr.enedis.chutney.tools.MyMixInForIgnoreType;
 import org.jdom2.Element;
 import org.springframework.core.io.Resource;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 public class ReportObjectMapperConfiguration {
 
@@ -26,12 +28,13 @@ public class ReportObjectMapperConfiguration {
     private static ObjectMapper configureObjectMapper() {
         SimpleModule jdomElementModule = new SimpleModule();
         jdomElementModule.addSerializer(Element.class, new JDomElementSerializer());
-        return new ObjectMapper()
+        return JsonMapper.builder()
             .addMixIn(Resource.class, MyMixInForIgnoreType.class)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .registerModule(jdomElementModule)
-            .findAndRegisterModules();
+            .addModule(jdomElementModule)
+            .findAndAddModules()
+            .build();
     }
 }

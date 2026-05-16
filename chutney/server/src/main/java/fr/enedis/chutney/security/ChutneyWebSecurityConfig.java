@@ -8,7 +8,6 @@
 package fr.enedis.chutney.security;
 
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
-import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_SSL_ENABLED_SPRING_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -34,10 +33,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
-import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.security.oauth2.server.resource.autoconfigure.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -55,7 +53,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.ChannelSecurityConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -78,7 +75,7 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties({OAuth2AuthorizationServerProperties.class, SsoOpenIdConnectConfigProperties.class})
+@EnableConfigurationProperties({SsoOpenIdConnectConfigProperties.class})
 @ConditionalOnProperty(value = "chutney.security.enabled", havingValue = "true", matchIfMissing = true)
 public class ChutneyWebSecurityConfig {
 
@@ -87,9 +84,6 @@ public class ChutneyWebSecurityConfig {
 
     @Value("${management.endpoints.web.base-path:/actuator}")
     protected String actuatorBaseUrl;
-
-    @Value(SERVER_SSL_ENABLED_SPRING_VALUE)
-    private Boolean sslEnabled;
 
     @Bean
     public JwtUtil jwtUtil(ChutneyJwtProperties chutneyJwtProperties) throws JOSEException {
@@ -198,8 +192,7 @@ public class ChutneyWebSecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-            .requiresChannel(this.requireChannel(sslEnabled));
+            .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
     }
 
     private UserDto anonymous() {
@@ -208,14 +201,6 @@ public class ChutneyWebSecurityConfig {
         anonymous.setName(User.ANONYMOUS.id);
         anonymous.grantAuthority("ANONYMOUS");
         return anonymous;
-    }
-
-    private Customizer<ChannelSecurityConfigurer<HttpSecurity>.ChannelRequestMatcherRegistry> requireChannel(Boolean sslEnabled) {
-        if (sslEnabled) {
-            return channelRequestMatcherRegistry -> channelRequestMatcherRegistry.anyRequest().requiresSecure();
-        } else {
-            return channelRequestMatcherRegistry -> channelRequestMatcherRegistry.anyRequest().requiresInsecure();
-        }
     }
 
     @Configuration

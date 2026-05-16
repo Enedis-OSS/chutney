@@ -38,8 +38,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.enedis.chutney.ServerBootstrap;
 import fr.enedis.chutney.action.api.ActionController;
 import fr.enedis.chutney.admin.api.BackupController;
@@ -78,6 +76,8 @@ import fr.enedis.chutney.tools.file.FileUtils;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,9 +93,12 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest(classes = {ServerBootstrap.class})
 @TestPropertySource(properties = "spring.config.additional-location=classpath:blackbox/")
@@ -112,7 +115,9 @@ class SecuredControllerSpringBootIntegrationTest {
 
     private MockMvc mvc;
 
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .build();
 
     @BeforeAll
     public static void cleanUp() {
@@ -133,7 +138,7 @@ class SecuredControllerSpringBootIntegrationTest {
             // Actuator
             {GET, "/api/actuator", ADMIN_ACCESS.name(), null, OK},
             {GET, "/api/actuator/health", ADMIN_ACCESS.name(), null, OK},
-            {GET, "/api/actuator/prometheus", ADMIN_ACCESS.name(), null, NOT_FOUND},
+            {GET, "/api/actuator/prometheus", ADMIN_ACCESS.name(), null, OK},
 
             // Server
             {GET, BackupController.BASE_URL, ADMIN_ACCESS.name(), null, OK},
@@ -150,9 +155,9 @@ class SecuredControllerSpringBootIntegrationTest {
             {GET, NodeNetworkController.DESCRIPTION_URL, ADMIN_ACCESS.name(), null, OK},
             {POST, NodeNetworkController.EXPLORE_URL, ADMIN_ACCESS.name(), "{\"creationDate\":\"1235\"}", OK},
 
-            {POST, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[]}", BAD_REQUEST},
-            {POST, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"DEFAULT\"}", OK},
-            {PUT, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"DEFAULT\"}", OK},
+            {POST, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"parallelRun\":false,\"retryAuto\":false}", BAD_REQUEST},
+            {POST, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"DEFAULT\",\"parallelRun\":false,\"retryAuto\":false}", OK},
+            {PUT, CampaignController.BASE_URL, CAMPAIGN_WRITE.name(), "{\"title\":\"secu\",\"description\":\"desc\",\"scenarios\":[],\"tags\":[],\"environment\":\"DEFAULT\",\"parallelRun\":false,\"retryAuto\":false}", OK},
             {DELETE, CampaignController.BASE_URL + "/123", CAMPAIGN_WRITE.name(), null, OK},
             {GET, CampaignController.BASE_URL + "/123", CAMPAIGN_READ.name(), null, NOT_FOUND},
             {GET, CampaignController.BASE_URL + "/execution/1", CAMPAIGN_READ.name(), null, NOT_FOUND},
@@ -168,7 +173,7 @@ class SecuredControllerSpringBootIntegrationTest {
             {GET, ScheduleCampaignController.BASE_URL, EXECUTION_READ.name(), null, OK},
             {POST, ScheduleCampaignController.BASE_URL, CAMPAIGN_WRITE.name(),
                 """
-                {"id":1,"schedulingDate":[2024,10,12,14,30,45],"frequency":"Daily","environment":"DEFAULT","campaignsId":[1],"campaignsTitle":["title"],"datasetsId":["datasetId"]}
+                {"id":1,"schedulingDate":"2024-10-12T14:30:45","frequency":"Daily","environment":"DEFAULT","campaignExecutionRequest":[{"campaignId":1,"campaignTitle":"title","datasetId":"datasetId","jiraId":""}]}
                 """, OK},
             {DELETE, ScheduleCampaignController.BASE_URL + "/123", CAMPAIGN_WRITE.name(), null, OK},
 
@@ -386,7 +391,15 @@ class SecuredControllerSpringBootIntegrationTest {
     }
 
     private void manageAuth(String authority, UserDto userDto, MockHttpServletRequestBuilder request) {
-        ofNullable(authority).ifPresent(right -> {
+        authorizationHeader(authority, userDto).ifPresent(token -> request.header("Authorization", token));
+    }
+
+    private void manageAuth(String authority, UserDto userDto, MockMultipartHttpServletRequestBuilder request) {
+        authorizationHeader(authority, userDto).ifPresent(token -> request.header("Authorization", token));
+    }
+
+    private Optional<String> authorizationHeader(String authority, UserDto userDto) {
+        return ofNullable(authority).map(right -> {
             if (!"AUTHENTICATED".equals(authority)) {
                 Role adminRole = Role.builder().withAuthorizations(List.of(right)).withName("admin").build();
                 User user = User.builder().withRole("admin").withId("admin").build();
@@ -394,9 +407,7 @@ class SecuredControllerSpringBootIntegrationTest {
                 userDto.grantAuthority(right);
             }
             String token = jwtUtil.generateToken(userDto.getId(), objectMapper.convertValue(userDto, Map.class));
-            if (token != null) {
-                request.header("Authorization", "Bearer " + token);
-            }
+            return token != null ? "Bearer " + token : null;
         });
     }
 }

@@ -8,13 +8,14 @@
 package fr.enedis.chutney.jira.infra;
 
 public class JiraTargetConfigurationDto {
-    public final String url;
-    public final String username;
-    public final String password;
-    public final String urlProxy;
-    public final String userProxy;
-    public final String passwordProxy;
+    public String url;
+    public String username;
+    public String password;
+    public String urlProxy;
+    public String userProxy;
+    public String passwordProxy;
 
+    @com.fasterxml.jackson.annotation.JsonCreator
     public JiraTargetConfigurationDto() {
         this("", "", "", "", "", "");
     }

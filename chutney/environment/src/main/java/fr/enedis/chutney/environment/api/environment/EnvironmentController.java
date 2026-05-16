@@ -8,8 +8,6 @@
 package fr.enedis.chutney.environment.api.environment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto;
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingEnvironmentException;
 import fr.enedis.chutney.environment.domain.exception.CannotDeleteEnvironmentException;
@@ -31,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 @RequestMapping(EnvironmentController.BASE_URL)
@@ -40,10 +41,11 @@ public class EnvironmentController implements EnvironmentApi {
 
     private final EnvironmentApi delegate;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-        .findAndRegisterModules()
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
         .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
 
     EnvironmentController(EnvironmentApi delegate) {
         this.delegate = delegate;

@@ -9,23 +9,23 @@ package fr.enedis.chutney.environment.infra;
 
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.json.JsonMapper;
 
-public class TargetJsonDeserializer extends JsonDeserializer<JsonTarget> {
+public class TargetJsonDeserializer extends ValueDeserializer<JsonTarget> {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final JsonMapper mapper = JsonMapper.builder().build();
 
     @Override
-    public JsonTarget deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        JsonNode targetNode = jsonParser.getCodec().readTree(jsonParser);
+    public JsonTarget deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws JacksonException {
+        JsonNode targetNode = deserializationContext.readTree(jsonParser);
 
         String name = null;
         if (targetNode.hasNonNull("name")) {

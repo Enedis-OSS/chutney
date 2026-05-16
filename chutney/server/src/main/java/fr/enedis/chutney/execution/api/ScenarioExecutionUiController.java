@@ -10,8 +10,6 @@ package fr.enedis.chutney.execution.api;
 import static fr.enedis.chutney.dataset.api.DataSetMapper.fromExecutionDatasetDto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.dataset.api.ExecutionDatasetDto;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.environment.api.environment.EmbeddedEnvironmentApi;
@@ -46,6 +44,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class ScenarioExecutionUiController {
@@ -194,10 +196,11 @@ public class ScenarioExecutionUiController {
 
     // TODO - Use Spring serialization
     public ObjectMapper dtoReportObjectMapper() {
-        return new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        return JsonMapper.builder()
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .findAndRegisterModules();
+            .findAndAddModules()
+            .build();
     }
 }

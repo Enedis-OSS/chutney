@@ -26,7 +26,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 
@@ -109,7 +108,7 @@ public class ScenarioExecutionReportEntity {
                 .withDatatable(scenarioExecutionReport.datatable)
                 .withId(scenarioExecution.datasetId())
                 .build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

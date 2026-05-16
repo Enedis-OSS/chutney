@@ -15,7 +15,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.tomcat.TomcatWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,14 +35,14 @@ public class UndertowConfig {
     private Boolean sslEnabled;
 
     @Bean
-    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> httpsRedirectCustomizer() {
+    public WebServerFactoryCustomizer<TomcatWebServerFactory> httpsRedirectCustomizer() {
         return factory -> {
             if (sslEnabled && securePort == 443) {
-                Connector httpConnector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+                Connector httpConnector = new Connector(TomcatWebServerFactory.DEFAULT_PROTOCOL);
                 httpConnector.setPort(80);
                 httpConnector.setRedirectPort(443);
                 httpConnector.setProperty("address", httpInterface);
-                factory.addAdditionalTomcatConnectors(httpConnector);
+                factory.addAdditionalConnectors(httpConnector);
 
                 factory.addContextCustomizers(context -> {
                     SecurityConstraint constraint = new SecurityConstraint();

@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.execution.api.report.surefire;
 
+import com.google.common.base.Strings;
 import fr.enedis.chutney.execution.api.report.surefire.Testsuite.Properties;
 import fr.enedis.chutney.execution.api.report.surefire.Testsuite.Testcase;
 import fr.enedis.chutney.execution.api.report.surefire.Testsuite.Testcase.Failure;
@@ -15,14 +16,11 @@ import fr.enedis.chutney.server.core.domain.execution.report.ScenarioExecutionRe
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReportCore;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class SurefireScenarioExecutionReportBuilder {
@@ -50,11 +48,7 @@ public class SurefireScenarioExecutionReportBuilder {
     }
 
     private ScenarioExecutionReport parse(String rawReport) {
-        try {
-            return objectMapper.readerFor(ScenarioExecutionReport.class).readValue(rawReport);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e.getMessage(), e);
-        }
+        return objectMapper.readerFor(ScenarioExecutionReport.class).readValue(rawReport);
     }
 
     private void populateTestsuite(Testsuite testsuite, ScenarioExecutionReport executionReport) {

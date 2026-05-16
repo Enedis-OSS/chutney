@@ -41,6 +41,7 @@ import javax.net.ssl.SSLContext;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -53,6 +54,7 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -238,9 +240,7 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
 
     private RestTemplate buildRestTemplate() {
         try {
-            var requestFactory = new HttpComponentsClientHttpRequestFactory(buildHttpClient());
-            requestFactory.setConnectTimeout(MS_TIMEOUT);
-            return new RestTemplate(requestFactory);
+            return new RestTemplate(new HttpComponentsClientHttpRequestFactory(buildHttpClient()));
         } catch (Exception e) {
             throw new RuntimeException("Cannot build rest template.", e);
         }
@@ -253,9 +253,14 @@ public class HttpJiraXrayImpl implements JiraXrayApi {
             proxyHttpHost = HttpHost.create(new URI(jiraServerConfiguration.urlProxy()));
         }
 
+        RequestConfig requestConfig = RequestConfig.custom()
+            .setConnectTimeout(Timeout.ofMilliseconds(MS_TIMEOUT))
+            .build();
+
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
             .setConnectionManager(buildConnectionManager())
-            .setDefaultCredentialsProvider(getBasicCredentialsProvider(httpHost, proxyHttpHost));
+            .setDefaultCredentialsProvider(getBasicCredentialsProvider(httpHost, proxyHttpHost))
+            .setDefaultRequestConfig(requestConfig);
 
         var defaultHeaders = new ArrayList<BasicHeader>();
         String authorization = basicAuthHeaderEncodedValue(jiraServerConfiguration.username(), jiraServerConfiguration.password());

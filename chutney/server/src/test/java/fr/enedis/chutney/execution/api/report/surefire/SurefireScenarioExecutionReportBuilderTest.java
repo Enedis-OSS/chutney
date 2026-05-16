@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Maps;
 import fr.enedis.chutney.execution.api.report.surefire.Testsuite.Testcase;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
@@ -21,24 +22,24 @@ import fr.enedis.chutney.server.core.domain.execution.report.ScenarioExecutionRe
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReportCore;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class SurefireScenarioExecutionReportBuilderTest {
 
     private ExecutionHistoryRepository executionHistoryRepository = mock(ExecutionHistoryRepository.class);
-    private ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();;
 
     private final SurefireScenarioExecutionReportBuilder sut = new SurefireScenarioExecutionReportBuilder(objectMapper, executionHistoryRepository);
 
     @Test
-    public void create_with_report_OK() throws JsonProcessingException {
+    public void create_with_report_OK() throws JacksonException {
         // Given
         StepExecutionReportCore successStepReport =
             stepReport("root step Title", -1L, ServerReportStatus.SUCCESS,
@@ -91,7 +92,7 @@ public class SurefireScenarioExecutionReportBuilderTest {
     }
 
     @Test
-    public void create_with_report_KO() throws JsonProcessingException {
+    public void create_with_report_KO() throws JacksonException {
         // Given
         StepExecutionReportCore failureStepReport =
             stepReport("root step Title", -1L, ServerReportStatus.FAILURE,

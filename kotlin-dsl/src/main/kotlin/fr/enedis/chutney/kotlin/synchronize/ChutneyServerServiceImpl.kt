@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.kotlin.synchronize
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto
 import fr.enedis.chutney.kotlin.dsl.Campaign
 import fr.enedis.chutney.kotlin.dsl.ChutneyScenario
@@ -17,6 +16,7 @@ import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
 import fr.enedis.chutney.kotlin.util.HttpClientException
 import org.apache.commons.text.StringEscapeUtils.escapeJson
+import tools.jackson.databind.ObjectMapper
 import java.util.*
 
 interface ChutneyServerService {

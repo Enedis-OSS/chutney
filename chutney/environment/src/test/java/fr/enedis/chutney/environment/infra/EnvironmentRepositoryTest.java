@@ -9,9 +9,9 @@ package fr.enedis.chutney.environment.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 public class EnvironmentRepositoryTest {
 

@@ -16,6 +16,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.scenario.domain.gwt.GwtScenario;
 import fr.enedis.chutney.scenario.domain.gwt.GwtStep;
 import fr.enedis.chutney.scenario.domain.gwt.GwtStepImplementation;
@@ -33,12 +34,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 public class GwtTestCaseControllerTest {
 
     private MockMvc mockMvc;
+    private final JsonMapper objectMapper = (JsonMapper) new WebConfiguration().webObjectMapper();
     private final AggregatedRepository<GwtTestCase> testCaseRepository = mock(AggregatedRepository.class);
     private final SpringUserService userService = mock(SpringUserService.class);
     private final UserDto currentUser = new UserDto();
@@ -48,7 +52,9 @@ public class GwtTestCaseControllerTest {
         currentUser.setId("currentUser");
         when(userService.currentUserId()).thenReturn(currentUser.getId());
         GwtTestCaseController testCaseController = new GwtTestCaseController(testCaseRepository, userService);
-        mockMvc = MockMvcBuilders.standaloneSetup(testCaseController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(testCaseController)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(objectMapper))
+            .build();
 
         // Default stubbing
         when(testCaseRepository.save(any(GwtTestCase.class))).thenReturn("1");
@@ -73,7 +79,7 @@ public class GwtTestCaseControllerTest {
         verify(testCaseRepository).save(scenario.capture());
 
 
-        assertThat(bodyHolder.get()).isEqualTo("1");
+        assertThat(bodyHolder.get()).isEqualTo("\"1\"");
         assertThat(scenario.getValue().metadata.title).isEqualTo("__titre__");
         assertThat(scenario.getValue().metadata.description).isEqualTo("__description__");
         assertThat(scenario.getValue().metadata.tags).containsExactly("TAG1", "TAG2");
@@ -125,7 +131,7 @@ public class GwtTestCaseControllerTest {
         ArgumentCaptor<GwtTestCase> actual = ArgumentCaptor.forClass(GwtTestCase.class);
         verify(testCaseRepository).save(actual.capture());
 
-        assertThat(bodyHolder.get()).isEqualTo("1");
+        assertThat(bodyHolder.get()).isEqualTo("\"1\"");
         assertThat(actual.getValue().metadata.title).isEqualTo("__titre__");
         assertThat(actual.getValue().metadata.description).isEqualTo("__description__");
 

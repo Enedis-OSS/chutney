@@ -10,15 +10,15 @@ package fr.enedis.chutney.engine.domain.execution.engine.step;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.enedis.chutney.engine.domain.execution.engine.step.jackson.ReportObjectMapperConfiguration;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 public class StepContextSnapshotTest {
 
     @Test
-    public void should_serialize_and_deserialize_simple_input_and_output_in_report() throws JsonProcessingException {
+    public void should_serialize_and_deserialize_simple_input_and_output_in_report() throws JacksonException {
         // Given
         ObjectMapper objectMapper = ReportObjectMapperConfiguration.reportObjectMapper();
         Map<String, Object> mapStringObject = Map.of("inputObject", "inputValue");
@@ -35,7 +35,7 @@ public class StepContextSnapshotTest {
 
     }
     @Test
-    public void should_serialize_and_deserialize_complex_input_and_output_in_report() throws JsonProcessingException {
+    public void should_serialize_and_deserialize_complex_input_and_output_in_report() throws JacksonException {
         // Given
         ObjectMapper objectMapper = ReportObjectMapperConfiguration.reportObjectMapper();
         Map<String, Object> mapStringObject = Map.of("inputObject", Map.of("inputValue1", Map.of("inputValue2",Map.of("inputValue3","value"))));

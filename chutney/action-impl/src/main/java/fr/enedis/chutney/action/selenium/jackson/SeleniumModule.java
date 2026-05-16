@@ -7,8 +7,8 @@
 
 package fr.enedis.chutney.action.selenium.jackson;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.openqa.selenium.WebDriver;
+import tools.jackson.databind.module.SimpleModule;
 
 public class SeleniumModule extends SimpleModule {
 

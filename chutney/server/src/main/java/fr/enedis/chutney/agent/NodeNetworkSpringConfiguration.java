@@ -13,8 +13,6 @@ import static fr.enedis.chutney.config.ServerConfigurationValues.LOCAL_AGENT_DEF
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
 import fr.enedis.chutney.agent.domain.AgentClient;
 import fr.enedis.chutney.agent.domain.configure.ConfigureService;
@@ -33,8 +31,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class NodeNetworkSpringConfiguration {
@@ -42,12 +43,13 @@ public class NodeNetworkSpringConfiguration {
     private static final String NODE_NETWORK_QUALIFIER = "agentnetwork";
 
     @Bean
-    public ObjectMapper agentNetworkObjectMapper() {
-        return new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    public JsonMapper agentNetworkObjectMapper() {
+        return JsonMapper.builder()
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .findAndRegisterModules();
+            .findAndAddModules()
+            .build();
     }
 
     @Bean
@@ -64,9 +66,9 @@ public class NodeNetworkSpringConfiguration {
 
     @Bean
     @Qualifier(NODE_NETWORK_QUALIFIER)
-    public RestTemplate restTemplateForHttpNodeNetwork(@Qualifier("agentNetworkObjectMapper") ObjectMapper nodeNetworkObjectMapper) {
+    public RestTemplate restTemplateForHttpNodeNetwork(@Qualifier("agentNetworkObjectMapper") JsonMapper nodeNetworkObjectMapper) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setMessageConverters(Lists.newArrayList(new MappingJackson2HttpMessageConverter(nodeNetworkObjectMapper)));
+        restTemplate.setMessageConverters(Lists.newArrayList(new JacksonJsonHttpMessageConverter(nodeNetworkObjectMapper)));
         return restTemplate;
     }
 

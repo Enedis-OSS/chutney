@@ -12,11 +12,6 @@ import static fr.enedis.chutney.config.ServerConfigurationValues.CONFIGURATION_F
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
@@ -36,6 +31,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 /**
  * Scheduling campaign persistence.
@@ -49,13 +49,13 @@ public class SchedulingCampaignFileRepository implements ScheduledCampaignReposi
     private final Path storeFolderPath;
     private final Path resolvedFilePath;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-        .findAndRegisterModules()
-        .registerModule(new JavaTimeModule())
-        .registerModule(new SimpleModule()
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .addModule(new SimpleModule()
             .addDeserializer(SchedulingCampaignDto.class, new SchedulingCampaignsDtoDeserializer()))
         .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
     private final ReadWriteLock rwLock;
 
     SchedulingCampaignFileRepository(@Value(CONFIGURATION_FOLDER_SPRING_VALUE) String storeFolderPath) throws UncheckedIOException {
@@ -142,15 +142,11 @@ public class SchedulingCampaignFileRepository implements ScheduledCampaignReposi
     }
 
     private void writeOnDisk(Path filePath, Map<String, SchedulingCampaignDto> schedulingCampaignDTO) {
+        byte[] bytes = objectMapper.writeValueAsBytes(schedulingCampaignDTO);
         try {
-            byte[] bytes = objectMapper.writeValueAsBytes(schedulingCampaignDTO);
-            try {
-                Files.write(filePath, bytes);
-            } catch (IOException e) {
-                throw new UnsupportedOperationException("Cannot write in configuration directory: " + storeFolderPath, e);
-            }
+            Files.write(filePath, bytes);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot serialize " + schedulingCampaignDTO, e);
+            throw new UnsupportedOperationException("Cannot write in configuration directory: " + storeFolderPath, e);
         }
     }
 

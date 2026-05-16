@@ -9,8 +9,6 @@ package fr.enedis.chutney.server.core.domain.execution;
 
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
@@ -24,6 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Transforms scenario execution reports into execution history summaries.
@@ -100,7 +100,7 @@ public class ExecutionReportSummarizer {
     private String serialize(ScenarioExecutionReport stepExecutionReport) {
         try {
             return reportObjectMapper.writeValueAsString(stepExecutionReport);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             LOGGER.error("Unable to serialize StepExecutionReport content with name='{}'", stepExecutionReport.report.name, e);
             return "{}";
         }

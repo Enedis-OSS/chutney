@@ -42,6 +42,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -65,6 +66,11 @@ public class KafkaBasicPublishActionTest {
     private static final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaKraftBroker(1, 1, TOPIC);
 
     private TestLogger logger;
+
+    @BeforeAll
+    static void startBroker() {
+        embeddedKafkaBroker.afterPropertiesSet();
+    }
 
     @BeforeEach
     public void before() {
@@ -169,7 +175,6 @@ public class KafkaBasicPublishActionTest {
 
     @Test
     public void should_produce_message_to_broker_without_truststore() {
-        embeddedKafkaBroker.afterPropertiesSet();
         try (Consumer<Integer, String> consumer = configureConsumer()) {
 
             Target target = TestTarget.TestTargetBuilder.builder()
@@ -198,8 +203,6 @@ public class KafkaBasicPublishActionTest {
         /security/truststore_empty_pass.jks,
         """)
     public void producer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
-        embeddedKafkaBroker.afterPropertiesSet();
-
         String truststore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource(truststorePath)).toURI()).toAbsolutePath().toString();
         var targetBuilder = TestTarget.TestTargetBuilder.builder()
             .withTargetId("kafka")
@@ -227,7 +230,6 @@ public class KafkaBasicPublishActionTest {
 
     @Test
     public void should_produce_message_to_broker_with_explicit_key() {
-        embeddedKafkaBroker.afterPropertiesSet();
         try (Consumer<Integer, String> consumer = configureConsumer()) {
 
             Target target = TestTarget.TestTargetBuilder.builder()
