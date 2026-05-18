@@ -80,7 +80,7 @@ export const appRoutes: Routes = [
                 path: 'tokens',
                 loadChildren: () => import('./modules/tokens/token.module').then(m => m.TokenModule),
                 canActivate: [authGuard],
-                data: {'authorizations': [Authorization.VARIABLE_READ]}
+                data: {'authorizations': [Authorization.ADMIN_ACCESS, Authorization.CAMPAIGN_WRITE, Authorization.DATASET_WRITE, Authorization.DATASET_READ, Authorization.SCENARIO_WRITE, Authorization.SCENARIO_READ, Authorization.ENVIRONMENT_READ]}
             },
             {
                 path: 'admin/agent',
