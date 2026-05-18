@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccessToken } from "@core/model/token.model";

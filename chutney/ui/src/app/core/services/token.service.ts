@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AccessToken } from "@core/model/token.model";
