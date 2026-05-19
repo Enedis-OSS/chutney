@@ -14,12 +14,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
 import { CoreModule } from '@core/core.module';
+import { TokenService } from '@core/services/token.service';
 import { tokensRoutes } from '@modules/tokens/tokens.routes';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TokenCreationComponent } from './creation/tokens-creation.component';
 import { TokenListComponent } from './list/tokens.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TokenService } from '@core/services/token.service';
-import { TokenDisplayComponent } from './display/tokens-display.component';
 
 @NgModule({
     imports: [
@@ -34,8 +33,7 @@ import { TokenDisplayComponent } from './display/tokens-display.component';
     ],
     declarations: [
         TokenListComponent,
-        TokenCreationComponent,
-        TokenDisplayComponent
+        TokenCreationComponent
     ],
     providers: [
         TokenService

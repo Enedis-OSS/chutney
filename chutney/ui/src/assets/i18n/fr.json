@@ -333,6 +333,7 @@
         "list": {
             "title": "Vos tokens",
             "expiresAt": "Expire le ",
+            "keepIt": "Veuillez noter le token et le garder. Il ne sera plus affiché ni accessible après rechargement de la page.",
             "actions": {
                 "create": "Générer un nouveau token"
             }
@@ -346,11 +347,6 @@
                 },
                 "expirationDate": "Date d'expiration"
             }
-        },
-        "display": {
-            "token": "Le token généré est :",
-            "keepIt": "Veuillez le noter et le garder. Il ne sera plus affiché ni accessible après rechargement de la page.",
-            "nothing": "Aucun token à afficher"
         }
     },
     "admin": {
