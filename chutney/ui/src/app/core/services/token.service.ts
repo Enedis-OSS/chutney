@@ -7,7 +7,7 @@
 
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AccessToken } from "@core/model/token.model";
+import { AccessToken, CreatedAccessToken } from "@core/model/token.model";
 import { environment } from "@env/environment";
 import { map, Observable } from "rxjs";
 
@@ -21,9 +21,11 @@ export class TokenService {
     constructor(private httpClient: HttpClient) {
     }
 
-    createToken(token: AccessToken): Observable<string> {
+    createToken(token: AccessToken): Observable<CreatedAccessToken> {
         return this.httpClient.post<string>(environment.backend + this.resourceUrl, token,
-            { responseType: 'text' as 'json' });
+        ).pipe(
+            map((result:any) => new CreatedAccessToken(result.note, result.token, result.expiresAt)
+        ));
     }
 
     getTokensForUser(): Observable<Array<AccessToken>> {

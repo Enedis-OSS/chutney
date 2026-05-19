@@ -12,3 +12,12 @@ export class AccessToken {
             public expiresAt: Date) {
     }
 }
+
+export class CreatedAccessToken {
+
+    constructor(
+            public note: string,
+            public token: string,
+            public expiresAt: Date) {
+    }
+}

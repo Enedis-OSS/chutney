@@ -10,6 +10,7 @@ package fr.enedis.chutney.tokens.api;
 import static fr.enedis.chutney.tokens.api.AccessTokenController.BASE_URL;
 
 import fr.enedis.chutney.tokens.api.dto.AccessTokenDto;
+import fr.enedis.chutney.tokens.api.dto.CreatedAccessTokenDto;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
 import jakarta.validation.Valid;
 import java.security.Principal;
@@ -38,12 +39,13 @@ public class AccessTokenController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','DATASET_READ','SCENARIO_WRITE','SCENARIO_READ','ENVIRONMENT_READ')")
-    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String createToken(Principal principal, @Valid @RequestBody AccessTokenDto accessTokenDto) {
-        return accessTokensService.createToken(principal.getName(), accessTokenDto.getNote(),
+    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CreatedAccessTokenDto createToken(Principal principal, @Valid @RequestBody AccessTokenDto accessTokenDto) {
+        var token = accessTokensService.createToken(principal.getName(), accessTokenDto.getNote(),
             accessTokenDto.getExpiresAt() != null ?
                 accessTokenDto.getExpiresAt().atStartOfDay(ZoneId.systemDefault()).toInstant() : null
         );
+        return new CreatedAccessTokenDto(accessTokenDto.getNote(), token, accessTokenDto.getExpiresAt());
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','DATASET_READ','SCENARIO_WRITE','SCENARIO_READ','ENVIRONMENT_READ')")

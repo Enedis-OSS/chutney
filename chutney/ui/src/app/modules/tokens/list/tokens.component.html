@@ -17,6 +17,26 @@
 </div>
 
 <ul class="list-group list-group-flush">
+    @if (displayCreatedToken) {
+      <li class="list-group-item">
+          <p class="mb-1 fw-medium">
+              {{ createdAccessToken.note }}
+          </p>
+
+          @if (createdAccessToken.expiresAt != null) {
+            <p class="mb-0 text-muted small">
+                {{ 'tokens.list.expiresAt' | translate }} {{ createdAccessToken.expiresAt | date:'dd/MM/yyyy'}}
+            </p>
+          }
+
+          <p class="text-muted mt-2">
+              {{ 'tokens.display.keepIt' | translate }}
+          </p>
+          <p class="p-2 border rounded">
+              {{ createdAccessToken.token}}
+          </p>
+      </li>
+    }
     @for (token of tokens; track token) {
         <li class="list-group-item">
             <p class="mb-1 fw-medium">

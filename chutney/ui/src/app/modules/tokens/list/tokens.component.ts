@@ -7,9 +7,11 @@
 
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { AccessToken } from "@core/model/token.model";
+import { AccessToken, CreatedAccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject, takeUntil } from "rxjs";
+import { TokenCreationComponent } from "../creation/tokens-creation.component";
 
 @Component({
     selector: 'chutney-tokens',
@@ -19,9 +21,12 @@ import { Subject, takeUntil } from "rxjs";
 })
 export class TokenListComponent implements OnInit, OnDestroy {
 
+    createdAccessToken:CreatedAccessToken;
+    displayCreatedToken: boolean;
+
     constructor(
         private tokenService: TokenService,
-        private router: Router
+        private ngbModalService: NgbModal
         ) {
     }
 
@@ -46,6 +51,12 @@ export class TokenListComponent implements OnInit, OnDestroy {
     }
 
     createToken() {
-        this.router.navigate(['/tokens', 'creation']);
-    }
-}
+        const modalRef = this.ngbModalService.open(TokenCreationComponent, { centered: true, size: 'lg' });
+
+        modalRef.result.then(
+            (createdAccessToken) => {
+                this.createdAccessToken = createdAccessToken;
+                this.displayCreatedToken = true;
+            });
+            }
+        }

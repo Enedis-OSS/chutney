@@ -5,32 +5,46 @@
   ~
   -->
 
-<h4 class="m-0">
+
+<div class="modal-header">
+  <h5 class="modal-title">
     {{ 'tokens.creation.title' | translate }}
-</h4>
+  </h5>
+  <button type="button" class="btn-close" aria-label="Close"
+        (click)="activeModal.dismiss('cancel click')">
+  </button>
+</div>
 
-<form [formGroup]="tokenForm" (ngSubmit)="saveToken()" autocomplete="off"
-      class="tokens-form-group">
-    <label for="note" class="form-label">
-        {{ 'tokens.creation.form.note.label' | translate }}
-    </label>
-    <input type="text" id="note" class="form-control" formControlName="note">
-    @if (submitted && this.tokenForm.hasError('required', 'note')) {
-        <div class="error-message">
-            {{ 'tokens.creation.form.note.required' | translate }}
+<div class="modal-body" ngbAutofocus>
+
+    <form [formGroup]="tokenForm" (ngSubmit)="saveToken()" autocomplete="off"
+        class="tokens-form-group">
+        <div class="mb-4">
+        <label for="note" class="form-label">
+            {{ 'tokens.creation.form.note.label' | translate }}
+        </label>
+        <input type="text" id="note" class="form-control" formControlName="note">
+        @if (submitted && this.tokenForm.hasError('required', 'note')) {
+            <div class="error-message">
+                {{ 'tokens.creation.form.note.required' | translate }}
+            </div>
+        }
         </div>
-    }
 
-    <label for="expirationDate" class="form-label">
-        {{ 'tokens.creation.form.expirationDate' | translate }}
-    </label>
-    <div class="input-group">
-        <input id="expirationDate" class="form-control" placeholder="yyyy-mm-dd"
-                  name="expirationDate" formControlName="expirationDate" ngbDatepicker #d="ngbDatepicker">
-        <button class="btn btn-primary bi bi-calendar-event" (click)="d.toggle()" type="button"></button>
-    </div>
+        <label for="expirationDate" class="form-label ">
+            {{ 'tokens.creation.form.expirationDate' | translate }}
+        </label>
+        <div class="input-group">
+            <input id="expirationDate" class="form-control" placeholder="yyyy-mm-dd"
+                    name="expirationDate" formControlName="expirationDate" ngbDatepicker #d="ngbDatepicker">
+            <button class="btn btn-primary bi bi-calendar-event" (click)="d.toggle()" type="button"></button>
+        </div>
+    </form>
+ </div>
 
-    <button type="submit" [disabled]="(submitted && tokenForm.invalid)" class="btn btn-primary m-2">
-        <span>{{ 'global.actions.record' | translate }}</span>
-    </button>
- </form>
+ <div class="modal-footer">
+  <button type="button" class="btn btn-light" (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
+  <button type="submit" [disabled]="(submitted && tokenForm.invalid)" class="btn btn-primary" (click)="saveToken()">
+    <span>{{ 'global.actions.record' | translate }}</span>
+  </button>
+</div>
