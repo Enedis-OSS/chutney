@@ -71,7 +71,7 @@
         <rabbitmq-mock.version>1.2.0</rabbitmq-mock.version>
 
         <!-- test dependencies versions -->
-        <jqwik.version>1.9.3</jqwik.version>
+        <jqwik.version>1.10.1</jqwik.version>
         <wiremock.version>3.13.2</wiremock.version>
         <lucene.version>10.4.0</lucene.version>
     </properties>
