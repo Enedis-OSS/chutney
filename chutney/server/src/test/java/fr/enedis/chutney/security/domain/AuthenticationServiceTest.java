@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -82,7 +83,7 @@ class AuthenticationServiceTest {
         String token = "token";
         String user = "user";
         when(accessTokensService.accessTokenFromRaw(token)).thenReturn(Optional.of(
-            new AccessToken(user, "note", "hash",
+            new AccessToken(UUID.randomUUID(), user, "note", "hash",
             Instant.now().plus(1, ChronoUnit.DAYS))));
         String role = "role";
         when(authorizations.read()).thenReturn(

@@ -46,4 +46,16 @@ public class AccessTokensService {
     public Collection<AccessToken> getTokensForUser(String user) {
         return accessTokensRepository.getTokensForUser(user);
     }
+
+    public void deleteTokenForUser(UUID id, String user) {
+        List<AccessToken> tokensForUser = accessTokensRepository.getTokensForUser(user);
+        Optional<AccessToken> rightToken = tokensForUser.stream()
+            .filter(accessToken -> accessToken.id().equals(id) && accessToken.user().equals(user))
+            .findFirst();
+        if(rightToken.isEmpty()) {
+            throw new TokenNotFoundException(id);
+        }
+
+        accessTokensRepository.deleteToken(rightToken.get());
+    }
 }

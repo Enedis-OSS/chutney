@@ -16,4 +16,6 @@ public interface AccessTokensRepository {
     List<AccessToken> getTokens();
 
     List<AccessToken> getTokensForUser(String user);
+
+    void deleteToken(AccessToken accessToken);
 }

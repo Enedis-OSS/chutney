@@ -9,8 +9,6 @@ package fr.enedis.chutney.tokens.infra.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.io.Serializable;
 
@@ -19,8 +17,7 @@ public class AccessTokenEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(name = "OWNER", updatable = false)
     private String owner;
@@ -37,14 +34,15 @@ public class AccessTokenEntity implements Serializable {
     public AccessTokenEntity() {
     }
 
-    public AccessTokenEntity(String owner, String note, String hash, Long expiresAt) {
+    public AccessTokenEntity(String id, String owner, String note, String hash, Long expiresAt) {
+        this.id = id;
         this.owner = owner;
         this.note = note;
         this.hash = hash;
         this.expiresAt = expiresAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

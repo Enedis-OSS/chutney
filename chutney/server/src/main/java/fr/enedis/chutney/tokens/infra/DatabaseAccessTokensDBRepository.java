@@ -12,6 +12,7 @@ import fr.enedis.chutney.tokens.domain.AccessTokensRepository;
 import fr.enedis.chutney.tokens.infra.jpa.AccessTokenEntity;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,7 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
     @Override
     @Transactional
     public void createToken(AccessToken accessToken) {
-        accessTokenJpaRepository.save(new AccessTokenEntity(
-            accessToken.user(), accessToken.note(), accessToken.hash(),
-            accessToken.expiresAt() != null ? accessToken.expiresAt().toEpochMilli() : null));
+        accessTokenJpaRepository.save(domainObjectToJpaEntity(accessToken));
     }
 
     @Override
@@ -44,9 +43,20 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
         return accessTokenJpaRepository.findByOwner(user).stream().map(jpaEntityToDomainObject()).toList();
     }
 
+    @Override
+    public void deleteToken(AccessToken accessToken) {
+        accessTokenJpaRepository.delete(domainObjectToJpaEntity(accessToken));
+    }
+
+    private static AccessTokenEntity domainObjectToJpaEntity(AccessToken accessToken) {
+        return new AccessTokenEntity(
+            accessToken.id().toString(), accessToken.user(), accessToken.note(), accessToken.hash(),
+            accessToken.expiresAt() != null ? accessToken.expiresAt().toEpochMilli() : null);
+    }
+
     private Function<AccessTokenEntity, AccessToken> jpaEntityToDomainObject() {
         return accessTokenEntity ->
-            new AccessToken(accessTokenEntity.getOwner(), accessTokenEntity.getNote(), accessTokenEntity.getHash(),
+            new AccessToken(UUID.fromString(accessTokenEntity.getId()), accessTokenEntity.getOwner(), accessTokenEntity.getNote(), accessTokenEntity.getHash(),
                 accessTokenEntity.getExpiresAt() != null ? Instant.ofEpochMilli(accessTokenEntity.getExpiresAt()) : null);
     }
 }

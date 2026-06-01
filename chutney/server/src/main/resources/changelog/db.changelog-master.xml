@@ -1116,7 +1116,7 @@
     </changeSet>
     <changeSet id="create-access-token-table" author="ICG">
         <createTable tableName="ACCESS_TOKEN">
-            <column name="ID" type="INTEGER" autoIncrement="true">
+            <column name="ID" type="VARCHAR(300)">
                 <constraints unique="true" nullable="false" primaryKey="true"/>
             </column>
             <column name="OWNER" type="VARCHAR(300)">
