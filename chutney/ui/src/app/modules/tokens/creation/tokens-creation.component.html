@@ -15,10 +15,10 @@
   </button>
 </div>
 
-<div class="modal-body" ngbAutofocus>
+<div class="modal-body py-4" ngbAutofocus>
 
     <form [formGroup]="tokenForm" (ngSubmit)="saveToken()" autocomplete="off"
-        class="tokens-form-group">
+        class="tokens-form-group mx-auto">
         <div class="mb-4">
         <label for="note" class="form-label">
             {{ 'tokens.creation.form.note.label' | translate }}

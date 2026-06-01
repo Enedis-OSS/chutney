@@ -51,12 +51,16 @@ export class TokenListComponent implements OnInit, OnDestroy {
     }
 
     createToken() {
-        const modalRef = this.ngbModalService.open(TokenCreationComponent, { centered: true, size: 'lg' });
+        const modalRef = this.ngbModalService.open(TokenCreationComponent, { centered: true, size: 'sm' });
 
         modalRef.result.then(
             (createdAccessToken) => {
                 this.createdAccessToken = createdAccessToken;
                 this.displayCreatedToken = true;
             });
-            }
-        }
+    }
+
+    copyToClipboard() {
+        navigator.clipboard.writeText(this.createdAccessToken.token);
+    }
+}

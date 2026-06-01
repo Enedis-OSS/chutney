@@ -334,6 +334,7 @@
             "title": "Your tokens",
             "expiresAt": "Expires at ",
             "keepIt": "Please note the token down and keep it. It will no longer be displayed or accessible after the page is reloaded.",
+            "copy": "Copy",
             "actions": {
                 "create": "Generate a new token"
             }

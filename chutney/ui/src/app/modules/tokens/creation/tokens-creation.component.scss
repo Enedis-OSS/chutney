@@ -4,10 +4,25 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  */
- 
+
+.modal-title {
+  font-weight: 500;
+}
+
  .tokens-form-group {
     background-color:  var(--bs-light);
     padding: 1em;
     border-radius: 1em;
     width: fit-content;
+    max-width: 420px;
 }
+
+.input-group .btn {
+  border-left: 0;
+}
+
+.modal-footer {
+  gap: 0.5rem;
+}
+
+
