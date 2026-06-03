@@ -17,7 +17,7 @@ Typical use cases:
 
 !!! important "Quick technical insight"
 
-    * Chutney server is a [Spring Boot](https://docs.spring.io/spring-boot/reference/index.html){:target="_blank"} application running with [Undertow](https://undertow.io/){:target="_blank"}
+    * Chutney server is a [Spring Boot](https://docs.spring.io/spring-boot/reference/index.html){:target="_blank"} application running with [Tomcat](https://tomcat.apache.org/){:target="_blank"}
     * Chutney UI is an [Angular](https://angular.io/){:target="_blank"} web application
     * Chutney is packaged as a [Spring Boot executable jar](https://docs.spring.io/spring-boot/specification/executable-jar/index.html){:target="_blank"}
     * Chutney follows Angular and Spring Boot lastest versions and corresponding dependencies

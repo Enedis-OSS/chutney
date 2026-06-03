@@ -8,6 +8,7 @@
 package fr.enedis.chutney.config.web;
 
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_INTERFACE_SPRING_VALUE;
+import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_HTTP_PORT_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_PORT_SPRING_VALUE;
 import static fr.enedis.chutney.config.ServerConfigurationValues.SERVER_SSL_ENABLED_SPRING_VALUE;
 
@@ -23,10 +24,13 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile({"https-redirect"})
-public class UndertowConfig {
+public class TomcatHttpsRedirectConfig {
 
     @Value(SERVER_PORT_SPRING_VALUE)
     private int securePort;
+
+    @Value(SERVER_HTTP_PORT_SPRING_VALUE)
+    private int httpPort;
 
     @Value(SERVER_HTTP_INTERFACE_SPRING_VALUE)
     private String httpInterface;
@@ -37,10 +41,10 @@ public class UndertowConfig {
     @Bean
     public WebServerFactoryCustomizer<TomcatWebServerFactory> httpsRedirectCustomizer() {
         return factory -> {
-            if (sslEnabled && securePort == 443) {
+            if (Boolean.TRUE.equals(sslEnabled) && httpPort != securePort) {
                 Connector httpConnector = new Connector(TomcatWebServerFactory.DEFAULT_PROTOCOL);
-                httpConnector.setPort(80);
-                httpConnector.setRedirectPort(443);
+                httpConnector.setPort(httpPort);
+                httpConnector.setRedirectPort(securePort);
                 httpConnector.setProperty("address", httpInterface);
                 factory.addAdditionalConnectors(httpConnector);
 

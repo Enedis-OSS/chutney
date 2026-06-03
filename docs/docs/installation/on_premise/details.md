@@ -100,9 +100,9 @@ Chutney server enforces the use of secure calls on any incoming requests.
             trust-store-password: # truststore password
     ```
 
-Chutney Server provides `undertow-https-redirect` Spring profile to redirect unsecured request to the right secured port.
+Chutney Server provides `https-redirect` Spring profile to redirect unsecured request to the right secured port.
 
-??? note "Using `undertow-https-redirect` Spring profile"
+??? note "Using `https-redirect` Spring profile"
 
     * Activate the profile
 
@@ -110,7 +110,7 @@ Chutney Server provides `undertow-https-redirect` Spring profile to redirect uns
     spring:
         profiles:
             active:
-              - undertow-https-redirect
+              - https-redirect
     ```
 
     * Configure the HTTP listener

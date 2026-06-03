@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.TieredMergePolicy;
@@ -36,44 +37,66 @@ public class OnDiskIndexConfig implements IndexConfig {
     public OnDiskIndexConfig(String indexDir, String indexName) {
         Path path = Paths.get(indexDir, indexName);
         analyzer = new CustemChutneyAnalyzer();
-        indexDirectory = initFromPath(path);
-        indexWriter = buildIndexWriter(path, indexName);
-    }
-
-    private Directory initFromPath(Path path) {
         try {
             initFolder(path);
-            return FSDirectory.open(path);
+            OpenedIndex openedIndex = openIndex(path, indexName);
+            indexDirectory = openedIndex.directory();
+            indexWriter = openedIndex.writer();
         } catch (IOException e) {
             throw new RuntimeException("Couldn't open index directory", e);
         }
     }
 
-    private IndexWriter buildIndexWriter(Path path, String indexName) {
-        IndexWriter tmpIndexWriter;
+    private OpenedIndex openIndex(Path path, String indexName) throws IOException {
+        Directory directory = FSDirectory.open(path);
         try {
-            tmpIndexWriter = new IndexWriter(indexDirectory, getIndexWriterConfig());
-            tmpIndexWriter.commit();
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't build index writer", e);
-        } catch (IllegalArgumentException iae) {
-            var suppressedCorruptIndexException = Arrays.stream(iae.getSuppressed())
-                .filter(e -> e instanceof CorruptIndexException)
-                .findAny();
-            if (suppressedCorruptIndexException.isPresent()) {
-                LOGGER.warn("Index corrupted... Clean index {} for re-indexing", indexName, suppressedCorruptIndexException.get());
-                cleanFolder(path);
-                try {
-                    tmpIndexWriter = new IndexWriter(indexDirectory, getIndexWriterConfig());
-                    tmpIndexWriter.commit();
-                } catch (IOException e) {
-                    throw new RuntimeException("Couldn't build index writer", e);
+            return new OpenedIndex(directory, createAndCommitWriter(directory));
+        } catch (IOException | IllegalArgumentException e) {
+            closeDirectory(directory);
+            if (!isRecoverableIndexError(e)) {
+                if (e instanceof IOException ioException) {
+                    throw ioException;
                 }
-            } else {
-                throw new RuntimeException("Couldn't build index writer", iae);
+                throw new IOException("Couldn't build index writer", e);
             }
+            LOGGER.warn(
+                "Index {} at {} is incompatible or corrupted. Recreating it for re-indexing.",
+                indexName,
+                path,
+                e
+            );
+            cleanFolder(path);
+            Directory recreatedDirectory = FSDirectory.open(path);
+            return new OpenedIndex(recreatedDirectory, createAndCommitWriter(recreatedDirectory));
         }
-        return tmpIndexWriter;
+    }
+
+    private IndexWriter createAndCommitWriter(Directory directory) throws IOException {
+        IndexWriter writer = new IndexWriter(directory, getIndexWriterConfig());
+        writer.commit();
+        return writer;
+    }
+
+    private static boolean isRecoverableIndexError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof CorruptIndexException || current instanceof IndexFormatTooOldException) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        if (throwable instanceof IllegalArgumentException illegalArgumentException) {
+            return Arrays.stream(illegalArgumentException.getSuppressed()).anyMatch(OnDiskIndexConfig::isRecoverableIndexError);
+        }
+        return false;
+    }
+
+    private static void closeDirectory(Directory directory) {
+        try {
+            directory.close();
+        } catch (IOException e) {
+            LOGGER.warn("Failed to close index directory before recreation", e);
+        }
     }
 
     private IndexWriterConfig getIndexWriterConfig() {
@@ -96,5 +119,8 @@ public class OnDiskIndexConfig implements IndexConfig {
     @Override
     public Analyzer analyzer() {
         return analyzer;
+    }
+
+    private record OpenedIndex(Directory directory, IndexWriter writer) {
     }
 }
