@@ -19,15 +19,9 @@
 <ul class="list-group list-group-flush">
     @if (displayCreatedToken) {
       <li class="list-group-item">
-        <div class="d-flex align-items-start gap-2">
           <p class="mb-0 fw-medium">
               {{ createdAccessToken.note }}
           </p>
-          <button class="btn btn-sm btn-outline-secondary py-0 px-2 w-auto btn-delete" 
-          (click)="deleteToken(createdAccessToken.id)">
-              {{ 'tokens.list.delete' | translate }}
-          </button>
-        </div>
 
           @if (createdAccessToken.expiresAt != null) {
             <p class="mb-0 text-muted small">

@@ -36,14 +36,18 @@ export class TokenListComponent implements OnInit, OnDestroy {
     private unsubscribeSub$: Subject<void> = new Subject();
 
     ngOnInit() {
+        this.initTokens();
+    }
+
+    initTokens() {
         this.tokenService.getTokensForUser()
-                    .pipe(takeUntil(this.unsubscribeSub$))
-                    .subscribe({
-                        next: (res) => {
-                            this.tokens = res;
-                        },
-                        error: (error) => console.log(error)
-                });
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: (res) => {
+                    this.tokens = res;
+                },
+                error: (error) => console.log(error)
+            });
     }
 
     ngOnDestroy(): void {
@@ -64,6 +68,11 @@ export class TokenListComponent implements OnInit, OnDestroy {
     deleteToken(id: string) {
         const modalRef = this.ngbModalService.open(TokenDeleteComponent, { centered: true, size: 'sm' });
         modalRef.componentInstance.id = id;
+
+        modalRef.result.then(() => {
+            this.displayCreatedToken = false;
+            this.initTokens();
+        })
     }
 
     copyToClipboard() {
