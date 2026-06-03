@@ -44,6 +44,7 @@ public class DatabaseAccessTokensDBRepository implements AccessTokensRepository 
     }
 
     @Override
+    @Transactional
     public void deleteToken(AccessToken accessToken) {
         accessTokenJpaRepository.delete(domainObjectToJpaEntity(accessToken));
     }

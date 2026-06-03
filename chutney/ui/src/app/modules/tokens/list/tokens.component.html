@@ -19,9 +19,15 @@
 <ul class="list-group list-group-flush">
     @if (displayCreatedToken) {
       <li class="list-group-item">
-          <p class="mb-1 fw-medium">
+        <div class="d-flex align-items-start gap-2">
+          <p class="mb-0 fw-medium">
               {{ createdAccessToken.note }}
           </p>
+          <button class="btn btn-sm btn-outline-secondary py-0 px-2 w-auto btn-delete" 
+          (click)="deleteToken(createdAccessToken.id)">
+              {{ 'tokens.list.delete' | translate }}
+          </button>
+        </div>
 
           @if (createdAccessToken.expiresAt != null) {
             <p class="mb-0 text-muted small">
@@ -46,9 +52,15 @@
     }
     @for (token of tokens; track token) {
         <li class="list-group-item">
-            <p class="mb-1 fw-medium">
-                {{ token.note }}
-            </p>
+            <div class="d-flex align-items-center gap-2">
+                <p class="mb-0 fw-medium">
+                    {{ token.note }}
+                </p>
+                <button class="btn btn-sm btn-outline-secondary py-0 px-2 w-auto btn-delete"
+                (click)="deleteToken(token.id)">
+                {{ 'tokens.list.delete' | translate }}
+                </button>
+            </div>
 
             @if (token.expiresAt != null) {
             <p class="mb-0 text-muted small">

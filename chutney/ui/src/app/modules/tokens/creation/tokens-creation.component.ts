@@ -49,6 +49,11 @@ export class TokenCreationComponent implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        this.unsubscribeSub$.next();
+        this.unsubscribeSub$.complete();
+    }
+
     saveToken() {
         this.submitted = true;
         const formValue = this.tokenForm.value;

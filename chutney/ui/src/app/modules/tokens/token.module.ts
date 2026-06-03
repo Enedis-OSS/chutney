@@ -19,6 +19,7 @@ import { tokensRoutes } from '@modules/tokens/tokens.routes';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TokenCreationComponent } from './creation/tokens-creation.component';
 import { TokenListComponent } from './list/tokens.component';
+import { TokenDeleteComponent } from './delete/tokens-delete.component';
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import { TokenListComponent } from './list/tokens.component';
     ],
     declarations: [
         TokenListComponent,
-        TokenCreationComponent
+        TokenCreationComponent,
+        TokenDeleteComponent
     ],
     providers: [
         TokenService

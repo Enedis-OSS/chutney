@@ -12,6 +12,7 @@ import { TokenService } from "@core/services/token.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject, takeUntil } from "rxjs";
 import { TokenCreationComponent } from "../creation/tokens-creation.component";
+import { TokenDeleteComponent } from "../delete/tokens-delete.component";
 
 @Component({
     selector: 'chutney-tokens',
@@ -58,6 +59,11 @@ export class TokenListComponent implements OnInit, OnDestroy {
                 this.createdAccessToken = createdAccessToken;
                 this.displayCreatedToken = true;
             });
+    }
+
+    deleteToken(id: string) {
+        const modalRef = this.ngbModalService.open(TokenDeleteComponent, { centered: true, size: 'sm' });
+        modalRef.componentInstance.id = id;
     }
 
     copyToClipboard() {

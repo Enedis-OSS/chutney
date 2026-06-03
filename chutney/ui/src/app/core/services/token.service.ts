@@ -32,4 +32,9 @@ export class TokenService {
         return this.httpClient.get<Array<AccessToken>>(
             environment.backend + this.resourceUrl).pipe(map((res: Array<AccessToken>) => res));
     }
+
+    deleteToken(id: string): Observable<void> {
+        return this.httpClient.delete<string>(environment.backend + this.resourceUrl + "/" + id)
+        .pipe(map(() => {}));
+    }
 }
