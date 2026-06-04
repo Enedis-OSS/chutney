@@ -8,8 +8,7 @@
 package fr.enedis.chutney.kotlin.execution.report
 
 import fr.enedis.chutney.engine.api.execution.StepExecutionReportDto
-import tools.jackson.databind.SerializationFeature
-import tools.jackson.module.kotlin.jacksonMapperBuilder
+import fr.enedis.chutney.engine.domain.execution.engine.step.jackson.ReportObjectMapperConfiguration
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
@@ -17,9 +16,7 @@ import java.time.format.DateTimeFormatter
 
 object JsonReportWriter {
 
-    private val om = jacksonMapperBuilder()
-        .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-        .build()
+    private val om = ReportObjectMapperConfiguration.reportObjectMapper()
 
     private val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").withZone(ZoneId.systemDefault())
 
