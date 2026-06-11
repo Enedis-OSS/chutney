@@ -70,6 +70,7 @@ public class KafkaBrokerStartAction implements Action {
     private Map<String, Object> toOutputs(EmbeddedKafkaBroker broker) {
         Map<String, Object> outputs = new HashMap<>();
         outputs.put("kafkaBroker", broker);
+        outputs.put("bootstrapServers", broker.getBrokersAsString());
         return outputs;
     }
 

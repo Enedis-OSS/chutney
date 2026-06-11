@@ -80,14 +80,14 @@ val `Kafka basic publish success` = Scenario(title = "Kafka basic publish succes
             "when":{
                 "sentence":"Publish to broker",
                 "implementation":{
-                    "task":"{\n type: kafka-basic-publish \n target: test_kafka \n inputs: {\n topic: a-topic \n payload: bodybuilder \n headers: {\n X-API-VERSION: '1.0' \n} \n properties: {\n bootstrap.servers: ${"kafkaBroker.getBrokersAsString()".hjsonSpEL} \n} \n} \n}"
+                    "task":"{\n type: kafka-basic-publish \n target: test_kafka \n inputs: {\n topic: a-topic \n payload: bodybuilder \n headers: {\n X-API-VERSION: '1.0' \n} \n properties: {\n bootstrap.servers: ${"bootstrapServers".hjsonSpEL} \n} \n} \n}"
                 }
             },
             "thens":[
                 {
                     "sentence":"Consume from broker",
                     "implementation":{
-                        "task":"{\n type: kafka-basic-consume \n target: test_kafka \n inputs: {\n topic: a-topic \n group: chutney \n ackMode: BATCH \n properties: {\n auto.offset.reset: earliest \n bootstrap.servers: ${"kafkaBroker.getBrokersAsString()".hjsonSpEL} \n} \n} \n outputs: {\n payload : ${"payloads[0]".hjsonSpEL} \n} \n}"
+                        "task":"{\n type: kafka-basic-consume \n target: test_kafka \n inputs: {\n topic: a-topic \n group: chutney \n ackMode: BATCH \n properties: {\n auto.offset.reset: earliest \n bootstrap.servers: ${"bootstrapServers".hjsonSpEL} \n} \n} \n outputs: {\n payload : ${"payloads[0]".hjsonSpEL} \n} \n}"
                     }
                 },
                 {
