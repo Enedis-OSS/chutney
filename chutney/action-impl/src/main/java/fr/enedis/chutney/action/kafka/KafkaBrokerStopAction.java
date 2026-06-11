@@ -39,7 +39,11 @@ public class KafkaBrokerStopAction implements Action {
     @Override
     public ActionExecutionResult execute() {
         logger.info("Call Kafka broker shutdown");
-        broker.destroy();
+        try {
+            broker.destroy();
+        } catch (Exception e) {
+            logger.error("Kafka broker shutdown failed: " + e.getMessage());
+        }
         return ActionExecutionResult.ok();
     }
 }

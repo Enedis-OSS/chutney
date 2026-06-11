@@ -10,6 +10,7 @@ package fr.enedis.chutney.config.web.redirect;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import fr.enedis.chutney.config.web.TomcatHttpsRedirectConfig;
+import fr.enedis.chutney.tools.SocketUtils;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,6 +21,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(
@@ -28,8 +31,6 @@ import org.springframework.test.context.TestPropertySource;
 )
 @ActiveProfiles("https-redirect")
 @TestPropertySource(properties = {
-    "server.port=18443",
-    "server.http.port=18080",
     "server.http.interface=127.0.0.1",
     "server.ssl.enabled=true",
     "server.ssl.key-store=classpath:security/https/server.jks",
@@ -39,13 +40,23 @@ import org.springframework.test.context.TestPropertySource;
     "server.ssl.trust-store-password=truststore",
 })
 class TomcatHttpsRedirectTest {
+
+    private static final int httpsPort = SocketUtils.findAvailableTcpPort();
+    private static final int httpPort = SocketUtils.findAvailableTcpPort();
+
+    @DynamicPropertySource
+    static void dynamicPorts(DynamicPropertyRegistry registry) {
+        registry.add("server.port", () -> httpsPort);
+        registry.add("server.http.port", () -> httpPort);
+    }
+
     private final HttpClient client = HttpClient.newBuilder()
         .followRedirects(HttpClient.Redirect.NEVER) // we want to inspect the 301/302
         .build();
 
     @Test
     void should_redirect_http_to_https_on_configured_ports() throws Exception {
-        var httpUrl = "http://127.0.0.1:18080/";
+        var httpUrl = "http://127.0.0.1:" + httpPort + "/";
 
         var request = HttpRequest.newBuilder(URI.create(httpUrl)).GET().build();
         var response = client.send(request, HttpResponse.BodyHandlers.discarding());
@@ -53,7 +64,7 @@ class TomcatHttpsRedirectTest {
         assertThat(response.statusCode()).isIn(301, 302);
         var location = response.headers().firstValue("Location");
         assertThat(location).isPresent();
-        assertThat(location.get()).startsWith("https://127.0.0.1:18443/");
+        assertThat(location.get()).startsWith("https://127.0.0.1:" + httpsPort + "/");
     }
 
     /**

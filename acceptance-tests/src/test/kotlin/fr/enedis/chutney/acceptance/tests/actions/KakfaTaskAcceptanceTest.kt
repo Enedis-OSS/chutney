@@ -50,7 +50,7 @@ val `Kafka basic publish wrong url failure` = Scenario(title = "Kafka basic publ
   }
 }
 
-val `Kafka basic publish success` = Scenario(title = "Kafka basic publish wrong url failure") {
+val `Kafka basic publish success` = Scenario(title = "Kafka basic publish success") {
   Given("an associated target test_kafka having url in system property spring.embedded.kafka.brokers") {
     createEnvironment(
       "KAFKA_ENV_OK",
@@ -80,14 +80,14 @@ val `Kafka basic publish success` = Scenario(title = "Kafka basic publish wrong 
             "when":{
                 "sentence":"Publish to broker",
                 "implementation":{
-                    "task":"{\n type: kafka-basic-publish \n target: test_kafka \n inputs: {\n topic: a-topic \n payload: bodybuilder \n headers: {\n X-API-VERSION: '1.0' \n} \n} \n}"
+                    "task":"{\n type: kafka-basic-publish \n target: test_kafka \n inputs: {\n topic: a-topic \n payload: bodybuilder \n headers: {\n X-API-VERSION: '1.0' \n} \n properties: {\n bootstrap.servers: ${"kafkaBroker.getBrokersAsString()".hjsonSpEL} \n} \n} \n}"
                 }
             },
             "thens":[
                 {
                     "sentence":"Consume from broker",
                     "implementation":{
-                        "task":"{\n type: kafka-basic-consume \n target: test_kafka \n inputs: {\n topic: a-topic \n group: chutney \n ackMode: BATCH \n properties: {\n auto.offset.reset: earliest \n} \n} \n outputs: {\n payload : ${"payloads[0]".hjsonSpEL} \n} \n}"
+                        "task":"{\n type: kafka-basic-consume \n target: test_kafka \n inputs: {\n topic: a-topic \n group: chutney \n ackMode: BATCH \n properties: {\n auto.offset.reset: earliest \n bootstrap.servers: ${"kafkaBroker.getBrokersAsString()".hjsonSpEL} \n} \n} \n outputs: {\n payload : ${"payloads[0]".hjsonSpEL} \n} \n}"
                     }
                 },
                 {
@@ -102,7 +102,7 @@ val `Kafka basic publish success` = Scenario(title = "Kafka basic publish wrong 
     )
   }
   When("The scenario is executed") {
-    executeScenario("scenarioId".spEL, "KAFKA_ENV_OK")
+    executeScenario("scenarioId".spEL, "KAFKA_ENV_OK", timeout = "90 s")
   }
   Then("the report status is SUCCESS") {
     checkScenarioReportSuccess()

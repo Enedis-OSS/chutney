@@ -36,27 +36,34 @@ public interface RawTestCaseDto {
     @JsonProperty("title")
     String title();
 
+    @JsonProperty("description")
     Optional<String> description();
 
+    @JsonProperty("tags")
     List<String> tags();
 
+    @JsonProperty("defaultDataset")
     Optional<String> defaultDataset();
 
+    @JsonProperty("creationDate")
     @Value.Default()
     default Instant creationDate() {
         return now();
     }
 
+    @JsonProperty("author")
     @Value.Default()
     default String author() {
         return User.ANONYMOUS.id;
     }
 
+    @JsonProperty("updateDate")
     @Value.Default()
     default Instant updateDate() {
         return now();
     }
 
+    @JsonProperty("version")
     @Value.Default()
     default Integer version() {
         return 1;

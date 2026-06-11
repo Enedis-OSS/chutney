@@ -27,34 +27,46 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface GwtTestCaseDto {
 
+    @JsonProperty("id")
     Optional<String> id();
 
+    @JsonProperty("title")
     String title();
 
+    @JsonProperty("description")
     Optional<String> description();
 
+    @JsonProperty("repositorySource")
     Optional<String> repositorySource();
 
+    @JsonProperty("tags")
     List<String> tags();
 
+    @JsonProperty("executions")
     List<ExecutionSummaryDto> executions();
 
+    @JsonProperty("creationDate")
     Optional<Instant> creationDate();
 
+    @JsonProperty("scenario")
     GwtScenarioDto scenario();
 
+    @JsonProperty("defaultDataset")
     Optional<String> defaultDataset();
 
+    @JsonProperty("author")
     @Value.Default()
     default String author() {
         return User.ANONYMOUS.id;
     }
 
+    @JsonProperty("updateDate")
     @Value.Default()
     default Instant updateDate() {
         return now();
     }
 
+    @JsonProperty("version")
     @Value.Default()
     default Integer version() {
         return 1;

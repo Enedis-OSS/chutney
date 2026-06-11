@@ -78,7 +78,6 @@ val `Micrometer counter meter` = Scenario(title = "Micrometer counter meter") {
                     }
                 ]
             }
-        }
         """
   )
 }

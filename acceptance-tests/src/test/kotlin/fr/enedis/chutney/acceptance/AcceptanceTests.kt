@@ -85,8 +85,10 @@ class AcceptanceTests {
 
     chutneyServerInfo?.let {
       // Authorizations
-      val roles = AcceptanceTests::class.java.getResource("/blackbox/roles.json")!!.path
-      HttpClient.post<Any>(it, "/api/v1/authorizations", File(roles).readText())
+      val rolesJson = AcceptanceTests::class.java.getResourceAsStream("/blackbox/roles.json")!!
+        .bufferedReader(Charsets.UTF_8)
+        .readText()
+      HttpClient.post<Any>(it, "/api/v1/authorizations", rolesJson)
     }
 
     // Build launcher test environment //
