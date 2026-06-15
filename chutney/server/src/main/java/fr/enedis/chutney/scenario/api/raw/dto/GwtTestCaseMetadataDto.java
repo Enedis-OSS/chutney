@@ -27,19 +27,25 @@ public interface GwtTestCaseMetadataDto {
     @JsonProperty("title")
     String title();
 
+    @JsonProperty("description")
     Optional<String> description();
 
+    @JsonProperty("repositorySource")
     Optional<String> repositorySource();
 
+    @JsonProperty("tags")
     List<String> tags();
 
+    @JsonProperty("executions")
     List<ExecutionSummaryDto> executions();
 
+    @JsonProperty("creationDate")
     @Value.Default()
     default Instant creationDate() {
         return Instant.now();
     }
 
+    @JsonProperty("updateDate")
     @Value.Default()
     default Instant updateDate() {
         return Instant.now();

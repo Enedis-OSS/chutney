@@ -33,7 +33,7 @@ import tools.jackson.databind.cfg.MapperBuilder;
  * Applies Jackson annotations declared on Immutables interfaces to generated implementations.
  *
  * Jackson 3 does not inherit annotations from interfaces; mixins copy @JsonCreator, @JsonProperty,
- * and @JsonUnwrapped declared on the interface (with its static factory) onto the Immutable* class.
+ * and other Jackson annotations declared on the interface onto the Immutable* class.
  */
 public final class ImmutablesJacksonMixins {
 

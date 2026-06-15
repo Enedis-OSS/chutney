@@ -19,16 +19,19 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface GwtStepImplementationDto {
 
+    @JsonProperty("task")
     @Value.Default
     default String task() {
         return "";
     }
 
+    @JsonProperty("type")
     @Value.Default
     default String type() {
         return "";
     }
 
+    @JsonProperty("target")
     @Value.Default
     default String target() {
         return "";
@@ -40,10 +43,13 @@ public interface GwtStepImplementationDto {
         return "";
     }
 
+    @JsonProperty("inputs")
     Map<String, Object> inputs();
 
+    @JsonProperty("outputs")
     Map<String, Object> outputs();
 
+    @JsonProperty("validations")
     Map<String, Object> validations();
 
     @JsonCreator

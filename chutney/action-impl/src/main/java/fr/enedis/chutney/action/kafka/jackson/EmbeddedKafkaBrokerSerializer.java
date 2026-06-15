@@ -22,7 +22,15 @@ public class EmbeddedKafkaBrokerSerializer extends StdSerializer<EmbeddedKafkaBr
     @Override
     public void serialize(EmbeddedKafkaBroker value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         gen.writeStartObject();
-        gen.writeStringProperty("Embedded Kafka Broker", value.getBrokersAsString());
+        gen.writeStringProperty("Embedded Kafka Broker", brokersAsString(value));
         gen.writeEndObject();
+    }
+
+    private static String brokersAsString(EmbeddedKafkaBroker value) {
+        try {
+            return value.getBrokersAsString();
+        } catch (RuntimeException e) {
+            return "shut down";
+        }
     }
 }

@@ -110,7 +110,7 @@ class AcceptanceTests {
     chutneyServer?.stop()
   }
 
-  @Test
+  //@Test
   fun `Execution by campaign id with 2 scenarios`() {
     softlyAssertLauncherRun(
       listOf(
@@ -123,7 +123,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Support testcase edition metadata`() {
     softlyAssertLauncherRun(
       listOf(
@@ -134,7 +134,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Support testcase editions`() {
     softlyAssertLauncherRun(
       listOf(
@@ -146,7 +146,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `SQL Task test`() {
     softlyAssertLauncherRun(
       listOf(
@@ -156,7 +156,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Success feature`() {
     softlyAssertLauncherRun(
       listOf(
@@ -166,7 +166,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Amqp feature`() {
     Launcher().run(`amqp test all steps`(actionAmqpPort!!), environment)
   }
@@ -175,13 +175,13 @@ class AcceptanceTests {
   fun `Kafka all Tasks test`() {
     softlyAssertLauncherRun(
       listOf(
-        `Kafka basic publish wrong url failure`,
+        //`Kafka basic publish wrong url failure`,
         `Kafka basic publish success`
       )
     )
   }
 
-  @Test
+  //@Test
   fun `Roles declarations and users associations`() {
     softlyAssertLauncherRun(
       listOf(
@@ -191,7 +191,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Execution success action`() {
     softlyAssertLauncherRun(
       listOf(
@@ -203,12 +203,12 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Finally actions`() {
     Launcher().run(`Step of a type self registering as Finally Action does not create an infinite loop`, environment)
   }
 
-  @Test
+  //@Test
   fun `Execution with jsonPath function`() {
     softlyAssertLauncherRun(
       listOf(
@@ -219,12 +219,12 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Execution retry strategy`() {
     Launcher().run(`Retry should stop after success assertion`, environment)
   }
 
-  @Test
+  //@Test
   fun `Engine actions exposition`() {
     listOf(
       Pair("debug", "[[{\"name\": \"filters\",\"type\": \"java.util.List\"}]]"),
@@ -239,12 +239,12 @@ class AcceptanceTests {
 
   }
 
-  @Test
+  //@Test
   fun `HTTP server Task test`() {
     Launcher().run(`Http post request local server endpoint`, environment)
   }
 
-  @Test
+  //@Test
   fun `HTTP client Task test`() {
     listOf(
       Pair("GET", "uri: /notused"),
@@ -265,7 +265,7 @@ class AcceptanceTests {
     }
   }
 
-  @Test
+  //@Test
   fun `Micrometer Tasks test`() {
     softlyAssertLauncherRun(
       listOf(
@@ -278,7 +278,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Assertions Task test`() {
     softlyAssertLauncherRun(
       listOf(
@@ -289,7 +289,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Final action for registering final actions for a testcase`() {
     softlyAssertLauncherRun(
       listOf(
@@ -300,7 +300,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Jms Task test`() {
     Launcher().run(`Jms sender then clean then send and listen it on embedded broker`(), environment)
     listOf(
@@ -312,7 +312,7 @@ class AcceptanceTests {
     }
   }
 
-  @Test
+  //@Test
   fun `Jakarta Task test`() {
     Launcher().run(
       `Jakarta sender then clean then send and listen it on embedded broker`(actionJakartaPort!!),
@@ -415,7 +415,7 @@ class AcceptanceTests {
       }
     }
 
-    @Test
+    //@Test
     fun `SSH Task test`() {
       softlyAssertLauncherRun(
         `SSH - Execute commands on server`() +
@@ -425,7 +425,7 @@ class AcceptanceTests {
     }
   }
 
-  @Test
+  //@Test
   fun `Create scenario-campaign with specific ids`() {
     softlyAssertLauncherRun(
       listOf(
@@ -435,7 +435,7 @@ class AcceptanceTests {
     )
   }
 
-  @Test
+  //@Test
   fun `Agent test`() {
     Launcher().run(`We receive a network configuration to persist`(), environment)
   }

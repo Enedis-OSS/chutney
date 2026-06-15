@@ -17,10 +17,13 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface LinkifierDto {
 
+    @JsonProperty("pattern")
     String pattern();
 
+    @JsonProperty("link")
     String link();
 
+    @JsonProperty("id")
     String id();
 
     @JsonCreator

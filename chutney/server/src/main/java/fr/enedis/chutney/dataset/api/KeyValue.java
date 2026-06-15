@@ -9,6 +9,7 @@ package fr.enedis.chutney.dataset.api;
 
 import static java.util.Optional.ofNullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,8 +24,10 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface KeyValue {
 
+    @JsonProperty("key")
     String key();
 
+    @JsonProperty("value")
     @Value.Default
     default String value() {
         return "";

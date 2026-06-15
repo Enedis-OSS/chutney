@@ -19,10 +19,13 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface GwtScenarioDto {
 
+    @JsonProperty("givens")
     List<GwtStepDto> givens();
 
+    @JsonProperty("when")
     GwtStepDto when();
 
+    @JsonProperty("thens")
     List<GwtStepDto> thens();
 
     @JsonCreator

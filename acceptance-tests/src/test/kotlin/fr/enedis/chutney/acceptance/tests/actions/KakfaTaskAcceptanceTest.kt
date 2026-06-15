@@ -58,7 +58,7 @@ val `Kafka basic publish success` = Scenario(title = "Kafka basic publish succes
         [
             {
                 "name": "test_kafka",
-                "url": "tcp://localhost:9092"
+                  "url": "tcp://localhost:9092"
             }
         ]
         """.trimIndent()

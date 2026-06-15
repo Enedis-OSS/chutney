@@ -10,7 +10,7 @@ package fr.enedis.chutney.scenario.api.raw.dto;
 import static java.util.Collections.emptyList;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.enedis.chutney.execution.api.ExecutionSummaryDto;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
 import java.util.List;
@@ -21,11 +21,11 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(as = ImmutableTestCaseIndexDto.class)
 public interface TestCaseIndexDto {
 
-    @JsonUnwrapped
+    @JsonProperty("metadata")
     GwtTestCaseMetadataDto metadata();
 
     @JsonCreator
-    static TestCaseIndexDto of(@JsonUnwrapped GwtTestCaseMetadataDto metadata) {
+    static TestCaseIndexDto of(@JsonProperty("metadata") GwtTestCaseMetadataDto metadata) {
         return ImmutableTestCaseIndexDto.builder().metadata(metadata).build();
     }
 

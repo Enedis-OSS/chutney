@@ -67,7 +67,7 @@ class AggregatedTestCaseControllerTest {
         //Then
         verify(testCaseRepository).findById(eq(id));
 
-        JsonNode metadata = om.readTree(mvcResult.getResponse().getContentAsString());
+        JsonNode metadata = om.readTree(mvcResult.getResponse().getContentAsString()).get("metadata");
         assertThat(metadata.get("id").asText()).isEqualTo(fakeMetadata.id());
         assertThat(metadata.get("title").asText()).isEqualTo(fakeMetadata.title());
     }
@@ -88,7 +88,7 @@ class AggregatedTestCaseControllerTest {
         //Then
         verify(testCaseRepository).findAll();
 
-        JsonNode metadata = om.readTree(mvcResult.getResponse().getContentAsString()).get(0);
+        JsonNode metadata = om.readTree(mvcResult.getResponse().getContentAsString()).get(0).get("metadata");
         assertThat(metadata.get("id").asText()).isEqualTo(fakeMetadata.id());
         assertThat(metadata.get("title").asText()).isEqualTo(fakeMetadata.title());
     }

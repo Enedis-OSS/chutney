@@ -20,12 +20,16 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface GwtStepDto {
 
+    @JsonProperty("sentence")
     Optional<String> sentence();
 
+    @JsonProperty("subSteps")
     List<GwtStepDto> subSteps();
 
+    @JsonProperty("implementation")
     Optional<GwtStepImplementationDto> implementation();
 
+    @JsonProperty("strategy")
     Optional<StrategyDto> strategy();
 
     @JsonProperty("x-$ref") Optional<String> xRef();

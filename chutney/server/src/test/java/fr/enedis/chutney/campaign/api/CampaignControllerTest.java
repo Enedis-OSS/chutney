@@ -29,7 +29,7 @@ import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.dataset.api.DataSetDto;
 import fr.enedis.chutney.dataset.domain.DatasetService;
-import fr.enedis.chutney.scenario.api.raw.dto.GwtTestCaseMetadataDto;
+import fr.enedis.chutney.scenario.api.raw.dto.TestCaseIndexDto;
 import fr.enedis.chutney.scenario.infra.TestCaseRepositoryAggregator;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetNotFoundException;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
@@ -366,9 +366,9 @@ public class CampaignControllerTest {
         // When
         execute(MockMvcRequestBuilders.get(BASE_URL + "/2/scenarios"))
             .andExpect(MockMvcResultMatchers.status().isOk());
-        GwtTestCaseMetadataDto[] scenarios = resultExtractor.scenarios();
+        TestCaseIndexDto[] scenarios = resultExtractor.scenarios();
 
-        List<String> ids = Arrays.stream(scenarios).map(c -> c.id().get()).collect(Collectors.toList());
+        List<String> ids = Arrays.stream(scenarios).map(c -> c.metadata().id().get()).collect(Collectors.toList());
 
         // Then
         Assertions.assertThat(ids).containsExactly(
@@ -461,8 +461,8 @@ public class CampaignControllerTest {
             return om.readValue(content(), CampaignDto[].class);
         }
 
-        private GwtTestCaseMetadataDto[] scenarios() throws IOException {
-            return om.readValue(content(), GwtTestCaseMetadataDto[].class);
+        private TestCaseIndexDto[] scenarios() throws IOException {
+            return om.readValue(content(), TestCaseIndexDto[].class);
         }
 
         private CampaignExecutionReportDto[] reports() throws IOException {

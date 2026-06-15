@@ -29,19 +29,25 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Value.Style(jdkOnly = true)
 public interface DataSetDto {
 
+    @JsonProperty("id")
     Optional<String> id();
+
+    @JsonProperty("name")
     String name();
 
+    @JsonProperty("description")
     @Value.Default()
     default String description() {
         return "";
     }
 
+    @JsonProperty("lastUpdated")
     @Value.Default()
     default Instant lastUpdated() {
         return now();
     }
 
+    @JsonProperty("tags")
     @Value.Default()
     default List<String> tags() {
         return emptyList();
@@ -59,16 +65,19 @@ public interface DataSetDto {
         return emptyList();
     }
 
+    @JsonProperty("scenarioUsage")
     @Value.Default()
     default List<String> scenarioUsage() {
         return emptyList();
     }
 
+    @JsonProperty("campaignUsage")
     @Value.Default()
     default List<String> campaignUsage() {
         return emptyList();
     }
 
+    @JsonProperty("scenarioInCampaignUsage")
     @Value.Default()
     default Map<String, Set<String>> scenarioInCampaignUsage() {
         return emptyMap();
