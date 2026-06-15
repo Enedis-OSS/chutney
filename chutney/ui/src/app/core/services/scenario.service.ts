@@ -73,15 +73,15 @@ export class ScenarioService {
     }
 
     findScenarios(): Observable<Array<ScenarioIndex>> {
-        return this.httpClient.get<Array<ScenarioIndex>>(environment.backend + this.resourceUrlV2)
-        .pipe(map((res: Array<any>) => {
+        return this.httpClient.get<Array<TestCaseIndexDto>>(environment.backend + this.resourceUrlV2)
+        .pipe(map((res: Array<TestCaseIndexDto>) => {
             return this.mapJsonScenario(res);
         }));
     }
 
     findScenarioMetadata(id: string): Observable<ScenarioIndex> {
-        return this.httpClient.get<ScenarioIndex>(environment.backend + `${this.resourceUrlV2}/${id}/metadata`)
-        .pipe(map((res: any) => {
+        return this.httpClient.get<TestCaseIndexDto>(environment.backend + `${this.resourceUrlV2}/${id}/metadata`)
+        .pipe(map((res: TestCaseIndexDto) => {
             return this.mapJsonScenario([res])[0];
         }));
     }
