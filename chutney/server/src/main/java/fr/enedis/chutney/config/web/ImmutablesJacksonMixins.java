@@ -13,6 +13,8 @@ import fr.enedis.chutney.design.api.editionlock.ImmutableTestCaseEditionDto;
 import fr.enedis.chutney.design.api.editionlock.TestCaseEditionDto;
 import fr.enedis.chutney.design.api.plugins.linkifier.ImmutableLinkifierDto;
 import fr.enedis.chutney.design.api.plugins.linkifier.LinkifierDto;
+import fr.enedis.chutney.execution.api.ExecutionSummaryDto;
+import fr.enedis.chutney.execution.api.ImmutableExecutionSummaryDto;
 import fr.enedis.chutney.scenario.api.raw.dto.GwtScenarioDto;
 import fr.enedis.chutney.scenario.api.raw.dto.GwtStepDto;
 import fr.enedis.chutney.scenario.api.raw.dto.GwtStepImplementationDto;
@@ -41,6 +43,7 @@ public final class ImmutablesJacksonMixins {
     }
 
     public static void register(MapperBuilder<?, ?> builder) {
+        builder.addMixIn(ImmutableExecutionSummaryDto.class, ExecutionSummaryDto.class);
         builder.addMixIn(ImmutableRawTestCaseDto.class, RawTestCaseDto.class);
         builder.addMixIn(ImmutableGwtTestCaseDto.class, GwtTestCaseDto.class);
         builder.addMixIn(ImmutableGwtTestCaseMetadataDto.class, GwtTestCaseMetadataDto.class);
