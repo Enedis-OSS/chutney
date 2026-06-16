@@ -51,6 +51,12 @@ public interface GwtTestCaseMetadataDto {
         return Instant.now();
     }
 
+    @JsonProperty("author")
+    Optional<String> author();
+
+    @JsonProperty("version")
+    Optional<Integer> version();
+
     @JsonCreator
     static GwtTestCaseMetadataDto of(
         @JsonProperty("id") @Nullable String id,
@@ -60,7 +66,9 @@ public interface GwtTestCaseMetadataDto {
         @JsonProperty("tags") @Nullable List<String> tags,
         @JsonProperty("executions") @Nullable List<ExecutionSummaryDto> executions,
         @JsonProperty("creationDate") @Nullable Instant creationDate,
-        @JsonProperty("updateDate") @Nullable Instant updateDate
+        @JsonProperty("updateDate") @Nullable Instant updateDate,
+        @JsonProperty("author") @Nullable String author,
+        @JsonProperty("version") @Nullable Integer version
     ) {
         ImmutableGwtTestCaseMetadataDto.Builder builder = ImmutableGwtTestCaseMetadataDto.builder()
             .title(title);
@@ -71,6 +79,8 @@ public interface GwtTestCaseMetadataDto {
         if (executions != null) builder.executions(executions);
         if (creationDate != null) builder.creationDate(creationDate);
         if (updateDate != null) builder.updateDate(updateDate);
+        if (author != null) builder.author(author);
+        if (version != null) builder.version(version);
         return builder.build();
     }
 }

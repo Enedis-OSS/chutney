@@ -30,6 +30,8 @@ export interface ScenarioIndexMetadataDto {
     executions: ExecutionSummaryDto[];
     creationDate: string;
     updateDate: string;
+    author?: string;
+    version?: number;
 }
 
 export interface TestCaseIndexDto {

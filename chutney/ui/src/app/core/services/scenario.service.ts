@@ -122,8 +122,8 @@ export class ScenarioService {
             s.metadata.repositorySource,
             new Date(s.metadata.creationDate),
             new Date(s.metadata.updateDate),
-            undefined,
-            undefined,
+            s.metadata.version,
+            s.metadata.author,
             s.metadata.tags,
             s.metadata.executions?.map(e => Execution.deserialize(e))
         ));
