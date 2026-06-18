@@ -182,6 +182,14 @@
         }
     },
     "environment": {
+        "import": {
+            "title": "Import an environment",
+            "name": {
+                "label": "Name",
+                "help": "Overrides the name filled in the file",
+                "required": "The name is mandatory"
+            }
+        },
         "error": {
             "delete.last.env": "Cannot delete the last environment"
         }
