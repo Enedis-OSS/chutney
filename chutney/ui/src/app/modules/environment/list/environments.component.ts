@@ -6,12 +6,14 @@
  */
 
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { Authorization, Environment } from '@model';
 import { ActivatedRoute } from '@angular/router';
 import { EnvironmentService, LoginService } from '@core/services';
-import { ValidationService } from '../../../molecules/validation/validation.service';
+import { Authorization, Environment } from '@model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { ValidationService } from '../../../molecules/validation/validation.service';
+import { EnvironmentImportComponent } from '../import/environment-import.component';
 
 @Component({
     selector: 'chutney-environments',
@@ -37,6 +39,7 @@ export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
                 private environmentService: EnvironmentService,
                 public validationService: ValidationService,
                 private loginService: LoginService,
+                private ngbModalService: NgbModal,
                 private translateService: TranslateService
     ) {
         this.translateService.get("environment.error.delete.last.env").subscribe(msg => this.errorDeleteLastMessage = msg)
@@ -129,14 +132,20 @@ export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
             });
     }
 
-    import(file: File) {
-        this.environmentService.import(file)
+    select(file: File) {
+        this.environmentService.select(file)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 next: env => {
-                    this.editableEnvironments.push(env);
-                    this.environments.push(env);
-                    this.sort();
+                    const modalRef = this.ngbModalService.open(EnvironmentImportComponent, { centered: true });
+                    modalRef.componentInstance.importedEnvironment = env
+                    modalRef.result.then(
+                        (env) => {
+                            this.editableEnvironments.push(env);
+                            this.environments.push(env);
+                            this.sort();
+                        }
+                    )
                 },
                 error: err => this.errorMessage = err.error
             });

@@ -65,7 +65,7 @@ export class EnvironmentService {
         );
     }
 
-    import(file: File): Observable<Environment> {
+    select(file: File): Observable<Environment> {
         const formData = new FormData();
         formData.append('file', file);
         return this.http.post<Environment>(server.backend + this.envBaseUrl, formData);

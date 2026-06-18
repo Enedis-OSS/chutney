@@ -79,19 +79,12 @@ public class EnvironmentController implements EnvironmentApi {
 
     @PreAuthorize("hasAuthority('ENVIRONMENT_WRITE')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public EnvironmentDto importEnvironment(@RequestParam("file") MultipartFile file) {
+    public EnvironmentDto selectEnvironment(@RequestParam("file") MultipartFile file) {
         try {
-            return importEnvironment(
-                objectMapper.readValue(file.getBytes(), EnvironmentDto.class)
-            );
+            return objectMapper.readValue(file.getBytes(), EnvironmentDto.class);
         } catch (IOException e) {
             throw new UnsupportedOperationException("Cannot deserialize file: " + file.getName(), e);
         }
-    }
-
-    @Override
-    public EnvironmentDto importEnvironment(EnvironmentDto environmentDto) {
-        return delegate.importEnvironment(environmentDto);
     }
 
     @Override

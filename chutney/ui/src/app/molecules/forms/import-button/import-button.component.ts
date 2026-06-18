@@ -44,6 +44,7 @@ export class ImportButtonComponent implements OnInit {
         if (selectedFile) {
             this.import(selectedFile);
         }
+        e.target.value = '';
         this.fileControl = '';
     }
 

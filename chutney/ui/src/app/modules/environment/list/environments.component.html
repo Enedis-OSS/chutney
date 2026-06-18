@@ -21,7 +21,7 @@
         <span class="fa fa-plus" aria-hidden="true"></span>
         {{ 'global.actions.add' | translate }}
     </button>
-    <chutney-import-button (submitEvent)="import($event)" [btnColor]="'primary'" [disabled]="!isAuthorizedToWriteEnvironments"></chutney-import-button>
+    <chutney-import-button (submitEvent)="select($event)" [btnColor]="'primary'" [disabled]="!isAuthorizedToWriteEnvironments"></chutney-import-button>
   </div>
 
 </div>

@@ -12,18 +12,24 @@ import { RouterModule } from '@angular/router';
 import { environmentsRoutes } from '@modules/environment/environments.routes';
 import { MoleculesModule } from '../../molecules/molecules.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { EnvironmentImportComponent } from './import/environment-import.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
     declarations: [
-        EnvironmentsComponent
+        EnvironmentsComponent,
+        EnvironmentImportComponent
     ],
     imports: [
         CommonModule,
         RouterModule.forChild(environmentsRoutes),
+        FormsModule,
+        ReactiveFormsModule,
         MoleculesModule,
         TranslateModule,
+        NgbModule,
         NgbTooltipModule
     ]
 })
