@@ -10,7 +10,9 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Environment } from "@core/model";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateService } from "@ngx-translate/core";
 import { Subject, takeUntil } from "rxjs";
+import { ValidationService } from "src/app/molecules/validation/validation.service";
 
 @Component({
     selector: 'chutney-environment-import',
@@ -30,8 +32,13 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     submitted: boolean;
 
+    errorMessage: string;
+    nameValidationMessage: string;
+
     constructor(private environmentService: EnvironmentService,
-        private formBuilder: FormBuilder) {}
+        public validationService: ValidationService,
+        private formBuilder: FormBuilder,
+        private translateService: TranslateService) {}
 
     ngOnInit() {
         this.importForm = this.formBuilder.group({
@@ -53,6 +60,14 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
         }
 
         const name = formValue['name'];
+        var isNewEnvironmentInvalid = !this.validationService.isValidEnvName(name);
+        if ( isNewEnvironmentInvalid) {
+            this.nameValidationMessage = this.translateService.instant('global.rules.env.name');
+            this.importForm.setErrors(Validators.pattern)
+            return;
+        } else {
+            this.nameValidationMessage = null;
+        }
         this.importedEnvironment.name = name;
 
         this.environmentService.create(this.importedEnvironment)
@@ -62,7 +77,7 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
                             this.activeModal.close(this.importedEnvironment);
                         },
                         error: (error) => {
-                            console.log(error);
+                            this.errorMessage = error.error
                         }
                     });
     }

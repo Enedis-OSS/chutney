@@ -15,6 +15,14 @@
 </div>
 
 <div class="modal-body" ngbAutofocus>
+    <div class="cursor-pointer">
+        @if (errorMessage) {
+            <chutney-error-panel [errorMessage]="errorMessage" (click)="errorMessage = null" class="cursor-pointer"></chutney-error-panel>
+        }
+        @if (nameValidationMessage) {
+            <chutney-error-panel [errorMessage]="nameValidationMessage" (click)="nameValidationMessage = null" class="cursor-pointer"></chutney-error-panel>
+        }
+    </div>
     <form [formGroup]="importForm" (ngSubmit)="import()" autocomplete="off">
         <div class="mb-4">
         <label for="name" class="form-label">
