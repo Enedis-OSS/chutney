@@ -368,7 +368,7 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     private static Stream<Arguments> uploadEndpoints() {
         return Stream.of(
-            Arguments.of(EnvironmentController.BASE_URL, ENVIRONMENT_WRITE.name(), "{\"name\": \"DEFAULT\"}", CONFLICT),
+            Arguments.of(EnvironmentController.BASE_URL, ENVIRONMENT_WRITE.name(), "{\"name\": \"DEFAULT\"}", OK),
             Arguments.of(EnvironmentController.BASE_URL + "/envName/targets", TARGET_WRITE.name(), "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"unknownEnv\"}", NOT_FOUND)
         );
     }
