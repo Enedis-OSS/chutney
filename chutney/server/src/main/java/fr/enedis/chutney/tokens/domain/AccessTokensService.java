@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,6 +8,7 @@
 package fr.enedis.chutney.tokens.domain;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,5 +41,21 @@ public class AccessTokensService {
             }
         }
         return Optional.empty();
+    }
+
+    public Collection<AccessToken> getTokensForUser(String user) {
+        return accessTokensRepository.getTokensForUser(user);
+    }
+
+    public void deleteTokenForUser(UUID id, String user) {
+        List<AccessToken> tokensForUser = accessTokensRepository.getTokensForUser(user);
+        Optional<AccessToken> rightToken = tokensForUser.stream()
+            .filter(accessToken -> accessToken.id().equals(id) && accessToken.user().equals(user))
+            .findFirst();
+        if(rightToken.isEmpty()) {
+            throw new TokenNotFoundException(id);
+        }
+
+        accessTokensRepository.deleteToken(rightToken.get());
     }
 }

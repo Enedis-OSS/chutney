@@ -1,0 +1,26 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2026 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+
+<div class="modal-header">
+  <h5 class="modal-title">
+    {{ 'tokens.delete.title' | translate }}
+  </h5>
+  <button type="button" class="btn-close" aria-label="Close"
+        (click)="activeModal.dismiss('cancel click')">
+  </button>
+</div>
+
+<div class="modal-body" ngbAutofocus>
+  {{ 'tokens.delete.confirm' | translate }} 
+</div>
+
+<div class="modal-footer">
+  <button type="submit" class="btn btn-primary mx-auto" (click)="deleteToken()">
+    <span>{{ 'global.actions.yes' | translate }}</span>
+  </button>
+</div>

@@ -12,6 +12,7 @@
             "component": "Composants",
             "variable": "Variable",
             "envVariable": "Variables",
+            "tokens": "Jetons personnels",
             "vacuum": "Vacuum",
             "dataset": "Dataset",
             "jiraId": "Identifiant jira",
@@ -328,6 +329,32 @@
             "nothing": "Aucune planification"
         }
     },
+    "tokens": {
+        "list": {
+            "title": "Vos tokens",
+            "expiresAt": "Expire le ",
+            "keepIt": "Veuillez noter le token et le garder. Il ne sera plus affiché ni accessible après rechargement de la page.",
+            "delete": "Supprimer",
+            "copy": "Copier",
+            "actions": {
+                "create": "Générer un nouveau token"
+            }
+        },
+        "creation": {
+            "title": "Générer un nouveau token",
+            "form": {
+                "note": {
+                    "label": "Note",
+                    "required": "La note est obligatoire."
+                },
+                "expirationDate": "Date d'expiration"
+            }
+        },
+        "delete": {
+            "title": "Supprimer un token",
+            "confirm": "Etes-vous sûr de supprimer ce token ? Cette action ne peut pas être annulée."
+        }
+    },
     "admin": {
         "targets": {
             "name.placeholder": "Nom du serveur",
@@ -497,7 +524,8 @@
                 "saved": "Sauvegarde réalisée",
                 "deleted": "Supression réalisée"
             },
-            "refresh": "Rafraîchir"
+            "refresh": "Rafraîchir",
+            "yes": "Oui"
         },
         "bdd": {
             "given": "Etant donné",

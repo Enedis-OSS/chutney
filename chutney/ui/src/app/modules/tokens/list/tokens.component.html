@@ -1,0 +1,68 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2026 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-2">
+      {{ 'tokens.list.title' | translate }}
+    </h4>
+
+    <button type="button" class="btn btn-primary mb-2" (click)="createToken()">
+      <span class="fa fa-plus" aria-hidden="true"></span>
+      {{ 'tokens.list.actions.create' | translate }}
+    </button>
+</div>
+
+<ul class="list-group list-group-flush">
+    @if (displayCreatedToken) {
+      <li class="list-group-item">
+          <p class="mb-0 fw-medium">
+              {{ createdAccessToken.note }}
+          </p>
+
+          @if (createdAccessToken.expiresAt != null) {
+            <p class="mb-0 text-muted small">
+                {{ 'tokens.list.expiresAt' | translate }} {{ createdAccessToken.expiresAt | date:'dd/MM/yyyy'}}
+            </p>
+          }
+
+          <p class="text-muted mt-2">
+              {{ 'tokens.list.keepIt' | translate }}
+          </p>
+
+          <div class="d-flex align-items-start gap-2">
+            <p class="p-2 border rounded">
+                {{ createdAccessToken.token}}
+            </p>
+            <button class="btn btn-primary" (click)="copyToClipboard()">
+                <i class="fa-regular fa-clone"></i>
+                <span class="visually-hidden"> {{ 'tokens.list.copy' | translate }}</span>
+            </button>
+          </div>
+      </li>
+    }
+    @for (token of tokens; track token) {
+        <li class="list-group-item">
+            <div class="d-flex align-items-center gap-2">
+                <p class="mb-0 fw-medium">
+                    {{ token.note }}
+                </p>
+                <button class="btn btn-sm btn-outline-secondary py-0 px-2 w-auto btn-delete"
+                (click)="deleteToken(token.id)">
+                {{ 'tokens.list.delete' | translate }}
+                </button>
+            </div>
+
+            @if (token.expiresAt != null) {
+            <p class="mb-0 text-muted small">
+                {{ 'tokens.list.expiresAt' | translate }} {{ token.expiresAt | date:'dd/MM/yyyy'}}
+            </p>
+            }
+        </li>
+    }
+</ul>
+
+

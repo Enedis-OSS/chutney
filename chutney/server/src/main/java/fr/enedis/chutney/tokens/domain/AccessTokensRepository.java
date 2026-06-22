@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,4 +14,8 @@ public interface AccessTokensRepository {
     void createToken(AccessToken accessToken);
 
     List<AccessToken> getTokens();
+
+    List<AccessToken> getTokensForUser(String user);
+
+    void deleteToken(AccessToken accessToken);
 }

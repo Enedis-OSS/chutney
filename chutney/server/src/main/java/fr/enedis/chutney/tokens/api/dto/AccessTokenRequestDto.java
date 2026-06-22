@@ -8,28 +8,27 @@
 package fr.enedis.chutney.tokens.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public class AccessTokenDto {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AccessTokenRequestDto {
 
-    private String id;
-
+    @JsonProperty(required = true)
+    @NotNull
     private String note;
 
     private LocalDate expiresAt;
 
     @JsonCreator
-    public AccessTokenDto() {
+    public AccessTokenRequestDto() {
     }
 
-    public AccessTokenDto(String id, String note, LocalDate expiresAt) {
-        this.id = id;
+    public AccessTokenRequestDto(String note, LocalDate expiresAt) {
         this.note = note;
         this.expiresAt = expiresAt;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getNote() {

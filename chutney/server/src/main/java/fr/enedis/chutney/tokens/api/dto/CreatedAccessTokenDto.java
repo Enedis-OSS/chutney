@@ -10,30 +10,30 @@ package fr.enedis.chutney.tokens.api.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.LocalDate;
 
-public class AccessTokenDto {
-
-    private String id;
+public class CreatedAccessTokenDto {
 
     private String note;
+
+    private String token;
 
     private LocalDate expiresAt;
 
     @JsonCreator
-    public AccessTokenDto() {
+    public CreatedAccessTokenDto() {
     }
 
-    public AccessTokenDto(String id, String note, LocalDate expiresAt) {
-        this.id = id;
+    public CreatedAccessTokenDto(String note, String token, LocalDate expiresAt) {
         this.note = note;
+        this.token = token;
         this.expiresAt = expiresAt;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getNote() {
         return note;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public LocalDate getExpiresAt() {

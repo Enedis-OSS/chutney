@@ -12,6 +12,7 @@
             "component": "Components",
             "variable": "Variable",
             "envVariable": "Variables",
+            "tokens": "Personal tokens",
             "vacuum": "Vacuum",
             "dataset": "Dataset",
             "jiraId": "Jira identifier",
@@ -328,6 +329,32 @@
             "nothing": "Nothing scheduled"
         }
     },
+    "tokens": {
+        "list": {
+            "title": "Your tokens",
+            "expiresAt": "Expires at ",
+            "keepIt": "Please note the token down and keep it. It will no longer be displayed or accessible after the page is reloaded.",
+            "delete": "Delete",
+            "copy": "Copy",
+            "actions": {
+                "create": "Generate a new token"
+            }
+        },
+        "creation": {
+            "title": "Generate a new token",
+            "form": {
+                "note": {
+                    "label": "Note",
+                    "required": "The note is mandatory."
+                },
+                "expirationDate": "Expiration date"
+            }
+        },
+        "delete": {
+            "title": "Suppress a token",
+            "confirm": " Are you sure to delete this token ? You cannot undo this action."
+        }
+    },
     "admin": {
         "targets": {
             "name.placeholder": "Target name",
@@ -497,7 +524,8 @@
                 "saved": "Saved",
                 "deleted": "Deleted"
             },
-            "refresh": "Refresh"
+            "refresh": "Refresh",
+            "yes": "Yes"
         },
         "bdd": {
             "given": "Given",

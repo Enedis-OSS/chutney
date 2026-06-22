@@ -75,6 +75,7 @@ public abstract class AbstractLocalDatabaseTest {
         jdbcTemplate.execute("DELETE FROM CAMPAIGN_SCENARIOS");
         jdbcTemplate.execute("DELETE FROM CAMPAIGN");
         jdbcTemplate.execute("DELETE FROM SCENARIO");
+        jdbcTemplate.execute("DELETE FROM ACCESS_TOKEN");
         clearIndexes();
 
         // Clean caches

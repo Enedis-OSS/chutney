@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2017-2024 Enedis
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -8,11 +8,13 @@
 package fr.enedis.chutney.tokens.domain;
 
 import java.time.Instant;
+import java.util.UUID;
 
-public record AccessToken(String user, String note, String hash, Instant expiresAt) {
+public record AccessToken(UUID id, String user, String note, String hash, Instant expiresAt) {
 
     public static AccessToken create(String user, String note, Instant expiresAt, String hash) {
-        return new AccessToken(user, note, hash, expiresAt);
+        var id = UUID.randomUUID();
+        return new AccessToken(id, user, note, hash, expiresAt);
     }
 
     public boolean matchTokenAndIsValid(String token, AccessTokenEncoder encoder) {
