@@ -61,6 +61,10 @@ public class TargetDto {
             .build();
     }
 
+    public TargetDto copyWithEnvironment(String environment) {
+        return new TargetDto(this.name, this.url, environment, this.properties);
+    }
+
     public static TargetDto from(Target target) {
         return new TargetDto(
             target.name,
@@ -74,15 +78,11 @@ public class TargetDto {
         return properties == null ? emptyMap() : properties.stream().collect(Collectors.toMap(p -> p.key, p -> p.value));
     }
 
-    public TargetDto copyTargetsOnly() {
-        return new TargetDto(this.name, this.url, this.environment, emptySet());
-    }
-
     private <T> Set<T> nullToEmpty(Set<T> set) {
         return set == null ? emptySet() : set;
     }
 
-    private String trimIfNotNull(String environment) {
-        return environment != null ? environment.trim() : null;
+    private String trimIfNotNull(String str) {
+        return str != null ? str.trim() : null;
     }
 }
