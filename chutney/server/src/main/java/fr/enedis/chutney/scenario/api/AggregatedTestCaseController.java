@@ -49,7 +49,7 @@ public class AggregatedTestCaseController {
     @PreAuthorize("hasAnyAuthority('SCENARIO_READ', 'CAMPAIGN_READ', 'EXECUTION_READ')")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TestCaseIndexDto> getTestCases() {
-         List<TestCaseMetadata> testCases = testCaseRepository.findAll();
+        List<TestCaseMetadata> testCases = testCaseRepository.findAll();
         Map<String, ExecutionSummary> lastExecutions = executionHistoryRepository.getLastExecutions(testCases.stream().map(TestCaseMetadata::id).collect(Collectors.toList()));
 
         return testCases.stream()

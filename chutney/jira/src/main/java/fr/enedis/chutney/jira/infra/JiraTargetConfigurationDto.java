@@ -7,25 +7,33 @@
 
 package fr.enedis.chutney.jira.infra;
 
-public class JiraTargetConfigurationDto {
-    public String url;
-    public String username;
-    public String password;
-    public String urlProxy;
-    public String userProxy;
-    public String passwordProxy;
+import java.util.Objects;
 
-    @com.fasterxml.jackson.annotation.JsonCreator
+public class JiraTargetConfigurationDto {
+    public final String url;
+    public final String username;
+    public final String password;
+    public final String urlProxy;
+    public final String userProxy;
+    public final String passwordProxy;
+
     public JiraTargetConfigurationDto() {
         this("", "", "", "", "", "");
     }
 
-    public JiraTargetConfigurationDto(String url, String username, String password, String urlProxy, String userProxy, String passwordProxy) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
-        this.urlProxy = urlProxy;
-        this.userProxy = userProxy;
-        this.passwordProxy = passwordProxy;
+    @com.fasterxml.jackson.annotation.JsonCreator
+    public JiraTargetConfigurationDto(
+        @com.fasterxml.jackson.annotation.JsonProperty("url") String url,
+        @com.fasterxml.jackson.annotation.JsonProperty("username") String username,
+        @com.fasterxml.jackson.annotation.JsonProperty("password") String password,
+        @com.fasterxml.jackson.annotation.JsonProperty("urlProxy") String urlProxy,
+        @com.fasterxml.jackson.annotation.JsonProperty("userProxy") String userProxy,
+        @com.fasterxml.jackson.annotation.JsonProperty("passwordProxy") String passwordProxy) {
+        this.url = Objects.requireNonNullElse(url, "");
+        this.username = Objects.requireNonNullElse(username, "");
+        this.password = Objects.requireNonNullElse(password, "");
+        this.urlProxy = Objects.requireNonNullElse(urlProxy, "");
+        this.userProxy = Objects.requireNonNullElse(userProxy, "");
+        this.passwordProxy = Objects.requireNonNullElse(passwordProxy, "");
     }
 }

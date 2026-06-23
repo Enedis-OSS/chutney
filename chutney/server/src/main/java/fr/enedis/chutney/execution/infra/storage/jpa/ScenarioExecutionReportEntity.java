@@ -28,6 +28,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import java.time.Instant;
 import java.time.ZoneId;
+import tools.jackson.core.JacksonException;
 
 @Entity(name = "SCENARIO_EXECUTIONS_REPORTS")
 public class ScenarioExecutionReportEntity {
@@ -108,7 +109,7 @@ public class ScenarioExecutionReportEntity {
                 .withDatatable(scenarioExecutionReport.datatable)
                 .withId(scenarioExecution.datasetId())
                 .build();
-        } catch (Exception e) {
+        } catch (JacksonException e) {
             return null;
         }
     }

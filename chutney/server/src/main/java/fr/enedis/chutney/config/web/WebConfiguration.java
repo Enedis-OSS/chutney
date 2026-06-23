@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.cfg.DateTimeFeature;
@@ -37,7 +36,6 @@ public class WebConfiguration implements WebMvcConfigurer {
             .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
             .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
             .findAndAddModules();
         ImmutablesJacksonMixins.register(builder);
         return builder.build();

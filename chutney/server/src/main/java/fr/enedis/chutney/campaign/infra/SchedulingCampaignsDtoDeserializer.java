@@ -28,6 +28,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampaignDto> {
 
+    private static final ObjectMapper MAPPER = JsonMapper.builder().findAndAddModules().build();
+
     protected SchedulingCampaignsDtoDeserializer() {
         super(SchedulingCampaignDto.class);
     }
@@ -84,8 +86,7 @@ class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampa
     }
 
     private LocalDateTime getSchedulingDate(JsonNode node) throws JacksonException {
-        ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
-        return objectMapper.readValue(node.get("schedulingDate").toString(), LocalDateTime.class);
+        return MAPPER.treeToValue(node.get("schedulingDate"), LocalDateTime.class);
     }
 
     private String getFrequency(JsonNode node) {
