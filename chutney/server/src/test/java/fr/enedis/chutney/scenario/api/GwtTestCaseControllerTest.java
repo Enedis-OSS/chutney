@@ -53,7 +53,7 @@ public class GwtTestCaseControllerTest {
         when(userService.currentUserId()).thenReturn(currentUser.getId());
         GwtTestCaseController testCaseController = new GwtTestCaseController(testCaseRepository, userService);
         mockMvc = MockMvcBuilders.standaloneSetup(testCaseController)
-            .setMessageConverters(new JacksonJsonHttpMessageConverter(objectMapper))
+            .setMessageConverters(WebConfiguration.plainTextStringConverter(), new JacksonJsonHttpMessageConverter(objectMapper))
             .build();
 
         // Default stubbing
@@ -79,7 +79,7 @@ public class GwtTestCaseControllerTest {
         verify(testCaseRepository).save(scenario.capture());
 
 
-        assertThat(bodyHolder.get()).isEqualTo("\"1\"");
+        assertThat(bodyHolder.get()).isEqualTo("1");
         assertThat(scenario.getValue().metadata.title).isEqualTo("__titre__");
         assertThat(scenario.getValue().metadata.description).isEqualTo("__description__");
         assertThat(scenario.getValue().metadata.tags).containsExactly("TAG1", "TAG2");
@@ -131,7 +131,7 @@ public class GwtTestCaseControllerTest {
         ArgumentCaptor<GwtTestCase> actual = ArgumentCaptor.forClass(GwtTestCase.class);
         verify(testCaseRepository).save(actual.capture());
 
-        assertThat(bodyHolder.get()).isEqualTo("\"1\"");
+        assertThat(bodyHolder.get()).isEqualTo("1");
         assertThat(actual.getValue().metadata.title).isEqualTo("__titre__");
         assertThat(actual.getValue().metadata.description).isEqualTo("__description__");
 

@@ -60,7 +60,7 @@ public class TestCaseControllerTest {
 
         GwtTestCaseController testCaseController = new GwtTestCaseController(testCaseRepository, userService);
         mockMvc = MockMvcBuilders.standaloneSetup(testCaseController)
-            .setMessageConverters(new JacksonJsonHttpMessageConverter(om))
+            .setMessageConverters(WebConfiguration.plainTextStringConverter(), new JacksonJsonHttpMessageConverter(om))
             .setControllerAdvice(new RestExceptionHandler(Mockito.mock(ChutneyMetrics.class)))
             .build();
     }
@@ -79,7 +79,7 @@ public class TestCaseControllerTest {
             .andDo(result -> bodyHolder.set(result.getResponse().getContentAsString()))
             .andExpect(MockMvcResultMatchers.status().isOk());
 
-        Assertions.assertThat(bodyHolder.get()).isEqualTo("\"1\"");
+        Assertions.assertThat(bodyHolder.get()).isEqualTo("1");
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TestCaseControllerTest {
             .andExpect(status().isUnprocessableEntity());
 
         // Then
-        assertThat(message[0]).isEqualToIgnoringCase("\"TestCase [a title] is not valid: null\"");
+        assertThat(message[0]).isEqualToIgnoringCase("TestCase [a title] is not valid: null");
     }
 
     @Test
