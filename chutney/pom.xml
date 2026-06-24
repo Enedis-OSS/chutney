@@ -47,16 +47,16 @@
     <properties>
 
         <!-- Runtime dependencies versions -->
-        <springboot.version>4.0.6</springboot.version>
-        <guava.version>33.5.0-jre</guava.version> <!-- Divergence on dependencies checker-qual and error_prone_annotations --> <!-- Test on https://github.com/FasterXML/jackson-datatypes-collections/tree/2.14/guava -->
+        <springboot.version>4.1.0</springboot.version>
+        <guava.version>33.6.0-jre</guava.version> <!-- Divergence on dependencies checker-qual and error_prone_annotations --> <!-- Test on https://github.com/FasterXML/jackson-datatypes-collections/tree/2.14/guava -->
 
         <mapstruct.version>1.6.2</mapstruct.version>
-        <immutables.version>2.11.6</immutables.version>
+        <immutables.version>2.12.2</immutables.version>
         <commonstext.version>1.15.0</commonstext.version>
-        <commonsio.version>2.21.0</commonsio.version>
+        <commonsio.version>2.22.0</commonsio.version>
         <hjson.version>3.1.0</hjson.version>
         <jsr305.version>3.0.2</jsr305.version>
-        <liquibase.version>5.0.2</liquibase.version>
+        <liquibase.version>5.0.3</liquibase.version>
 
         <!-- action-impl dependencies versions -->
         <activemq.version>5.19.1</activemq.version> <!-- for JMS 1.1 support via Jms actions -->
@@ -71,7 +71,7 @@
         <rabbitmq-mock.version>1.2.0</rabbitmq-mock.version>
 
         <!-- test dependencies versions -->
-        <jqwik.version>1.9.3</jqwik.version>
+        <jqwik.version>1.10.1</jqwik.version>
         <wiremock.version>3.13.2</wiremock.version>
         <lucene.version>10.4.0</lucene.version>
     </properties>
