@@ -17,10 +17,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class JsonFunctions {
 
-    private static final ObjectMapper om = new ObjectMapper();
+    private static final ObjectMapper om = JsonMapper.builder().findAndAddModules().build();
 
     @Deprecated
     @SpelFunction

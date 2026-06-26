@@ -17,10 +17,11 @@ import org.openqa.selenium.WebDriver;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class SeleniumGenericDriverInitAction extends AbstractSeleniumDriverInitAction {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
     private final String seleniumConfigurationAsJson;
     public SeleniumGenericDriverInitAction(FinallyActionRegistry finallyActionRegistry,
                                               Logger logger,

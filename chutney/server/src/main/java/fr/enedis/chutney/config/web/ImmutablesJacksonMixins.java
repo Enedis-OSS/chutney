@@ -29,6 +29,14 @@ import fr.enedis.chutney.scenario.api.raw.dto.ImmutableRawTestCaseDto;
 import fr.enedis.chutney.scenario.api.raw.dto.ImmutableTestCaseIndexDto;
 import fr.enedis.chutney.scenario.api.raw.dto.RawTestCaseDto;
 import fr.enedis.chutney.scenario.api.raw.dto.TestCaseIndexDto;
+import fr.enedis.chutney.server.core.domain.tools.ImmutablePaginatedDto;
+import fr.enedis.chutney.server.core.domain.tools.ImmutablePaginationRequestParametersDto;
+import fr.enedis.chutney.server.core.domain.tools.ImmutablePaginationRequestWrapperDto;
+import fr.enedis.chutney.server.core.domain.tools.ImmutableSortRequestParametersDto;
+import fr.enedis.chutney.server.core.domain.tools.PaginatedDto;
+import fr.enedis.chutney.server.core.domain.tools.PaginationRequestParametersDto;
+import fr.enedis.chutney.server.core.domain.tools.PaginationRequestWrapperDto;
+import fr.enedis.chutney.server.core.domain.tools.SortRequestParametersDto;
 import tools.jackson.databind.cfg.MapperBuilder;
 
 /**
@@ -54,5 +62,9 @@ public final class ImmutablesJacksonMixins {
         builder.addMixIn(ImmutableTestCaseEditionDto.class, TestCaseEditionDto.class);
         builder.addMixIn(ImmutableDataSetDto.class, DataSetDto.class);
         builder.addMixIn(ImmutableLinkifierDto.class, LinkifierDto.class);
+        builder.addMixIn(ImmutablePaginatedDto.class, PaginatedDto.class);
+        builder.addMixIn(ImmutablePaginationRequestParametersDto.class, PaginationRequestParametersDto.class);
+        builder.addMixIn(ImmutablePaginationRequestWrapperDto.class, PaginationRequestWrapperDto.class);
+        builder.addMixIn(ImmutableSortRequestParametersDto.class, SortRequestParametersDto.class);
     }
 }

@@ -15,12 +15,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ChutneyJwtAuthenticationConverter implements Converter<Jwt, JwtAuthenticationToken> {
 
 
     private final AuthenticationService authenticationService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
     public ChutneyJwtAuthenticationConverter(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;

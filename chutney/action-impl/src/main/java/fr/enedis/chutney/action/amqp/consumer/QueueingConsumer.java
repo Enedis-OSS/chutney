@@ -25,12 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class QueueingConsumer {
 
     private final Stopwatch stopwatch = Stopwatch.createUnstarted();
     private static final Logger LOGGER = LoggerFactory.getLogger(QueueingConsumer.class);
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().findAndAddModules().build();
 
     private final long maxAwait;
     private final Channel channel;

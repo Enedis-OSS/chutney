@@ -48,6 +48,7 @@ import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class KafkaBasicConsumeAction implements Action {
 
@@ -61,7 +62,7 @@ public class KafkaBasicConsumeAction implements Action {
     static final String OUTPUT_BODY_KEY_KEY = "key";
     static final String OUTPUT_KEYS = "keys";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().findAndAddModules().build();
 
     private final String topic;
     private final Logger logger;

@@ -18,10 +18,11 @@ import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class DatasetEntityMapper {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
     private static Logger logger = LoggerFactory.getLogger(DatasetEntityMapper.class);
 
     private static List<Map<String, String>> datasetDatatableFromString(String datasetDatatable) {

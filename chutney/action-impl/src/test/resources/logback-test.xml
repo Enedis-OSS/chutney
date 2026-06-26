@@ -39,7 +39,6 @@
     <logger name="qpid" level="WARN"/>
     <logger name="org.springframework" level="WARN" />
     <logger name="org.springframework.test.web.servlet.result" level="DEBUG" />
-    <logger name="org.xnio" level="WARN"/>
     <logger name="net.schmizz" level="WARN" />
     <logger name="wiremock" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
