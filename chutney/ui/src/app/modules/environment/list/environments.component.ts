@@ -132,23 +132,15 @@ export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
             });
     }
 
-    select(file: File) {
-        this.environmentService.select(file)
-            .pipe(takeUntil(this.unsubscribeSub$))
-            .subscribe({
-                next: env => {
-                    const modalRef = this.ngbModalService.open(EnvironmentImportComponent, { centered: true });
-                    modalRef.componentInstance.importedEnvironment = env
-                    modalRef.result.then(
-                        (env) => {
-                            this.editableEnvironments.push(env);
-                            this.environments.push(env);
-                            this.sort();
-                        }
-                    )
-                },
-                error: err => this.errorMessage = err.error
-            });
+    askImport() {
+        const modalRef = this.ngbModalService.open(EnvironmentImportComponent, { centered: true });
+        modalRef.result.then(
+            (env) => {
+                this.editableEnvironments.push(env);
+                this.environments.push(env);
+                this.sort();
+            }
+        )
     }
 
     private sort() {

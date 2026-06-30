@@ -34,6 +34,7 @@
             <span class="fa fa-info-circle" aria-hidden="true"></span>
         </button>
         <input type="text" id="name" class="form-control" formControlName="name">
+        <chutney-import-button (submitEvent)="select($event)" [btnColor]="'primary'"></chutney-import-button>
         @if (submitted && this.importForm.hasError('required', 'note')) {
             <div class="error-message">
                 {{ 'environment.import.name.required' | translate }}

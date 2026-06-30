@@ -75,6 +75,10 @@ export class EnvironmentService {
         return this.http.post(server.backend + this.envBaseUrl, environment);
     }
 
+    import(formData: FormData): Observable<Object> {
+        return this.http.post(server.backend + this.envBaseUrl, formData);
+    }
+
     delete(environmentName: string): Observable<Object> {
         return this.http.delete(server.backend + this.envBaseUrl + '/' + environmentName);
     }

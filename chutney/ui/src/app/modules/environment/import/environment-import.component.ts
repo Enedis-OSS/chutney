@@ -23,9 +23,6 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     activeModal = inject(NgbActiveModal);
 
-    @Input()
-    importedEnvironment: Environment;
-
     private unsubscribeSub$: Subject<void> = new Subject();
 
     importForm: FormGroup;
@@ -34,6 +31,8 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     errorMessage: string;
     nameValidationMessage: string;
+
+    importedFile:File;
 
     constructor(private environmentService: EnvironmentService,
         public validationService: ValidationService,
@@ -49,6 +48,10 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribeSub$.next();
         this.unsubscribeSub$.complete();
+    }
+
+    select(file: File) {
+        this.importedFile = file;
     }
 
     import() {
@@ -68,13 +71,16 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
         } else {
             this.nameValidationMessage = null;
         }
-        this.importedEnvironment.name = name;
 
-        this.environmentService.create(this.importedEnvironment)
+        const formData: FormData = new FormData();
+        formData.append('name', name);
+        formData.append('file', this.importedFile);
+
+        this.environmentService.import(formData)
                     .pipe(takeUntil(this.unsubscribeSub$))
                     .subscribe({
-                        next: () => {
-                            this.activeModal.close(this.importedEnvironment);
+                        next: (environment) => {
+                            this.activeModal.close(environment);
                         },
                         error: (error) => {
                             this.errorMessage = error.error
