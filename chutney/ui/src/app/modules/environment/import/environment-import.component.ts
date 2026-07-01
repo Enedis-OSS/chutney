@@ -5,9 +5,8 @@
  *
  */
 
-import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Environment } from "@core/model";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
@@ -72,11 +71,7 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
             this.nameValidationMessage = null;
         }
 
-        const formData: FormData = new FormData();
-        formData.append('name', name);
-        formData.append('file', this.importedFile);
-
-        this.environmentService.import(formData)
+        this.environmentService.import(name, this.importedFile)
                     .pipe(takeUntil(this.unsubscribeSub$))
                     .subscribe({
                         next: (environment) => {
