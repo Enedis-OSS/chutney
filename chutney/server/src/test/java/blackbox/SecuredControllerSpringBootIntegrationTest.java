@@ -78,11 +78,10 @@ import fr.enedis.chutney.tools.file.FileUtils;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -90,6 +89,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -99,7 +99,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest(classes = {ServerBootstrap.class})
 @TestPropertySource(properties = "spring.config.additional-location=classpath:blackbox/")
-public class SecuredControllerSpringBootIntegrationTest {
+class SecuredControllerSpringBootIntegrationTest {
 
     @Autowired
     private Authorizations authorizations;
@@ -333,7 +333,7 @@ public class SecuredControllerSpringBootIntegrationTest {
 
     @ParameterizedTest
     @MethodSource({"securedEndPointList", "unsecuredEndPointList"})
-    public void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
+    void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
         UserDto userDto = new UserDto();
         userDto.setName("admin");
         userDto.setId("admin");
@@ -349,28 +349,39 @@ public class SecuredControllerSpringBootIntegrationTest {
             .andExpect(status().is(status.value()));
     }
 
-    @ParameterizedTest
-    @MethodSource({"uploadEndpoints"})
-    public void secured_upload_api_access_verification(String url, String authority, String content, HttpStatus expectedStatus) throws Exception {
+    @Test
+    void secured_environment_upload_api_access_verification() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setName("admin");
         userDto.setId("admin");
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .multipart(url)
-            .file(new MockMultipartFile("file", "myFile.json", "text/json", content.getBytes()))
+            .multipart(EnvironmentController.BASE_URL)
+            .part(new MockPart("name", "DEFAULT".getBytes()))
+            .file(new MockMultipartFile("file", "myFile.json", "text/json",
+                "{\"name\": \"DEFAULT\"}".getBytes()))
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .secure(true);
-        manageAuth(authority, userDto, request);
+        manageAuth(ENVIRONMENT_WRITE.name(), userDto, request);
 
         mvc.perform(request)
-            .andExpect(status().is(expectedStatus.value()));
+            .andExpect(status().is(CONFLICT.value()));
     }
 
-    private static Stream<Arguments> uploadEndpoints() {
-        return Stream.of(
-            Arguments.of(EnvironmentController.BASE_URL, ENVIRONMENT_WRITE.name(), "{\"name\": \"DEFAULT\"}", OK),
-            Arguments.of(EnvironmentController.BASE_URL + "/envName/targets", TARGET_WRITE.name(), "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"unknownEnv\"}", NOT_FOUND)
-        );
+    @Test
+    void secured_target_upload_api_access_verification() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .multipart(EnvironmentController.BASE_URL + "/envName/targets")
+            .file(new MockMultipartFile("file", "myFile.json", "text/json",
+                "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"unknownEnv\"}".getBytes()))
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .secure(true);
+        manageAuth(TARGET_WRITE.name(), userDto, request);
+
+        mvc.perform(request)
+            .andExpect(status().is(NOT_FOUND.value()));
     }
 
     private void manageAuth(String authority, UserDto userDto, MockHttpServletRequestBuilder request) {
