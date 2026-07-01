@@ -65,15 +65,15 @@ export class EnvironmentService {
         );
     }
 
-    create(environment: Environment): Observable<Object> {
-        return this.http.post(server.backend + this.envBaseUrl, environment);
-    }
-
     import(name: string, file: File): Observable<Environment> {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('file', file);
         return this.http.post<Environment>(server.backend + this.envBaseUrl, formData);
+    }
+
+    create(environment: Environment): Observable<Object> {
+        return this.http.post(server.backend + this.envBaseUrl, environment);
     }
 
     delete(environmentName: string): Observable<Object> {
