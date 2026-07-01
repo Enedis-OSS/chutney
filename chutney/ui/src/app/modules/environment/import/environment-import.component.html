@@ -10,7 +10,7 @@
         {{ 'environment.import.title' | translate }}
     </h5>
     <button type="button" class="btn-close" aria-label="Close"
-            (click)="activeModal.dismiss('cancel click')">
+            (click)="activeModal.close()">
     </button>
 </div>
 
@@ -37,6 +37,7 @@
 
         <chutney-import-button (submitEvent)="select($event)" [btnColor]="'primary'" [label]="'environment.import.file'"></chutney-import-button>
         <span id="selected-file">{{ importedFile?.name }}</span>
+
         @if (submitted && this.importForm.hasError('required', 'note')) {
             <div class="error-message">
                 {{ 'environment.import.name.required' | translate }}
@@ -48,7 +49,7 @@
 </div>
 
  <div class="modal-footer">
-  <button type="button" class="btn btn-light" (click)="activeModal.dismiss('cancel click')">{{ "global.actions.cancel" | translate }}</button>
+  <button type="button" class="btn btn-light" (click)="activeModal.close()">{{ "global.actions.cancel" | translate }}</button>
   <button type="submit" [disabled]="(submitted && importForm.invalid)" class="btn btn-primary" (click)="import()">
     <span>{{ 'global.actions.record' | translate }}</span>
   </button>

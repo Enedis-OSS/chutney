@@ -136,6 +136,10 @@ export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
         const modalRef = this.ngbModalService.open(EnvironmentImportComponent, { centered: true });
         modalRef.result.then(
             (env) => {
+                if (!env) {
+                    return;
+                }
+
                 this.editableEnvironments.push(env);
                 this.environments.push(env);
                 this.sort();
