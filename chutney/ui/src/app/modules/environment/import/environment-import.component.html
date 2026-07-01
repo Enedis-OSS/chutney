@@ -25,25 +25,26 @@
     </div>
     <form [formGroup]="importForm" (ngSubmit)="import()" autocomplete="off">
         <div class="mb-4">
-        <label for="name" class="form-label">
-            {{ 'environment.import.name.label' | translate }}
-        </label>
-        <ng-template #environmentImportHelp>{{ 'environment.import.name.help' | translate }}</ng-template>
-        <button type="button" class="btn display-flex"
-            [ngbPopover]="environmentImportHelp" triggers="mouseenter:mouseleave">
-            <span class="fa fa-info-circle" aria-hidden="true"></span>
-        </button>
-        <input type="text" id="name" class="form-control mb-4" formControlName="name">
+            <label for="name" class="form-label">
+                {{ 'environment.import.name.label' | translate }}
+            </label>
+            <ng-template #environmentImportHelp>{{ 'environment.import.name.help' | translate }}</ng-template>
+            <button type="button" class="btn display-flex"
+                [ngbPopover]="environmentImportHelp" triggers="mouseenter:mouseleave">
+                <span class="fa fa-info-circle" aria-hidden="true"></span>
+            </button>
+            <input type="text" id="name" class="form-control" formControlName="name">
 
-        <chutney-import-button (submitEvent)="select($event)" [btnColor]="'primary'" [label]="'environment.import.file'"></chutney-import-button>
-        <span id="selected-file" class="ms-2">{{ importedFile?.name }}</span>
-
-        @if (submitted && this.importForm.hasError('required', 'note')) {
-            <div class="error-message">
-                {{ 'environment.import.name.required' | translate }}
-            </div>
-        }
+            @if (submitted && this.importForm.hasError('required', 'name')) {
+                <div class="error-message">
+                    {{ 'environment.import.name.required' | translate }}
+                </div>
+            }
         </div>
+
+        <chutney-import-button (submitEvent)="select($event)" [btnColor]="'primary'"
+            [label]="'environment.import.file'"></chutney-import-button>
+        <span id="selected-file" class="ms-2">{{ importedFile?.name }}</span>
     </form>
 
 </div>
