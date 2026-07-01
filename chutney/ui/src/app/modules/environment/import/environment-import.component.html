@@ -1,0 +1,57 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2026 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        {{ 'environment.import.title' | translate }}
+    </h5>
+    <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.close()">
+    </button>
+</div>
+
+<div class="modal-body" ngbAutofocus>
+    <div class="cursor-pointer">
+        @if (errorMessage) {
+            <chutney-error-panel [errorMessage]="errorMessage" (click)="errorMessage = null" class="cursor-pointer"></chutney-error-panel>
+        }
+        @if (nameValidationMessage) {
+            <chutney-error-panel [errorMessage]="nameValidationMessage" (click)="nameValidationMessage = null" class="cursor-pointer"></chutney-error-panel>
+        }
+    </div>
+    <form [formGroup]="importForm" (ngSubmit)="import()" autocomplete="off">
+        <div class="mb-4">
+            <label for="name" class="form-label">
+                {{ 'environment.import.name.label' | translate }}
+            </label>
+            <ng-template #environmentImportHelp>{{ 'environment.import.name.help' | translate }}</ng-template>
+            <button type="button" class="btn display-flex"
+                [ngbPopover]="environmentImportHelp" triggers="mouseenter:mouseleave">
+                <span class="fa fa-info-circle" aria-hidden="true"></span>
+            </button>
+            <input type="text" id="name" class="form-control" formControlName="name">
+
+            @if (submitted && this.importForm.hasError('required', 'name')) {
+                <div class="error-message">
+                    {{ 'environment.import.name.required' | translate }}
+                </div>
+            }
+        </div>
+
+        <chutney-import-button (submitEvent)="select($event)" [btnColor]="'primary'"
+            [label]="'environment.import.file'"></chutney-import-button>
+        <span id="selected-file" class="ms-2">{{ importedFile?.name }}</span>
+    </form>
+
+</div>
+
+ <div class="modal-footer">
+  <button type="button" class="btn btn-light" (click)="activeModal.close()">{{ "global.actions.cancel" | translate }}</button>
+  <button type="submit" [disabled]="(submitted && importForm.invalid)" class="btn btn-primary" (click)="import()">
+    <span>{{ 'global.actions.record' | translate }}</span>
+  </button>
+</div>

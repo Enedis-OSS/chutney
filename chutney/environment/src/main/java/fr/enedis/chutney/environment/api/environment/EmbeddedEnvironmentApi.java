@@ -56,12 +56,6 @@ public class EmbeddedEnvironmentApi implements EnvironmentApi {
     }
 
     @Override
-    public EnvironmentDto importEnvironment(EnvironmentDto environmentDto) throws UnsupportedOperationException {
-        environmentService.createEnvironment(environmentDto.toEnvironment());
-        return environmentDto;
-    }
-
-    @Override
     public void deleteEnvironment(String environmentName) throws EnvironmentNotFoundException, CannotDeleteEnvironmentException {
         environmentService.deleteEnvironment(environmentName);
     }

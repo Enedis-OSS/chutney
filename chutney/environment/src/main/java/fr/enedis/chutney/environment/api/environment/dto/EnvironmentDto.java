@@ -80,6 +80,10 @@ public class EnvironmentDto {
             .build();
     }
 
+    public EnvironmentDto copyWithName(String name) {
+        return new EnvironmentDto(name, this.description, this.targets, this.variables);
+    }
+
     public EnvironmentDto copyWithEnvironmentsOnly() {
         return new EnvironmentDto(this.name, this.description);
     }

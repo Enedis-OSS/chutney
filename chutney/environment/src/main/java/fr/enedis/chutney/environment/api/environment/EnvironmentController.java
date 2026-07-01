@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -79,19 +79,15 @@ public class EnvironmentController implements EnvironmentApi {
 
     @PreAuthorize("hasAuthority('ENVIRONMENT_WRITE')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public EnvironmentDto importEnvironment(@RequestParam("file") MultipartFile file) {
+    public EnvironmentDto importEnvironment(@RequestPart String name, @RequestPart MultipartFile file) {
         try {
-            return importEnvironment(
-                objectMapper.readValue(file.getBytes(), EnvironmentDto.class)
-            );
+            var environmentDto = objectMapper.readValue(file.getBytes(), EnvironmentDto.class);
+            environmentDto = environmentDto.copyWithName(name);
+            delegate.createEnvironment(environmentDto);
+            return environmentDto;
         } catch (IOException e) {
             throw new UnsupportedOperationException("Cannot deserialize file: " + file.getName(), e);
         }
-    }
-
-    @Override
-    public EnvironmentDto importEnvironment(EnvironmentDto environmentDto) {
-        return delegate.importEnvironment(environmentDto);
     }
 
     @Override
