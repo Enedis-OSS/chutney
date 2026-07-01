@@ -334,9 +334,7 @@ class SecuredControllerSpringBootIntegrationTest {
     @ParameterizedTest
     @MethodSource({"securedEndPointList", "unsecuredEndPointList"})
     void secured_api_access_verification(HttpMethod httpMethod, String url, String authority, String content, HttpStatus status) throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setName("admin");
-        userDto.setId("admin");
+        UserDto userDto = userDto();
         MockHttpServletRequestBuilder request = request(httpMethod, url)
             .secure(true)
             .contentType(MediaType.APPLICATION_JSON);
@@ -351,9 +349,7 @@ class SecuredControllerSpringBootIntegrationTest {
 
     @Test
     void secured_environment_upload_api_access_verification() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setName("admin");
-        userDto.setId("admin");
+        UserDto userDto = userDto();
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .multipart(EnvironmentController.BASE_URL)
             .part(new MockPart("name", "DEFAULT".getBytes()))
@@ -369,9 +365,7 @@ class SecuredControllerSpringBootIntegrationTest {
 
     @Test
     void secured_target_upload_api_access_verification() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setName("admin");
-        userDto.setId("admin");
+        UserDto userDto = userDto();
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .multipart(EnvironmentController.BASE_URL + "/envName/targets")
             .file(new MockMultipartFile("file", "myFile.json", "text/json",
@@ -382,6 +376,13 @@ class SecuredControllerSpringBootIntegrationTest {
 
         mvc.perform(request)
             .andExpect(status().is(NOT_FOUND.value()));
+    }
+
+    private static UserDto userDto() {
+        UserDto userDto = new UserDto();
+        userDto.setName("admin");
+        userDto.setId("admin");
+        return userDto;
     }
 
     private void manageAuth(String authority, UserDto userDto, MockHttpServletRequestBuilder request) {
