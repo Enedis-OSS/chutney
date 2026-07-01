@@ -66,10 +66,11 @@ public class TargetController implements TargetApi {
     @PostMapping(value = EnvironmentController.BASE_URL + "/{environmentName}/targets", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public TargetDto importTarget(@PathVariable("environmentName") String environmentName, @RequestParam("file") MultipartFile file) {
         try {
-            return importTarget(
+            var targetDto = importTarget(
                 environmentName,
                 objectMapper.readValue(file.getBytes(), TargetDto.class)
             );
+            return targetDto.copyWithEnvironment(environmentName);
         } catch (IOException e) {
             throw new UnsupportedOperationException("Cannot deserialize file: " + file.getName(), e);
         }

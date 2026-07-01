@@ -119,6 +119,7 @@ export class TargetComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: target => {
                     this.targets[index] = target;
+                    this.existingEnvs.push(environment)
                 },
                 error: err => this.errorMessage = err.error
             });
