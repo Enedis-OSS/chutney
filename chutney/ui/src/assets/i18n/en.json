@@ -188,7 +188,8 @@
                 "label": "Name",
                 "help": "Overrides the name filled in the file",
                 "required": "The name is mandatory"
-            }
+            },
+            "file": "File"
         },
         "error": {
             "delete.last.env": "Cannot delete the last environment"

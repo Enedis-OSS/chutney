@@ -188,7 +188,8 @@
                 "label": "Nom",
                 "help": "Surcharge le nom rempli dans le fichier importé",
                 "required": "Le nom est obligatoire"
-            }
+            },
+            "file": "Fichier"
         },
         "error": {
             "delete.last.env": "Vous ne pouvez pas supprimer le dernier environnement"
