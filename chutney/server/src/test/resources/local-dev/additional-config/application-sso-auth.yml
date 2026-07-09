@@ -12,6 +12,7 @@ spring:
 
 chutney:
   auth:
+    enable-sso: true
     sso:
       issuer: "http://localhost:3000"
       clientId: 'my-client'
