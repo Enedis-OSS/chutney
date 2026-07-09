@@ -77,7 +77,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -355,7 +354,7 @@ class SecuredControllerSpringBootIntegrationTest {
     @Test
     void secured_environment_upload_api_access_verification() throws Exception {
         UserDto userDto = userDto();
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder request = MockMvcRequestBuilders
             .multipart(EnvironmentController.BASE_URL)
             .part(new MockPart("name", "DEFAULT".getBytes()))
             .file(new MockMultipartFile("file", "myFile.json", "text/json",
@@ -371,7 +370,7 @@ class SecuredControllerSpringBootIntegrationTest {
     @Test
     void secured_target_upload_api_access_verification() throws Exception {
         UserDto userDto = userDto();
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder request = MockMvcRequestBuilders
             .multipart(EnvironmentController.BASE_URL + "/envName/targets")
             .file(new MockMultipartFile("file", "myFile.json", "text/json",
                 "{\"name\":\"targetName\",\"url\":\"tcp://localhost\", \"environment\":\"unknownEnv\"}".getBytes()))
