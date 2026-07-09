@@ -49,7 +49,7 @@ public class AccessTokenController {
             accessTokenRequestDto.getExpiresAt() != null ?
                 accessTokenRequestDto.getExpiresAt().atStartOfDay(ZoneId.systemDefault()).toInstant() : null
         );
-        return new CreatedAccessTokenDto(accessTokenRequestDto.getNote(), token, accessTokenRequestDto.getExpiresAt());
+        return new CreatedAccessTokenDto(token.id().toString(), accessTokenRequestDto.getNote(), token.token(), accessTokenRequestDto.getExpiresAt());
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_ACCESS','CAMPAIGN_WRITE','DATASET_WRITE','DATASET_READ','SCENARIO_WRITE','SCENARIO_READ','ENVIRONMENT_READ')")

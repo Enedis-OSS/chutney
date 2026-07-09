@@ -37,7 +37,7 @@ class AccessTokensServiceTest {
         var user = "ulysse";
         var token = sut.createToken(user, "note", Instant.now().plus(1, ChronoUnit.DAYS));
 
-        assertThat(token).isNotEmpty();
+        assertThat(token).isNotNull();
 
         verify(accessTokensRepository).createToken(argumentCaptor.capture());
         AccessToken value = argumentCaptor.getValue();
@@ -47,38 +47,38 @@ class AccessTokensServiceTest {
     @Test
     void match_right_token() {
         var user = "bach";
-        var token = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
-        var encoded = new BCryptPasswordEncoder().encode(token);
+        var createTokenResult = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
+        var encoded = new BCryptPasswordEncoder().encode(createTokenResult.token());
         AccessToken accessToken = new AccessToken(UUID.randomUUID(), user, "note", encoded, Instant.now().plus(1, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(accessToken));
-        assertThat(sut.accessTokenFromRaw(token)).contains(accessToken);
+        assertThat(sut.accessTokenFromRaw(createTokenResult.token())).contains(accessToken);
     }
 
     @Test
     void match_right_token_without_expired_date() {
         var user = "bach";
-        var token = sut.createToken(user, "note", null);
-        var encoded = new BCryptPasswordEncoder().encode(token);
+        var createTokenResult = sut.createToken(user, "note", null);
+        var encoded = new BCryptPasswordEncoder().encode(createTokenResult.token());
         AccessToken accessToken = new AccessToken(UUID.randomUUID(), user, "note", encoded, null);
         when(accessTokensRepository.getTokens()).thenReturn(List.of(accessToken));
-        assertThat(sut.accessTokenFromRaw(token)).contains(accessToken);
+        assertThat(sut.accessTokenFromRaw(createTokenResult.token())).contains(accessToken);
     }
 
     @Test
     void does_not_match_wrong_token() {
         String user = "bach";
-        var token = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
+        var createTokenResult = sut.createToken(user, "note", Instant.now().plus(2, ChronoUnit.DAYS));
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(UUID.randomUUID(), user, "note", "wrong", Instant.now().plus(1, ChronoUnit.DAYS))));
-        assertThat(sut.accessTokenFromRaw(token)).isEmpty();
+        assertThat(sut.accessTokenFromRaw(createTokenResult.token())).isEmpty();
     }
 
     @Test
     void does_not_match_expired_token() {
         var user = "bach";
-        var token = sut.createToken(user, "note", Instant.now());
-        var encoded = new BCryptPasswordEncoder().encode(token);
+        var createTokenResult = sut.createToken(user, "note", Instant.now());
+        var encoded = new BCryptPasswordEncoder().encode(createTokenResult.token());
         when(accessTokensRepository.getTokens()).thenReturn(List.of(new AccessToken(UUID.randomUUID(), user, "note", encoded, Instant.now().minus(1, ChronoUnit.DAYS))));
-        assertThat(sut.accessTokenFromRaw(token)).isEmpty();
+        assertThat(sut.accessTokenFromRaw(createTokenResult.token())).isEmpty();
     }
 
     @Test

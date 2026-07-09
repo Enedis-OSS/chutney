@@ -67,7 +67,7 @@ export class TokenCreationComponent implements OnInit {
         const date = expirationDate != null ?
             new Date(expirationDate.year, expirationDate.month, expirationDate.day, 0, 0, 0, 0) : null;
 
-        const token: AccessToken = new AccessToken(note, date)
+        const token: AccessToken = new AccessToken('', note, date)
 
         this.tokenService.createToken(token)
                     .pipe(takeUntil(this.unsubscribeSub$))
