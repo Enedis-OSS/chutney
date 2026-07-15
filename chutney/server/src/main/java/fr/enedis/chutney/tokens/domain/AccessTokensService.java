@@ -26,11 +26,12 @@ public class AccessTokensService {
         this.accessTokenEncoder = accessTokenEncoder;
     }
 
-    public String createToken(String user, String note, Instant expiresAt) {
+    public CreateTokenResult createToken(String user, String note, Instant expiresAt) {
         var token = UUID.randomUUID().toString().replace("-", "");
         var hash = accessTokenEncoder.encode(token);
-        accessTokensRepository.createToken(AccessToken.create(user, note, expiresAt, hash));
-        return token;
+        var accessToken = AccessToken.create(user, note, expiresAt, hash);
+        accessTokensRepository.createToken(accessToken);
+        return new CreateTokenResult(accessToken.id(), token);
     }
 
     public Optional<AccessToken> accessTokenFromRaw(String token) {

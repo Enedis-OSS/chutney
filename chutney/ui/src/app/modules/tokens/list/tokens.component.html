@@ -17,34 +17,7 @@
 </div>
 
 <ul class="list-group list-group-flush">
-    @if (displayCreatedToken) {
-      <li class="list-group-item">
-          <p class="mb-0 fw-medium">
-              {{ createdAccessToken.note }}
-          </p>
-
-          @if (createdAccessToken.expiresAt != null) {
-            <p class="mb-0 text-muted small">
-                {{ 'tokens.list.expiresAt' | translate }} {{ createdAccessToken.expiresAt | date:'dd/MM/yyyy'}}
-            </p>
-          }
-
-          <p class="text-muted mt-2">
-              {{ 'tokens.list.keepIt' | translate }}
-          </p>
-
-          <div class="d-flex align-items-start gap-2">
-            <p class="p-2 border rounded">
-                {{ createdAccessToken.token}}
-            </p>
-            <button class="btn btn-primary" (click)="copyToClipboard()">
-                <i class="fa-regular fa-clone"></i>
-                <span class="visually-hidden"> {{ 'tokens.list.copy' | translate }}</span>
-            </button>
-          </div>
-      </li>
-    }
-    @for (token of tokens; track token) {
+    @for (token of tokens; track token; let isFirst = $first) {
         <li class="list-group-item">
             <div class="d-flex align-items-center gap-2">
                 <p class="mb-0 fw-medium">
@@ -60,6 +33,21 @@
             <p class="mb-0 text-muted small">
                 {{ 'tokens.list.expiresAt' | translate }} {{ token.expiresAt | date:'dd/MM/yyyy'}}
             </p>
+            }
+
+            @if (displayCreatedToken && isFirst) {
+                <p class="text-muted mt-2">
+                    {{ 'tokens.list.keepIt' | translate }}
+                </p>
+                <div class="d-flex align-items-start gap-2">
+                    <p class="p-2 border rounded">
+                        {{ createdAccessToken.token}}
+                    </p>
+                    <button class="btn btn-primary" (click)="copyToClipboard()">
+                        <i class="fa-regular fa-clone"></i>
+                        <span class="visually-hidden"> {{ 'tokens.list.copy' | translate }}</span>
+                    </button>
+                </div>
             }
         </li>
     }

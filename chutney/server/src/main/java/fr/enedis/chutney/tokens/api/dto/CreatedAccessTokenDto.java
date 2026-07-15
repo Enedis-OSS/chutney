@@ -12,6 +12,8 @@ import java.time.LocalDate;
 
 public class CreatedAccessTokenDto {
 
+    private String id;
+
     private String note;
 
     private String token;
@@ -22,10 +24,15 @@ public class CreatedAccessTokenDto {
     public CreatedAccessTokenDto() {
     }
 
-    public CreatedAccessTokenDto(String note, String token, LocalDate expiresAt) {
+    public CreatedAccessTokenDto(String id, String note, String token, LocalDate expiresAt) {
+        this.id = id;
         this.note = note;
         this.token = token;
         this.expiresAt = expiresAt;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getNote() {

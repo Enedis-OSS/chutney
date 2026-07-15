@@ -24,7 +24,7 @@ export class TokenService {
     createToken(token: AccessToken): Observable<CreatedAccessToken> {
         return this.httpClient.post<string>(environment.backend + this.resourceUrl, token,
         ).pipe(
-            map((result:any) => new CreatedAccessToken(result.note, result.token, result.expiresAt)
+            map((result:any) => new CreatedAccessToken(result.id, result.note, result.token, result.expiresAt)
         ));
     }
 

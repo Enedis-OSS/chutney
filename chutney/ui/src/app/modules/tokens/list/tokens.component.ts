@@ -62,6 +62,7 @@ export class TokenListComponent implements OnInit, OnDestroy {
             (createdAccessToken) => {
                 this.createdAccessToken = createdAccessToken;
                 this.displayCreatedToken = true;
+                this.tokens.unshift(createdAccessToken)
             });
     }
 

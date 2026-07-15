@@ -8,6 +8,7 @@
 export class AccessToken {
 
     constructor(
+            public id: string = '',
             public note: string = '',
             public expiresAt: Date) {
     }
@@ -16,6 +17,7 @@ export class AccessToken {
 export class CreatedAccessToken {
 
     constructor(
+            public id: string,
             public note: string,
             public token: string,
             public expiresAt: Date) {
