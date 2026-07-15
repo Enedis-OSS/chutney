@@ -159,6 +159,9 @@ object HttpClient {
         if(serverInfo.isTokenAuth()) {
             httpRequest.addHeader("Authorization", "Bearer " + (serverInfo.auth as AuthMethod.Bearer).token)
         }
+        if(serverInfo.isApiKeyAuth()) {
+            httpRequest.addHeader("X-API-KEY", (serverInfo.auth as AuthMethod.ApiKey).token)
+        }
 
         return httpRequest
     }

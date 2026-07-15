@@ -13,4 +13,6 @@ sealed interface AuthMethod {
                      val password: String): AuthMethod
 
     data class Bearer(val token: String): AuthMethod
+
+    data class ApiKey(val token: String): AuthMethod
 }

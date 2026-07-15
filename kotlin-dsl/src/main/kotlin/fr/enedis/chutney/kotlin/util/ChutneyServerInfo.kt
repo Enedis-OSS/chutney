@@ -70,6 +70,7 @@ data class ChutneyServerInfo(
 
     fun isBasicAuth(): Boolean = auth is AuthMethod.Basic
     fun isTokenAuth(): Boolean = auth is AuthMethod.Bearer
+    fun isApiKeyAuth(): Boolean = auth is AuthMethod.ApiKey
 }
 
 private enum class ProxyProtocol { http, https }
