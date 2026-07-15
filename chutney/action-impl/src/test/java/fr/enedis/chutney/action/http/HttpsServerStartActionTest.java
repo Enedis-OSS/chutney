@@ -137,7 +137,7 @@ public class HttpsServerStartActionTest {
     CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(connectionManager).build();
     HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
     requestFactory.setHttpClient(httpClient);
-    return new RestTemplate(requestFactory).exchange("https://localhost:" + wireMockPort + "/", HttpMethod.GET, new HttpEntity<>(null), String.class);
+    return new RestTemplate(requestFactory).exchange("https://localhost:" + wireMockPort + "/", HttpMethod.GET, HttpEntity.EMPTY, String.class);
   }
 
   private void stopServer(WireMockServer server) {

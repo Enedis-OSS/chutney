@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.EmbeddedKafkaZKBroker;
+import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
 
 public class KafkaBrokerStartAction implements Action {
 
@@ -46,7 +46,7 @@ public class KafkaBrokerStartAction implements Action {
     @Override
     public ActionExecutionResult execute() {
         try {
-            EmbeddedKafkaBroker broker = new EmbeddedKafkaZKBroker(1, true, topics.toArray(new String[0]));
+            EmbeddedKafkaBroker broker = new EmbeddedKafkaKraftBroker(1, 1, topics.toArray(new String[0]));
             configure(broker);
             logger.info("Try to start kafka broker");
             broker.afterPropertiesSet();
@@ -70,6 +70,7 @@ public class KafkaBrokerStartAction implements Action {
     private Map<String, Object> toOutputs(EmbeddedKafkaBroker broker) {
         Map<String, Object> outputs = new HashMap<>();
         outputs.put("kafkaBroker", broker);
+        outputs.put("bootstrapServers", broker.getBrokersAsString());
         return outputs;
     }
 

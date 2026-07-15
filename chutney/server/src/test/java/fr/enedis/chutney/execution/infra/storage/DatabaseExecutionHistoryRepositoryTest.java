@@ -20,8 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import fr.enedis.chutney.campaign.infra.CampaignExecutionDBRepository;
 import fr.enedis.chutney.campaign.infra.jpa.CampaignEntity;
@@ -57,7 +55,6 @@ import java.util.stream.IntStream;
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,6 +64,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.test.context.NestedTestConfiguration;
 import org.sqlite.SQLiteException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import util.infra.AbstractLocalDatabaseTest;
 import util.infra.EnableH2MemTestInfra;
 import util.infra.EnablePostgreSQLTestInfra;
@@ -75,21 +74,24 @@ import util.infra.EnableSQLiteTestInfra;
 public class DatabaseExecutionHistoryRepositoryTest {
 
     @Nested
+    @NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.INHERIT)
     @EnableH2MemTestInfra
     class H2 extends AllTests {
     }
 
     @Nested
+    @NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.INHERIT)
     @EnableSQLiteTestInfra
     class SQLite extends AllTests {
     }
 
     @Nested
+    @NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.INHERIT)
     @EnablePostgreSQLTestInfra
     class PostreSQL extends AllTests {
     }
 
-    abstract class AllTests extends AbstractLocalDatabaseTest {
+    abstract static class AllTests extends AbstractLocalDatabaseTest {
         @Autowired
         private DatabaseExecutionHistoryRepository sut;
 
@@ -293,7 +295,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
-        public void all_running_executions_are_set_to_KO_on_startup_check_report_status_update() throws JsonProcessingException {
+        public void all_running_executions_are_set_to_KO_on_startup_check_report_status_update() throws JacksonException {
             // Given running executions
             String scenarioIdOne = "123";
             Long scenarioId = sut.store(scenarioIdOne, buildDetachedExecution(RUNNING, "exec1", "")).summary().executionId();
@@ -317,7 +319,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
         }
 
         @Test
-        public void all_paused_executions_are_set_to_KO_on_startup_check_report_status_update() throws JsonProcessingException {
+        public void all_paused_executions_are_set_to_KO_on_startup_check_report_status_update() throws JacksonException {
             // Given running executions
             String scenarioIdOne = "123";
             Long scenarioId = sut.store(scenarioIdOne, buildDetachedExecution(PAUSED, "exec1", "")).summary().executionId();
@@ -496,14 +498,9 @@ public class DatabaseExecutionHistoryRepositoryTest {
             );
         }
 
-        @Nested
-        @NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.OVERRIDE)
-        @DisplayName("Delete associated finished campaign execution when scenario execution is the only one left")
-        class scenarioExecutionDelete {
-
-            @ParameterizedTest
-            @EnumSource(ServerReportStatus.class)
-            void campaign_execution_with_only_one_scenario_execution(ServerReportStatus executionStatus) {
+        @ParameterizedTest
+        @EnumSource(ServerReportStatus.class)
+        void campaign_execution_with_only_one_scenario_execution(ServerReportStatus executionStatus) {
                 // GIVEN
                 ScenarioEntity scenarioEntity = givenScenario();
                 CampaignEntity campaign = givenCampaign(scenarioEntity);
@@ -536,10 +533,10 @@ public class DatabaseExecutionHistoryRepositoryTest {
                     assertThat(report.scenariosExecutionsIds()).isEmpty();
                     assertThat(campaignExecutionDBRepository.getCampaignExecutionById(campaignExecutionId)).isNotNull();
                 }
-            }
+        }
 
-            @Test
-            void campaign_execution_with_many_scenario_execution() {
+        @Test
+        void campaign_execution_with_many_scenario_execution() {
                 // GIVEN
                 ScenarioEntity scenarioEntity = givenScenario();
                 CampaignEntity campaign = givenCampaign(scenarioEntity);
@@ -576,23 +573,12 @@ public class DatabaseExecutionHistoryRepositoryTest {
 
             }
 
-        }
-
-        @Nested
-        @NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.OVERRIDE)
-        @DisplayName("Find scenario execution with report match")
-        class ScenarioExecutionReportMatch {
-            @AfterEach
-            void afterEach() {
-                clearTables();
-            }
-
-            @Test
-            void simple_case() {
+        @Test
+        void simple_case() {
                 var scenarioId1 = givenScenario().getId().toString();
                 var scenarioId2 = givenScenario().getId().toString();
-                var exec1 = sut.store(scenarioId1, buildDetachedExecution("toto"));
-                sut.store(scenarioId2, buildDetachedExecution("tutu"));
+                var exec1 = sut.store(scenarioId1, buildDetachedExecutionForReportMatch("toto"));
+                sut.store(scenarioId2, buildDetachedExecutionForReportMatch("tutu"));
 
                 var executionSummaryList = sut.getExecutionReportMatchKeyword("to");
 
@@ -605,8 +591,8 @@ public class DatabaseExecutionHistoryRepositoryTest {
             void filter_unactivated_scenario_execution() {
                 var scenarioId1 = givenScenario().getId().toString();
                 var scenarioId2 = givenScenario().getId().toString();
-                var exec1 = sut.store(scenarioId1, buildDetachedExecution("toto"));
-                sut.store(scenarioId2, buildDetachedExecution("tutu"));
+                var exec1 = sut.store(scenarioId1, buildDetachedExecutionForReportMatch("toto"));
+                sut.store(scenarioId2, buildDetachedExecutionForReportMatch("tutu"));
                 databaseTestCaseRepository.removeById(scenarioId2);
 
                 var executionSummaryList = sut.getExecutionReportMatchKeyword("t");
@@ -620,7 +606,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
             void limit_results_to_100() {
                 IntStream.range(0, 110).forEach(i -> {
                     String scenarioId = givenScenario().getId().toString();
-                    sut.store(scenarioId, buildDetachedExecution("report"));
+                    sut.store(scenarioId, buildDetachedExecutionForReportMatch("report"));
                 });
 
                 var executionSummaryList = sut.getExecutionReportMatchKeyword("ort");
@@ -633,7 +619,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
                 List<Long> executionsIds = new ArrayList<>();
                 IntStream.range(0, 10).forEach(i -> {
                     var scenarioId = givenScenario().getId();
-                    var execution = sut.store(scenarioId.toString(), buildDetachedExecution("report"));
+                    var execution = sut.store(scenarioId.toString(), buildDetachedExecutionForReportMatch("report"));
                     executionsIds.add(execution.executionId());
                 });
                 var expectedOrder = executionsIds.stream().sorted(Comparator.<Long>naturalOrder().reversed()).toList();
@@ -645,18 +631,17 @@ public class DatabaseExecutionHistoryRepositoryTest {
                     .containsExactlyElementsOf(expectedOrder);
             }
 
-            private DetachedExecution buildDetachedExecution(String report) {
-                return ImmutableExecutionHistory.DetachedExecution.builder()
-                    .time(LocalDateTime.now())
-                    .duration(12L)
-                    .status(SUCCESS)
-                    .report(report)
-                    .testCaseTitle("Fake title")
-                    .environment("")
-                    .dataset(DataSet.builder().withId("fake dataset id").withName("").build())
-                    .user("")
-                    .build();
-            }
+        private DetachedExecution buildDetachedExecutionForReportMatch(String report) {
+            return ImmutableExecutionHistory.DetachedExecution.builder()
+                .time(LocalDateTime.now())
+                .duration(12L)
+                .status(SUCCESS)
+                .report(report)
+                .testCaseTitle("Fake title")
+                .environment("")
+                .dataset(DataSet.builder().withId("fake dataset id").withName("").build())
+                .user("")
+                .build();
         }
 
         private DetachedExecution buildDetachedExecution(ServerReportStatus status, String info, String error) {
@@ -683,7 +668,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
             DataSet dataSet = DataSet.builder().withId("id").withName("ds").withConstants(Map.of("key", "value")).withDatatable(List.of(Map.of("A", "A1", "B", "B1"))).build();
             try {
                 return objectMapper.writeValueAsString(new ScenarioExecutionReport(1L, "scenario name", "", "", null, dataSet, successStepReport));
-            } catch (JsonProcessingException exception) {
+            } catch (JacksonException exception) {
                 return "";
             }
         }

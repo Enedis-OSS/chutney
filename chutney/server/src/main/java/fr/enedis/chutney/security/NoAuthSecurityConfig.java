@@ -37,9 +37,6 @@ public class NoAuthSecurityConfig {
                 .authorities(new ArrayList<>(defaultUser.getAuthorities())))
             .authorizeHttpRequests(httpRequest -> httpRequest.anyRequest().permitAll());
 
-        http
-            .requiresChannel(channelRequestMatcherRegistry -> channelRequestMatcherRegistry.anyRequest().requiresInsecure());
-
         return http.build();
     }
 

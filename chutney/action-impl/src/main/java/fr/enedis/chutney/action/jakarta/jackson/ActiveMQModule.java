@@ -7,8 +7,8 @@
 
 package fr.enedis.chutney.action.jakarta.jackson;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
+import tools.jackson.databind.module.SimpleModule;
 
 public class ActiveMQModule extends SimpleModule {
 

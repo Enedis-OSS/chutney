@@ -23,7 +23,7 @@
 
     <logger name="com.jayway" level="WARN"/>
     <logger name="com.zaxxer" level="WARN"/>
-    <logger name="io.undertow" level="ERROR"/>
+    <logger name="org.apache.catalina" level="WARN"/>
     <logger name="liquibase" level="WARN"/>
     <logger name="LiquibaseSchemaResolver" level="WARN"/>
     <logger name="org.apache" level="WARN"/>
@@ -39,7 +39,6 @@
     <logger name="qpid" level="WARN"/>
     <logger name="org.springframework" level="WARN" />
     <logger name="org.springframework.test.web.servlet.result" level="DEBUG" />
-    <logger name="org.xnio" level="WARN"/>
     <logger name="net.schmizz" level="WARN" />
     <logger name="wiremock" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />

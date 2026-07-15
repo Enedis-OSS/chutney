@@ -4,10 +4,9 @@
   ~ SPDX-License-Identifier: Apache-2.0
   ~
   -->
-
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="server_all_tests" type="JUnit" factoryName="JUnit">
-    <module name="server" />
+    <module name="chutney-server" />
     <shortenClasspath name="ARGS_FILE" />
     <extension name="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.IdeaRunConfigurationExtension">
       <option name="DIRENV_ENABLED" value="false" />

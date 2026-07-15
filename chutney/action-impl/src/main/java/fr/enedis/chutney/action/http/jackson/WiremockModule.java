@@ -7,8 +7,8 @@
 
 package fr.enedis.chutney.action.http.jackson;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import tools.jackson.databind.module.SimpleModule;
 
 public class WiremockModule extends SimpleModule {
 

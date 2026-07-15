@@ -10,17 +10,18 @@ package fr.enedis.chutney.action.selenium.driver;
 import fr.enedis.chutney.action.spi.injectable.FinallyActionRegistry;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class SeleniumGenericDriverInitAction extends AbstractSeleniumDriverInitAction {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
     private final String seleniumConfigurationAsJson;
     public SeleniumGenericDriverInitAction(FinallyActionRegistry finallyActionRegistry,
                                               Logger logger,
@@ -36,7 +37,7 @@ public class SeleniumGenericDriverInitAction extends AbstractSeleniumDriverInitA
         try {
             readFromJson = mapper.readValue(seleniumConfigurationAsJson, new TypeReference<>() {
             });
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Parsing error. Cannot transform json configuration to Selenium capabilities");
         }
         return new MutableCapabilities(readFromJson);

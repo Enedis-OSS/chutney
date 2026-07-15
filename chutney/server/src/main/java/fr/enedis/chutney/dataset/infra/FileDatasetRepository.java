@@ -13,8 +13,6 @@ import static fr.enedis.chutney.dataset.infra.DatasetMapper.toDto;
 import static fr.enedis.chutney.tools.file.FileUtils.createFile;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.dataset.DataSetAlreadyExistException;
@@ -31,6 +29,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class FileDatasetRepository implements DataSetRepository {
@@ -41,9 +42,10 @@ public class FileDatasetRepository implements DataSetRepository {
 
     private final Path storeFolderPath;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-        .findAndRegisterModules()
-        .enable(SerializationFeature.INDENT_OUTPUT);
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .enable(SerializationFeature.INDENT_OUTPUT)
+        .build();
 
     FileDatasetRepository(@Value(CONFIGURATION_FOLDER_SPRING_VALUE) String storeFolderPath) throws UncheckedIOException {
         this.storeFolderPath = Paths.get(storeFolderPath).resolve(ROOT_DIRECTORY_NAME);
@@ -58,12 +60,8 @@ public class FileDatasetRepository implements DataSetRepository {
         DatasetDto dto = toDto(dataset);
         Path file = this.storeFolderPath.resolve(dto.id + FILE_EXTENSION);
         createFile(file);
-        try {
-            String jsonContent = objectMapper.writeValueAsString(dto);
-            FileUtils.writeContent(file, jsonContent);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Cannot save " + file.toUri(), e);
-        }
+        String jsonContent = objectMapper.writeValueAsString(dto);
+        FileUtils.writeContent(file, jsonContent);
         return dto.id;
     }
 

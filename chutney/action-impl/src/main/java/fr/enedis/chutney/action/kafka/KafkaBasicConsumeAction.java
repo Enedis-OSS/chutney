@@ -31,8 +31,6 @@ import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.action.spi.time.Duration;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,6 +46,9 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class KafkaBasicConsumeAction implements Action {
 
@@ -61,7 +62,7 @@ public class KafkaBasicConsumeAction implements Action {
     static final String OUTPUT_BODY_KEY_KEY = "key";
     static final String OUTPUT_KEYS = "keys";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().findAndAddModules().build();
 
     private final String topic;
     private final Logger logger;
@@ -213,7 +214,7 @@ public class KafkaBasicConsumeAction implements Action {
             if (record.value() instanceof String recordString) {
                 try {
                     return OBJECT_MAPPER.readValue(recordString, Map.class);
-                } catch (IOException e) {
+                } catch (JacksonException e) {
                     logger.info("Received a message, however cannot read it as a Json value");
                 }
             } else {

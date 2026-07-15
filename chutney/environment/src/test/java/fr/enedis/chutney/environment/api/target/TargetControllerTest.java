@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.environment.api.EnvironmentRestExceptionHandler;
 import fr.enedis.chutney.environment.api.TestHelper;
 import fr.enedis.chutney.environment.domain.Environment;
@@ -37,11 +36,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 public class TargetControllerTest extends TestHelper {
 
@@ -54,11 +55,13 @@ public class TargetControllerTest extends TestHelper {
 
     @BeforeEach
     public void setUp() {
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        mappingJackson2HttpMessageConverter.setObjectMapper(new ObjectMapper().findAndRegisterModules());
+
+        JacksonJsonHttpMessageConverter converter = new JacksonJsonHttpMessageConverter(
+            JsonMapper.builder().enable(MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS).build()
+        );
         mockMvc = MockMvcBuilders.standaloneSetup(sut)
             .setControllerAdvice(new EnvironmentRestExceptionHandler())
-            .setMessageConverters(mappingJackson2HttpMessageConverter)
+            .setMessageConverters(converter)
             .build();
     }
 

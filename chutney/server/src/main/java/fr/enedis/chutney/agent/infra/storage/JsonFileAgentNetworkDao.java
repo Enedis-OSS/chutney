@@ -10,13 +10,11 @@ package fr.enedis.chutney.agent.infra.storage;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 import static java.util.Optional.of;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.google.common.io.Files;
 import fr.enedis.chutney.server.core.domain.tools.ZipUtils;
 import fr.enedis.chutney.tools.ThrowingRunnable;
 import fr.enedis.chutney.tools.ThrowingSupplier;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.io.Files;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +27,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.zip.ZipOutputStream;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 public class JsonFileAgentNetworkDao {
 
@@ -82,17 +83,14 @@ public class JsonFileAgentNetworkDao {
     }
 
     private static ObjectMapper buildObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper()
-            .findAndRegisterModules()
-            .enable(SerializationFeature.INDENT_OUTPUT);
-
-        return objectMapper.setVisibility(
-            objectMapper.getSerializationConfig()
-                .getDefaultVisibilityChecker()
+        return JsonMapper.builder()
+            .findAndAddModules()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .changeDefaultVisibility(v -> v
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
-        );
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE))
+            .build();
     }
 }

@@ -9,13 +9,14 @@ package fr.enedis.chutney.dataset.api;
 
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.immutables.value.Value;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableKeyValue.class)
@@ -23,8 +24,10 @@ import org.immutables.value.Value;
 @Value.Style(jdkOnly = true)
 public interface KeyValue {
 
+    @JsonProperty("key")
     String key();
 
+    @JsonProperty("value")
     @Value.Default
     default String value() {
         return "";

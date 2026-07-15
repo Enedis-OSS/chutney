@@ -7,6 +7,37 @@
 
 import { Execution } from '@core/model/scenario/execution.model';
 
+export interface ExecutionSummaryDto {
+    executionId: number;
+    time: string;
+    duration: number;
+    status: string;
+    environment: string;
+    user: string;
+    testCaseTitle: string;
+    tags?: string[];
+    info?: string;
+    error?: string;
+    scenarioId?: string;
+}
+
+export interface ScenarioIndexMetadataDto {
+    id: string;
+    title: string;
+    description?: string;
+    repositorySource?: string;
+    tags: string[];
+    executions: ExecutionSummaryDto[];
+    creationDate: string;
+    updateDate: string;
+    author?: string;
+    version?: number;
+}
+
+export interface TestCaseIndexDto {
+    metadata: ScenarioIndexMetadataDto;
+}
+
 export class ScenarioIndex {
 
     public status;

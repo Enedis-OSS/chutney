@@ -7,22 +7,65 @@
 
 package fr.enedis.chutney.execution.api;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.Attached;
-import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
-import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.WithScenario;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
+import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
+import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.immutables.value.Value;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Value.Immutable
-@JsonSerialize(as= ImmutableExecutionSummaryDto.class)
-@JsonDeserialize(as= ImmutableExecutionSummaryDto.class)
-public interface ExecutionSummaryDto extends ExecutionProperties, Attached, WithScenario {
+@JsonSerialize(as = ImmutableExecutionSummaryDto.class)
+@JsonDeserialize(as = ImmutableExecutionSummaryDto.class)
+public interface ExecutionSummaryDto {
+
+    @JsonProperty("executionId")
+    Long executionId();
+
+    @JsonProperty("scenarioId")
+    String scenarioId();
+
+    @JsonProperty("time")
+    LocalDateTime time();
+
+    @JsonProperty("duration")
+    long duration();
+
+    @JsonProperty("status")
+    ServerReportStatus status();
+
+    @JsonProperty("info")
+    Optional<String> info();
+
+    @JsonProperty("error")
+    Optional<String> error();
+
+    @JsonProperty("testCaseTitle")
+    String testCaseTitle();
+
+    @JsonProperty("environment")
+    String environment();
+
+    @JsonProperty("dataset")
+    Optional<DataSet> dataset();
+
+    @JsonProperty("user")
+    String user();
+
+    @JsonProperty("campaignReport")
+    Optional<CampaignExecution> campaignReport();
+
+    @JsonProperty("tags")
+    Optional<Set<String>> tags();
 
     static List<ExecutionSummaryDto> toDto(Collection<ExecutionSummary> executionSummaryList) {
         return executionSummaryList.stream().map(ExecutionSummaryDto::toDto).collect(Collectors.toList());
@@ -30,18 +73,18 @@ public interface ExecutionSummaryDto extends ExecutionProperties, Attached, With
 
     static ExecutionSummaryDto toDto(ExecutionSummary executionSummary) {
         return ImmutableExecutionSummaryDto.builder()
+            .executionId(executionSummary.executionId())
+            .scenarioId(executionSummary.scenarioId())
             .time(executionSummary.time())
             .duration(executionSummary.duration())
             .status(executionSummary.status())
             .info(executionSummary.info())
             .error(executionSummary.error())
-            .executionId(executionSummary.executionId())
             .testCaseTitle(executionSummary.testCaseTitle())
             .environment(executionSummary.environment())
             .dataset(executionSummary.dataset())
             .user(executionSummary.user())
             .campaignReport(executionSummary.campaignReport())
-            .scenarioId(executionSummary.scenarioId())
             .tags(executionSummary.tags())
             .build();
     }
@@ -52,16 +95,17 @@ public interface ExecutionSummaryDto extends ExecutionProperties, Attached, With
 
     static ExecutionSummary fromDto(ExecutionSummaryDto dto) {
         return ImmutableExecutionHistory.ExecutionSummary.builder()
+            .executionId(dto.executionId())
+            .scenarioId(dto.scenarioId())
             .time(dto.time())
             .duration(dto.duration())
             .status(dto.status())
             .info(dto.info())
             .error(dto.error())
-            .executionId(dto.executionId())
             .testCaseTitle(dto.testCaseTitle())
             .environment(dto.environment())
             .user(dto.user())
-            .scenarioId(dto.scenarioId())
+            .campaignReport(dto.campaignReport())
             .tags(dto.tags())
             .build();
     }

@@ -51,8 +51,7 @@ class JsonTraversal {
         return getRootChildrenOfType(psiFile, JsonProperty::class.java).stream()
             .filter { jsonProperty -> "tags" == jsonProperty.name }
             .map(({ it.value }))
-            .map { el -> Arrays.asList(el?.children) }
-            .flatMap(({ it.stream() }))
+            .flatMap { el -> Arrays.stream(el?.children ?: emptyArray()) }
             .filter { el -> el is JsonObject }
             .map(({ JsonObject::class.java.cast(it) }))
             .map { jsonObject -> jsonObject.findProperty("name") }

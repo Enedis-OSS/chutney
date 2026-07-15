@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.action.kafka;
 
+import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.ContentType.APPLICATION_OCTET_STREAM;
 import static fr.enedis.chutney.action.kafka.KafkaBasicConsumeAction.OUTPUT_BODY;
 import static fr.enedis.chutney.action.kafka.KafkaBasicConsumeAction.OUTPUT_BODY_HEADERS_KEY;
 import static fr.enedis.chutney.action.kafka.KafkaBasicConsumeAction.OUTPUT_BODY_KEY_KEY;
@@ -16,7 +17,6 @@ import static fr.enedis.chutney.action.kafka.KafkaBasicConsumeAction.OUTPUT_KEYS
 import static fr.enedis.chutney.action.kafka.KafkaBasicConsumeAction.OUTPUT_PAYLOADS;
 import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Failure;
 import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Success;
-import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.ContentType.APPLICATION_OCTET_STREAM;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -49,6 +49,7 @@ import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -58,36 +59,45 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.EmbeddedKafkaZKBroker;
+import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
+
 
 public class KafkaBasicConsumeActionIntegrationTest {
 
-    private final String GROUP = "mygroup";
-    private String uniqueTopic;
+    private static final String GROUP = "mygroup";
 
-    private final static EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaZKBroker(1, true);
+    private static final EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaKraftBroker(1, 1)
+        .brokerProperty("auto.create.topics.enable", "true");
+
+    private static String brokerPath;
     private static Producer<Integer, String> producer;
-    private final TestTarget.TestTargetBuilder targetBuilder;
 
+    private String uniqueTopic;
     private TestLogger logger;
 
-    public KafkaBasicConsumeActionIntegrationTest() {
+    @BeforeAll
+    static void startBroker() {
         embeddedKafkaBroker.afterPropertiesSet();
-        String brokerPath = embeddedKafkaBroker.getBrokersAsString();
+        brokerPath = embeddedKafkaBroker.getBrokersAsString();
         producer = createProducer(brokerPath);
-        targetBuilder = TestTarget.TestTargetBuilder.builder().withTargetId("kafka").withUrl("tcp://" + brokerPath);
     }
 
     @BeforeEach
-    public void before() {
+    void before() {
         logger = new TestLogger();
         uniqueTopic = UUID.randomUUID().toString();
     }
 
     @AfterAll
-    public static void afterAll() {
-        producer.close();
+    static void afterAll() {
+        if (producer != null) {
+            producer.close();
+        }
         embeddedKafkaBroker.destroy();
+    }
+
+    private static TestTarget.TestTargetBuilder baseTargetBuilder() {
+        return TestTarget.TestTargetBuilder.builder().withTargetId("kafka").withUrl("tcp://" + brokerPath);
     }
 
     @Test
@@ -100,7 +110,7 @@ public class KafkaBasicConsumeActionIntegrationTest {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, OffsetResetStrategy.EARLIEST.name().toLowerCase());
 
         // When
-        Action consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
+        Action consumeAction = getKafkaBasicConsumeAction(baseTargetBuilder().build(), props, false);
         ActionExecutionResult actionExecutionResult = consumeAction.execute();
 
         // Then
@@ -118,13 +128,14 @@ public class KafkaBasicConsumeActionIntegrationTest {
     void consumer_from_target_with_truststore_should_reject_ssl_connection_with_broker_without_ssl_configured(String truststorePath, String truststorePass) throws URISyntaxException {
         // Given
         String truststore_jks = Paths.get(requireNonNull(HttpsServerStartActionTest.class.getResource(truststorePath)).toURI()).toAbsolutePath().toString();
-        targetBuilder.withProperty("trustStore", truststore_jks)
+        var sslTargetBuilder = baseTargetBuilder()
+            .withProperty("trustStore", truststore_jks)
             .withProperty("security.protocol", "SSL");
         ofNullable(truststorePass).ifPresent(tp ->
-            targetBuilder.withProperty("trustStorePassword", truststorePass)
+            sslTargetBuilder.withProperty("trustStorePassword", truststorePass)
         );
 
-        Target target = targetBuilder.build();
+        Target target = sslTargetBuilder.build();
 
         Map<String, String> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP);
@@ -148,20 +159,20 @@ public class KafkaBasicConsumeActionIntegrationTest {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, OffsetResetStrategy.EARLIEST.name().toLowerCase());
 
         // When
-        Action consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
+        Action consumeAction = getKafkaBasicConsumeAction(baseTargetBuilder().build(), props, false);
         ActionExecutionResult actionExecutionResult = consumeAction.execute();
         assertThat(actionExecutionResult.status).isEqualTo(Success);
         List<Map<String, Object>> body = assertActionOutputsSize(actionExecutionResult, 1);
         assertThat(body.getFirst().get("payload")).isEqualTo("1");
 
         // Second time
-        consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
+        consumeAction = getKafkaBasicConsumeAction(baseTargetBuilder().build(), props, false);
         actionExecutionResult = consumeAction.execute();
 
         assertThat(actionExecutionResult.status).isEqualTo(Failure);
 
         // Third time with reset
-        Action consumeActionWithReset = getKafkaBasicConsumeAction(targetBuilder.build(), props, true);
+        Action consumeActionWithReset = getKafkaBasicConsumeAction(baseTargetBuilder().build(), props, true);
         actionExecutionResult = consumeActionWithReset.execute();
 
         assertThat(actionExecutionResult.status).isEqualTo(Success);
@@ -169,7 +180,7 @@ public class KafkaBasicConsumeActionIntegrationTest {
         assertThat(body.getFirst().get("payload")).isEqualTo("1");
 
         // Third time without reset
-        consumeAction = getKafkaBasicConsumeAction(targetBuilder.build(), props, false);
+        consumeAction = getKafkaBasicConsumeAction(baseTargetBuilder().build(), props, false);
         actionExecutionResult = consumeAction.execute();
 
         assertThat(actionExecutionResult.status).isEqualTo(Failure);
@@ -182,7 +193,7 @@ public class KafkaBasicConsumeActionIntegrationTest {
         @DisplayName("simple")
         public void publish_and_consume_message_as_byte_array() {
             // Given
-            TestTarget kafkaTarget = targetBuilder
+            TestTarget kafkaTarget = baseTargetBuilder()
                 .withProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName())
                 .withProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getCanonicalName())
                 .withProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP)
@@ -216,7 +227,7 @@ public class KafkaBasicConsumeActionIntegrationTest {
         @DisplayName("header selector")
         public void publish_and_consume_message_as_byte_array_with_header_selector() {
             // Given
-            TestTarget kafkaTarget = targetBuilder
+            TestTarget kafkaTarget = baseTargetBuilder()
                 .withProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName())
                 .withProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getCanonicalName())
                 .withProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP)
@@ -253,7 +264,7 @@ public class KafkaBasicConsumeActionIntegrationTest {
         @DisplayName("ignore body selector")
         public void publish_and_consume_message_as_byte_array_with_ignored_body_selector(String mimeType) {
             // Given
-            TestTarget kafkaTarget = targetBuilder
+            TestTarget kafkaTarget = baseTargetBuilder()
                 .withProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName())
                 .withProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getCanonicalName())
                 .withProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP)

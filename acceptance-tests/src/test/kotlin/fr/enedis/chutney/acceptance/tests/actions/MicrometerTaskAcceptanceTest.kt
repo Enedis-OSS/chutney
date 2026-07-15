@@ -15,7 +15,7 @@ import fr.enedis.chutney.kotlin.dsl.ChutneyScenarioBuilder
 import fr.enedis.chutney.kotlin.dsl.Scenario
 import fr.enedis.chutney.kotlin.dsl.hjsonSpEL
 import fr.enedis.chutney.kotlin.dsl.spEL
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.RandomStringUtils
 
 val `Micrometer counter meter` = Scenario(title = "Micrometer counter meter") {
   micrometerScenario(
@@ -78,7 +78,6 @@ val `Micrometer counter meter` = Scenario(title = "Micrometer counter meter") {
                     }
                 ]
             }
-        }
         """
   )
 }

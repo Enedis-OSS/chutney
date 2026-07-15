@@ -10,6 +10,8 @@ package fr.enedis.chutney.tools;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +23,11 @@ public class Entry {
     public final String key;
     public final String value;
 
-    public Entry(String key, String value) {
+    @JsonCreator
+    public Entry(
+        @JsonProperty("key") String key,
+        @JsonProperty("value") String value
+    ) {
         this.key = key;
         this.value = value;
     }

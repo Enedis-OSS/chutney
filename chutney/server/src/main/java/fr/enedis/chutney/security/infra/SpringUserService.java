@@ -9,7 +9,6 @@ package fr.enedis.chutney.security.infra;
 
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.security.api.UserDto;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.domain.CurrentUserNotFoundException;
@@ -24,12 +23,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class SpringUserService implements UserService {
 
     private final AuthenticationService authenticationService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
     SpringUserService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;

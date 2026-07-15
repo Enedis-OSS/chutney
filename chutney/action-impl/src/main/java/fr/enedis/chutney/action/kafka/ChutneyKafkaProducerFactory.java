@@ -19,7 +19,6 @@ import fr.enedis.chutney.action.spi.injectable.Target;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.exec.util.MapUtils;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -57,9 +56,8 @@ final class ChutneyKafkaProducerFactory {
 
     private static Map<String, String> filterAndMergeProperties(Target target, Map<String, String> config) {
         Set<String> producerConfigKeys = ProducerConfig.configDef().configKeys().keySet();
-        return MapUtils.merge(
-            filterMapFrom(producerConfigKeys, target.prefixedProperties("")),
-            filterMapFrom(producerConfigKeys, config)
-        );
+        Map<String, String> result = new HashMap<>(filterMapFrom(producerConfigKeys, target.prefixedProperties("")));
+        result.putAll(filterMapFrom(producerConfigKeys, config));
+        return result;
     }
 }

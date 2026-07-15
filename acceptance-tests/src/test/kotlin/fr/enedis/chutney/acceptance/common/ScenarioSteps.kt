@@ -78,11 +78,11 @@ fun ChutneyStepBuilder.createScenario(outputScenarioId: String, scenario: String
   )
 }
 
-fun ChutneyStepBuilder.executeScenario(scenarioId: String, environment: String) {
+fun ChutneyStepBuilder.executeScenario(scenarioId: String, environment: String, timeout: String = "25 s") {
   HttpPostAction(
     target = "CHUTNEY_LOCAL",
     uri = "/api/ui/scenario/execution/v1/$scenarioId/$environment",
-    timeout = "25 s",
+    timeout = timeout,
     body = "{}",
     validations = mapOf(statusValidation(200)),
     outputs = mapOf(

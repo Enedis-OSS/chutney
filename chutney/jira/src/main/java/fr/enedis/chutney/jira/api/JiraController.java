@@ -200,9 +200,9 @@ public class JiraController {
             .url(jiraServerConfiguration.url())
             .username(jiraServerConfiguration.username())
             .password(jiraServerConfiguration.password())
-            .urlProxy(jiraServerConfiguration.urlProxy())
-            .userProxy(jiraServerConfiguration.userProxy())
-            .passwordProxy(jiraServerConfiguration.passwordProxy())
+            .urlProxy(Optional.ofNullable(jiraServerConfiguration.urlProxy()))
+            .userProxy(Optional.ofNullable(jiraServerConfiguration.userProxy()))
+            .passwordProxy(Optional.ofNullable(jiraServerConfiguration.passwordProxy()))
             .build();
     }
 

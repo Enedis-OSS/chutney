@@ -104,9 +104,9 @@ class ChutneyEngineExecutionContext(val request: ExecutionRequest) {
         try {
             when (event) {
                 STARTED -> request.engineExecutionListener.executionStarted(testDescriptor)
-                SKIPPED -> request.engineExecutionListener.executionSkipped(testDescriptor, reason)
-                FINISHED -> request.engineExecutionListener.executionFinished(testDescriptor, testResult)
-                REPORT -> request.engineExecutionListener.reportingEntryPublished(testDescriptor, reportEntry)
+                SKIPPED -> request.engineExecutionListener.executionSkipped(testDescriptor, reason ?: "")
+                FINISHED -> request.engineExecutionListener.executionFinished(testDescriptor, testResult!!)
+                REPORT -> request.engineExecutionListener.reportingEntryPublished(testDescriptor, reportEntry!!)
                 DYNAMIC -> request.engineExecutionListener.dynamicTestRegistered(testDescriptor)
             }
         } catch (e: Exception) {

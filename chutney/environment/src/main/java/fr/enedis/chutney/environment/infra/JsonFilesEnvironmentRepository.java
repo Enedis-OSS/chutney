@@ -10,6 +10,7 @@ package fr.enedis.chutney.environment.infra;
 import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 import static java.util.stream.Collectors.toList;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fr.enedis.chutney.environment.domain.Environment;
 import fr.enedis.chutney.environment.domain.EnvironmentRepository;
 import fr.enedis.chutney.environment.domain.EnvironmentVariable;
@@ -20,9 +21,6 @@ import fr.enedis.chutney.environment.domain.exception.InvalidEnvironmentNameExce
 import fr.enedis.chutney.environment.domain.exception.TargetAlreadyExistsException;
 import fr.enedis.chutney.environment.domain.exception.VariableAlreadyExistingException;
 import fr.enedis.chutney.tools.file.FileUtils;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -33,16 +31,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 public class JsonFilesEnvironmentRepository implements EnvironmentRepository {
 
     private static final String JSON_FILE_EXT = ".json";
 
     private final Path storeFolderPath;
-    private final ObjectMapper objectMapper = new ObjectMapper()
-        .findAndRegisterModules()
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
         .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
 
     public JsonFilesEnvironmentRepository(String storeFolderPath) throws UncheckedIOException {
         this.storeFolderPath = Paths.get(storeFolderPath).toAbsolutePath();
@@ -62,13 +65,11 @@ public class JsonFilesEnvironmentRepository implements EnvironmentRepository {
         }
         try {
             byte[] bytes = Files.readAllBytes(environmentPath);
-            try {
-                return objectMapper.readValue(bytes, JsonEnvironment.class).toEnvironment();
-            } catch (IOException e) {
-                throw new UnsupportedOperationException("Cannot deserialize configuration file: " + environmentPath, e);
-            }
+            return objectMapper.readValue(bytes, JsonEnvironment.class).toEnvironment();
         } catch (IOException e) {
             throw new UnsupportedOperationException("Cannot read configuration file: " + environmentPath, e);
+        } catch (JacksonException e) {
+            throw new UnsupportedOperationException("Cannot deserialize configuration file: " + environmentPath, e);
         }
     }
 
@@ -107,12 +108,10 @@ public class JsonFilesEnvironmentRepository implements EnvironmentRepository {
         checkVariableNameUnicity(environment.variables);
         try {
             byte[] bytes = objectMapper.writeValueAsBytes(JsonEnvironment.from(environment));
-            try {
-                Files.write(environmentPath, bytes);
-            } catch (IOException e) {
-                throw new UnsupportedOperationException("Cannot write in configuration directory: " + storeFolderPath, e);
-            }
+            Files.write(environmentPath, bytes);
         } catch (IOException e) {
+            throw new UnsupportedOperationException("Cannot write in configuration directory: " + storeFolderPath, e);
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Cannot serialize " + environment, e);
         }
     }

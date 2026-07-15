@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import static util.WaitUtils.awaitDuring;
 
 import fr.enedis.chutney.tools.ThrowingRunnable;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import tools.jackson.databind.ObjectMapper;
 
 public class JsonFileAgentNetworkDaoTest {
 

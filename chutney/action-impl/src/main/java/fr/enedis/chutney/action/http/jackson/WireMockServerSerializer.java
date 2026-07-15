@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.action.http.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 public class WireMockServerSerializer extends StdSerializer<WireMockServer> {
 
@@ -20,9 +20,9 @@ public class WireMockServerSerializer extends StdSerializer<WireMockServer> {
     }
 
     @Override
-    public void serialize(WireMockServer value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(WireMockServer value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         gen.writeStartObject();
-        gen.writeStringField("https-server-instance", value.toString());
+        gen.writeStringProperty("https-server-instance", value.toString());
         // TODO - Eventually add some information on wiremockserver
         gen.writeEndObject();
     }

@@ -22,8 +22,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.agent.NodeNetworkSpringConfiguration;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto.AgentLinkEntity;
@@ -49,13 +47,15 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 public class HttpAgentClientTest {
 
     private AgentClient sut;
 
     private ConnectionChecker connectionChecker = mock(ConnectionChecker.class);
-    private ObjectMapper objectMapper = new WebConfiguration().webObjectMapper();
+    private JsonMapper objectMapper = (JsonMapper) new WebConfiguration().webObjectMapper();
     private RestTemplate restTemplate = new NodeNetworkSpringConfiguration().restTemplateForHttpNodeNetwork(objectMapper);
     private MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -107,11 +107,13 @@ public class HttpAgentClientTest {
     }
 
     @Test
-    public void client_returns_link_to_remote_and_remote_links_otherwise() throws JsonProcessingException {
+    public void client_returns_link_to_remote_and_remote_links_otherwise() throws JacksonException {
         when(connectionChecker.canConnectTo(any())).thenReturn(true);
 
         String configurationCreationInstant = "2019-08-23T09:52:35Z";
-        ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(Include.NON_EMPTY);
+        JsonMapper objectMapper = JsonMapper.builder()
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(Include.NON_EMPTY))
+            .build();
         ExploreResultApiDto exploreResultApiDto = new ExploreResultApiDto();
 
         exploreResultApiDto.agentLinks.addAll(Arrays.asList(new AgentLinkEntity("B", "A"),

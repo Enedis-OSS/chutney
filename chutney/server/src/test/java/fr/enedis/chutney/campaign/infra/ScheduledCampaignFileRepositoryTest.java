@@ -60,7 +60,7 @@ public class ScheduledCampaignFileRepositoryTest {
                 {
                   "1" : {
                     "id" : "1",
-                    "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
+                    "schedulingDate" : "2020-02-04T07:10:00",
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
                     "datasetsId" : [ "" ],
@@ -68,7 +68,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   },
                   "2" : {
                     "id" : "2",
-                    "schedulingDate" : [ 2021, 3, 5, 8, 11 ],
+                    "schedulingDate" : "2021-03-05T08:11:00",
                     "campaignsId" : [ 22 ],
                     "campaignsTitle" : [ "campaign title 2" ],
                     "datasetsId" : [ "" ],
@@ -76,7 +76,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   },
                   "3" : {
                     "id" : "3",
-                    "schedulingDate" : [ 2022, 4, 6, 9, 12 ],
+                    "schedulingDate" : "2022-04-06T09:12:00",
                     "campaignsId" : [ 33 ],
                     "campaignsTitle" : [ "campaign title 3" ],
                     "datasetsId" : [ "" ],
@@ -84,7 +84,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   },
                   "4" : {
                     "id" : "4",
-                    "schedulingDate" : [ 2022, 4, 6, 9, 12 ],
+                    "schedulingDate" : "2022-04-06T09:12:00",
                     "campaignsId" : [ 55, 66 ],
                     "campaignsTitle" : [ "campaign title 5", "campaign title 6" ],
                     "datasetsId" : [ "", "" ],
@@ -110,7 +110,7 @@ public class ScheduledCampaignFileRepositoryTest {
                 {
                    "1" : {
                      "id" : "1",
-                     "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
+                     "schedulingDate" : "2020-02-04T07:10:00",
                      "campaignsId" : [ 11 ],
                      "campaignsTitle" : [ "campaign title 1" ],
                      "datasetsId" : [ "" ],
@@ -118,7 +118,7 @@ public class ScheduledCampaignFileRepositoryTest {
                    },
                    "3" : {
                      "id" : "3",
-                     "schedulingDate" : [ 2022, 4, 6, 9, 12 ],
+                     "schedulingDate" : "2022-04-06T09:12:00",
                      "campaignsId" : [ 33 ],
                      "campaignsTitle" : [ "campaign title 3" ],
                      "datasetsId" : [ "" ],
@@ -159,7 +159,7 @@ public class ScheduledCampaignFileRepositoryTest {
                 {
                   "1" : {
                     "id" : "1",
-                    "schedulingDate" : [ 2024, 2, 4, 7, 10 ],
+                    "schedulingDate" : "2024-02-04T07:10:00",
                     "campaignsId" : [ 1, 3 ],
                     "campaignsTitle" : [ "campaign title 1", "campaign title 3" ],
                     "datasetsId" : [ "", "" ],
@@ -188,7 +188,7 @@ public class ScheduledCampaignFileRepositoryTest {
                     {
                       "2" : {
                         "id" : "2",
-                        "schedulingDate" : [ 2021, 3, 5, 8, 11 ],
+                        "schedulingDate" : "2021-03-05T08:11:00",
                         "campaignsId" : [ 22 ],
                         "campaignsTitle" : [ "campaign title 2" ],
                         "datasetsId" : [ "" ],
@@ -247,7 +247,7 @@ public class ScheduledCampaignFileRepositoryTest {
                     "id" : "1",
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
-                    "schedulingDate" : [ 2020, 2, 4, 7, 10 ]
+                    "schedulingDate" : "2020-02-04T07:10:00"
                   }
                 }
             """;
@@ -277,7 +277,7 @@ public class ScheduledCampaignFileRepositoryTest {
                 {
                   "1" : {
                     "id" : "1",
-                    "schedulingDate" : [ 2020, 2, 4, 7, 10 ],
+                    "schedulingDate" : "2020-02-04T07:10:00",
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
                     "datasetsId" : [ "" ],
@@ -285,7 +285,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   },
                   "2" : {
                     "id" : "2",
-                    "schedulingDate" : [ 2021, 3, 5, 8, 11 ],
+                    "schedulingDate" : "2021-03-05T08:11:00",
                     "environment" : "MY_ENV",
                     "campaignsId" : [ 22, 33, 44 ],
                     "campaignsTitle" : [ "campaign title 2", "campaign title 3", "campaign title 4" ],

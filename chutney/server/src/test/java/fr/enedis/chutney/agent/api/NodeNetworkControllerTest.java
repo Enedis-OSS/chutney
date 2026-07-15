@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto;
 import fr.enedis.chutney.agent.api.dto.ExploreResultApiDto.AgentLinkEntity;
 import fr.enedis.chutney.agent.api.dto.NetworkConfigurationApiDto;
@@ -42,11 +41,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 public class NodeNetworkControllerTest {
 
@@ -59,7 +59,7 @@ public class NodeNetworkControllerTest {
     private final GetCurrentNetworkDescriptionService getCurrentNetworkDescription = mock(GetCurrentNetworkDescriptionService.class);
     private final EmbeddedEnvironmentApi environmentApi = mock(EmbeddedEnvironmentApi.class);
 
-    private final ObjectMapper objectMapper = new WebConfiguration().webObjectMapper();
+    private final JsonMapper objectMapper = (JsonMapper) new WebConfiguration().webObjectMapper();
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -69,7 +69,7 @@ public class NodeNetworkControllerTest {
 
         mockMvc = MockMvcBuilders
             .standaloneSetup(sut)
-            .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(objectMapper))
             .build();
     }
 

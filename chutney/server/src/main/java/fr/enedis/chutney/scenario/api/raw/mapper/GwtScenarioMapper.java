@@ -7,12 +7,12 @@
 
 package fr.enedis.chutney.scenario.api.raw.mapper;
 
-import static com.fasterxml.jackson.annotation.PropertyAccessor.CREATOR;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.GETTER;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.SETTER;
 import static org.hjson.JsonValue.readHjson;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.enedis.chutney.execution.domain.GwtScenarioMarshaller;
 import fr.enedis.chutney.scenario.api.raw.dto.GwtScenarioDto;
 import fr.enedis.chutney.scenario.api.raw.dto.GwtStepDto;
@@ -27,36 +27,34 @@ import fr.enedis.chutney.scenario.domain.gwt.GwtStepImplementation;
 import fr.enedis.chutney.scenario.domain.gwt.Strategy;
 import fr.enedis.chutney.server.core.domain.execution.ScenarioConversionException;
 import fr.enedis.chutney.server.core.domain.scenario.ScenarioNotParsableException;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.hjson.Stringify;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class GwtScenarioMapper implements GwtScenarioMarshaller {
 
     // TODO - Refactor mappers scattered everywhere :)
-    public static ObjectMapper mapper = new ObjectMapper()
-        .findAndRegisterModules()
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-        .setVisibility(FIELD, JsonAutoDetect.Visibility.ANY)
-        .setVisibility(GETTER, JsonAutoDetect.Visibility.NONE)
-        .setVisibility(SETTER, JsonAutoDetect.Visibility.NONE)
-        .setVisibility(CREATOR, JsonAutoDetect.Visibility.NONE)
+    public static ObjectMapper mapper = JsonMapper.builder()
+        .findAndAddModules()
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .changeDefaultVisibility(v -> v
+            .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+            .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+            .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+            .withCreatorVisibility(JsonAutoDetect.Visibility.NONE))
         .addMixIn(GwtScenario.class, GwtScenarioMixin.class)
         .addMixIn(GwtStep.class, GwtStepMixin.class)
         .addMixIn(GwtStep.GwtStepBuilder.class, GwtStepBuilderMixin.class)
         .addMixIn(GwtStepImplementation.class, GwtStepImplementationMixin.class)
-        .addMixIn(Strategy.class, StrategyMixin.class);
+        .addMixIn(Strategy.class, StrategyMixin.class)
+        .build();
 
     @JsonDeserialize(builder = GwtScenario.GwtScenarioBuilder.class)
     private static class GwtScenarioMixin {
@@ -125,7 +123,7 @@ public class GwtScenarioMapper implements GwtScenarioMarshaller {
         } else {
             try {
                 return mapper.readValue(readHjson(dto.task()).toString(), GwtStepImplementation.class);
-            } catch (IOException e) {
+            } catch (JacksonException e) {
                 throw new ScenarioConversionException(e);
             }
         }
@@ -176,7 +174,7 @@ public class GwtScenarioMapper implements GwtScenarioMarshaller {
     public String serialize(GwtScenario scenario) {
         try {
             return mapper.writeValueAsString(scenario);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new ScenarioNotParsableException("Cannot serialize scenario: " + e.getMessage(), e);
         }
     }
@@ -185,7 +183,7 @@ public class GwtScenarioMapper implements GwtScenarioMarshaller {
     public GwtScenario deserialize(String title, String description, String jsonScenario) {
         try {
             return mapper.readValue(jsonScenario, GwtScenario.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new ScenarioNotParsableException("Cannot deserialize scenario: ", e);
         }
     }

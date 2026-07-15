@@ -28,9 +28,9 @@ import fr.enedis.chutney.engine.domain.execution.strategies.StepStrategyDefiniti
 import fr.enedis.chutney.engine.domain.execution.strategies.StrategyProperties;
 import fr.enedis.chutney.tools.SocketUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import java.security.KeyManagementException;
@@ -80,7 +80,7 @@ public class HttpClientTest {
 
     @ParameterizedTest
     @MethodSource("credentials")
-    public void should_delegate_execution_to_endpoint(String user, String password) throws JsonProcessingException {
+    public void should_delegate_execution_to_endpoint(String user, String password) throws JacksonException {
         //G
         StepDefinition stepDefinition = createFakeStepDefinition();
         Step step = mock(Step.class);
@@ -152,11 +152,10 @@ public class HttpClientTest {
     }
 
     public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.findAndRegisterModules();
-        return objectMapper;
+        return JsonMapper.builder()
+            .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .findAndAddModules()
+            .build();
     }
 
     private static SSLContext sslContext(TrustManager[] trustManagers) {

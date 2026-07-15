@@ -10,9 +10,9 @@ package fr.enedis.chutney.execution.infra.execution;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.Map;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = UnmarshalledStepStrategyDefinition.UnmarshalledStepStrategyDefinitionBuilder.class)
 class UnmarshalledStepStrategyDefinition {

@@ -22,9 +22,10 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 import org.junit.platform.testkit.engine.EngineExecutionResults
 import org.junit.platform.testkit.engine.EngineTestKit
 import org.junit.platform.testkit.engine.EventStatistics
-import org.mockito.Mockito
-import org.mockito.Mockito.any
-import org.mockito.Mockito.times
+import org.mockito.kotlin.any
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import java.nio.file.Path
 import java.util.*
 
@@ -109,7 +110,7 @@ class ChutneyTestEngineTest {
     @Test
     fun should_filter_on_method_name() {
         val filter = MyPostDiscoveryFilter()
-        val filterMock = Mockito.spy(filter)
+        val filterMock = spy(filter)
         val discoveryRequest = LauncherDiscoveryRequestBuilder.request()
             .selectors(
                 selectClasspathRoots(Collections.singleton(Path.of("/fr/enedis/chutney/kotlin/junit/engine"))),
@@ -123,11 +124,11 @@ class ChutneyTestEngineTest {
 
         testEngine.discover(discoveryRequest, UniqueId.forEngine(testEngine.id))
 
-        Mockito.verify(filterMock, times(10)).apply(any())
+        verify(filterMock, times(10)).apply(any())
     }
 
     open class MyPostDiscoveryFilter : PostDiscoveryFilter {
-        override fun apply(`object`: TestDescriptor?): FilterResult {
+        override fun apply(`object`: TestDescriptor): FilterResult {
             return FilterResult.includedIf(true)
         }
     }

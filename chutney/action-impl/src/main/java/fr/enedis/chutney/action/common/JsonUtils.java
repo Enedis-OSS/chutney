@@ -7,17 +7,18 @@
 
 package fr.enedis.chutney.action.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public final class JsonUtils {
 
-    private static final ObjectMapper om = new ObjectMapper();
+    private static final ObjectMapper om = JsonMapper.builder().findAndAddModules().build();
 
     /**
      * Serialize given object as JSON string.
@@ -33,7 +34,7 @@ public final class JsonUtils {
         } else {
             try {
                 return om.writeValueAsString(obj);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw new IllegalStateException("Can't convert obj as json string: " + obj, e);
             }
         }

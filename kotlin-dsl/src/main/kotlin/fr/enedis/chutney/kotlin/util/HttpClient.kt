@@ -7,12 +7,9 @@
 
 package fr.enedis.chutney.kotlin.util
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.paranamer.ParanamerModule
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import fr.enedis.chutney.kotlin.authentication.AuthMethod
 import org.apache.hc.client5.http.ContextBuilder
 import org.apache.hc.client5.http.auth.*
@@ -97,11 +94,7 @@ object HttpClient {
     }
 
     fun configureObjectMapper(): ObjectMapper {
-        val stepImplModule = SimpleModule()
         return jacksonObjectMapper()
-            .registerModule(stepImplModule)
-            .registerModule(JavaTimeModule())
-            .registerModule(ParanamerModule())
     }
 
     fun buildHttpClientContext(

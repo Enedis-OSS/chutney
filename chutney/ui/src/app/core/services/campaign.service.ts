@@ -15,7 +15,8 @@ import {
     CampaignExecutionReport,
     Dataset,
     Execution,
-    ScenarioIndex
+    ScenarioIndex,
+    TestCaseIndexDto
 } from '@model';
 import { HttpClient } from '@angular/common/http';
 import { distinct } from '@shared/tools';
@@ -46,16 +47,19 @@ export class CampaignService {
     }
 
     findAllScenarios(id: number): Observable<Array<ScenarioIndex>> {
-        return this.http.get<Array<ScenarioIndex>>(environment.backend + this.resourceUrl + `/${id}/scenarios`)
-            .pipe(map((res: Array<any>) => {
+        return this.http.get<Array<TestCaseIndexDto>>(environment.backend + this.resourceUrl + `/${id}/scenarios`)
+            .pipe(map((res: TestCaseIndexDto[]) => {
                 return res.map(s => new ScenarioIndex(
                     s.metadata.id,
                     s.metadata.title,
                     s.metadata.description,
                     s.metadata.repositorySource,
-                    s.metadata.creationDate,
+                    new Date(s.metadata.creationDate),
+                    new Date(s.metadata.updateDate),
+                    s.metadata.version,
+                    s.metadata.author,
                     s.metadata.tags,
-                    s.metadata.executions
+                    s.metadata.executions?.map(e => Execution.deserialize(e))
                 ));
             }));
     }

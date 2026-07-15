@@ -7,8 +7,8 @@
 
 package fr.enedis.chutney.action.kafka.jackson;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import tools.jackson.databind.module.SimpleModule;
 
 public class KafkaModule extends SimpleModule {
 

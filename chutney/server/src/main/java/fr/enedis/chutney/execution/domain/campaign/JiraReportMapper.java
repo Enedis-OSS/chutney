@@ -10,11 +10,11 @@ package fr.enedis.chutney.execution.domain.campaign;
 import fr.enedis.chutney.jira.api.ReportForJira;
 import fr.enedis.chutney.server.core.domain.execution.report.ScenarioExecutionReport;
 import fr.enedis.chutney.server.core.domain.execution.report.StepExecutionReportCore;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 public class JiraReportMapper {
 
@@ -31,7 +31,7 @@ public class JiraReportMapper {
                 createStep(scenarioReport.report),
                 scenarioReport.environment);
 
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             LOGGER.error("Cannot deserialize scenarioReport", e);
             return null;
         }

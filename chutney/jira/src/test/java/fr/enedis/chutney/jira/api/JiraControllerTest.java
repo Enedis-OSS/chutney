@@ -19,8 +19,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.jira.domain.JiraRepository;
 import fr.enedis.chutney.jira.domain.JiraServerConfiguration;
 import fr.enedis.chutney.jira.domain.JiraXrayApi;
@@ -38,10 +36,15 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 class JiraControllerTest {
 
@@ -49,7 +52,10 @@ class JiraControllerTest {
     private MockMvc mockMvc;
     private final JiraXrayApi mockJiraXrayApi = mock(JiraXrayApi.class);
     private final JiraXrayClientFactory jiraXrayFactory = mock(JiraXrayClientFactory.class);
-    private final ObjectMapper om = new ObjectMapper().findAndRegisterModules();
+    private final ObjectMapper om = JsonMapper.builder().findAndAddModules().build();
+    private final JacksonJsonHttpMessageConverter converter = new JacksonJsonHttpMessageConverter(
+        JsonMapper.builder().findAndAddModules().build()
+    );
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -69,7 +75,9 @@ class JiraControllerTest {
         jiraRepository.saveDatasetForScenario("4", Map.of("dataset_1", "JIRA-04"));
 
         JiraController jiraController = new JiraController(jiraRepository, jiraXrayService);
-        mockMvc = MockMvcBuilders.standaloneSetup(jiraController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(jiraController)
+            .setMessageConverters(converter, new StringHttpMessageConverter())
+            .build();
     }
 
     @Test

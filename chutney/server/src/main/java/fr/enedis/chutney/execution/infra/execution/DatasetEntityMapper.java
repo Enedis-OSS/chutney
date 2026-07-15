@@ -10,18 +10,19 @@ package fr.enedis.chutney.execution.infra.execution;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class DatasetEntityMapper {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
     private static Logger logger = LoggerFactory.getLogger(DatasetEntityMapper.class);
 
     private static List<Map<String, String>> datasetDatatableFromString(String datasetDatatable) {
@@ -31,7 +32,7 @@ public class DatasetEntityMapper {
         try {
             return mapper.readValue(datasetDatatable, new TypeReference<>() {
             });
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error("Error while parsing dataset datatable", e);
             return emptyList();
         }
@@ -44,7 +45,7 @@ public class DatasetEntityMapper {
         try {
             return mapper.readValue(datasetConstants, new TypeReference<>() {
             });
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error("Error while parsing dataset constants", e);
             return emptyMap();
         }
@@ -56,7 +57,7 @@ public class DatasetEntityMapper {
         }
         try {
             return mapper.writeValueAsString(datatable);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error("Error while serializing dataset datatable to string", e);
             return null;
         }
@@ -68,7 +69,7 @@ public class DatasetEntityMapper {
         }
         try {
             return mapper.writeValueAsString(constants);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error("Error while serializing dataset constants to string", e);
             return null;
         }

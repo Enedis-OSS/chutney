@@ -50,7 +50,7 @@ public class SeleniumFirefoxDriverInitAction extends AbstractSeleniumDriverInitA
         firefoxOptions.setLogLevel(FirefoxDriverLogLevel.FATAL);
         try {
             FirefoxProfile profile = firefoxProfile != null ? FirefoxProfile.fromJson(firefoxProfile) : new FirefoxProfile();
-            firefoxPreferences.forEach(profile::setPreference);
+            firefoxPreferences.forEach((key, value) -> profile.setPreference(key, value));
             firefoxOptions.setProfile(profile);
         } catch (IOException e) {
             logger.error("Failed to read firefox profile" + e.getMessage());

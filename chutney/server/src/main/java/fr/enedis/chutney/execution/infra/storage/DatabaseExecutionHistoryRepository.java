@@ -12,8 +12,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.campaign.infra.CampaignExecutionJpaRepository;
 import fr.enedis.chutney.campaign.infra.CampaignJpaRepository;
 import fr.enedis.chutney.campaign.infra.jpa.CampaignExecutionEntity;
@@ -44,6 +42,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 @Transactional(readOnly = true)
@@ -264,7 +264,7 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
             try {
                 ScenarioExecutionReport newScenarioExecutionReport = updateStatusInScenarioExecutionReportWithStoppedStatusIfRunningOrPaused(execution);
                 return objectMapper.writeValueAsString(newScenarioExecutionReport);
-            } catch (JsonProcessingException exception) {
+            } catch (JacksonException exception) {
                 LOGGER.error("Unexpected error while deserializing report for execution id " + executionSummary.executionId(), exception);
                 return "";
             }
@@ -274,7 +274,7 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
         });
     }
 
-    private ScenarioExecutionReport updateStatusInScenarioExecutionReportWithStoppedStatusIfRunningOrPaused(Execution execution) throws JsonProcessingException {
+    private ScenarioExecutionReport updateStatusInScenarioExecutionReportWithStoppedStatusIfRunningOrPaused(Execution execution) throws JacksonException {
         ScenarioExecutionReport scenarioExecutionReport = objectMapper.readValue(execution.report(), ScenarioExecutionReport.class);
         StepExecutionReportCore report = updateStepWithStoppedStatusIfRunningOrPaused(scenarioExecutionReport.report);
         return updateScenarioExecutionReport(scenarioExecutionReport, report);

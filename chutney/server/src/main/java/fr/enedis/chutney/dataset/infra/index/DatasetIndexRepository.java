@@ -7,8 +7,6 @@
 
 package fr.enedis.chutney.dataset.infra.index;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.index.domain.AbstractIndexRepository;
 import fr.enedis.chutney.index.domain.IndexObject;
 import fr.enedis.chutney.index.infra.LuceneIndexRepository;
@@ -21,10 +19,13 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Repository
 public class DatasetIndexRepository extends AbstractIndexRepository<DataSet> {
-    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
     public DatasetIndexRepository(@Qualifier("datasetLuceneIndexRepository") LuceneIndexRepository luceneIndexRepository) {
         super("dataset", luceneIndexRepository);
@@ -50,7 +51,7 @@ public class DatasetIndexRepository extends AbstractIndexRepository<DataSet> {
     private String content(DataSet dataSet) {
         try {
             return objectMapper.writeValueAsString(Map.of("constant", dataSet.constants, "datatable", dataSet.datatable));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             String message = "Cannot serialize dataset: " + e.getMessage();
             LOGGER.error(message);
             return message;

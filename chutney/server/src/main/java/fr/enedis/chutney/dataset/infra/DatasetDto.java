@@ -7,7 +7,9 @@
 
 package fr.enedis.chutney.dataset.infra;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +22,14 @@ class DatasetDto {
     public final Map<String, String> constants;
     public final List<Map<String, String>> datatable;
 
-    DatasetDto(String name, String description, List<String> tags, Map<String, String> constants, List<Map<String, String>> datatable) {
+    @JsonCreator
+    DatasetDto(
+        @JsonProperty("name") String name,
+        @JsonProperty("description") String description,
+        @JsonProperty("tags") List<String> tags,
+        @JsonProperty("constants") Map<String, String> constants,
+        @JsonProperty("datatable") List<Map<String, String>> datatable
+    ) {
         this.id = name.replaceAll(" ", "_");
         this.name = name;
         this.description = description;

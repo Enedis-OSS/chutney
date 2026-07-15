@@ -7,12 +7,12 @@
 
 package fr.enedis.chutney.action.selenium.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 public class WebDriverSerializer extends StdSerializer<WebDriver> {
 
@@ -21,11 +21,11 @@ public class WebDriverSerializer extends StdSerializer<WebDriver> {
     }
 
     @Override
-    public void serialize(WebDriver value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(WebDriver value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         gen.writeStartObject();
-        gen.writeStringField("driver", value.toString());
+        gen.writeStringProperty("driver", value.toString());
         if (value instanceof RemoteWebDriver driver) {
-            gen.writeStringField("capabilities", driver.getCapabilities().asMap().toString());
+            gen.writeStringProperty("capabilities", driver.getCapabilities().asMap().toString());
         }
         gen.writeEndObject();
     }

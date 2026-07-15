@@ -7,11 +7,11 @@
 
 package fr.enedis.chutney.action.kafka.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 public class EmbeddedKafkaBrokerSerializer extends StdSerializer<EmbeddedKafkaBroker> {
 
@@ -20,9 +20,17 @@ public class EmbeddedKafkaBrokerSerializer extends StdSerializer<EmbeddedKafkaBr
     }
 
     @Override
-    public void serialize(EmbeddedKafkaBroker value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(EmbeddedKafkaBroker value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         gen.writeStartObject();
-        gen.writeStringField("Embedded Kafka Broker", value.getBrokersAsString());
+        gen.writeStringProperty("Embedded Kafka Broker", brokersAsString(value));
         gen.writeEndObject();
+    }
+
+    private static String brokersAsString(EmbeddedKafkaBroker value) {
+        try {
+            return value.getBrokersAsString();
+        } catch (RuntimeException e) {
+            return "shut down";
+        }
     }
 }

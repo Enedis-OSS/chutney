@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { GwtTestCase, ScenarioIndex, TestCase } from '@model';
+import { Execution, GwtTestCase, ScenarioIndex, TestCase, TestCaseIndexDto } from '@model';
 import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 
@@ -73,15 +73,15 @@ export class ScenarioService {
     }
 
     findScenarios(): Observable<Array<ScenarioIndex>> {
-        return this.httpClient.get<Array<ScenarioIndex>>(environment.backend + this.resourceUrlV2)
-        .pipe(map((res: Array<any>) => {
+        return this.httpClient.get<Array<TestCaseIndexDto>>(environment.backend + this.resourceUrlV2)
+        .pipe(map((res: Array<TestCaseIndexDto>) => {
             return this.mapJsonScenario(res);
         }));
     }
 
     findScenarioMetadata(id: string): Observable<ScenarioIndex> {
-        return this.httpClient.get<ScenarioIndex>(environment.backend + `${this.resourceUrlV2}/${id}/metadata`)
-        .pipe(map((res: any) => {
+        return this.httpClient.get<TestCaseIndexDto>(environment.backend + `${this.resourceUrlV2}/${id}/metadata`)
+        .pipe(map((res: TestCaseIndexDto) => {
             return this.mapJsonScenario([res])[0];
         }));
     }
@@ -114,18 +114,18 @@ export class ScenarioService {
         return this.httpClient.delete(environment.backend + `${this.resourceUrlV2}/${id}`);
     }
 
-    private mapJsonScenario(res: Array<any>) {
+    private mapJsonScenario(res: TestCaseIndexDto[]): ScenarioIndex[] {
         return res.map(s => new ScenarioIndex(
             s.metadata.id,
             s.metadata.title,
             s.metadata.description,
             s.metadata.repositorySource,
-            s.metadata.creationDate,
-            s.metadata.updateDate,
+            new Date(s.metadata.creationDate),
+            new Date(s.metadata.updateDate),
             s.metadata.version,
             s.metadata.author,
             s.metadata.tags,
-            s.metadata.executions
+            s.metadata.executions?.map(e => Execution.deserialize(e))
         ));
     }
 }

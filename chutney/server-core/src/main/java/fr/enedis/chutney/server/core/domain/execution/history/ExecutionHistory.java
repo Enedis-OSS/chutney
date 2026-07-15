@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.server.core.domain.execution.history;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.immutables.value.Value;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Value.Immutable
 @Value.Enclosing

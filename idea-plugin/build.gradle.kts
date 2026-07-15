@@ -13,6 +13,7 @@ plugins {
 }
 
 private val chutneyVersion = providers.gradleProperty("chutneyVersion").get()
+private val kotlinVersion = libs.versions.kotlin.get()
 
 group = providers.gradleProperty("pluginGroup")
 version = chutneyVersion
@@ -21,6 +22,10 @@ configurations.all {
   exclude("org.slf4j")
   resolutionStrategy {
     failOnVersionConflict()
+    // kotlin-daemon-client:2.2.x still declares kotlin-stdlib:2.0.21 (stale POM).
+    // Force to our declared version so failOnVersionConflict() does not trigger.
+    force("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+    force("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
   }
 }
 

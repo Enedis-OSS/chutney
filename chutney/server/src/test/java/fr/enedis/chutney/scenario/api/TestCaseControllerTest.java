@@ -13,8 +13,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.enedis.chutney.config.web.RestExceptionHandler;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.scenario.api.raw.dto.ImmutableRawTestCaseDto;
 import fr.enedis.chutney.scenario.api.raw.dto.RawTestCaseDto;
 import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
@@ -31,14 +31,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 public class TestCaseControllerTest {
 
-    private final ObjectMapper om = new ObjectMapper().findAndRegisterModules();
+    private final JsonMapper om = (JsonMapper) new WebConfiguration().webObjectMapper();
     private static final RawTestCaseDto SAMPLE_SCENARIO = ImmutableRawTestCaseDto.builder()
         .title("test")
         .description("description test")
@@ -58,6 +60,7 @@ public class TestCaseControllerTest {
 
         GwtTestCaseController testCaseController = new GwtTestCaseController(testCaseRepository, userService);
         mockMvc = MockMvcBuilders.standaloneSetup(testCaseController)
+            .setMessageConverters(WebConfiguration.plainTextStringConverter(), new JacksonJsonHttpMessageConverter(om))
             .setControllerAdvice(new RestExceptionHandler(Mockito.mock(ChutneyMetrics.class)))
             .build();
     }

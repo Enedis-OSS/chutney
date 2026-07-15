@@ -7,14 +7,14 @@
 
 package fr.enedis.chutney.engine.domain.execution.engine.step.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
 import java.io.Serial;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 public class JDomElementSerializer extends StdSerializer<Element> {
 
@@ -30,8 +30,8 @@ public class JDomElementSerializer extends StdSerializer<Element> {
     }
 
     @Override
-    public void serialize(Element element, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(Element element, JsonGenerator jsonGenerator, SerializationContext serializerProvider) throws JacksonException {
         String xmlString = new XMLOutputter(Format.getCompactFormat()).outputString(element);
-        jsonGenerator.writeObject(xmlString);
+        jsonGenerator.writeString(xmlString);
     }
 }

@@ -34,6 +34,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class Step {
         this.definition = definition;
         this.target = definition.getTarget().orElse(TargetImpl.NONE);
         this.executor = executor;
-        this.steps = steps;
+        this.steps = new CopyOnWriteArrayList<>(steps);
         this.state = new StepState(definition.name);
         this.stepContext = new StepContext();
     }

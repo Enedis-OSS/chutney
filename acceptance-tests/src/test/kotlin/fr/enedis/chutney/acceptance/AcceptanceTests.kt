@@ -7,9 +7,6 @@
 
 package fr.enedis.chutney.acceptance
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.paranamer.ParanamerModule
 import fr.enedis.chutney.acceptance.tests.*
 import fr.enedis.chutney.acceptance.tests.actions.*
 import fr.enedis.chutney.acceptance.tests.edition.*
@@ -31,6 +28,7 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.MountableFile
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.io.File
 import java.time.Duration
 
@@ -38,8 +36,6 @@ import java.time.Duration
 class AcceptanceTests {
 
   private val om = jacksonObjectMapper()
-    .registerModule(JavaTimeModule())
-    .registerModule(ParanamerModule())
 
   private var chutneyServer: GenericContainer<Nothing>? = null
   private var environment: ChutneyEnvironment = ChutneyEnvironment("DEFAULT")
@@ -89,8 +85,10 @@ class AcceptanceTests {
 
     chutneyServerInfo?.let {
       // Authorizations
-      val roles = AcceptanceTests::class.java.getResource("/blackbox/roles.json")!!.path
-      HttpClient.post<Any>(it, "/api/v1/authorizations", File(roles).readText())
+      val rolesJson = AcceptanceTests::class.java.getResourceAsStream("/blackbox/roles.json")!!
+        .bufferedReader(Charsets.UTF_8)
+        .readText()
+      HttpClient.post<Any>(it, "/api/v1/authorizations", rolesJson)
     }
 
     // Build launcher test environment //
@@ -396,7 +394,6 @@ class AcceptanceTests {
     fun setUp() {
       sshContainer =
         ComposeContainer(File("src/test/resources/blackbox/env/ssh/ssh-env-compose.yml"))
-          .withLocalCompose(true)
           .waitingFor("jump-host", Wait.forLogMessage(".*Server listening on.*", 1))
           .waitingFor("intern-host", Wait.forLogMessage(".*Server listening on.*", 1))
           .waitingFor("intern-jump-host", Wait.forLogMessage(".*Server listening on.*", 1))

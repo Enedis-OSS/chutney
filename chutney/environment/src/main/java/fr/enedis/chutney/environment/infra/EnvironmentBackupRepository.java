@@ -8,9 +8,6 @@
 package fr.enedis.chutney.environment.infra;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.environment.api.environment.EmbeddedEnvironmentApi;
 import fr.enedis.chutney.environment.api.environment.EnvironmentApi;
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto;
@@ -22,17 +19,22 @@ import java.io.UncheckedIOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.StreamWriteFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class EnvironmentBackupRepository implements Backupable {
 
     private final EnvironmentApi embeddedEnvironmentApi;
 
-    private final ObjectMapper om = new ObjectMapper()
-        .findAndRegisterModules()
-        .disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
+    private final ObjectMapper om = JsonMapper.builder()
+        .findAndAddModules()
+        .disable(StreamWriteFeature.AUTO_CLOSE_TARGET)
         .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
 
     public EnvironmentBackupRepository(EmbeddedEnvironmentApi embeddedEnvironmentApi) {
         this.embeddedEnvironmentApi = embeddedEnvironmentApi;

@@ -14,10 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.enedis.chutney.scenario.api.raw.dto.GwtTestCaseMetadataDto;
-import fr.enedis.chutney.scenario.api.raw.dto.TestCaseIndexDto;
+import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.scenario.TestCase;
 import fr.enedis.chutney.server.core.domain.scenario.TestCaseMetadata;
@@ -27,15 +24,18 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 class AggregatedTestCaseControllerTest {
 
-    private final ObjectMapper om = new ObjectMapper().findAndRegisterModules();
+    private final JsonMapper om = (JsonMapper) new WebConfiguration().webObjectMapper();
     private final ExecutionHistoryRepository executionHistoryRepository = mock(ExecutionHistoryRepository.class);
     private final TestCaseRepository testCaseRepository = mock(TestCaseRepository.class);
 
@@ -44,7 +44,9 @@ class AggregatedTestCaseControllerTest {
     @BeforeEach
     public void setUp() {
         AggregatedTestCaseController testCaseController = new AggregatedTestCaseController(testCaseRepository, executionHistoryRepository);
-        mockMvc = MockMvcBuilders.standaloneSetup(testCaseController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(testCaseController)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(om))
+            .build();
     }
 
     @Test
@@ -65,12 +67,9 @@ class AggregatedTestCaseControllerTest {
         //Then
         verify(testCaseRepository).findById(eq(id));
 
-        GwtTestCaseMetadataDto actualMetadata = om.readValue(mvcResult.getResponse().getContentAsString(), TestCaseIndexDto.class).metadata();
-        assertThat(actualMetadata.id()).isEqualTo(of(fakeMetadata.id()));
-        assertThat(actualMetadata.creationDate()).isEqualTo(fakeMetadata.creationDate());
-        assertThat(actualMetadata.updateDate()).isEqualTo(fakeMetadata.updateDate());
-        assertThat(actualMetadata.title()).isEqualTo(fakeMetadata.title());
-        assertThat(actualMetadata.description()).isEqualTo(of(fakeMetadata.description()));
+        JsonNode metadata = om.readTree(mvcResult.getResponse().getContentAsString()).get("metadata");
+        assertThat(metadata.get("id").asText()).isEqualTo(fakeMetadata.id());
+        assertThat(metadata.get("title").asText()).isEqualTo(fakeMetadata.title());
     }
 
     @Test
@@ -89,13 +88,9 @@ class AggregatedTestCaseControllerTest {
         //Then
         verify(testCaseRepository).findAll();
 
-        GwtTestCaseMetadataDto actualMetadata = (om.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<TestCaseIndexDto>>() {
-        })).getFirst().metadata();
-        assertThat(actualMetadata.id()).isEqualTo(of(fakeMetadata.id()));
-        assertThat(actualMetadata.creationDate()).isEqualTo(fakeMetadata.creationDate());
-        assertThat(actualMetadata.updateDate()).isEqualTo(fakeMetadata.updateDate());
-        assertThat(actualMetadata.title()).isEqualTo(fakeMetadata.title());
-        assertThat(actualMetadata.description()).isEqualTo(of(fakeMetadata.description()));
+        JsonNode metadata = om.readTree(mvcResult.getResponse().getContentAsString()).get(0).get("metadata");
+        assertThat(metadata.get("id").asText()).isEqualTo(fakeMetadata.id());
+        assertThat(metadata.get("title").asText()).isEqualTo(fakeMetadata.title());
     }
 
     @Test

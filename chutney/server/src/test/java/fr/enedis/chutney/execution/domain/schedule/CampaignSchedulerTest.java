@@ -35,19 +35,12 @@ import java.time.Clock;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InOrder;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.VerificationCollector;
-
 public class CampaignSchedulerTest {
-
-    @Rule
-    public final VerificationCollector collector = MockitoJUnit.collector();
 
     private CampaignScheduler sut;
     private final CampaignExecutionEngine campaignExecutionEngine = mock(CampaignExecutionEngine.class);

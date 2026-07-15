@@ -8,8 +8,6 @@
 package fr.enedis.chutney.environment.api.target;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.enedis.chutney.environment.api.environment.EnvironmentApi;
 import fr.enedis.chutney.environment.api.environment.EnvironmentController;
 import fr.enedis.chutney.environment.api.environment.dto.EnvironmentDto;
@@ -35,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class TargetController implements TargetApi {
@@ -44,10 +45,11 @@ public class TargetController implements TargetApi {
     private final EnvironmentApi envDelegate;
     private final TargetApi delegate;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-        .findAndRegisterModules()
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+        .findAndAddModules()
         .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
 
     TargetController(TargetApi delegate, @Qualifier("environmentEmbeddedApplication") EnvironmentApi envDelegate) {
         this.envDelegate = envDelegate;
