@@ -128,7 +128,11 @@
                         <td scope="row" class="text-center">
                             {{ scenario.lastExecution != null ? (scenario.lastExecution | amLocale:'fr' | amTimeAgo) : "" }}
                         </td>
-                        <td (click)="showScenario(scenario, $event)" class="scenario-title cursor-pointer">{{scenario.title}}</td>
+                        <td class="scenario-title p-0">
+                            <a class="d-flex align-items-center h-100 p-2 text-reset text-decoration-none cursor-pointer"
+                               [routerLink]="executionsLink(scenario)"
+                               [queryParams]="executionsQueryParams()">{{scenario.title}}</a>
+                        </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-link me-0"
                                     title="{{scenario.description}}">
@@ -165,17 +169,18 @@
                         </td>
                         <td>
                             <div class="float-end">
-                                <button type="button" class="btn btn-sm px-1"
-                                        title="{{ 'global.actions.show' | translate }}"
-                                        (click)="showScenario(scenario, $event)" >
+                                <a class="btn btn-sm px-1"
+                                   title="{{ 'global.actions.show' | translate }}"
+                                   [routerLink]="executionsLink(scenario)"
+                                   [queryParams]="executionsQueryParams()">
                                     <span  class="fa fa-eye"></span>
-                                </button>
-                                <button type="button" class="btn btn-sm px-1"
-                                        [ngClass]="isAuthorizedToWriteScenario ? null : 'disabled border-0'"
-                                        title="{{ 'global.actions.edit' | translate }}"
-                                        (click)="editScenario(scenario, $event)">
+                                </a>
+                                <a class="btn btn-sm px-1"
+                                   [ngClass]="isAuthorizedToWriteScenario ? null : 'disabled border-0'"
+                                   title="{{ 'global.actions.edit' | translate }}"
+                                   [routerLink]="rawEditionLink(scenario)">
                                     <span  class="fa fa-edit"></span>
-                                </button>
+                                </a>
                                 @if (jiraUrl !== '') {
                                     <button type="button" class="btn btn-sm px-1"
                                         [ngClass]="!hasJiraLinks(scenario) ? 'opacity-50' : ''"

@@ -39,6 +39,10 @@ function sendInput(input: HTMLInputElement, value: string) {
     input.dispatchEvent(new Event('input'));
 }
 
+function anchorByIcon(html: HTMLElement, iconClass: string): HTMLAnchorElement {
+    return html.querySelector(`a span.${iconClass}`)?.closest('a');
+}
+
 describe('ScenariosComponent', () => {
     let activatedRouteStub;
 
@@ -117,6 +121,53 @@ describe('ScenariosComponent', () => {
             const scenarios = getScenarios(html);
             expect(scenarios.length).toBe(1);
             expect(scenarios[0].textContent).toBe('another scenario');
+        });
+    }));
+
+    it('should open scenario as a routerLink anchor so it supports "open in new tab"', waitForAsync(() => {
+        const fixture = TestBed.createComponent(ScenariosComponent);
+        fixture.componentInstance.isAuthorizedToReadExecutions = true;
+        activatedRouteStub.setParamMap({orderBy: 'id'});
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            const html: HTMLElement = fixture.nativeElement;
+
+            // Title cell is an anchor pointing at the executions view with the last execution opened
+            const titleAnchor: HTMLAnchorElement = getScenarios(html)[0].querySelector('a');
+            expect(titleAnchor).withContext('title should be an <a>').toBeTruthy();
+            expect(titleAnchor.textContent.trim()).toBe('title1');
+            const titleHref = titleAnchor.getAttribute('href');
+            expect(titleHref).toContain('/scenario/1/executions');
+            expect(titleHref).toContain('open=last');
+            expect(titleHref).toContain('active=last');
+
+            // The eye (show) action targets the same executions link
+            const eyeAnchor = anchorByIcon(html, 'fa-eye');
+            expect(eyeAnchor).withContext('show action should be an <a>').toBeTruthy();
+            expect(eyeAnchor.getAttribute('href')).toContain('/scenario/1/executions');
+
+            // The edit action targets the raw-edition view (no query params)
+            const editAnchor = anchorByIcon(html, 'fa-edit');
+            expect(editAnchor).withContext('edit action should be an <a>').toBeTruthy();
+            expect(editAnchor.getAttribute('href')).toContain('/scenario/1/raw-edition');
+        });
+    }));
+
+    it('should fall back to raw-edition when not authorized to read executions', waitForAsync(() => {
+        const fixture = TestBed.createComponent(ScenariosComponent);
+        fixture.componentInstance.isAuthorizedToReadExecutions = false;
+        activatedRouteStub.setParamMap({orderBy: 'id'});
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            const html: HTMLElement = fixture.nativeElement;
+
+            const titleAnchor: HTMLAnchorElement = getScenarios(html)[0].querySelector('a');
+            expect(titleAnchor).toBeTruthy();
+            const href = titleAnchor.getAttribute('href');
+            expect(href).toContain('/scenario/1/raw-edition');
+            expect(href).not.toContain('open=last');
         });
     }));
 

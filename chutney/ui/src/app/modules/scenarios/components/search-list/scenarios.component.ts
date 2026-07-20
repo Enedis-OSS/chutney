@@ -166,19 +166,18 @@ export class ScenariosComponent implements OnInit, OnDestroy {
         });
     }
 
-    showScenario(scenario: ScenarioIndex, event) {
-        event.stopPropagation();
-        if (this.isAuthorizedToReadExecutions) {
-            const queryParams: Object = {open: 'last', active: 'last'};
-            this.router.navigate(['/scenario', scenario.id, 'executions'], queryParams);
-        } else {
-            this.editScenario(scenario, event);
-        }
+    executionsLink(scenario: ScenarioIndex): any[] {
+        return this.isAuthorizedToReadExecutions
+            ? ['/scenario', scenario.id, 'executions']
+            : ['/scenario', scenario.id, 'raw-edition'];
     }
 
-    editScenario(scenario: ScenarioIndex, event) {
-        event.stopPropagation();
-        this.router.navigate(['/scenario', scenario.id, 'raw-edition']);
+    executionsQueryParams(): Object {
+        return this.isAuthorizedToReadExecutions ? {open: 'last', active: 'last'} : {};
+    }
+
+    rawEditionLink(scenario: ScenarioIndex): any[] {
+        return ['/scenario', scenario.id, 'raw-edition'];
     }
 
     showScenarioJiraLinks(scenario: ScenarioIndex, event) {
