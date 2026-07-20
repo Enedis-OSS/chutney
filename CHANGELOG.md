@@ -7,6 +7,36 @@
 
 # Changelog
 
+## [4.3.0.0](https://github.com/Enedis-OSS/chutney/tree/4.3.0.0)
+
+### 🚀 Implemented enhancements:
+* Personal tokens by API key in synchronization by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/334
+* UI to list and create personal tokens by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/347
+* Choose name in environment import by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/359
+### 🐛 Fixed bugs:
+* Never send auth token for infos urls by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/332
+* Keep sort on running campaign exec by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/331
+* Display environment after importing target by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/360
+* Corrections on personal access tokens by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/371
+### 🔧 Technical enhancements:
+* Correct release upload assets error in GitHub action by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/318
+* Upgrade chutney idea plugin by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/319
+* Use PathPatternRequestMatcher (MvcRequestMatcher deprecated) by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/333
+* Change copyright year by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/335
+* Spring boot 4.1.0 migration by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/358
+### 👒 Dependencies:
+* chore(deps): Bump org.apache.zookeeper:zookeeper from 3.8.6 to 3.9.5 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/321
+* chore(deps): Bump org.checkerframework:checker-qual from 3.52.1 to 3.54.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/323
+* chore(deps): Bump org.testcontainers:testcontainers-bom from 2.0.3 to 2.0.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/325
+* chore(deps): Bump joda-time:joda-time from 2.10.2 to 2.14.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/326
+* chore(deps-dev): Bump org.apache.cxf:cxf-xjc-plugin from 4.1.1 to 4.1.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/324
+* chore(deps): Bump org.apache.maven.plugins:maven-resources-plugin from 3.4.0 to 3.5.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/329
+* chore(deps-dev): Bump org.sonatype.central:central-publishing-maven-plugin from 0.9.0 to 0.10.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/330
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/4.2.0...4.3.0.0
+
+
 ## [4.2.0](https://github.com/Enedis-OSS/chutney/tree/4.2.0)
 
 ### 🚀 Implemented enhancements:
