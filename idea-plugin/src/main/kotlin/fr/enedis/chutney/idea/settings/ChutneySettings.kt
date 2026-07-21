@@ -24,7 +24,7 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
 
     class ChutneySettingsState(
       var url: String = "",
-      var auth: AuthMethodEnum,
+      var auth: AuthMethodEnum = AuthMethodEnum.BASIC,
       var user: String? = "",
       var password: String? = "",
       var token: String? = "",
