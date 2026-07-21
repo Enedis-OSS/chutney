@@ -73,18 +73,18 @@ class ChutneySettingsConfigurable :
     }
 
     private fun basicButtonSelected() {
-      updateAuthFields(isBasic = true, isToken = false, isApiKey = false)
+      updateAuthFields(isBasic = true, isToken = false)
     }
 
     private fun tokenButtonSelected() {
-      updateAuthFields(isBasic = false, isToken = true, isApiKey = false)
+      updateAuthFields(isBasic = false, isToken = true)
     }
 
     private fun apiKeyButtonSelected() {
-      updateAuthFields(isBasic = false, isToken = false, isApiKey = true)
+      updateAuthFields(isBasic = false, isToken = false)
     }
 
-    private fun updateAuthFields(isBasic: Boolean, isToken: Boolean, isApiKey: Boolean) {
+    private fun updateAuthFields(isBasic: Boolean, isToken: Boolean) {
       user.isVisible = isBasic
       userLabel.isVisible = isBasic
       password.isVisible = isBasic
@@ -125,7 +125,7 @@ class ChutneySettingsConfigurable :
         proxyUser.text = serverInfo?.proxyUser
         proxyPassword.text = serverInfo?.proxyPassword
 
-        updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = bearerAuthButton.isSelected, isApiKey = apiKeyAuthButton.isSelected)
+        updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = bearerAuthButton.isSelected)
     }
 
     override fun createComponent(): JComponent {
