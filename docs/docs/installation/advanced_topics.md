@@ -33,12 +33,24 @@ Moreover, Chutney provides following metrics and corresponding Micrometer tags :
 
 # Authentication
 
+Authentication can be performed in three ways :  
+
+* In-memory authentication  
+* LDAP authentication
+* OIDC provider authentication
+
+When using in-memory authentication or LDAP authentication, Chutney displays a form where users can enter their username and password.  
+When using SSO, a button is displayed to redirect users to the OIDC provider. The image displayed on the button can be configured.
+
+The username/password form is displayed by default and can be enabled or disabled using the `chutney.auth.enable-user-password` property 
+The SSO link is not displayed by default and can be enabled or disabled using the `chutney.auth.enable-sso` property
+ 
 !!! important
     Maven module [server](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server/test/resources/blackbox){:target="_blank"} shows :
 
     * How to use in memory authentication and roles, see the `mem-auth` profile  
-    * How to use a custom LDAP authentication (see the `ldap-auth` profile. For example purpose, it uses an embedded LDAP server)  
-    * How to use a OIDC provider authentication (see the `sso-auth` profile. For example purpose, it uses a [local](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server/test/resources/blackbox/sso){:target="_blank"} server)
+    * How to use a custom LDAP authentication (see the `ldap-auth` profile. For example purpose, it uses an embedded [LDAP](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server/test/resources/local-dev/additional-config/application-ldap-auth.yml){:target="_blank"} server)  
+    * How to use a OIDC provider authentication (see the `sso-auth` profile. For example purpose, it uses a [local](https://github.com/Enedis-OSS/chutney/tree/main/chutney/server/test/resources/local-dev/additional-config/application-sso-auth.yml){:target="_blank"} server)
 
 Chutney uses Spring Security for :
 
@@ -141,7 +153,7 @@ Since Chutney includes this module, you can also configure it.
     Chutney enforces `ADMIN_ACCESS` permissions on all default Actuator endpoints.
 
 
-# Specifics values
+# Specific values
 
 In addition of spring application [properties](https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.server){:target="_blank"}, following table shows all properties you can set to configure Chutney.
 
