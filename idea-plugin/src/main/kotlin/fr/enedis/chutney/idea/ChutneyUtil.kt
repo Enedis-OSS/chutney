@@ -7,12 +7,12 @@
 
 package fr.enedis.chutney.idea
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import me.andrz.jackson.JsonReferenceProcessor
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import tools.jackson.databind.ObjectMapper
 import java.io.File
 
 object ChutneyUtil {

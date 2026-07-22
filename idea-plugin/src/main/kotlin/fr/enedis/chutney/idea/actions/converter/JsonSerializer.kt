@@ -8,34 +8,38 @@
 package fr.enedis.chutney.idea.actions.converter
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.readValue
 import org.hjson.JsonValue
+import tools.jackson.core.JacksonException
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.module.kotlin.jacksonMapperBuilder
+import tools.jackson.module.kotlin.readValue
 import java.io.IOException
 
 class JsonSerializer {
-    private val mapper = ObjectMapper() //.findAndRegisterModules()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .enable(SerializationFeature.INDENT_OUTPUT)
-        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
 
-    fun toMap(rawScenarioV1: String?): MutableMap<String, Any?> {
-        return try {
-            val json = JsonValue.readHjson(rawScenarioV1).toString()
-            mapper.readValue(json)
-        } catch (e: IOException) {
-            throw IllegalStateException(e)
-        }
-    }
+  private val mapper = jacksonMapperBuilder()
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .enable(SerializationFeature.INDENT_OUTPUT)
+    .changeDefaultPropertyInclusion {   it.withValueInclusion(JsonInclude.Include.NON_NULL) }
+    .build()
 
-    fun toString(map: Map<*, *>?): String {
-        return try {
-            mapper.writeValueAsString(map)
-        } catch (e: JsonProcessingException) {
-            throw IllegalStateException(e)
-        }
+
+
+  fun toMap(rawScenarioV1: String?): MutableMap<String, Any?> {
+    return try {
+      val json = JsonValue.readHjson(rawScenarioV1).toString()
+      mapper.readValue(json)
+    } catch (e: IOException) {
+      throw IllegalStateException(e)
     }
+  }
+
+  fun toString(map: Map<*, *>?): String {
+    return try {
+      mapper.writeValueAsString(map)
+    } catch (e: JacksonException) {
+      throw IllegalStateException(e)
+    }
+  }
 }
