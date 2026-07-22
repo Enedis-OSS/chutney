@@ -21,6 +21,7 @@ import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
 import java.awt.BorderLayout
 import java.awt.Color
+import java.awt.GridLayout
 import javax.swing.*
 
 
@@ -43,8 +44,11 @@ class ChutneySettingsConfigurable :
 
     val authModeLabel: JLabel = JLabel("Authentication mode")
     val basicAuthButton = JBRadioButton("Basic")
-    val tokenAuthButton = JBRadioButton("Token")
+    val bearerAuthButton = JBRadioButton("Bearer")
+    val apiKeyAuthButton = JBRadioButton("API-Key")
     val authButtonsGroup = ButtonGroup()
+
+    val checkConnectionButton = JButton("Check connection")
 
     val chutneySettings: ChutneySettings = ChutneySettings.getInstance()
 
@@ -76,6 +80,10 @@ class ChutneySettingsConfigurable :
       updateAuthFields(isBasic = false, isToken = true)
     }
 
+    private fun apiKeyButtonSelected() {
+      updateAuthFields(isBasic = false, isToken = false)
+    }
+
     private fun updateAuthFields(isBasic: Boolean, isToken: Boolean) {
       user.isVisible = isBasic
       userLabel.isVisible = isBasic
@@ -84,11 +92,14 @@ class ChutneySettingsConfigurable :
 
       token.isVisible = isToken
       tokenLabel.isVisible = isToken
+
+      checkConnectionButton.isVisible = isBasic || isToken
     }
 
   private fun stateFromFields() = ChutneySettings.ChutneySettingsState(
         url = url.text,
-        basicAuth = basicAuthButton.isSelected,
+    auth = if(basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
+        else if(bearerAuthButton.isSelected) AuthMethod.Bearer(token.text) else AuthMethod.ApiKey(token.text),
         user = user.text,
         password = String(password.password),
         token = token.text,
@@ -98,24 +109,27 @@ class ChutneySettingsConfigurable :
     )
 
     private fun initFields() {
-        val serverInfo = chutneySettings.state.serverInfo()
-        url.text = serverInfo?.url
-        basicAuthButton.isSelected = chutneySettings.state.basicAuth == true
-        tokenAuthButton.isSelected = chutneySettings.state.basicAuth == false
-        user.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).user else ""
-        password.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).password else ""
-        token.text = if(serverInfo?.auth is AuthMethod.Bearer) (serverInfo.auth as AuthMethod.Bearer).token else ""
-        proxyUrl.text = serverInfo?.proxyUrl
-        proxyUser.text = serverInfo?.proxyUser
-        proxyPassword.text = serverInfo?.proxyPassword
+        url.text = chutneySettings.state.url
+        basicAuthButton.isSelected = chutneySettings.state.auth is AuthMethod.Basic
+        bearerAuthButton.isSelected = chutneySettings.state.auth is AuthMethod.Bearer
+        apiKeyAuthButton.isSelected = chutneySettings.state.auth is AuthMethod.ApiKey
+        user.text = if(chutneySettings.state.auth is AuthMethod.Basic) (chutneySettings.state.auth as AuthMethod.Basic).user else ""
+        password.text = if(chutneySettings.state.auth is AuthMethod.Basic) (chutneySettings.state.auth as AuthMethod.Basic).password else ""
+        if(chutneySettings.state.auth is AuthMethod.Bearer) {
+          token.text = (chutneySettings.state.auth as AuthMethod.Bearer).token
+        } else if(chutneySettings.state.auth is AuthMethod.ApiKey) {
+          token.text = (chutneySettings.state.auth as AuthMethod.ApiKey).token
+        }
+        proxyUrl.text = chutneySettings.state.proxyUrl
+        proxyUser.text = chutneySettings.state.proxyUser
+        proxyPassword.text = chutneySettings.state.proxyPassword
 
-        updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = tokenAuthButton.isSelected)
+        updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = bearerAuthButton.isSelected)
     }
 
     override fun createComponent(): JComponent {
         initFields()
 
-        val checkConnectionButton = JButton("Check connection")
         val checkLabel = JBLabel("").apply { isVisible = false }
 
         checkConnectionButton.addActionListener {
@@ -123,7 +137,8 @@ class ChutneySettingsConfigurable :
                 val serverInfo = ChutneyServerInfo(
                     url.text,
                   if(basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
-                    else AuthMethod.Bearer(token.text),
+                    else if(bearerAuthButton.isSelected) AuthMethod.Bearer(token.text)
+                    else AuthMethod.ApiKey(token.text),
                     proxyUrl.text.ifBlank { null },
                     proxyUser.text.ifBlank { null },
                     String(proxyPassword.password).ifBlank { null }
@@ -139,11 +154,13 @@ class ChutneySettingsConfigurable :
         }
 
         authButtonsGroup.add(basicAuthButton)
-        authButtonsGroup.add(tokenAuthButton)
+        authButtonsGroup.add(bearerAuthButton)
+        authButtonsGroup.add(apiKeyAuthButton)
 
-        val authButtonsPanel = JPanel(BorderLayout())
-        authButtonsPanel.add(basicAuthButton, BorderLayout.WEST)
-        authButtonsPanel.add(tokenAuthButton, BorderLayout.CENTER)
+        val authButtonsPanel = JPanel(GridLayout(1, 3))
+        authButtonsPanel.add(basicAuthButton)
+        authButtonsPanel.add(bearerAuthButton)
+        authButtonsPanel.add(apiKeyAuthButton)
 
         val myWrapper = JPanel(BorderLayout())
         val centerPanel =
@@ -164,7 +181,8 @@ class ChutneySettingsConfigurable :
                         .panel
 
         basicAuthButton.addActionListener { basicButtonSelected() }
-        tokenAuthButton.addActionListener { tokenButtonSelected() }
+        bearerAuthButton.addActionListener { tokenButtonSelected() }
+        apiKeyAuthButton.addActionListener { apiKeyButtonSelected() }
 
         myWrapper.add(centerPanel, BorderLayout.NORTH)
         return myWrapper
