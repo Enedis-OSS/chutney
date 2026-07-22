@@ -24,7 +24,7 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
 
     class ChutneySettingsState(
       var url: String = "",
-      var auth: AuthMethodEnum = AuthMethodEnum.BASIC,
+      var auth: AuthMethod = AuthMethod.Basic("", ""),
       var user: String? = "",
       var password: String? = "",
       var token: String? = "",
@@ -38,9 +38,9 @@ class ChutneySettings : PersistentStateComponent<ChutneySettings.ChutneySettings
                     ChutneyServerInfo(
                         url = url,
                         when(auth) {
-                          AuthMethodEnum.BASIC -> AuthMethod.Basic(user.orEmpty(), password.orEmpty())
-                          AuthMethodEnum.BEARER -> AuthMethod.Bearer(token.orEmpty())
-                          AuthMethodEnum.API_KEY -> AuthMethod.ApiKey(token.orEmpty())
+                          is AuthMethod.Basic -> AuthMethod.Basic(user.orEmpty(), password.orEmpty())
+                          is AuthMethod.Bearer -> AuthMethod.Bearer(token.orEmpty())
+                          is AuthMethod.ApiKey -> AuthMethod.ApiKey(token.orEmpty())
                         },
                         proxyUrl = proxyUrl.takeIf { ! it.isNullOrBlank() },
                         proxyUser = proxyUser.takeIf { ! it.isNullOrBlank() },

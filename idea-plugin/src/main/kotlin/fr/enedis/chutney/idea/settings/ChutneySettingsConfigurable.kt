@@ -98,8 +98,8 @@ class ChutneySettingsConfigurable :
 
   private fun stateFromFields() = ChutneySettings.ChutneySettingsState(
         url = url.text,
-        auth = if(basicAuthButton.isSelected) AuthMethodEnum.BASIC
-        else if(bearerAuthButton.isSelected) AuthMethodEnum.BEARER else AuthMethodEnum.API_KEY ,
+    auth = if(basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
+        else if(bearerAuthButton.isSelected) AuthMethod.Bearer(token.text) else AuthMethod.ApiKey(token.text),
         user = user.text,
         password = String(password.password),
         token = token.text,
@@ -109,21 +109,20 @@ class ChutneySettingsConfigurable :
     )
 
     private fun initFields() {
-        val serverInfo = chutneySettings.state.serverInfo()
-        url.text = serverInfo?.url
-        basicAuthButton.isSelected = chutneySettings.state.auth == AuthMethodEnum.BASIC
-        bearerAuthButton.isSelected = chutneySettings.state.auth == AuthMethodEnum.BEARER
-        apiKeyAuthButton.isSelected = chutneySettings.state.auth == AuthMethodEnum.API_KEY
-        user.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).user else ""
-        password.text = if(serverInfo?.auth is AuthMethod.Basic) (serverInfo.auth as AuthMethod.Basic).password else ""
-        if(serverInfo?.auth is AuthMethod.Bearer) {
-          token.text = (serverInfo.auth as AuthMethod.Bearer).token
-        } else if(serverInfo?.auth is AuthMethod.ApiKey) {
-          token.text = (serverInfo.auth as AuthMethod.ApiKey).token
+        url.text = chutneySettings.state.url
+        basicAuthButton.isSelected = chutneySettings.state.auth is AuthMethod.Basic
+        bearerAuthButton.isSelected = chutneySettings.state.auth is AuthMethod.Bearer
+        apiKeyAuthButton.isSelected = chutneySettings.state.auth is AuthMethod.ApiKey
+        user.text = if(chutneySettings.state.auth is AuthMethod.Basic) (chutneySettings.state.auth as AuthMethod.Basic).user else ""
+        password.text = if(chutneySettings.state.auth is AuthMethod.Basic) (chutneySettings.state.auth as AuthMethod.Basic).password else ""
+        if(chutneySettings.state.auth is AuthMethod.Bearer) {
+          token.text = (chutneySettings.state.auth as AuthMethod.Bearer).token
+        } else if(chutneySettings.state.auth is AuthMethod.ApiKey) {
+          token.text = (chutneySettings.state.auth as AuthMethod.ApiKey).token
         }
-        proxyUrl.text = serverInfo?.proxyUrl
-        proxyUser.text = serverInfo?.proxyUser
-        proxyPassword.text = serverInfo?.proxyPassword
+        proxyUrl.text = chutneySettings.state.proxyUrl
+        proxyUser.text = chutneySettings.state.proxyUser
+        proxyPassword.text = chutneySettings.state.proxyPassword
 
         updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = bearerAuthButton.isSelected)
     }
@@ -139,7 +138,7 @@ class ChutneySettingsConfigurable :
                     url.text,
                   if(basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
                     else if(bearerAuthButton.isSelected) AuthMethod.Bearer(token.text)
-                  else AuthMethod.ApiKey(token.text),
+                    else AuthMethod.ApiKey(token.text),
                     proxyUrl.text.ifBlank { null },
                     proxyUser.text.ifBlank { null },
                     String(proxyPassword.password).ifBlank { null }
