@@ -70,7 +70,7 @@ dependencies {
     isTransitive = false
   }
 
-  runtimeOnly("com.fasterxml.jackson.module", "jackson-module-kotlin")
+  implementation("tools.jackson.module", "jackson-module-kotlin")
   runtimeOnly("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310")
   runtimeOnly("com.fasterxml.jackson.module", "jackson-module-paranamer")
 
@@ -82,10 +82,10 @@ dependencies {
   implementation("com.google.guava", "guava")
   implementation("org.hjson", "hjson")
   implementation("org.apache.commons", "commons-text")
-  implementation("com.fasterxml.jackson.core", "jackson-core")
-  implementation("com.fasterxml.jackson.core", "jackson-databind")
+  implementation("tools.jackson.core", "jackson-core")
+  implementation("tools.jackson.core", "jackson-databind")
   implementation("com.fasterxml.jackson.core", "jackson-annotations")
-  implementation("com.fasterxml.jackson.dataformat", "jackson-dataformat-yaml")
+  implementation("tools.jackson.dataformat", "jackson-dataformat-yaml")
 
   implementation("org.jetbrains:annotations") {
     version { strictly("24.0.0") }
