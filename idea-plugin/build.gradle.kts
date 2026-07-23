@@ -101,6 +101,20 @@ dependencies {
     isTransitive = false
     artifact { classifier = "boot" }
   }
+
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("junit:junit:4.13.2")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+  testImplementation("org.mockito:mockito-core:5.12.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+}
+
+tasks.test {
+  useJUnitPlatform {
+    includeEngines("junit-jupiter")
+  }
 }
 
 intellijPlatform {

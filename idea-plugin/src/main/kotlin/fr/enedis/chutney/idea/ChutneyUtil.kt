@@ -7,17 +7,23 @@
 
 package fr.enedis.chutney.idea
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import me.andrz.jackson.JsonReferenceProcessor
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.io.File
 
 object ChutneyUtil {
 
-  private val mapper: ObjectMapper = ObjectMapper()
+  private val mapper: ObjectMapper =jacksonMapperBuilder()
+    .enable(SerializationFeature.INDENT_OUTPUT)
+    .changeDefaultPropertyInclusion {   it.withValueInclusion(JsonInclude.Include.NON_NULL) }
+    .build()
   private val jsonReferenceProcessor = JsonReferenceProcessor().apply {
     maxDepth = -1
     isPreserveRefs = true
@@ -27,7 +33,8 @@ object ChutneyUtil {
 
   fun processJsonReference(jsonVirtualFile: VirtualFile): String {
     val node = jsonReferenceProcessor.process(File(jsonVirtualFile.path))
-    return mapper.writeValueAsString(node)
+    val tree = mapper.readTree(node.toString())
+    return mapper.writeValueAsString(tree)
   }
 
   fun isChutneyJson(jsonPsi: PsiFile): Boolean {
