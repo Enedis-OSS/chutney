@@ -10,6 +10,7 @@ package fr.enedis.chutney.security.infra;
 import fr.enedis.chutney.campaign.api.CampaignController;
 import fr.enedis.chutney.dataset.api.DataSetController;
 import fr.enedis.chutney.environment.api.environment.EnvironmentController;
+import fr.enedis.chutney.execution.api.ScenarioExecutionUiController;
 import fr.enedis.chutney.scenario.api.GwtTestCaseController;
 import fr.enedis.chutney.security.domain.AuthenticationService;
 import fr.enedis.chutney.security.domain.InvalidApiKeyException;
@@ -42,7 +43,8 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         new ApiKeyEndpoint(HttpMethod.POST, DataSetController.BASE_URL),
         new ApiKeyEndpoint(HttpMethod.PUT, DataSetController.BASE_URL),
         new ApiKeyEndpoint(HttpMethod.POST, CampaignController.BASE_URL),
-        new ApiKeyEndpoint(HttpMethod.GET, EnvironmentController.BASE_URL));
+        new ApiKeyEndpoint(HttpMethod.GET, EnvironmentController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.POST, ScenarioExecutionUiController.IDEA_BASE_URL));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiAuthenticationFilter.class);
 

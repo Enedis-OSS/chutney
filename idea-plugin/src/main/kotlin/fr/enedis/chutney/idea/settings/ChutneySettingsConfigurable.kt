@@ -126,7 +126,10 @@ class ChutneySettingsConfigurable :
     proxyUser.text = chutneySettings.state.proxyUser
     proxyPassword.text = chutneySettings.state.proxyPassword
 
-    updateAuthFields(isBasic = basicAuthButton.isSelected, isToken = bearerAuthButton.isSelected || apiKeyAuthButton.isSelected)
+    updateAuthFields(
+      isBasic = basicAuthButton.isSelected,
+      isToken = bearerAuthButton.isSelected || apiKeyAuthButton.isSelected
+    )
   }
 
   override fun createComponent(): JComponent {
@@ -135,21 +138,11 @@ class ChutneySettingsConfigurable :
     val checkLabel = JBLabel("").apply { isVisible = false }
 
     checkConnectionButton.addActionListener {
-      try {
-        val serverInfo = ChutneyServerInfo(
-          url.text,
-          if (basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
-          else if (bearerAuthButton.isSelected) AuthMethod.Bearer(token.text)
-          else AuthMethod.ApiKey(token.text),
-          proxyUrl.text.ifBlank { null },
-          proxyUser.text.ifBlank { null },
-          String(proxyPassword.password).ifBlank { null }
-        )
-        HttpClient.get<Any>(serverInfo, "/api/v1/user")
+      if(checkConnection()) {
         checkLabel.text = "Connection successfull"
         checkLabel.foreground = Color.decode("#297642")
-      } catch (exception: Exception) {
-        checkLabel.text = "Connection failed: $exception"
+      } else {
+        checkLabel.text = "Connection failed"
         checkLabel.foreground = JBColor.RED
       }
       checkLabel.isVisible = true
@@ -188,6 +181,24 @@ class ChutneySettingsConfigurable :
 
     myWrapper.add(centerPanel, BorderLayout.NORTH)
     return myWrapper
+  }
+
+  fun checkConnection(): Boolean {
+    val serverInfo = ChutneyServerInfo(
+      url.text,
+      if (basicAuthButton.isSelected) AuthMethod.Basic(user.text, String(password.password))
+      else if (bearerAuthButton.isSelected) AuthMethod.Bearer(token.text)
+      else AuthMethod.ApiKey(token.text),
+      proxyUrl.text.ifBlank { null },
+      proxyUser.text.ifBlank { null },
+      String(proxyPassword.password).ifBlank { null }
+    )
+    try {
+      HttpClient.get<Any>(serverInfo, "/api/v2/environments")
+      return true
+    } catch (e: Exception) {
+      return false
+    }
   }
 
   companion object {
