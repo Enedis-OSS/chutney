@@ -1,7 +1,7 @@
 #SPDX-FileCopyrightText: 2017-2026 Enedis
 #SPDX-License-Identifier: Apache-2.0
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:25-jre
 
 LABEL org.opencontainers.image.source=https://github.com/Enedis-OSS/chutney
 
