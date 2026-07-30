@@ -27,6 +27,9 @@
     |    `body` | String                                                                                                                                      |
     | `headers` | [HttpHeaders](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpHeaders.html){:target="_blank"} |
 
+    Response headers are read as a case-insensitive multi-valued map, e.g. `${#headers['Content-Type'][0]}`.
+    See [HTTP actions](http.md) for details.
+
 ### Example
 
 === "Kotlin"

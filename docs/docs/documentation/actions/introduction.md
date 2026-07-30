@@ -115,6 +115,8 @@ After executing this action, the execution context will contain the following ou
 Your relevant data can be accessed from another SpEL using `#bestMovies` and since it is a List you can call methods on it, like so : `${#bestMovies.get(0)}`  
 `#body`, `#status` and `#headers` are also available but are very likely to be overridden by a following step while you have full control over the use of the `#bestMovies` key.
 
+`#headers` is a multi-valued map keyed by header name, so a single value is read with `${#headers['Content-Type'][0]}`. Names are case-insensitive. See [HTTP actions](http.md) for details.
+
 # Validations
 
 Validations are a list of checks you want to perform in order to validate a step.

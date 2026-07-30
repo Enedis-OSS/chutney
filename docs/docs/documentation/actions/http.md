@@ -32,6 +32,23 @@
             * Default port value is 3128.
             * Target property `proxy` override system property if set
 
+!!! note "How to read response headers"
+
+    For all HTTP actions, the `headers` output holds the response headers as a multi-valued map.
+    A header may legally appear more than once, so each name maps to a list of values.
+
+    Header names are case-insensitive, so `#headers['Set-Cookie']` and `#headers['set-cookie']` are equivalent.
+
+    ```
+    ${#headers['Set-Cookie'][0]}        first value, indexed by name (preferred)
+    ${#headers.getFirst('Set-Cookie')}  first value, equivalent
+    ${#headers['Set-Cookie']}           every value, as a list
+    ```
+
+    Spring's typed getters, such as `${#headers.getContentType()}`, remain available for scenarios
+    written before Chutney 4.3.0, but map access is preferred and typed getters may be removed in a
+    future major version.
+
 
 ```json title="Http target example"
 {
