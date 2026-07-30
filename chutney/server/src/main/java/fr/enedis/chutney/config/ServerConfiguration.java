@@ -61,7 +61,7 @@ public class ServerConfiguration {
         return args -> {
             var resolver = new org.springframework.core.io.support.PathMatchingResourcePatternResolver();
             for (var r : resolver.getResources("classpath*:**/*.ldif")) {
-                IO.println("found: " + r);
+                System.out.println("found: " + r);
             }
         };
     }
