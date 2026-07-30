@@ -64,9 +64,10 @@ public class DurationWithUnitParserTest {
 
     @Test
     public void description_contains_regex_and_samples() {
-        assertThat(durationWithUnitParser.description()).isEqualTo("Duration with unit: <positive number> (ns|\u03bcs|\u00b5s|ms|sec|s|min|m|hours|hour|h|hour(s)|day(s)|d|days|day)\n" +
-            "Samples:\n" +
-            "\t 3 min\n" +
-            "\t 4,5 hours");
+        assertThat(durationWithUnitParser.description()).isEqualTo("""
+            Duration with unit: <positive number> (ns|μs|µs|ms|sec|s|min|m|hours|hour|h|hour(s)|day(s)|d|days|day)
+            Samples:
+            \t 3 min
+            \t 4,5 hours""");
     }
 }

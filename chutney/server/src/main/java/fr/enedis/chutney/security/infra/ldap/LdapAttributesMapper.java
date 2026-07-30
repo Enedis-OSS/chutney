@@ -84,8 +84,8 @@ public class LdapAttributesMapper implements AttributesMapper<UserDto> {
 
         if (attribute != null) {
             Object attrValue = attribute.get();
-            if (attrValue instanceof String) {
-                value = (String) attrValue;
+            if (attrValue instanceof String string) {
+                value = string;
             } else {
                 value = Objects.toString(attrValue);
             }

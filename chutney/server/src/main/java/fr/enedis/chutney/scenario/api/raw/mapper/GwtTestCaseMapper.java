@@ -37,8 +37,8 @@ public class GwtTestCaseMapper {
 
     // TestCase -> DTO
     public static GwtTestCaseDto toDto(TestCase testCase) {
-        if (testCase instanceof GwtTestCase) {
-            return fromGwt((GwtTestCase) testCase);
+        if (testCase instanceof GwtTestCase case1) {
+            return fromGwt(case1);
         }
         throw new IllegalStateException("Bad format. " +
             "Test Case [" + testCase.metadata().id() + "] is not a GwtTestCase but a " + testCase.getClass().getSimpleName());

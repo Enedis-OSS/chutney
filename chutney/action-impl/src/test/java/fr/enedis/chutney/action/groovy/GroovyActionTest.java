@@ -22,12 +22,13 @@ public class GroovyActionTest {
 
     @Test
     public void valid_groovy_script() {
-        String script = "import fr.enedis.chutney.action.groovy.GroovyAction\n" +
-            "def script = '''\n" +
-            "logger.info('Hello World, I can create groovy action into groovy action')\n" +
-            "return [:]\n" +
-            "'''\n" +
-            "return new GroovyAction(script, [:], logger).execute().outputs";
+        String script = """
+            import fr.enedis.chutney.action.groovy.GroovyAction
+            def script = '''
+            logger.info('Hello World, I can create groovy action into groovy action')
+            return [:]
+            '''
+            return new GroovyAction(script, [:], logger).execute().outputs""";
 
         TestLogger logger = new TestLogger();
         ActionExecutionResult executionResult = new GroovyAction(script, null, logger).execute();

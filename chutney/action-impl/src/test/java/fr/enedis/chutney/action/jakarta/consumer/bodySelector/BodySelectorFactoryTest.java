@@ -26,7 +26,8 @@ public class BodySelectorFactoryTest {
     public void building_selector_with_invalid_syntax_throws() {
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> bodySelectorFactory.build("test"))
-            .withMessage("Wrong bodySelector syntax. Available syntaxes are:\n" +
-                "\t- XPath selector: ^XPATH '(?<xpath>.+)'$");
+            .withMessage("""
+                Wrong bodySelector syntax. Available syntaxes are:
+                \t- XPath selector: ^XPATH '(?<xpath>.+)'$""");
     }
 }

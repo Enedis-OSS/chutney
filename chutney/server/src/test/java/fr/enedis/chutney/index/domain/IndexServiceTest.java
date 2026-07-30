@@ -40,7 +40,6 @@ class IndexServiceTest {
         } else if (DATASET.equals(requestedIndexedObject)) {
             verify(scenarioIndexRepository, times(0)).search(any());
             verify(datasetIndexRepository).search(any());
-            ;
         } else {
             verify(scenarioIndexRepository, times(0)).search(any());
             verify(datasetIndexRepository, times(0)).search(any());

@@ -148,8 +148,8 @@ public class SqlClient {
             if (isPrimitiveOrWrapper(type) || isJDBCNumericType(type) || isJDBCDateType(type)) {
                 return o;
             }
-            if (o instanceof Blob) {
-                return readBlob((Blob) o);
+            if (o instanceof Blob blob) {
+                return readBlob(blob);
             }
 
             return String.valueOf(rs.getString(i));

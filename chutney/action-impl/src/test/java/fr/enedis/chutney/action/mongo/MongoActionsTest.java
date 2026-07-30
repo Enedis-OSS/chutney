@@ -55,8 +55,10 @@ public class MongoActionsTest {
         Action insertAction = mockDatabase(new MongoInsertAction(mongoTarget, logger, "lolilol", "{name: 'test1', qty: 3}"), database);
 
         assertThat(insertAction.execute().status).isEqualTo(Status.Success);
-        assertThat(logger.info).containsOnly("Inserted in Mongo collection 'lolilol':\n" +
-            "\t{name: 'test1', qty: 3}");
+        assertThat(logger.info).containsOnly("""
+            Inserted in Mongo collection 'lolilol':
+            \t{name: 'test1', qty: 3}\
+            """);
     }
 
     @Test
@@ -120,8 +122,10 @@ public class MongoActionsTest {
 
         assertThat(countActionResult.status).isEqualTo(Status.Success);
         assertThat(countActionResult.outputs.get("count")).isEqualTo(1L);
-        assertThat(logger.info).containsOnly("Found 1 objects matching query:\n" +
-            "\t{ }");
+        assertThat(logger.info).containsOnly("""
+            Found 1 objects matching query:
+            \t{ }\
+            """);
     }
 
     @Test

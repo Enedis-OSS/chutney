@@ -28,10 +28,9 @@ public class ValueArrayAsserter implements PlaceholderAsserter {
 
     @Override
     public boolean assertValue(Logger logger, Object actual, Object expected) {
-        if (actual instanceof JSONArray) {
+        if (actual instanceof JSONArray actualArray) {
             Matcher matcher = IS_VALUE.matcher(expected.toString());
             if (matcher.matches()) {
-                JSONArray actualArray = (JSONArray) actual;
                 AtomicInteger arrayIndex = new AtomicInteger(0);
                 ofNullable(matcher.group("index")).ifPresent(s -> arrayIndex.set(Integer.parseInt(s)));
                 String expect = matcher.group("expected");

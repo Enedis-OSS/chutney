@@ -20,33 +20,35 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class XPathFunctionTest {
 
     private static final String STANDARD_XML =
-        "<node1>\n" +
-        "    <node2 attr1=\"val4\"/>\n" +
-        "    <node3 attr1=\"val7\">text12</node3>\n" +
-        "    <node4/>\n" +
-        "    <node5>\n" +
-        "        <![CDATA[some stuff]]>\n" +
-        "    </node5>\n" +
-        "</node1>";
+        """
+        <node1>
+            <node2 attr1="val4"/>
+            <node3 attr1="val7">text12</node3>
+            <node4/>
+            <node5>
+                <![CDATA[some stuff]]>
+            </node5>
+        </node1>""";
 
     private static final String XMl_WITH_NS =
-        "  <soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-        "                   xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
-        "                   xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-        "     <soap12:Body>\n" +
-        "       <tns:Demande xmlns:tns=\"http://demande.org\"" +
-        "                  xmlns:tns1=\"http://dico.org\"" +
-        "                  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
-        "           <tns:Entete xsi:type=\"tns1:EnteteExtType\">\n" +
-        "               <tns1:IdExterne>CHUTNEY</tns1:IdExterne>\n" +
-        "           </tns:Entete>\n" +
-        "           <tns:Id>265426252465</tns:Id>\n" +
-        "           <tns:Options>\n" +
-        "               <tns:status>true</tns:status>\n" +
-        "           </tns:Options>\n" +
-        "       </tns:Demande>\n" +
-        "     </soap12:Body>\n" +
-        " </soap12:Envelope>";
+        """
+          <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                           xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+             <soap12:Body>
+               <tns:Demande xmlns:tns="http://demande.org"\
+                          xmlns:tns1="http://dico.org"\
+                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                   <tns:Entete xsi:type="tns1:EnteteExtType">
+                       <tns1:IdExterne>CHUTNEY</tns1:IdExterne>
+                   </tns:Entete>
+                   <tns:Id>265426252465</tns:Id>
+                   <tns:Options>
+                       <tns:status>true</tns:status>
+                   </tns:Options>
+               </tns:Demande>
+             </soap12:Body>
+         </soap12:Envelope>""";
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("parametersForXpath_matching_returns_value")

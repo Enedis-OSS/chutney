@@ -74,7 +74,7 @@ public class NetworkConfigurationApiMapperTest {
         List<TargetDto> targets = environment.targets;
         assertThat(targets).hasSize(1);
 
-        TargetDto singleValue = targets.iterator().next();
+        TargetDto singleValue = targets.getFirst();
         assertThat(singleValue.name).as("target name").isEqualTo("s1");
         assertThat(singleValue.url).as("target url").isEqualTo("proto://host:12/lol");
         assertThat(singleValue.properties).as("target properties").isEmpty();

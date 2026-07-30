@@ -194,16 +194,16 @@ public class ForEachStrategy implements StepExecutionStrategy {
     }
 
     private Object index(String indexName, Integer index, Object value) {
-        if (value instanceof Map) {
-            return index(indexName, index, (Map) value);
+        if (value instanceof Map map) {
+            return index(indexName, index, map);
         }
 
-        if (value instanceof List) {
-            return index(indexName, index, (List) value);
+        if (value instanceof List list) {
+            return index(indexName, index, list);
         }
 
-        if (value instanceof String) {
-            return index(indexName, index, (String) value);
+        if (value instanceof String string) {
+            return index(indexName, index, string);
         }
 
         return value;

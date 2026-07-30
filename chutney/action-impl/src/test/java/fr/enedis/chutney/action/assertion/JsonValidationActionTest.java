@@ -19,37 +19,41 @@ public class JsonValidationActionTest {
 
     JsonValidationAction task;
 
-    private final String SCHEMA = "{\n" +
-        "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n" +
-        "    \"title\": \"Product\",\n" +
-        "    \"description\": \"A product from the catalog\",\n" +
-        "    \"type\": \"object\",\n" +
-        "    \"properties\": {\n" +
-        "        \"id\": {\n" +
-        "            \"description\": \"The unique identifier for a product\",\n" +
-        "            \"type\": \"integer\"\n" +
-        "        },\n" +
-        "        \"name\": {\n" +
-        "            \"description\": \"Name of the product\",\n" +
-        "            \"type\": \"string\"\n" +
-        "        },\n" +
-        "        \"price\": {\n" +
-        "            \"type\": \"number\",\n" +
-        "            \"minimum\": 0,\n" +
-        "            \"exclusiveMinimum\": true\n" +
-        "        }\n" +
-        "    },\n" +
-        "    \"required\": [\"id\", \"name\", \"price\"]\n" +
-        "}";
+    private final String SCHEMA = """
+        {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "Product",
+            "description": "A product from the catalog",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "The unique identifier for a product",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name of the product",
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                }
+            },
+            "required": ["id", "name", "price"]
+        }\
+        """;
 
     @Test
     public void should_validate_simple_json() {
         Logger logger = new TestLogger();
-        String json = "{\n" +
-            "    \"id\": 1,\n" +
-            "    \"name\": \"Lampshade\",\n" +
-            "    \"price\": 12\n" +
-            "}";
+        String json = """
+            {
+                "id": 1,
+                "name": "Lampshade",
+                "price": 12
+            }\
+            """;
 
 
         task = new JsonValidationAction(logger, json, SCHEMA);
@@ -65,11 +69,13 @@ public class JsonValidationActionTest {
     @Test
     public void should_not_validate_simple_json() {
         Logger logger = new TestLogger();
-        String json = "{\n" +
-            "    \"id\": 1,\n" +
-            "    \"name\": \"Lampshade\",\n" +
-            "    \"price\": 0\n" +
-            "}";
+        String json = """
+            {
+                "id": 1,
+                "name": "Lampshade",
+                "price": 0
+            }\
+            """;
 
         task = new JsonValidationAction(logger, json, SCHEMA);
 

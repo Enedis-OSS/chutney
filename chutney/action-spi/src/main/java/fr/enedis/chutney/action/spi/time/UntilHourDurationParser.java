@@ -53,9 +53,10 @@ class UntilHourDurationParser implements DurationParser {
 
     @Override
     public String description() {
-        return "Until hour: until <1..24>:<1..60>\n" +
-            "Samples:\n" +
-            "\t until 02:00\n" +
-            "\t until 17:45";
+        return """
+            Until hour: until <1..24>:<1..60>
+            Samples:
+            \t until 02:00
+            \t until 17:45""";
     }
 }

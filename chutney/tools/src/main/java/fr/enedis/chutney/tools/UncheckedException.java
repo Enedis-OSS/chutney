@@ -21,8 +21,8 @@ public class UncheckedException extends RuntimeException {
     }
 
     public static RuntimeException throwUncheckedException(Exception e) {
-        if (e instanceof RuntimeException) {
-            return (RuntimeException) e;
+        if (e instanceof RuntimeException exception) {
+            return exception;
         } else {
             return new UncheckedException(e);
         }

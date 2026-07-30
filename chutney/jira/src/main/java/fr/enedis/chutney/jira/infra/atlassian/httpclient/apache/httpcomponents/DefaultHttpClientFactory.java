@@ -65,8 +65,7 @@ public final class DefaultHttpClientFactory<C> implements DisposableBean {
 //    @Override
 // CHANGE - End
     public void dispose(@Nonnull final HttpClient httpClient) throws Exception {
-        if (httpClient instanceof ApacheAsyncHttpClient) {
-            final ApacheAsyncHttpClient client = (ApacheAsyncHttpClient) httpClient;
+        if (httpClient instanceof ApacheAsyncHttpClient client) {
             if (httpClients.remove(client)) {
                 client.destroy();
             } else {
