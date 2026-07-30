@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.ResourceAccessException;
 
 public class HttpAction {
@@ -33,7 +35,9 @@ public class HttpAction {
         Map<String, Object> outputs = new HashMap<>();
         outputs.put("status", response.getStatusCode().value());
         outputs.put("body", response.getBody());
-        outputs.put("headers", response.getHeaders());
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        response.getHeaders().forEach(headers::put);
+        outputs.put("headers", headers);
         return outputs;
     }
 }
