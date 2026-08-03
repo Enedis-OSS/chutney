@@ -26,28 +26,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.Fault;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import fr.enedis.chutney.action.TestTarget;
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
 import fr.enedis.chutney.tools.SocketUtils;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.http.Fault;
-import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import tools.jackson.databind.json.JsonMapper;
 
 
 public class HttpActionTest {
@@ -139,7 +145,7 @@ public class HttpActionTest {
         String uri = "/some/thing";
         int expectedStatus = 200;
         String expectedBody = "Resource Body";
-        org.springframework.http.HttpHeaders expectedHeaders = new org.springframework.http.HttpHeaders();
+        MultiValueMap<String, String> expectedHeaders = new LinkedMultiValueMap<>();
         expectedHeaders.put("Transfer-Encoding", Collections.singletonList("chunked"));
 
         stubFor(get(urlEqualTo(uri))
@@ -158,7 +164,76 @@ public class HttpActionTest {
         assertThat(executionResult.status).isEqualTo(ActionExecutionResult.Status.Success);
         assertThat((Integer) executionResult.outputs.get("status")).isEqualTo(expectedStatus);
         assertThat((String) executionResult.outputs.get("body")).isEqualTo(expectedBody);
-        assertThat(((HttpHeaders) executionResult.outputs.get("headers")).asMultiValueMap()).containsAllEntriesOf(expectedHeaders.asMultiValueMap());
+        assertThat((MultiValueMap<String, String>) executionResult.outputs.get("headers")).containsAllEntriesOf(expectedHeaders);
+    }
+
+    @Nested
+    @DisplayName("Response headers output")
+    class ResponseHeadersOutput {
+
+        @Test
+        public void should_be_indexable_by_header_name_whatever_its_case() {
+            // given
+            String uri = "/some/thing";
+            stubFor(get(urlEqualTo(uri))
+                .willReturn(aResponse().withStatus(200)
+                    .withHeader("Set-Cookie", "JSESSIONID=1234")
+                    .withBody("Resource Body"))
+            );
+
+            // when
+            Action httpGetAction = new HttpGetAction(mockTarget("http://127.0.0.1:" + wireMockServer.port()), mock(Logger.class), uri, null, "1000 ms");
+            ActionExecutionResult executionResult = httpGetAction.execute();
+
+            // then
+            Map<String, List<String>> headers = (Map<String, List<String>>) executionResult.outputs.get("headers");
+            assertThat(headers.get("Set-Cookie")).containsExactly("JSESSIONID=1234");
+            assertThat(headers.get("set-cookie")).containsExactly("JSESSIONID=1234");
+            assertThat(headers.get("SET-COOKIE")).containsExactly("JSESSIONID=1234");
+        }
+
+        @Test
+        public void should_still_expose_spring_typed_getters() {
+            // given
+            String uri = "/some/thing";
+            stubFor(get(urlEqualTo(uri))
+                .willReturn(aResponse().withStatus(200)
+                    .withHeader("Content-Type", "application/zip")
+                    .withHeader("Content-Disposition", "attachment; filename=\"surefire-report.zip\"")
+                    .withBody("Resource Body"))
+            );
+
+            // when
+            Action httpGetAction = new HttpGetAction(mockTarget("http://127.0.0.1:" + wireMockServer.port()), mock(Logger.class), uri, null, "1000 ms");
+            ActionExecutionResult executionResult = httpGetAction.execute();
+
+            // then
+            HttpHeaders headers = (HttpHeaders) executionResult.outputs.get("headers");
+            assertThat(headers.getContentType()).hasToString("application/zip");
+            assertThat(headers.getContentDisposition().getFilename()).isEqualTo("surefire-report.zip");
+            assertThat(headers.getFirst("Content-Type")).isEqualTo("application/zip");
+        }
+
+        @Test
+        public void should_be_serialized_as_a_flat_map_in_execution_reports() {
+            // given
+            String uri = "/some/thing";
+            stubFor(get(urlEqualTo(uri))
+                .willReturn(aResponse().withStatus(200)
+                    .withHeader("Content-Type", "application/zip")
+                    .withBody("Resource Body"))
+            );
+
+            // when
+            Action httpGetAction = new HttpGetAction(mockTarget("http://127.0.0.1:" + wireMockServer.port()), mock(Logger.class), uri, null, "1000 ms");
+            ActionExecutionResult executionResult = httpGetAction.execute();
+
+            // then
+            String report = JsonMapper.builder().build().writeValueAsString(executionResult.outputs.get("headers"));
+            assertThat(report)
+                .contains("\"Content-Type\":[\"application/zip\"]")
+                .doesNotContain("acceptCharset");
+        }
     }
 
     @Test

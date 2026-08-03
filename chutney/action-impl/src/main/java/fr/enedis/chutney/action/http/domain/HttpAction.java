@@ -33,7 +33,7 @@ public class HttpAction {
         Map<String, Object> outputs = new HashMap<>();
         outputs.put("status", response.getStatusCode().value());
         outputs.put("body", response.getBody());
-        outputs.put("headers", response.getHeaders());
+        outputs.put("headers", new HttpResponseHeaders(response.getHeaders()));
         return outputs;
     }
 }

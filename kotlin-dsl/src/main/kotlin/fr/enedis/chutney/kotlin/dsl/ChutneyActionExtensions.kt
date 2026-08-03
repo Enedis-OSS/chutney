@@ -513,7 +513,7 @@ fun ChutneyStepBuilder.MongoListAction(
  * Outputs:
  * - status : http response status (int)
  * - body : http response body (String)
- * - headers : http response headers (org.springframework.http.HttpHeaders)
+ * - headers : http response headers, as a case-insensitive multi-valued map, e.g. "headers['Set-Cookie'][0]".spEL()
  */
 fun ChutneyStepBuilder.HttpGetAction(
     target: String,
@@ -544,7 +544,7 @@ fun ChutneyStepBuilder.HttpGetAction(
  * Outputs:
  * - status : http response status (int)
  * - body : http response body (String)
- * - headers : http response headers (org.springframework.http.HttpHeaders)
+ * - headers : http response headers, as a case-insensitive multi-valued map, e.g. "headers['Set-Cookie'][0]".spEL()
  */
 fun ChutneyStepBuilder.HttpPostAction(
     target: String,
@@ -583,7 +583,7 @@ fun ChutneyStepBuilder.HttpPostAction(
  * Outputs:
  * - status : http response status (int)
  * - body : http response body (String)
- * - headers : http response headers (org.springframework.http.HttpHeaders)
+ * - headers : http response headers, as a case-insensitive multi-valued map, e.g. "headers['Set-Cookie'][0]".spEL()
  */
 fun ChutneyStepBuilder.HttpPutAction(
     target: String,
@@ -616,7 +616,7 @@ fun ChutneyStepBuilder.HttpPutAction(
  * Outputs:
  * - status : http response status (int)
  * - body : http response body (String)
- * - headers : http response headers (org.springframework.http.HttpHeaders)
+ * - headers : http response headers, as a case-insensitive multi-valued map, e.g. "headers['Set-Cookie'][0]".spEL()
  */
 fun ChutneyStepBuilder.HttpDeleteAction(
     target: String,
@@ -647,7 +647,7 @@ fun ChutneyStepBuilder.HttpDeleteAction(
  * Outputs:
  * - status : http response status (int)
  * - body : http response body (String)
- * - headers : http response headers (org.springframework.http.HttpHeaders)
+ * - headers : http response headers, as a case-insensitive multi-valued map, e.g. "headers['Set-Cookie'][0]".spEL()
  */
 fun ChutneyStepBuilder.HttpSoapAction(
     target: String,
@@ -684,7 +684,7 @@ fun ChutneyStepBuilder.HttpSoapAction(
  * Outputs:
  * - status : http response status (int)
  * - body : http response body (String)
- * - headers : http response headers (org.springframework.http.HttpHeaders)
+ * - headers : http response headers, as a case-insensitive multi-valued map, e.g. "headers['Set-Cookie'][0]".spEL()
  */
 fun ChutneyStepBuilder.HttpPatchAction(
     target: String,
