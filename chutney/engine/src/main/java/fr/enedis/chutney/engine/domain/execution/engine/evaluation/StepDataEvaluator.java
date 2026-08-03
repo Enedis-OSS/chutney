@@ -105,38 +105,40 @@ public class StepDataEvaluator {
     @SuppressWarnings("unchecked")
     private Object evaluateObject(final Object object, final EvaluationContext evaluationContext, boolean silentResolve) {
         Object inputEvaluatedValue;
-        if (object instanceof String stringValue) {
-            if (hasOnlyOneSpel(stringValue)) {
+        switch (object) {
+            case String stringValue when hasOnlyOneSpel(stringValue) ->
                 inputEvaluatedValue = Strings.replaceExpression(stringValue, s -> evaluate(parser, evaluationContext, s), EVALUATION_STRING_PREFIX, EVALUATION_STRING_SUFFIX, EVALUATION_STRING_ESCAPE, silentResolve);
-            } else {
+            case String stringValue -> {
                 inputEvaluatedValue = Strings.replaceExpressions(stringValue, s -> evaluate(parser, evaluationContext, s), EVALUATION_STRING_PREFIX, EVALUATION_STRING_SUFFIX, EVALUATION_STRING_ESCAPE, silentResolve);
             }
-        } else if (object instanceof Map map) {
-            Map evaluatedMap = new LinkedHashMap();
-            map.forEach(
-                (key, value) -> {
-                    Object keyValue = evaluateObject(key, evaluationContext, silentResolve);
-                    Object valueValue = evaluateObject(value, evaluationContext, silentResolve);
-                    evaluatedMap.put(keyValue, valueValue);
-                    if (keyValue instanceof String stringKeyValue) {
-                        evaluationContext.setVariable(stringKeyValue, valueValue);
-                    }
-                });
-            inputEvaluatedValue = evaluatedMap;
-        } else if (object instanceof List list) {
-            List evaluatedList = new ArrayList<>();
-            list.forEach(
-                obj -> evaluatedList.add(evaluateObject(obj, evaluationContext, silentResolve))
-            );
-            inputEvaluatedValue = evaluatedList;
-        } else if (object instanceof Set set) {
-            Set evaluatedSet = new LinkedHashSet();
-            set.forEach(
-                obj -> evaluatedSet.add(evaluateObject(obj, evaluationContext, silentResolve))
-            );
-            inputEvaluatedValue = evaluatedSet;
-        } else {
-            inputEvaluatedValue = object;
+            case Map map -> {
+                Map evaluatedMap = new LinkedHashMap();
+                map.forEach(
+                    (key, value) -> {
+                        Object keyValue = evaluateObject(key, evaluationContext, silentResolve);
+                        Object valueValue = evaluateObject(value, evaluationContext, silentResolve);
+                        evaluatedMap.put(keyValue, valueValue);
+                        if (keyValue instanceof String stringKeyValue) {
+                            evaluationContext.setVariable(stringKeyValue, valueValue);
+                        }
+                    });
+                inputEvaluatedValue = evaluatedMap;
+            }
+            case List list -> {
+                List evaluatedList = new ArrayList<>();
+                list.forEach(
+                    obj -> evaluatedList.add(evaluateObject(obj, evaluationContext, silentResolve))
+                );
+                inputEvaluatedValue = evaluatedList;
+            }
+            case Set set -> {
+                Set evaluatedSet = new LinkedHashSet();
+                set.forEach(
+                    obj -> evaluatedSet.add(evaluateObject(obj, evaluationContext, silentResolve))
+                );
+                inputEvaluatedValue = evaluatedSet;
+            }
+            case null, default -> inputEvaluatedValue = object;
         }
 
         return inputEvaluatedValue;

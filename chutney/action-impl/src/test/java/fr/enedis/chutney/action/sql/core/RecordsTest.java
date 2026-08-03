@@ -128,8 +128,10 @@ public class RecordsTest {
         String actual = sut.tableHeaders(maxColumnLength);
 
         assertThat(actual).isEqualTo(
-            "| lengthOf11  | 2  | 7       |\n" +
-            "|-------------|----|---------|\n"
+            """
+            | lengthOf11  | 2  | 7       |
+            |-------------|----|---------|
+            """
         );
     }
 
@@ -175,10 +177,12 @@ public class RecordsTest {
         String actual = records.printable(2);
 
         assertThat(actual).isEqualTo(
-            "| X | X | X |\n" +
-            "|---|---|---|\n" +
-            "| A | B | C |\n" +
-            "| D | E | F |\n"
+            """
+            | X | X | X |
+            |---|---|---|
+            | A | B | C |
+            | D | E | F |
+            """
         );
     }
 }

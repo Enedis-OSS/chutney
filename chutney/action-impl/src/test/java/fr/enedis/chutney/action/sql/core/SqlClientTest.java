@@ -165,9 +165,10 @@ public class SqlClientTest {
                 SqlClient sqlClient = new DefaultSqlClientFactory().create(sqlTarget,5);
 
                 Exception exception = assertThrows(NotEnoughMemoryException.class, () -> sqlClient.execute("select * from users"));
-                assertThat(exception.getMessage()).isEqualTo("Running step was stopped to prevent application crash. 42MB memory used of 1337MB max.\n" +
-                    "Current step may not be the cause.\n" +
-                    "Query fetched 2 rows");
+                assertThat(exception.getMessage()).isEqualTo("""
+                    Running step was stopped to prevent application crash. 42MB memory used of 1337MB max.
+                    Current step may not be the cause.
+                    Query fetched 2 rows""");
             }
         }
     }

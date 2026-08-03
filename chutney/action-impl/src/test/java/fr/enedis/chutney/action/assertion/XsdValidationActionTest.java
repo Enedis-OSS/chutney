@@ -68,19 +68,21 @@ public class XsdValidationActionTest {
     @Test
     public void should_validate_xsd_with_multiple_import() {
         Logger logger = new TestLogger();
-        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<shipTo xmlns=\"http://chutney/test/ship\"\n" +
-            "        xmlns:addr=\"http://chutney/test/address\"\n" +
-            "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "        xsi:schemaLocation=\"http://chutney/test/ship shipTo.xsd\">\n" +
-            "    <name>string</name>\n" +
-            "    <address>\n" +
-            "        <addr:street>voltaire</addr:street>\n" +
-            "        <addr:type>Rue</addr:type>\n" +
-            "        <addr:city>Paris</addr:city>\n" +
-            "        <addr:country>France</addr:country>\n" +
-            "    </address>\n" +
-            "</shipTo>\n";
+        String xml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <shipTo xmlns="http://chutney/test/ship"
+                    xmlns:addr="http://chutney/test/address"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://chutney/test/ship shipTo.xsd">
+                <name>string</name>
+                <address>
+                    <addr:street>voltaire</addr:street>
+                    <addr:type>Rue</addr:type>
+                    <addr:city>Paris</addr:city>
+                    <addr:country>France</addr:country>
+                </address>
+            </shipTo>
+            """;
 
         String xsd = "/xsd_samples/shipTo.xsd";
 
@@ -98,19 +100,20 @@ public class XsdValidationActionTest {
     @Test
     public void should_validate_xsd_from_classpath() {
         Logger logger = new TestLogger();
-        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<shipTo xmlns=\"http://chutney/test/ship\"\n" +
-            "        xmlns:addr=\"http://chutney/test/address\"\n" +
-            "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "        xsi:schemaLocation=\"http://chutney/test/ship shipTo.xsd\">\n" +
-            "    <name>string</name>\n" +
-            "    <address>\n" +
-            "        <addr:street>voltaire</addr:street>\n" +
-            "        <addr:type>Rue</addr:type>\n" +
-            "        <addr:city>Paris</addr:city>\n" +
-            "        <addr:country>France</addr:country>\n" +
-            "    </address>\n" +
-            "</shipTo>";
+        String xml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <shipTo xmlns="http://chutney/test/ship"
+                    xmlns:addr="http://chutney/test/address"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://chutney/test/ship shipTo.xsd">
+                <name>string</name>
+                <address>
+                    <addr:street>voltaire</addr:street>
+                    <addr:type>Rue</addr:type>
+                    <addr:city>Paris</addr:city>
+                    <addr:country>France</addr:country>
+                </address>
+            </shipTo>""";
 
         String xsd = "classpath:/xsd_samples/shipTo.xsd";
 
@@ -128,19 +131,20 @@ public class XsdValidationActionTest {
     @Test
     public void should_validate_xsd_from_file_system() {
         Logger logger = new TestLogger();
-        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<shipTo xmlns=\"http://chutney/test/ship\"\n" +
-            "        xmlns:addr=\"http://chutney/test/address\"\n" +
-            "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "        xsi:schemaLocation=\"http://chutney/test/ship shipTo.xsd\">\n" +
-            "    <name>string</name>\n" +
-            "    <address>\n" +
-            "        <addr:street>voltaire</addr:street>\n" +
-            "        <addr:type>Rue</addr:type>\n" +
-            "        <addr:city>Paris</addr:city>\n" +
-            "        <addr:country>France</addr:country>\n" +
-            "    </address>\n" +
-            "</shipTo>";
+        String xml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <shipTo xmlns="http://chutney/test/ship"
+                    xmlns:addr="http://chutney/test/address"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://chutney/test/ship shipTo.xsd">
+                <name>string</name>
+                <address>
+                    <addr:street>voltaire</addr:street>
+                    <addr:type>Rue</addr:type>
+                    <addr:city>Paris</addr:city>
+                    <addr:country>France</addr:country>
+                </address>
+            </shipTo>""";
 
         Path executionPath = Paths.get("").toAbsolutePath();
         String xsd = "file:" + executionPath.resolve("src/test/resources/xsd_samples/shipTo.xsd");
@@ -159,19 +163,20 @@ public class XsdValidationActionTest {
     @Test
     public void should_validate_xsd_from_file_system_with_root_file_in_sub_dir() {
         Logger logger = new TestLogger();
-        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<shipTo xmlns=\"http://chutney/test/ship\"\n" +
-            "        xmlns:addr=\"http://chutney/test/address\"\n" +
-            "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "        xsi:schemaLocation=\"http://chutney/test/ship shipTo.xsd\">\n" +
-            "    <name>string</name>\n" +
-            "    <address>\n" +
-            "        <addr:street>voltaire</addr:street>\n" +
-            "        <addr:type>Rue</addr:type>\n" +
-            "        <addr:city>Paris</addr:city>\n" +
-            "        <addr:country>France</addr:country>\n" +
-            "    </address>\n" +
-            "</shipTo>";
+        String xml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <shipTo xmlns="http://chutney/test/ship"
+                    xmlns:addr="http://chutney/test/address"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://chutney/test/ship shipTo.xsd">
+                <name>string</name>
+                <address>
+                    <addr:street>voltaire</addr:street>
+                    <addr:type>Rue</addr:type>
+                    <addr:city>Paris</addr:city>
+                    <addr:country>France</addr:country>
+                </address>
+            </shipTo>""";
 
         Path executionPath = Paths.get("").toAbsolutePath();
         String xsd = "file:" + executionPath.resolve("src/test/resources/xsd_samples/ship/subShip/shipTo.xsd");
@@ -189,19 +194,20 @@ public class XsdValidationActionTest {
     @Test
     public void should_validate_xsd_from_jar_in_classpath() {
         Logger logger = new TestLogger();
-        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<shipTo xmlns=\"http://chutney/test/ship\"\n" +
-            "        xmlns:addr=\"http://chutney/test/address\"\n" +
-            "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "        xsi:schemaLocation=\"http://chutney/test/ship shipTo.xsd\">\n" +
-            "    <name>string</name>\n" +
-            "    <address>\n" +
-            "        <addr:street>voltaire</addr:street>\n" +
-            "        <addr:type>Rue</addr:type>\n" +
-            "        <addr:city>Paris</addr:city>\n" +
-            "        <addr:country>France</addr:country>\n" +
-            "    </address>\n" +
-            "</shipTo>";
+        String xml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <shipTo xmlns="http://chutney/test/ship"
+                    xmlns:addr="http://chutney/test/address"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://chutney/test/ship shipTo.xsd">
+                <name>string</name>
+                <address>
+                    <addr:street>voltaire</addr:street>
+                    <addr:type>Rue</addr:type>
+                    <addr:city>Paris</addr:city>
+                    <addr:country>France</addr:country>
+                </address>
+            </shipTo>""";
 
         String xsd = "/xsd/shipTo.xsd";
 

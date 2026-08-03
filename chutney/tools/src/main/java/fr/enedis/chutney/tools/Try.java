@@ -42,7 +42,7 @@ public class Try<T> {
 
     private T runtime(String message) {
         return runtime(e -> {
-            if (message == null && e instanceof RuntimeException) return (RuntimeException) e;
+            if (message == null && e instanceof RuntimeException exception) return exception;
             else return new RuntimeException(message != null ? message : e.getMessage(), e);
         });
     }

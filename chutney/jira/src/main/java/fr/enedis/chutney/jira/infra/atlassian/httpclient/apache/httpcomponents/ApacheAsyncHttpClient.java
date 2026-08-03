@@ -414,8 +414,7 @@ public final class ApacheAsyncHttpClient<C> extends AbstractHttpClient implement
     }
 
     private Throwable maybeTranslate(Throwable ex) {
-        if (ex instanceof EntityTooLargeException) {
-            EntityTooLargeException tooLarge = (EntityTooLargeException) ex;
+        if (ex instanceof EntityTooLargeException tooLarge) {
             try {
                 // don't include the cause to ensure that the HttpResponse is released
                 return new ResponseTooLargeException(translate(tooLarge.getResponse()), ex.getMessage());

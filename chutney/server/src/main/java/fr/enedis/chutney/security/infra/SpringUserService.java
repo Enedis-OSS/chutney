@@ -55,14 +55,14 @@ public class SpringUserService implements UserService {
 
     private UserDto getUserFromBearerAuthentication(Authentication authentication) {
         var principal = authentication.getPrincipal();
-        if (principal instanceof UserDto) {
-            return (UserDto) principal;
+        if (principal instanceof UserDto dto) {
+            return dto;
         }
-        if (principal instanceof Jwt) {
-            return getUserFromClaims(((Jwt) principal).getClaims());
+        if (principal instanceof Jwt jwt) {
+            return getUserFromClaims(jwt.getClaims());
         }
-        if (principal instanceof OAuth2IntrospectionAuthenticatedPrincipal) {
-            return getUserFromUsername(((OAuth2IntrospectionAuthenticatedPrincipal) principal).getAttributes().get("sub").toString(), new UserDto());
+        if (principal instanceof OAuth2IntrospectionAuthenticatedPrincipal authenticatedPrincipal) {
+            return getUserFromUsername(authenticatedPrincipal.getAttributes().get("sub").toString(), new UserDto());
         }
         return null;
     }

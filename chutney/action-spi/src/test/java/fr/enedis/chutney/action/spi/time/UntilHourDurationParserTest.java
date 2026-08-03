@@ -60,9 +60,10 @@ public class UntilHourDurationParserTest {
 
     @Test
     public void description_contains_regex_and_samples() {
-        assertThat(sut.description()).isEqualTo("Until hour: until <1..24>:<1..60>\n" +
-            "Samples:\n" +
-            "\t until 02:00\n" +
-            "\t until 17:45");
+        assertThat(sut.description()).isEqualTo("""
+            Until hour: until <1..24>:<1..60>
+            Samples:
+            \t until 02:00
+            \t until 17:45""");
     }
 }
