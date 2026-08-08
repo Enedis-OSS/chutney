@@ -5,9 +5,11 @@
   ~
 -->
 
-[![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml){:target="_blank"}
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.enedis.chutney/server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.enedis.chutney/server){:target="_blank"}
-[![GitHub release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases/latest){:target="_blank"}
+[![Build](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml/badge.svg?branch=main)](https://github.com/Enedis-OSS/chutney/actions/workflows/build-all.yml)
+[![REUSE](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml/badge.svg)](https://github.com/Enedis-OSS/chutney/actions/workflows/reuse.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney)](https://github.com/Enedis-OSS/chutney/releases)
+![Maven Central Version](https://img.shields.io/maven-central/v/fr.enedis.chutney/server?link=https%3A%2F%2Fcentral.sonatype.com%2Fnamespace%2Ffr.enedis.chutney)
+[![GitHub Release](https://img.shields.io/github/v/release/Enedis-OSS/chutney?label=docker)](https://github.com/Enedis-OSS/chutney/pkgs/container/chutney%2Fchutney-server)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ----
