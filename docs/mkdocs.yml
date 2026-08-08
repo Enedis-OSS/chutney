@@ -62,17 +62,17 @@ nav:
           - Wiremock: documentation/functions/wiremock.md
           - SOAP: documentation/functions/soap.md
           - Math: documentation/functions/math.md
-#      - Strategies:
-#          - documentation/strategies/introduction.md
-#          - Default: documentation/strategies/default.md
-#          - Retry: documentation/strategies/retry.md
-#          - Soft: documentation/strategies/soft.md
-#          - Foreach: documentation/strategies/foreach.md
-#          - If: documentation/strategies/if.md
+      - Strategies:
+          - Introduction: documentation/strategies/introduction.md
+          - Default: documentation/strategies/default.md
+          - Retry with timeout: documentation/strategies/retry.md
+          - Soft assert: documentation/strategies/soft.md
+          - For each: documentation/strategies/foreach.md
+          - If: documentation/strategies/if.md
       - Extension:
           - Action: documentation/extension/action.md
           - Function: documentation/extension/function.md
-#          - Strategy: documentation/extension/strategy.md
+          - Strategy: documentation/extension/strategy.md
       - Idea Plugin: documentation/intellij_plugin.md
 
 extra_css:
