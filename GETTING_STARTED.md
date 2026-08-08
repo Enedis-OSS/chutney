@@ -66,5 +66,5 @@ You can use a Javascript launcher such as [Volta](https://volta.sh/) to take car
   * ui : Front-end of Chutney
 * kotlin-dsl: dsl to test as code and synchronise scenario with a server
 * idea-plugin: plugin intellij to have interaction with a Chutney server
-* docs: documentation as code for [chutney-testing](https://www.chutney-testing.com)
+* docs: documentation as code for [chutney-testing](https://enedis-oss.github.io/chutney)
 * example : Example project demonstrating the use of kotlin DSL with demo docker image

@@ -3,7 +3,7 @@
 
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 site_name: 'Chutney'
-site_url: https://www.chutney-testing.com/
+site_url: https://enedis-oss.github.io/chutney/
 site_description: Opinionated test tool for Specification by Example
 site_author: Chutney Testing Team
 repo_name:
