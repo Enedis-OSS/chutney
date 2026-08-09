@@ -123,6 +123,42 @@ public class ScenarioExecutionEngineAsyncTest {
     }
 
     @Test
+    public void should_store_custom_dataset_in_report_when_engine_fails_before_execution_starts() throws Exception {
+        TestCase testCase = emptyTestCase();
+        long executionId = 42L;
+        stubHistoryExecution(testCase.id(), executionId);
+        when(executionEngine.executeAndFollow(any())).thenThrow(new IllegalArgumentException("Target not found"));
+        ScenarioExecutionEngineAsync sut = new ScenarioExecutionEngineAsync(
+            executionHistoryRepository,
+            executionEngine,
+            executionStateRepository,
+            metrics,
+            om
+        );
+        DataSet customDataset = DataSet.builder()
+            .withName("")
+            .withConstants(Map.of("constant", "value"))
+            .withDatatable(List.of(Map.of("column", "cell")))
+            .build();
+
+        assertThatThrownBy(() -> sut.execute(new ExecutionRequest(testCase, "env", "user", customDataset)))
+            .isInstanceOf(FailedExecutionAttempt.class);
+
+        ArgumentCaptor<ExecutionHistory.Execution> executionCaptor = ArgumentCaptor.forClass(ExecutionHistory.Execution.class);
+        verify(executionHistoryRepository).update(eq(testCase.id()), executionCaptor.capture());
+        ExecutionHistory.Execution failedExecution = executionCaptor.getValue();
+        ScenarioExecutionReport persistedReport = om.readValue(failedExecution.report(), ScenarioExecutionReport.class);
+        assertThat(failedExecution.status()).isEqualTo(ServerReportStatus.FAILURE);
+        assertThat(persistedReport.constants).containsEntry("constant", "value");
+        assertThat(persistedReport.datatable).containsExactly(Map.of("column", "cell"));
+        assertThat(persistedReport.report.errors).isEmpty();
+        assertThat(persistedReport.report.steps).singleElement().satisfies(step -> {
+            assertThat(step.status).isEqualTo(ServerReportStatus.FAILURE);
+            assertThat(step.errors).containsExactly("Target not found");
+        });
+    }
+
+    @Test
     public void should_send_reports_and_update_history_and_send_metrics_and_notify_startend_when_observe_engine_execution() {
         // Given
         final TestCase testCase = emptyTestCase();

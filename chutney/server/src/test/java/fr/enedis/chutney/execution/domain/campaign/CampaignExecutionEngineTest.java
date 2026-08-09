@@ -185,6 +185,33 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
+    public void replay_failed_scenario_with_custom_dataset_content() {
+        Campaign campaign = createCampaign(List.of(secondTestCase));
+        DataSet customDataset = DataSet.builder()
+            .withId(DataSet.CUSTOM_ID)
+            .withName("")
+            .withConstants(Map.of("constant", "value"))
+            .withDatatable(List.of(Map.of("column", "cell")))
+            .build();
+        ExecutionHistory.Execution failedExecution = ImmutableExecutionHistory.Execution
+            .copyOf(createExecution(secondTestCase.id(), secondScenarioExecutionId, FAILURE))
+            .withDataset(Optional.of(customDataset));
+
+        sut.executeScenarioInCampaign(
+            singletonList(new ScenarioExecutionCampaign(secondTestCase.id(), secondTestCase.metadata.title, failedExecution.summary())),
+            campaign,
+            "user",
+            customDataset,
+            null
+        );
+
+        ArgumentCaptor<ExecutionRequest> requestCaptor = ArgumentCaptor.forClass(ExecutionRequest.class);
+        verify(scenarioExecutionEngine).execute(requestCaptor.capture());
+        assertThat(requestCaptor.getValue().dataset.constants).containsEntry("constant", "value");
+        assertThat(requestCaptor.getValue().dataset.datatable).containsExactly(Map.of("column", "cell"));
+    }
+
+    @Test
     public void stop_execution_of_scenarios_when_requested() {
         // Given
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
