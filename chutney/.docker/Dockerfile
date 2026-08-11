@@ -3,12 +3,9 @@
 
 FROM eclipse-temurin:21-jre
 
-VOLUME /.chutney
-EXPOSE 8443
-
 LABEL org.opencontainers.image.source=https://github.com/Enedis-OSS/chutney
 
 ARG JAR_PATH=server/target
-COPY $JAR_PATH/chutney-server-*-boot.jar app.jar
+COPY $JAR_PATH/chutney-server-*-boot.jar /app.jar
 
-CMD ["java", "-jar", "/app.jar", "--server.port=8443", "--chutney.workspace=/.chutney"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
