@@ -11,7 +11,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
 import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip, repeat } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip, repeat, retry } from 'rxjs';
 import { ScenarioService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { AlertService, EventManagerService } from '@shared';
@@ -300,6 +300,7 @@ export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
             if (!this.isRefreshActive()) {
                 this.refreshSubscription = this.loadScenarioExecutions().pipe(
                     delay(5000),
+                    retry({ delay: 5000 }),
                     repeat()
                 ).subscribe();
             }
