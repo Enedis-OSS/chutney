@@ -13,6 +13,9 @@ docker build --tag ghcr.io/enedis-oss/chutney/chutney-server:latest . -f ./.dock
 ```
 ### Start container
 
+Published images support both `linux/amd64` and `linux/arm64`. Docker automatically
+selects the matching image when pulling a tag, so no `--platform` option is needed.
+
 ```shell
 docker run -d \
   --name chutney-server \
