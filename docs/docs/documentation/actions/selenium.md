@@ -186,7 +186,7 @@ See [WebDriver.get(String url)](https://www.selenium.dev/selenium/docs/api/java/
 === "Kotlin"
     ``` kotlin
     SeleniumGetAction(
-        url = "http://www.chutney-testing.com/" 
+        url = "http://enedis-oss.github.io/chutney/" 
     )
     ```
 

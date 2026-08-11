@@ -42,14 +42,14 @@ Those Actions are extensions, and you can easily develop yours, even proprietary
 
 In addition, Chutney provide SpEL evaluation and extensible [Function](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-spi/src/main/java/fr/enedis/chutney/action/spi/SpelFunction.java) in order to ease the use of managing scenario data like JSON path or Date comparison.
 
-[Find out more in the documentation !](https://www.chutney-testing.com/)
+[Find out more in the documentation !](https://enedis-oss.github.io/chutney/)
 
-Still asking yourself ["Why another test tool ?"](https://www.chutney-testing.com/#why-another-test-tool)
+Still asking yourself ["Why another test tool ?"](https://enedis-oss.github.io/chutney/#why-another-test-tool)
 
 -------------
 ## <a name="demo"></a> Demo
 
-Follow the [documentation](https://www.chutney-testing.com/getting_started/demo/) to launch a Chutney demo container.  
+Follow the [documentation](https://enedis-oss.github.io/chutney/getting_started/demo/) to launch a Chutney demo container.  
 The Chutney web interface should be visible at http://localhost.
 
 -------------
@@ -59,17 +59,17 @@ The Chutney web interface should be visible at http://localhost.
 #### Locally
 
 In order to install Chutney on your machine, you can use Java or Docker. 
-See [Start a server](https://www.chutney-testing.com/installation/local_dev/#start-a-server).
+See [Start a server](https://enedis-oss.github.io/chutney/installation/local_dev/#start-a-server).
 
 #### On premise
 
-See [installation on premise](https://www.chutney-testing.com/installation/on_premise/introduction/), for details if you want to customize your own version of chutney server.
+See [installation on premise](https://enedis-oss.github.io/chutney/installation/on_premise/introduction/), for details if you want to customize your own version of chutney server.
 
 -------------
 
 ## <a name="scenario_example"></a> Scenario Example
 
-You can find all the documentation of how to write a scenario [here](https://www.chutney-testing.com/getting_started/write/).
+You can find all the documentation of how to write a scenario [here](https://enedis-oss.github.io/chutney/getting_started/write/).
 
 ### Scenario
 
@@ -111,7 +111,7 @@ Here is an example of a scenario written in Kotlin ([source code](https://github
 
 * In this example the scenario will list resources provided by [swapi](https://swapi.dev/api) api using http get action.
 * Then it will some expected resources are found in the api response using json assertion action.
-* All available Chutney Actions are documented [here](https://www.chutney-testing.com/documentation/actions/).
+* All available Chutney Actions are documented [here](https://enedis-oss.github.io/chutney/documentation/actions/).
 
 ### Execution report
 #### In Intellij
@@ -129,7 +129,7 @@ You can find some other example with http,jms, kafka, rabbit or sql [here](https
 
 ## <a name="documentation"></a> Documentation
 
-Get the [official documentation](https://www.chutney-testing.com/) for more information about how Chutney works.
+Get the [official documentation](https://enedis-oss.github.io/chutney/) for more information about how Chutney works.
 
 -------------
 
