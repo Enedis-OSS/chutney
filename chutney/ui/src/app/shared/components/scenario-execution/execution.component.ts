@@ -191,7 +191,10 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
     private afterReportUpdate() {
         this.hasContextVariables = this.scenarioExecutionReport.contextVariables && Object.getOwnPropertyNames(this.scenarioExecutionReport.contextVariables).length > 0;
         this.computeAllStepRowId();
-        this.selectFailedStep();
+        this.restoreSelectedStep();
+        if (this.selectedStep === undefined) {
+            this.selectFailedStep();
+        }
     }
 
     private selectFailedStep() {
@@ -199,8 +202,35 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
         if (failedStep?.length > 0) {
             timer(500)
                 .pipe(takeUntil(this.unsubscribeSub$))
-                .subscribe(() => this.selectStep(failedStep[0], true));
+                .subscribe(() => {
+                    if (this.selectedStep === undefined) {
+                        const currentFailedStep = this.getFailureSteps(this.scenarioExecutionReport)?.[0];
+                        if (currentFailedStep) {
+                            this.selectStep(currentFailedStep, true);
+                        }
+                    }
+                });
         }
+    }
+
+    private restoreSelectedStep() {
+        const selectedRowId = this.selectedStep?.['rowId'];
+        if (selectedRowId !== undefined) {
+            this.selectedStep = this.findStepByRowId(this.scenarioExecutionReport.report.steps, selectedRowId) ?? this.selectedStep;
+        }
+    }
+
+    private findStepByRowId(steps: StepExecutionReport[], rowId: string): StepExecutionReport | undefined {
+        for (const step of steps) {
+            if (step['rowId'] === rowId) {
+                return step;
+            }
+            const matchingSubStep = this.findStepByRowId(step.steps, rowId);
+            if (matchingSubStep) {
+                return matchingSubStep;
+            }
+        }
+        return undefined;
     }
 
     protected getDataset(execution: ScenarioExecutionReport) {
