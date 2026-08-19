@@ -79,13 +79,19 @@ public class JiraXrayService {
             report.startDate.atZone(ZoneId.systemDefault()).format(formatter),
             report.startDate.plusNanos(report.duration * 1000000).atZone(ZoneId.systemDefault()).format(formatter),
             getErrors(report).toString(),
-            report.status.equals("SUCCESS") ? PASS.value : FAIL.value
+            xrayStatusOf(report.status)
         );
 
         xrayTest.setEvidences(getEvidences(report.rootStep, ""));
         XrayInfo info = new XrayInfo(Collections.singletonList(report.environment));
         Xray xray = new Xray(testExecutionKey, Collections.singletonList(xrayTest), info);
         jiraXrayApi.updateRequest(xray);
+    }
+
+    // A scenario skipped by a false if condition did not fail, so it stays a PASS as it was before SKIPPED existed.
+    private String xrayStatusOf(String reportStatus) {
+        boolean didNotFail = "SUCCESS".equals(reportStatus) || "SKIPPED".equals(reportStatus);
+        return didNotFail ? PASS.value : FAIL.value;
     }
 
     public void linkCampaignExecution(Long campaignExecutionId, String jiraId) {

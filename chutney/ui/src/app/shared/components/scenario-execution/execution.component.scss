@@ -73,6 +73,9 @@
     .step-header-not-executed {
         color: var(--bs-gray-600);
     }
+    .step-header-skipped {
+        color: var(--bs-gray-600);
+    }
 
     .step-info {
         color: var(--bs-cyan);

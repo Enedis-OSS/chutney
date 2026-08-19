@@ -8,6 +8,7 @@
 package fr.enedis.chutney.kotlin.launcher
 
 import fr.enedis.chutney.engine.api.execution.StatusDto
+import fr.enedis.chutney.engine.api.execution.StatusDto.SKIPPED
 import fr.enedis.chutney.engine.api.execution.StatusDto.SUCCESS
 import fr.enedis.chutney.kotlin.ChutneyConfigurationParameters.CONFIG_ENVIRONMENT_ROOT_PATH
 import fr.enedis.chutney.kotlin.ChutneyConfigurationParameters.CONFIG_REPORT_ROOT_PATH
@@ -75,7 +76,7 @@ class Launcher(
         environment: ChutneyEnvironment,
         expected: StatusDto = SUCCESS
     ) {
-        Assertions.assertThat(run(scenario, environment)).isEqualTo(expected)
+        Assertions.assertThat(run(scenario, environment)).isIn(accepted(expected))
     }
 
     fun run(
@@ -94,7 +95,10 @@ class Launcher(
         expected: StatusDto,
         softly: SoftAssertions
     ) {
-        val status = run(scenario, environment)
-        softly.assertThat(status).isEqualTo(expected)
+        softly.assertThat(run(scenario, environment)).isIn(accepted(expected))
     }
+
+    // A scenario whose steps were all skipped by a false if condition reports SKIPPED, not SUCCESS.
+    private fun accepted(expected: StatusDto) =
+        if (expected == SUCCESS) listOf(SUCCESS, SKIPPED) else listOf(expected)
 }
