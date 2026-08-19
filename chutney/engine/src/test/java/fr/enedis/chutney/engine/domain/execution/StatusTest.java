@@ -41,7 +41,15 @@ public class StatusTest {
             new Object[]{Status.WARN, new Status[]{Status.WARN, Status.NOT_EXECUTED}},
             new Object[]{Status.RUNNING, new Status[]{Status.NOT_EXECUTED, Status.SUCCESS}},
             new Object[]{Status.RUNNING, new Status[]{Status.NOT_EXECUTED, Status.RUNNING}},
-            new Object[]{Status.PAUSED, new Status[]{Status.PAUSED, Status.RUNNING}}
+            new Object[]{Status.PAUSED, new Status[]{Status.PAUSED, Status.RUNNING}},
+            new Object[]{Status.SKIPPED, new Status[]{Status.SKIPPED}},
+            new Object[]{Status.SKIPPED, new Status[]{Status.SKIPPED, Status.SKIPPED}},
+            new Object[]{Status.SUCCESS, new Status[]{Status.SKIPPED, Status.SUCCESS}},
+            new Object[]{Status.FAILURE, new Status[]{Status.SKIPPED, Status.FAILURE}},
+            new Object[]{Status.WARN, new Status[]{Status.SKIPPED, Status.WARN}},
+            new Object[]{Status.RUNNING, new Status[]{Status.SKIPPED, Status.NOT_EXECUTED, Status.SUCCESS}},
+            new Object[]{Status.RUNNING, new Status[]{Status.SKIPPED, Status.NOT_EXECUTED}},
+            new Object[]{Status.NOT_EXECUTED, new Status[]{Status.NOT_EXECUTED}}
         };
     }
 }

@@ -1,0 +1,59 @@
+{
+    "scenario": {
+        "name": "Scenario",
+        "steps": [
+            {
+                "name": "retry parent",
+                "strategy": {
+                    "type": "retry-with-timeout",
+                    "parameters": {
+                        "timeOut": "1 s",
+                        "retryDelay": "100 ms"
+                    }
+                },
+                "steps": [
+                    {
+                        "name": "skipped inside retry",
+                        "strategy": {
+                            "type": "if",
+                            "parameters": {
+                                "condition": false
+                            }
+                        },
+                        "type": "success"
+                    },
+                    {
+                        "name": "executed inside retry",
+                        "type": "success"
+                    }
+                ]
+            },
+            {
+                "name": "soft assert parent",
+                "strategy": {
+                    "type": "soft-assert",
+                    "parameters": {}
+                },
+                "steps": [
+                    {
+                        "name": "skipped inside soft assert",
+                        "strategy": {
+                            "type": "if",
+                            "parameters": {
+                                "condition": false
+                            }
+                        },
+                        "type": "success"
+                    },
+                    {
+                        "name": "executed inside soft assert",
+                        "type": "success"
+                    }
+                ]
+            }
+        ]
+    },
+    "environment": {
+        "name": "env"
+    }
+}
