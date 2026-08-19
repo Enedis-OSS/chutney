@@ -8,6 +8,7 @@
 package fr.enedis.chutney.engine.domain.execution.strategies;
 
 import static fr.enedis.chutney.engine.domain.execution.ScenarioExecution.createScenarioExecution;
+import static fr.enedis.chutney.engine.domain.execution.report.Status.SKIPPED;
 import static fr.enedis.chutney.engine.domain.execution.report.Status.SUCCESS;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.empty;
@@ -46,9 +47,9 @@ public class IfStrategyTest {
 
     static Stream<Arguments> datasetForIf_strategy_nominal_cases() {
         return Stream.of(
-            of("Should not execute step if condition false", false, 0, SUCCESS, null),
+            of("Should not execute step if condition false", false, 0, SKIPPED, null),
             of("Should execute step if condition true", true, 1, SUCCESS, null, null),
-            of("Should not execute step if condition false Spel", "${ (1+1) == 3}", 0, SUCCESS, null),
+            of("Should not execute step if condition false Spel", "${ (1+1) == 3}", 0, SKIPPED, null),
             of("Should execute step if condition true Spel", "${ (1+1) == 2}", 1, SUCCESS, null)
         );
     }
@@ -77,7 +78,7 @@ public class IfStrategyTest {
         assertThat(status).isEqualTo(expectedStatus);
         verify(step, times(1)).addInformation("Execution condition [" + ifCondition + "] = " + (stepExecutionNumber == 1 ? "step executed" : "step skipped"));
         if (stepExecutionNumber == 0) {
-            verify(step).success();
+            verify(step).skipped();
         }
     }
 
@@ -136,9 +137,9 @@ public class IfStrategyTest {
 
     static Stream<Arguments> datasetForIf_strategy_on_parent_stepnominal_cases() {
         return Stream.of(
-            of("Should not execute step if condition false", false, 0, SUCCESS, null),
+            of("Should not execute step if condition false", false, 0, SKIPPED, null),
             of("Should execute step if condition true", true, 1, SUCCESS, null, null),
-            of("Should not execute step if condition false Spel", "${ (1+1) == 3}", 0, SUCCESS, null),
+            of("Should not execute step if condition false Spel", "${ (1+1) == 3}", 0, SKIPPED, null),
             of("Should execute step if condition true Spel", "${ (1+1) == 2}", 1, SUCCESS, null)
         );
     }
@@ -183,9 +184,9 @@ public class IfStrategyTest {
         assertThat(status).isEqualTo(expectedStatus);
         verify(step, times(1)).addInformation("Execution condition [" + ifCondition + "] = " + (stepExecutionNumber == 1 ? "step executed" : "step skipped"));
         if (stepExecutionNumber == 0) {
-            verify(step).success();
-            verify(step1).success();
-            verify(step2).success();
+            verify(step).skipped();
+            verify(step1).skipped();
+            verify(step2).skipped();
             verify(step1).addInformation(eq("Step skipped"));
             verify(step2).addInformation(eq("Step skipped"));
         }
@@ -245,7 +246,7 @@ public class IfStrategyTest {
             .execute(createScenarioExecution(null), ifStrategyStep, new ScenarioContextImpl(), new StepExecutionStrategies(Sets.newHashSet(DefaultStepExecutionStrategy.instance)));
 
         //Then
-        assertThat(status).isEqualTo(SUCCESS);
+        assertThat(status).isEqualTo(ifConditionEvaluation ? SUCCESS : SKIPPED);
         verify(ifStrategyStep, times(0)).execute(any(), any(), any());
         if (ifConditionEvaluation) {
             verify(ifStrategyStep).addInformation("Execution condition [" + ifCondition + "] = " + "step executed");
@@ -255,11 +256,11 @@ public class IfStrategyTest {
             });
         } else {
             verify(ifStrategyStep).addInformation("Execution condition [" + ifCondition + "] = " + "step skipped");
-            verify(ifStrategyStep).success();
+            verify(ifStrategyStep).skipped();
             List.of(parentSubStep, parentSubStep1, parentSubStep2, simpleSubStep).forEach(subStep -> {
                 verify(subStep, times(0)).execute(any(), any(), any());
                 verify(subStep).addInformation("Step skipped");
-                verify(subStep).success();
+                verify(subStep).skipped();
             });
         }
     }
@@ -277,5 +278,61 @@ public class IfStrategyTest {
         assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
         assertThat(result.steps).hasSize(2);
         assertThat(result.steps.get(1).name).isEqualTo("Step 2 Parent : value");
+    }
+
+    @Test
+    public void should_skip_step_and_all_its_sub_steps_when_condition_is_false() {
+        StepExecutionReportDto result = executeScenario("if_false_skips_whole_subtree");
+
+        assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
+        assertThat(result.steps.get(0).status).isEqualTo(StatusDto.SUCCESS);
+        assertThat(result.steps.get(1).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(1).steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(1).steps.get(0).steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(2).status).isEqualTo(StatusDto.SUCCESS);
+    }
+
+    @Test
+    public void should_skip_scenario_when_all_its_steps_are_skipped() {
+        StepExecutionReportDto result = executeScenario("if_false_on_every_step_skips_scenario");
+
+        assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.SKIPPED);
+        assertThat(result.steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+    }
+
+    @Test
+    public void should_evaluate_condition_from_context() {
+        StepExecutionReportDto result = executeScenario("if_strategy_condition_from_context");
+
+        assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
+        assertThat(result.steps.get(1).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(2).status).isEqualTo(StatusDto.SUCCESS);
+    }
+
+    @Test
+    public void should_not_degrade_parent_step_using_another_strategy() {
+        StepExecutionReportDto result = executeScenario("if_false_inside_other_strategies");
+
+        assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
+        assertThat(result.steps.get(0).status).isEqualTo(StatusDto.SUCCESS);
+        assertThat(result.steps.get(0).steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(1).status).isEqualTo(StatusDto.SUCCESS);
+        assertThat(result.steps.get(1).steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+    }
+
+    @Test
+    public void should_skip_sub_steps_of_a_skipped_step_whatever_their_own_condition() {
+        StepExecutionReportDto result = executeScenario("if_true_containing_if_false");
+
+        assertThat(result).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
+        assertThat(result.steps.get(0).steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(1).status).isEqualTo(StatusDto.SKIPPED);
+        assertThat(result.steps.get(1).steps.get(0).status).isEqualTo(StatusDto.SKIPPED);
+    }
+
+    private StepExecutionReportDto executeScenario(String scenarioFile) {
+        final TestEngine testEngine = new ExecutionConfiguration().embeddedTestEngine();
+        ExecutionRequestDto requestDto = Jsons.loadJsonFromClasspath("scenarios_examples/ifStrategy/" + scenarioFile + ".json", ExecutionRequestDto.class);
+        return testEngine.execute(requestDto);
     }
 }

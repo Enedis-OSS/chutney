@@ -106,6 +106,29 @@ public class StepTest {
     }
 
     @Test
+    public void should_not_fail_local_step_when_remote_report_is_skipped() {
+        // Given
+        StepDefinition fakeStepDefinition = new StepDefinition("fakeScenario", fakeTarget, "actionType", null, null, null, null, null);
+        Step step = new Step(dataEvaluator, fakeStepDefinition, new FakeStepExecutor(ActionExecutionResult.ok()), emptyList());
+
+        Map<String, Object> remoteResults = new HashMap<>();
+        remoteResults.put("remoteValue", "42");
+        StepExecutionReport remoteReport = new StepExecutionReportBuilder()
+            .setName("remote step")
+            .setStatus(Status.SKIPPED)
+            .setStepResults(remoteResults)
+            .createStepExecutionReport();
+
+        // When
+        step.updateContextFrom(remoteReport);
+
+        // Then
+        assertThat(step.status()).isNotEqualTo(Status.FAILURE);
+        assertThat(step.errors()).isEmpty();
+        assertThat(step.getStepOutputs()).containsEntry("remoteValue", "42");
+    }
+
+    @Test
     public void should_have_output_of_step_store_in_step_result() {
         // Given
         StepExecutor stepExecutor = new FakeStepExecutor(ActionExecutionResult.ok());

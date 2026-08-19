@@ -254,12 +254,14 @@
             <span>
         <span class="mr-1">
           <i class="fa-solid fa-2xs fa-fw"
+             [title]="ExecutionStatus.toString(step.status) | translate"
              [ngClass]="{
                             'fa-circle': step.status == 'SUCCESS' || step.status == 'NOT_EXECUTED',
                             'step-header-success': step.status == 'SUCCESS',
                             'fa-circle-xmark step-header-failure': step.status == 'FAILURE',
                             'fa-circle-stop step-header-stopped': step.status == 'STOPPED',
                             'step-header-not-executed': step.status == 'NOT_EXECUTED',
+                            'fa-circle-minus step-header-skipped': step.status == 'SKIPPED',
                             'fa-spinner fa-spin step-header-running': step.status == 'RUNNING',
                             'fa-circle-pause step-header-running': step.status == 'PAUSED'
                         }">
@@ -287,10 +289,14 @@
                 'step-header-failure': step.status == 'FAILURE',
                 'step-header-stopped': step.status == 'STOPPED',
                 'step-header-not-executed': step.status == 'NOT_EXECUTED',
+                'step-header-skipped': step.status == 'SKIPPED',
                 'step-header-running': step.status == 'RUNNING' || step.status == 'PAUSED'}"
         >
             {{ step.name }}
-            @if (step.status != 'NOT_EXECUTED') {
+            @if (step.status == 'SKIPPED') {
+                <span class="badge bg-secondary ms-2 align-middle">{{ ExecutionStatus.toString(step.status) | translate }}</span>
+            }
+            @if (step.status != 'NOT_EXECUTED' && step.status != 'SKIPPED') {
                 <span placement="left" class="float-end small">
           <em>
             @if ((step.duration | duration); as d) {

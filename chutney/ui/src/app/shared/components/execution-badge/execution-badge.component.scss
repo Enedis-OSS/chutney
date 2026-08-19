@@ -30,3 +30,8 @@
 .badge-not-executed {
     background-color: var(--bs-warning);
 }
+
+.badge-skipped {
+    font-style: italic;
+    background-color: var(--bs-gray-600);
+}

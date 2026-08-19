@@ -195,6 +195,10 @@ public class Step {
         state.successOccurred(message);
     }
 
+    public void skipped(String... message) {
+        state.skippedOccurred(message);
+    }
+
     public void resetExecution() {
         state.reset();
         steps.forEach(Step::resetExecution);
@@ -265,7 +269,8 @@ public class Step {
     }
 
     public void updateContextFrom(StepExecutionReport remoteReport) {
-        ActionExecutionResult.Status status = Status.SUCCESS.equals(remoteReport.status) ? ActionExecutionResult.Status.Success : ActionExecutionResult.Status.Failure;
+        boolean remoteDidNotFail = Status.SUCCESS.equals(remoteReport.status) || Status.SKIPPED.equals(remoteReport.status);
+        ActionExecutionResult.Status status = remoteDidNotFail ? ActionExecutionResult.Status.Success : ActionExecutionResult.Status.Failure;
         updateContextWith(status, remoteReport.stepResults, emptyList(), emptyList());
     }
 

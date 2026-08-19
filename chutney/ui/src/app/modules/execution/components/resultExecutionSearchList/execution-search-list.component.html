@@ -125,6 +125,7 @@
                             'fa-circle-xmark icon-danger': execution.status === ExecutionStatus.FAILURE,
                             'fa-spinner fa-pulse icon-warning': execution.status === ExecutionStatus.RUNNING || execution.status === ExecutionStatus.PAUSED,
                             'fa-circle-exclamation icon-light': execution.status === ExecutionStatus.STOPPED,
+                            'fa-circle-minus text-secondary': execution.status === ExecutionStatus.SKIPPED,
                             'fa-regular fa-circle text-warning': execution.status === ExecutionStatus.NOT_EXECUTED}"
               [title]="ExecutionStatus.toString(execution.status) | translate"
             ></i>

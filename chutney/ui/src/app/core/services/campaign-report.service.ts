@@ -41,8 +41,10 @@ export class CampaignReportService {
         pdf.text(docTitle, 148, 20, { align: 'center' });
 
         const passedScenarioExecutionCount = report.scenarioExecutionReports.filter(s => s.status === ExecutionStatus.SUCCESS).length;
+        const skippedScenarioExecutionCount = report.scenarioExecutionReports.filter(s => s.status === ExecutionStatus.SKIPPED).length;
         const totalscenarioExecutionCount = report.scenarioExecutionReports.length;
-        const docRecap = duration.transform(Number.parseInt(report.duration)) + ' - ' + passedScenarioExecutionCount + ' OK / ' + totalscenarioExecutionCount;
+        const skippedRecap = skippedScenarioExecutionCount ? ', ' + skippedScenarioExecutionCount + ' skipped' : '';
+        const docRecap = duration.transform(Number.parseInt(report.duration)) + ' - ' + passedScenarioExecutionCount + ' OK' + skippedRecap + ' / ' + totalscenarioExecutionCount;
         pdf.setFontSize(pdfFontSize - 4);
         pdf.text(docRecap, 148, 30, { align: 'center' });
 
