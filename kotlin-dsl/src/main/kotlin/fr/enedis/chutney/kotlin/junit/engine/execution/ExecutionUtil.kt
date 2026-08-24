@@ -61,7 +61,7 @@ fun testExecutionResultFromStatus(throwable: Throwable? = null, vararg status: S
     }
 
     val worst = Status.worst(status.asList())
-    return if (Status.SUCCESS == worst) {
+    return if (Status.SUCCESS == worst || Status.SKIPPED == worst) {
         TestExecutionResult.successful()
     } else {
         TestExecutionResult.failed(throwable)

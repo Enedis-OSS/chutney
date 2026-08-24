@@ -1,0 +1,56 @@
+{
+    "scenario": {
+        "name": "Scenario",
+        "steps": [
+            {
+                "name": "outer executed",
+                "strategy": {
+                    "type": "if",
+                    "parameters": {
+                        "condition": true
+                    }
+                },
+                "steps": [
+                    {
+                        "name": "inner skipped",
+                        "strategy": {
+                            "type": "if",
+                            "parameters": {
+                                "condition": false
+                            }
+                        },
+                        "type": "success"
+                    },
+                    {
+                        "name": "inner executed",
+                        "type": "success"
+                    }
+                ]
+            },
+            {
+                "name": "outer skipped",
+                "strategy": {
+                    "type": "if",
+                    "parameters": {
+                        "condition": false
+                    }
+                },
+                "steps": [
+                    {
+                        "name": "inner condition never evaluated",
+                        "strategy": {
+                            "type": "if",
+                            "parameters": {
+                                "condition": true
+                            }
+                        },
+                        "type": "success"
+                    }
+                ]
+            }
+        ]
+    },
+    "environment": {
+        "name": "env"
+    }
+}

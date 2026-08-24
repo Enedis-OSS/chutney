@@ -223,7 +223,8 @@
                 "ok": "OK",
                 "ko": "KO",
                 "stop": "Stopped",
-                "notexecuted": "Not executed"
+                "notexecuted": "Not executed",
+                "skipped": "Skipped"
             },
             "replay": "Replay failed scenarios",
             "replayWithJiraLink": {
@@ -491,7 +492,8 @@
             "running": "RUNNING",
             "paused": "PAUSE",
             "stopped": "STOP",
-            "not_executed": "NOT EXECUTED"
+            "not_executed": "NOT EXECUTED",
+            "skipped": "SKIPPED"
         },
         "time": {
             "in": "in",

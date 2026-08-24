@@ -47,6 +47,7 @@ export class CampaignReport {
     stopped: number;
     notexecuted: number;
     pause: number;
+    skipped: number;
     total: number;
 
     constructor(report: CampaignExecutionReport) {
@@ -59,7 +60,8 @@ export class CampaignReport {
         this.failed = counts[3];
         this.stopped = counts[4];
         this.pause = counts[5];
-        this.total = this.passed + this.failed + this.stopped + this.notexecuted + this.running + this.pause;
+        this.skipped = counts[6];
+        this.total = this.passed + this.failed + this.stopped + this.notexecuted + this.running + this.pause + this.skipped;
     }
 
     private initCounts(report: CampaignExecutionReport): Array<number> {
@@ -69,8 +71,12 @@ export class CampaignReport {
         var stops = 0;
         var notExecuted = 0;
         var pauses = 0;
+        var skipped = 0;
         report.scenarioExecutionReports.forEach(r => {
             switch (r.status) {
+                case ExecutionStatus.SKIPPED:
+                    skipped++;
+                    break;
                 case ExecutionStatus.NOT_EXECUTED:
                     notExecuted++;
                     break;
@@ -91,7 +97,7 @@ export class CampaignReport {
                     break;
             }
         });
-        return [notExecuted, runnings, success, failures, stops, pauses];
+        return [notExecuted, runnings, success, failures, stops, pauses, skipped];
     }
 
     allPassed() {
@@ -120,6 +126,10 @@ export class CampaignReport {
 
     hasRunning() {
         return !!this.running;
+    }
+
+    hasSkipped() {
+        return !!this.skipped;
     }
 
     isRunning() {

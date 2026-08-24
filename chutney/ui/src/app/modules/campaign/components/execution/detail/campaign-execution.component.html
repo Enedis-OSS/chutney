@@ -32,6 +32,9 @@
                 @if (report.hasStopped()) {
                   {{ report.stopped }} {{ 'campaigns.execution.last.stop' | translate }},
                 }
+                @if (report.hasSkipped()) {
+                  {{ report.skipped }} {{ 'campaigns.execution.last.skipped' | translate }},
+                }
                 @if (report.hasNotExecuted()) {
                   {{ report.notexecuted }} {{ 'campaigns.execution.last.notexecuted' | translate }}
                 }

@@ -1,0 +1,39 @@
+{
+    "scenario": {
+        "name": "Scenario",
+        "steps": [
+            {
+                "name": "seed context",
+                "type": "context-put",
+                "inputs": {
+                    "entries": {
+                        "flag": "yes"
+                    }
+                }
+            },
+            {
+                "name": "skipped by context condition",
+                "strategy": {
+                    "type": "if",
+                    "parameters": {
+                        "condition": "${#flag == 'no'}"
+                    }
+                },
+                "type": "success"
+            },
+            {
+                "name": "executed by context condition",
+                "strategy": {
+                    "type": "if",
+                    "parameters": {
+                        "condition": "${#flag == 'yes'}"
+                    }
+                },
+                "type": "success"
+            }
+        ]
+    },
+    "environment": {
+        "name": "env"
+    }
+}

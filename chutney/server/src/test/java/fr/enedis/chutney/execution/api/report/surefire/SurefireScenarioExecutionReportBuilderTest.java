@@ -154,6 +154,50 @@ public class SurefireScenarioExecutionReportBuilderTest {
         assertThat(step2.getSystemOut()).isNull();
     }
 
+    @Test
+    public void create_with_skipped_step_should_not_count_it_as_a_passing_test() throws JacksonException {
+        // Given
+        StepExecutionReportCore rootStepReport =
+            stepReport("root step Title", 42L, ServerReportStatus.SUCCESS,
+                stepReport("step1", 23L, ServerReportStatus.SUCCESS),
+                stepReport("step2", 0L, ServerReportStatus.SKIPPED));
+
+        ScenarioExecutionReport report = new ScenarioExecutionReport(1L, "scenario name", "", "", null, rootStepReport);
+        ExecutionHistory.Execution execution = ImmutableExecutionHistory.Execution
+            .builder()
+            .executionId(report.executionId)
+            .duration(42L)
+            .status(ServerReportStatus.SUCCESS)
+            .time(LocalDateTime.now())
+            .report(objectMapper.writeValueAsString(report))
+            .testCaseTitle("fake")
+            .environment("")
+            .user("user")
+            .scenarioId("")
+            .build();
+
+        ScenarioExecutionCampaign scenarioExecutionCampaign = new ScenarioExecutionCampaign("123", "test3", execution.summary());
+        when(executionHistoryRepository.getExecution(scenarioExecutionCampaign.scenarioId(), report.executionId)).thenReturn(execution);
+
+        // When
+        Testsuite testsuite = sut.create(scenarioExecutionCampaign);
+
+        // Then
+        assertThat(testsuite.getTests()).isEqualTo("2");
+        assertThat(testsuite.getFailures()).isEqualTo("0");
+        assertThat(testsuite.getSkipped()).isEqualTo("1");
+
+        Testcase step1 = testsuite.getTestcase().getFirst();
+        assertThat(step1.getName()).isEqualTo("1 - step1");
+        assertThat(step1.getSkipped()).isNull();
+
+        Testcase step2 = testsuite.getTestcase().get(1);
+        assertThat(step2.getName()).isEqualTo("2 - step2");
+        assertThat(step2.getFailure()).hasSize(0);
+        assertThat(step2.getSkipped()).isNotNull();
+        assertThat(step2.getSkipped().getValue().message).isEqualTo("Skipped");
+    }
+
     private StepExecutionReportCore stepReport(String title, long duration, ServerReportStatus status, StepExecutionReportCore... subSteps) {
         List<String> infos = ServerReportStatus.SUCCESS == status ? singletonList("test info") : emptyList();
         List<String> errors = ServerReportStatus.FAILURE == status ? singletonList("test error") : emptyList();

@@ -24,7 +24,7 @@ class Chutney {
 
     addReport(env, report) {
         const status = report.status;
-        const templateToUse = status === 'SUCCESS' ? this.reportSuccessTemplate : this.reportFailureTemplate;
+        const templateToUse = status === 'SUCCESS' || status === 'SKIPPED' ? this.reportSuccessTemplate : this.reportFailureTemplate;
         var templateClone = document.importNode(templateToUse.content, true);
         var div = templateClone.querySelector('div');
         div.textContent = report.name;

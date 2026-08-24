@@ -1,0 +1,38 @@
+{
+    "scenario": {
+        "name": "Scenario",
+        "steps": [
+            {
+                "name": "executed before",
+                "type": "success"
+            },
+            {
+                "name": "skipped parent",
+                "strategy": {
+                    "type": "if",
+                    "parameters": {
+                        "condition": false
+                    }
+                },
+                "steps": [
+                    {
+                        "name": "skipped child",
+                        "steps": [
+                            {
+                                "name": "skipped grandchild",
+                                "type": "success"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "executed after",
+                "type": "success"
+            }
+        ]
+    },
+    "environment": {
+        "name": "env"
+    }
+}
