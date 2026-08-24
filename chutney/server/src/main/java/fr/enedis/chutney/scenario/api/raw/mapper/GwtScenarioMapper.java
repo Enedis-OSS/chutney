@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import org.hjson.Stringify;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.json.JsonMapper;
@@ -43,6 +44,9 @@ public class GwtScenarioMapper implements GwtScenarioMarshaller {
     // TODO - Refactor mappers scattered everywhere :)
     public static ObjectMapper mapper = JsonMapper.builder()
         .findAndAddModules()
+        // Jackson 3 sorts properties alphabetically by default. Scenario json is user visible and stored as text,
+        // so it must keep the declaration order of the domain classes, ie. givens, when, thens.
+        .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
         .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
         .changeDefaultVisibility(v -> v
             .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
