@@ -26,7 +26,7 @@ export class ChutneyRightMenuComponent {
         }
     }
 
-    getItemLink(item: MenuItem) {
-        return item.link ? [item.link]: []
+    getItemLink(item: MenuItem): string[] | null {
+        return item.link ? [item.link] : null;
     }
 }
