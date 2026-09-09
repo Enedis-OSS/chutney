@@ -25,6 +25,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -128,7 +129,7 @@ public class ScenarioExecutionEngineAsync {
             followResult = executionEngine.executeAndFollow(executionRequest);
         } catch (Exception e) {
             LOGGER.error("Cannot execute test case [" + executionRequest.testCase.id() + "]", e.getMessage());
-            setExecutionToFailed(executionRequest.testCase.id(), storedExecution, ofNullable(e.getMessage()).orElse(e.toString()));
+            setExecutionToFailed(executionRequest, storedExecution, ofNullable(e.getMessage()).orElse(e.toString()));
             throw new FailedExecutionAttempt(e, storedExecution.executionId(), executionRequest.testCase.metadata().title());
         }
         return followResult;
@@ -181,11 +182,48 @@ public class ScenarioExecutionEngineAsync {
             .autoConnect();
     }
 
-    private void setExecutionToFailed(String scenarioId, ExecutionHistory.Execution storedExecution, String errorMessage) {
-        ImmutableExecutionHistory.Execution execution = ImmutableExecutionHistory.Execution.copyOf(storedExecution)
-            .withStatus(ServerReportStatus.FAILURE)
-            .withError(errorMessage);
-        executionHistoryRepository.update(scenarioId, execution);
+    private void setExecutionToFailed(ExecutionRequest executionRequest, ExecutionHistory.Execution storedExecution, String errorMessage) {
+        Instant failureDate = Instant.now();
+        StepExecutionReportCore failedStepReport = new StepExecutionReportCore(
+            executionRequest.testCase.metadata().title(),
+            0L,
+            failureDate,
+            ServerReportStatus.FAILURE,
+            emptyList(),
+            List.of(errorMessage),
+            emptyList(),
+            null,
+            null,
+            null,
+            null
+        );
+        StepExecutionReportCore failureReport = new StepExecutionReportCore(
+            executionRequest.testCase.metadata().title(),
+            0L,
+            failureDate,
+            ServerReportStatus.FAILURE,
+            emptyList(),
+            emptyList(),
+            List.of(failedStepReport),
+            null,
+            null,
+            null,
+            null
+        );
+        ScenarioExecutionReport scenarioExecutionReport = new ScenarioExecutionReport(
+            storedExecution.executionId(),
+            executionRequest.testCase.metadata().title(),
+            executionRequest.environment,
+            executionRequest.userId,
+            executionRequest.tags,
+            executionRequest.dataset,
+            failureReport
+        );
+        executionHistoryRepository.update(
+            executionRequest.testCase.id(),
+            reportSummarizer.summarize(scenarioExecutionReport, executionRequest)
+                .attach(storedExecution.executionId(), executionRequest.testCase.id())
+        );
     }
 
 

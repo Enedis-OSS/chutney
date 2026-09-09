@@ -20,6 +20,7 @@ import fr.enedis.chutney.scenario.domain.gwt.GwtTestCase;
 import fr.enedis.chutney.security.infra.SpringUserService;
 import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.ExecutionRequest;
+import fr.enedis.chutney.server.core.domain.execution.FailedExecutionAttempt;
 import fr.enedis.chutney.server.core.domain.execution.ScenarioExecutionEngine;
 import fr.enedis.chutney.server.core.domain.execution.ScenarioExecutionEngineAsync;
 import fr.enedis.chutney.server.core.domain.execution.report.ScenarioExecutionReport;
@@ -115,7 +116,13 @@ public class ScenarioExecutionUiController {
         TestCase testCase = testCaseRepository.findExecutableById(scenarioId).orElseThrow(() -> new ScenarioNotFoundException(scenarioId));
         String userId = userService.currentUserId();
         DataSet execDataset = getDataSet(dataset, testCase);
-        return executionEngineAsync.execute(new ExecutionRequest(testCase, env, userId, execDataset)).toString();
+        try {
+            return executionEngineAsync.execute(new ExecutionRequest(testCase, env, userId, execDataset)).toString();
+        } catch (FailedExecutionAttempt e) {
+            // The execution was created and its failure report was persisted before the engine could start.
+            // Returning its id lets asynchronous clients display it like any other completed execution.
+            return e.executionId.toString();
+        }
     }
 
     @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
