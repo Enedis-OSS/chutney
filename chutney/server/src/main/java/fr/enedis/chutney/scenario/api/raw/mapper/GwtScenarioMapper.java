@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import org.hjson.Stringify;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.json.JsonMapper;
@@ -44,6 +45,7 @@ public class GwtScenarioMapper implements GwtScenarioMarshaller {
     public static ObjectMapper mapper = JsonMapper.builder()
         .findAndAddModules()
         .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
         .changeDefaultVisibility(v -> v
             .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
             .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
