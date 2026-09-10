@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney.engine.domain.execution.strategies;
 
-import static fr.enedis.chutney.engine.domain.execution.report.Status.SUCCESS;
+import static fr.enedis.chutney.engine.domain.execution.report.Status.SKIPPED;
 
 import fr.enedis.chutney.engine.domain.execution.ScenarioExecution;
 import fr.enedis.chutney.engine.domain.execution.engine.evaluation.EvaluationException;
@@ -48,17 +48,17 @@ public class IfStrategy implements StepExecutionStrategy {
             Map<String, Object> context = new HashMap<>(scenarioContext);
             context.putAll(localContext);
             step.resolveName(context);
-            step.success();
+            step.skipped();
             skipAllSubSteps(step);
         }
-        return SUCCESS;
+        return SKIPPED;
     }
 
     private void skipAllSubSteps(Step step) {
         if (step.isParentStep()) {
             step.subSteps().forEach(subStep -> {
                 subStep.addInformation("Step skipped");
-                subStep.success();
+                subStep.skipped();
                 skipAllSubSteps(subStep);
             });
         }

@@ -8,6 +8,7 @@
 package fr.enedis.chutney.server.core.domain.scenario.campaign;
 
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.RUNNING;
+import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.SKIPPED;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.SUCCESS;
 import static fr.enedis.chutney.server.core.domain.tools.DatasetUtils.compareDataset;
 import static java.time.LocalDateTime.now;
@@ -248,7 +249,7 @@ public class CampaignExecution {
 
     public List<ScenarioExecutionCampaign> failedScenarioExecutions() {
         return scenarioExecutionReports().stream()
-            .filter(s -> !SUCCESS.equals(s.execution().status()))
+            .filter(s -> !SUCCESS.equals(s.execution().status()) && !SKIPPED.equals(s.execution().status()))
             .toList();
     }
 

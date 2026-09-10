@@ -79,7 +79,7 @@ public class JiraXrayService {
             report.startDate.atZone(ZoneId.systemDefault()).format(formatter),
             report.startDate.plusNanos(report.duration * 1000000).atZone(ZoneId.systemDefault()).format(formatter),
             getErrors(report).toString(),
-            report.status.equals("SUCCESS") ? PASS.value : FAIL.value
+            report.status.equals("SUCCESS") || report.status.equals("SKIPPED") ? PASS.value : FAIL.value
         );
 
         xrayTest.setEvidences(getEvidences(report.rootStep, ""));

@@ -83,10 +83,10 @@ public class SurefireScenarioExecutionReportBuilder {
                     failure.setMessage(error);
                     testcase.getFailure().add(failure);
                 });
-            } else if (ServerReportStatus.NOT_EXECUTED == stepExecutionReport.status) {
+            } else if (ServerReportStatus.NOT_EXECUTED == stepExecutionReport.status || ServerReportStatus.SKIPPED == stepExecutionReport.status) {
                 skippedCounter.incrementAndGet();
                 Testsuite.Testcase.Skipped skipped = new Testsuite.Testcase.Skipped();
-                skipped.setMessage("Not executed");
+                skipped.setMessage(ServerReportStatus.SKIPPED == stepExecutionReport.status ? "Skipped" : "Not executed");
                 testcase.setSkipped(objectFactory.createTestsuiteTestcaseSkipped(skipped));
             }
             if (!stepExecutionReport.information.isEmpty()) {

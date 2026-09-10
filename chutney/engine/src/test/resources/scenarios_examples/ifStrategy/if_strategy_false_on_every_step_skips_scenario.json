@@ -1,0 +1,20 @@
+{
+    "scenario": {
+        "name": "Scenario",
+        "steps": [
+            {
+                "name": "only step, guarded by a false condition",
+                "strategy": {
+                    "type": "if",
+                    "parameters": {
+                        "condition": false
+                    }
+                },
+                "type": "success"
+            }
+        ]
+    },
+    "environment": {
+        "name": "env"
+    }
+}
