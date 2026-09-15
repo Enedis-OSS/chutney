@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
+import fr.enedis.chutney.server.core.domain.dataset.DataSet;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
@@ -66,6 +67,7 @@ public class SurefireCampaignExecutionReportBuilderTest {
             .report(objectMapper.writeValueAsString(success_report))
             .testCaseTitle("fake")
             .environment("")
+            .dataset(DataSet.builder().withId("1").withName("datasetName").build())
             .user("")
             .scenarioId("")
             .build();
@@ -127,7 +129,7 @@ public class SurefireCampaignExecutionReportBuilderTest {
                 }
             }
             assertThat(directories).containsExactlyInAnyOrder("test Campaign Title/", "test Campaign Title 2/");
-            assertThat(files).hasSize(4).containsKeys("test Campaign Title/123_test ♥ Scenario Title ok.xml", "test Campaign Title/123_test Scenario Title ko.xml", "test Campaign Title 2/123_test Scenario Title ko.xml", "test Campaign Title 2/123_test ♥ Scenario Title ok.xml");
+            assertThat(files).hasSize(4).containsKeys("test Campaign Title/123_test ♥ Scenario Title ok_datasetName.xml", "test Campaign Title/123_test Scenario Title ko.xml", "test Campaign Title 2/123_test Scenario Title ko.xml", "test Campaign Title 2/123_test ♥ Scenario Title ok_datasetName.xml");
 
             // assert That XML have been serialized:
             assertThat(files.values()).allSatisfy(s -> assertThat(s).startsWith("<?xml version='1.0' encoding='UTF-8'?><testsuite"));
