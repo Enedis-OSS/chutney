@@ -10,7 +10,8 @@
             'bg-danger':status == 'FAILURE',
             'badge-stopped': status == 'STOPPED',
             'badge-running': status == 'RUNNING' || status == 'PAUSED',
-            'badge-not-executed': status == 'NOT_EXECUTED'
+            'badge-not-executed': status == 'NOT_EXECUTED',
+            'badge-skipped': status == 'SKIPPED'
       }">
   {{ status_h }}
   @if (spin) {

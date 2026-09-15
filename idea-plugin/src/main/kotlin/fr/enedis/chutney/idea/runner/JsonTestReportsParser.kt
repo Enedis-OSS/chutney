@@ -171,7 +171,7 @@ class JsonTestReportsParser(
                 reportTestFailure(nodeId, parentNodeId, name, true, failureMessage, failureData)
             }
 
-            "NOT_EXECUTED" -> {
+            "NOT_EXECUTED", "SKIPPED" -> {
                 reportTestNotExecuted(nodeId, parentNodeId, name)
             }
 

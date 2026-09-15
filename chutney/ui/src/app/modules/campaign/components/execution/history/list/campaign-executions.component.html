@@ -172,6 +172,15 @@
                     </span>
                   </div>
                 }
+                @if (execution.hasSkipped()) {
+                  <div class="btn btn-sm position-relative"
+                    [title]="ExecutionStatus.toString(ExecutionStatus.SKIPPED) | translate">
+                    <span class="fa-solid fa-2xl fa-circle-minus text-secondary"></span>
+                    <span class="position-absolute top-0 start-75 translate-middle badge border border-secondary rounded-circle text-secondary">
+                      {{ execution.skipped }}
+                    </span>
+                  </div>
+                }
               </td>
               <td>
                 <ngb-highlight [result]="execution.report.executionEnvironment"

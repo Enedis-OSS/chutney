@@ -10,6 +10,7 @@ package fr.enedis.chutney.campaign.domain;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.FAILURE;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.NOT_EXECUTED;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.RUNNING;
+import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.SKIPPED;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.STOPPED;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.SUCCESS;
 import static java.util.Arrays.asList;
@@ -357,6 +358,21 @@ class CampaignExecutionTest {
             .isInstanceOf(ScenarioExecutionCampaign.class)
             .hasFieldOrPropertyWithValue("scenarioId", "2")
             .returns(Optional.of("dataset_2"), sec -> sec.execution().dataset().map(ds -> ds.id));
+    }
+
+    @Test
+    void should_not_replay_skipped_scenarios_as_failed_ones() {
+        CampaignExecution sut = CampaignExecutionReportBuilder.builder()
+            .userId("")
+            .build();
+        addScenarioExecutions(sut, "1", "", SUCCESS);
+        addScenarioExecutions(sut, "2", "", SKIPPED);
+        addScenarioExecutions(sut, "3", "", FAILURE);
+        addScenarioExecutions(sut, "4", "", STOPPED);
+
+        assertThat(sut.failedScenarioExecutions())
+            .extracting(ScenarioExecutionCampaign::scenarioId)
+            .containsExactlyInAnyOrder("3", "4");
     }
 
     @Test

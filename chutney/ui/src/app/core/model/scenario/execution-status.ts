@@ -11,7 +11,8 @@ export enum ExecutionStatus {
     STOPPED = 'STOPPED',
     RUNNING = 'RUNNING',
     PAUSED = 'PAUSED',
-    NOT_EXECUTED = 'NOT_EXECUTED'
+    NOT_EXECUTED = 'NOT_EXECUTED',
+    SKIPPED = 'SKIPPED'
 }
 
 export namespace ExecutionStatus {

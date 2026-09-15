@@ -84,6 +84,11 @@ public class StepState {
         informations.addAll(newArrayList(message));
     }
 
+    void skippedOccurred(String... message) {
+        status = Status.SKIPPED;
+        informations.addAll(newArrayList(message));
+    }
+
     void reset() {
         status = Status.NOT_EXECUTED;
         informations.clear();

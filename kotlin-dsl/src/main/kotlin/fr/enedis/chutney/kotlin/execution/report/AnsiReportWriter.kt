@@ -119,6 +119,7 @@ class AnsiReportWriter(private val withColor: Boolean = true) {
                 FAILURE -> RED.bright()
                 STOPPED -> YELLOW.bright()
                 NOT_EXECUTED -> MAGENTA.bright()
+                SKIPPED -> CYAN.bright()
                 else -> ""
             }.plus(s + RESET.color)
         } else s

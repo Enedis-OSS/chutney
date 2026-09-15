@@ -344,7 +344,9 @@ public class CampaignExecutionEngine {
     }
 
     private boolean isScenarioCompletelyExecuted(ServerReportStatus status) {
-        return ServerReportStatus.SUCCESS.equals(status) || ServerReportStatus.FAILURE.equals(status);
+        return ServerReportStatus.SUCCESS.equals(status)
+            || ServerReportStatus.FAILURE.equals(status)
+            || ServerReportStatus.SKIPPED.equals(status);
     }
 
     private ScenarioExecutionCampaign generateNotExecutedScenarioExecutionAndReport(Campaign campaign, TestCaseDataset testCaseDataset, CampaignExecution campaignExecution) {

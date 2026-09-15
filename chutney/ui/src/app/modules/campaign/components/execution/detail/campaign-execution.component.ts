@@ -209,6 +209,9 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges 
         if (scenarioReportOutline.status === ExecutionStatus.NOT_EXECUTED) {
             return 'fa-regular fa-circle text-warning';
         }
+        if (scenarioReportOutline.status === ExecutionStatus.SKIPPED) {
+            return 'fa-solid fa-circle-minus text-secondary';
+        }
         return null;
     }
 

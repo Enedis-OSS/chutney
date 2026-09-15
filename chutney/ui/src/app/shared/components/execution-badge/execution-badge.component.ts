@@ -43,6 +43,9 @@ export class ExecutionBadgeComponent implements OnChanges {
       case 'NOT_EXECUTED':
         this.status_h = 'NOT EXECUTED';
         break;
+      case 'SKIPPED':
+        this.status_h = 'SKIPPED';
+        break;
     }
   }
 
