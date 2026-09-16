@@ -7,6 +7,50 @@
 
 # Changelog
 
+## [5.0.0](https://github.com/Enedis-OSS/chutney/tree/5.0.0)
+
+### ⚡ Breaking changes:
+* Java 25 migration by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/377
+### 🚀 Implemented enhancements:
+* New Status for skipped steps by @Redouane-E in https://github.com/Enedis-OSS/chutney/pull/403
+### 🐛 Fixed bugs:
+* Keep HTTP header outputs indexable in SpEL by @Redouane-E in https://github.com/Enedis-OSS/chutney/pull/380
+* fix(ui): keep execution history refresh active after errors by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/401
+* Preserve active execution tab when replaying a scenario by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/395
+* Prevent execution report step list from scrolling on mouse m… by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/393
+* Preserve failed execution data and navigation on replay by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/394
+* Preserve selected execution step during retry refresh by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/400
+* Disable sorting properties alphabetically when serializing scenario by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/402
+* Add dataset name on scenario surfire report by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/415
+### 🔧 Technical enhancements:
+* Java improvements using last versions by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/381
+* Allow overriding Chutney runtime configuration on docker by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/398
+* Enable docker multi archi by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/399
+### 📖 Documentation:
+* Update chutney doc url by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/397
+* Document execution strategies by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/396
+### 👒 Dependencies:
+* chore(deps): Bump org.bouncycastle:bcpkix-jdk18on from 1.83 to 1.85 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/382
+* chore(deps): Bump joda-time:joda-time from 2.14.1 to 2.14.3 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/384
+* chore(deps): Bump sshd.version from 2.17.1 to 2.19.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/386
+* chore(deps): Bump org.apache.wss4j:wss4j-ws-security-dom from 3.0.4 to 4.0.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/387
+* chore(deps): Bump commons-validator:commons-validator from 1.10.1 to 1.11.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/388
+* chore(deps): Bump org.checkerframework:checker-qual from 3.54.0 to 4.2.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/389
+* chore(deps-dev): Bump com.oracle.database.jdbc:ojdbc11 from 23.26.2.0.0 to 23.26.3.0.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/390
+* chore(deps): Bump com.github.eirslett:frontend-maven-plugin from 2.0.0 to 2.0.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/391
+* chore(deps): Bump springboot.version from 4.1.0 to 4.1.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/405
+* chore(deps): Bump org.scala-lang:scala-library from 2.13.18 to 3.9.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/406
+* chore(deps): Bump org.checkerframework:checker-qual from 4.2.1 to 4.2.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/407
+* chore(deps): Bump lucene.version from 10.4.0 to 10.5.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/410
+* chore(deps): Bump org.jacoco:jacoco-maven-plugin from 0.8.14 to 0.8.15 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/411
+* chore(deps): Bump org.apache.maven.plugins:maven-jar-plugin from 3.5.0 to 3.5.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/413
+* chore(deps): Bump com.google.guava:guava from 33.6.0-jre to 33.7.1-jre in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/412
+* chore(deps): Bump org.bouncycastle:bcprov-jdk18on from 1.83 to 1.85.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/414
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/4.3.0...5.0.0
+
+
 ## [4.3.0](https://github.com/Enedis-OSS/chutney/tree/4.3.0)
 
 ### 🚀 Implemented enhancements:
