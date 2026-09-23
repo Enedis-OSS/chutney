@@ -6,7 +6,7 @@
  */
 
 import { Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
@@ -24,7 +24,7 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
-    importForm: FormGroup;
+    importForm: UntypedFormGroup;
 
     submitted: boolean;
 
@@ -35,7 +35,7 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     constructor(private environmentService: EnvironmentService,
         public validationService: ValidationService,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private translateService: TranslateService) {}
 
     ngOnInit() {

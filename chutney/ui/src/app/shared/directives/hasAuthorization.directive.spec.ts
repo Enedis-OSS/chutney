@@ -142,7 +142,7 @@ class TestInject {
     standalone: false
 })
 class HasAuthorizationsHostComponent {
-    @ViewChild('spanView', /* TODO: add static flag */ {}) spanView: any;
+    @ViewChild('spanView') spanView: any;
     constructor(private testInject: TestInject) {}
     authorizations() { return this.testInject.authorizations(); }
 }

@@ -10,9 +10,9 @@ import {
     AbstractControl,
     ControlValueAccessor,
     FormArray,
-    FormBuilder,
-    FormControl,
-    FormGroup,
+    UntypedFormBuilder,
+    UntypedFormControl,
+    UntypedFormGroup,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     UntypedFormArray,
@@ -48,7 +48,7 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
-    constructor(private fb: FormBuilder,
+    constructor(private fb: UntypedFormBuilder,
                 private fileSaverService: FileSaverService) {
         this.dataGridForm = this.fb.array([]);
     }
@@ -269,5 +269,5 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
         };
     }
 
-    protected readonly FormControl = FormControl;
+    protected readonly UntypedFormControl = UntypedFormControl;
 }

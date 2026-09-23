@@ -8,7 +8,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,7 +30,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     dataset: Dataset = new Dataset('', '', [], new Date(), [], []);
 
     activeTab = 'keyValue';
-    datasetForm: FormGroup;
+    datasetForm: UntypedFormGroup;
     private unsubscribeSub$: Subject<void> = new Subject();
     private previousDataSet: Dataset = this.dataset;
     private modificationsSaved = false;
@@ -47,7 +47,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
                 private route: ActivatedRoute,
                 private validationService: ValidationService,
                 private translate: TranslateService,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private location: Location) {
         super();
     }
@@ -57,8 +57,8 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
             name: ['', Validators.required],
             description: '',
             tags: [],
-            keyValues: new FormControl(),
-            multiKeyValues: new FormControl()
+            keyValues: new UntypedFormControl(),
+            multiKeyValues: new UntypedFormControl()
         });
 
         this.route.params
@@ -180,10 +180,10 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
         const tags = this.datasetForm.value['tags'] ? this.datasetForm.value['tags'].split(',') : [];
         const date = new Date();
 
-        const kv = this.datasetForm.controls['keyValues'] as FormArray;
+        const kv = this.datasetForm.controls['keyValues'] as UntypedFormArray;
         const keyValues = kv.value ? kv.value.map((p) => new KeyValue(p.key, p.value)) : [];
 
-        const mkv = this.datasetForm.controls['multiKeyValues'] as FormArray;
+        const mkv = this.datasetForm.controls['multiKeyValues'] as UntypedFormArray;
         const multiKeyValues = mkv.value ? mkv.value.map(a => a.map((p) => new KeyValue(p.key, p.value))) : [];
 
         const id = this.dataset.id ? this.dataset.id : null;

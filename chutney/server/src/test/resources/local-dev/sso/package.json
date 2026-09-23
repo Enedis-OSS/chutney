@@ -13,5 +13,8 @@
         "dotenv": "^16.4.5",
         "express": "^4.21.0",
         "oidc-provider": "^8.5.1"
+    },
+    "devDependencies": {
+        "sass": "^1.35.0"
     }
 }
