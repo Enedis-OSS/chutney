@@ -12,8 +12,8 @@ import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campai
 import { CampaignSchedulingService } from '@core/services/campaign-scheduling.service';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
-import { NgbTime } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTime } from '@ng-bootstrap/ng-bootstrap';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';

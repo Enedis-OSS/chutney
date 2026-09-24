@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { EventManagerService } from '@shared';
 import { MenuItem } from '@shared/components/layout/menuItem';
 import { EnvironmentService } from '@core/services/environment.service';
