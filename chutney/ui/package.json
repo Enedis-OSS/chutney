@@ -68,7 +68,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "os-browserify": "^0.3.0",
-    "typescript": "5.9.x",
+    "typescript": "~5.9.3",
     "sass": "^1.35.0"
   }
 }
