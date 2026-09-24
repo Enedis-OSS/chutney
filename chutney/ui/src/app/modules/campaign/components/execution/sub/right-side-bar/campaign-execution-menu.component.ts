@@ -12,7 +12,7 @@ import { combineLatest, identity, Observable, of, Subject, timer } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FileSaverService } from 'ngx-filesaver';
 
 import * as JSZip from 'jszip';

@@ -9,7 +9,6 @@ import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
-    UntypedFormArray,
     UntypedFormBuilder,
     UntypedFormControl,
     UntypedFormGroup,

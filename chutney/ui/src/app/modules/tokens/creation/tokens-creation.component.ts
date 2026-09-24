@@ -10,7 +10,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal, NgbDatepickerConfig } from "@ng-bootstrap/ng-bootstrap";
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from "rxjs";
 
 @Component({
