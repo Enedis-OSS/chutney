@@ -16,7 +16,6 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DateFormatPipe } from 'ngx-moment';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
 import { TranslateService } from '@ngx-translate/core';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DatasetUtils } from "@shared/tools/dataset-utils";
 
@@ -31,12 +30,12 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     filteredExecutions: Execution[] = [];
     filtersForm: UntypedFormGroup;
 
-    status: ListItem[] = [];
-    environments: ListItem[] = [];
-    datasets: ListItem[] = [];
-    executors: ListItem[] = [];
-    campaigns: ListItem[] = [];
-    tags: ListItem[] = [];
+    status = [];
+    environments = [];
+    datasets = [];
+    executors = [];
+    campaigns = [];
+    tags = [];
     selectSettings = {
         text: '',
         enableCheckAll: false,
@@ -165,25 +164,25 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
             params['keyword'] = filters.keyword;
         }
         if (filters.status && filters.status.length) {
-            params['status'] = filters.status.map((status: ListItem) => status.id).toString();
+            params['status'] = filters.status.map((status) => status.id).toString();
         }
         if (filters.date) {
             params['date'] = this.toIsoDate(filters.date);
         }
         if (filters.environments && filters.environments.length) {
-            params['env'] = filters.environments.map((env: ListItem) => env.id).toString();
+            params['env'] = filters.environments.map((env) => env.id).toString();
         }
         if (filters.datasets && filters.datasets.length) {
-            params['datasets'] = filters.datasets.map((ds:ListItem) => ds.id).toString();
+            params['datasets'] = filters.datasets.map((ds) => ds.id).toString();
         }
         if (filters.campaigns && filters.campaigns.length) {
-            params['camp'] = filters.campaigns.map((campaign:ListItem) => campaign.id).toString();
+            params['camp'] = filters.campaigns.map((campaign) => campaign.id).toString();
         }
         if (filters.executors && filters.executors.length) {
-            params['exec'] = filters.executors.map((executor: ListItem) => executor.id).toString();
+            params['exec'] = filters.executors.map((executor) => executor.id).toString();
         }
         if (filters.tags && filters.tags.length) {
-            params['tags'] = filters.tags.map((tag: ListItem) => tag.id).toString();
+            params['tags'] = filters.tags.map((tag) => tag.id).toString();
         }
         return params;
     }
@@ -254,7 +253,7 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
 
         let datasetMatch = true;
         if (filters.datasets && filters.datasets.length) {
-            datasetMatch = !!filters.datasets.find((ds:ListItem) => exec.dataset !! && (ds.id === Dataset.CUSTOM_LABEL ? Dataset.CUSTOM_ID : ds.id) === exec.dataset.id);
+            datasetMatch = !!filters.datasets.find((ds) => exec.dataset !! && (ds.id === Dataset.CUSTOM_LABEL ? Dataset.CUSTOM_ID : ds.id) === exec.dataset.id);
         }
 
         let campaignMatch = true;
@@ -285,7 +284,7 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
         this.onReplay.emit(execution.executionId);
     }
 
-    private removeDuplicateListItems(list: ListItem[]) {
+    private removeDuplicateListItems(list) {
         const seen = new Set<string>();
         return list.filter(elem => {
             if (!elem) return false
