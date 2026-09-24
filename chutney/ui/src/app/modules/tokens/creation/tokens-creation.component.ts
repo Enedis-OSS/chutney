@@ -6,7 +6,7 @@
  */
 
 import { Component, inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal, NgbDatepickerConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -23,7 +23,7 @@ export class TokenCreationComponent implements OnInit {
 
     activeModal = inject(NgbActiveModal);
 
-    tokenForm: FormGroup;
+    tokenForm: UntypedFormGroup;
 
     submitted: boolean;
 
@@ -31,7 +31,7 @@ export class TokenCreationComponent implements OnInit {
 
     constructor(
         private tokenService: TokenService,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private configDate: NgbDatepickerConfig,
     ) {
         const currentDate = new Date();

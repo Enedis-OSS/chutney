@@ -9,10 +9,10 @@ import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormArray,
-    FormBuilder,
-    FormControl,
-    FormGroup,
+    UntypedFormArray,
+    UntypedFormBuilder,
+    UntypedFormControl,
+    UntypedFormGroup,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     UntypedFormArray,
@@ -42,13 +42,13 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 
-    dataGridForm: FormArray;
-    headers: FormArray = this.fb.array([]);
+    dataGridForm: UntypedFormArray;
+    headers: UntypedFormArray = this.fb.array([]);
     @Input() enableImportExport: boolean;
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
-    constructor(private fb: FormBuilder,
+    constructor(private fb: UntypedFormBuilder,
                 private fileSaverService: FileSaverService) {
         this.dataGridForm = this.fb.array([]);
     }
@@ -62,7 +62,7 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 
     updateHeader(col: number, newHeader: string) {
         const lines = this.dataGridForm.controls;
-        lines.forEach((line: FormArray) => {
+        lines.forEach((line: UntypedFormArray) => {
             let cell = line.controls[col];
             cell.patchValue(new KeyValue(newHeader, cell.value.value));
         });
@@ -74,7 +74,7 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
         }
 
         this.headers.push(this.fb.control(''));
-        this.dataGridForm.controls.forEach((line: FormArray) => {
+        this.dataGridForm.controls.forEach((line: UntypedFormArray) => {
             line.push(this.createKeyValue('', ''));
             line.updateValueAndValidity();
         });
@@ -87,7 +87,7 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 
     removeColumn(col: number) {
         this.headers.removeAt(col);
-        this.dataGridForm.controls.forEach((line: FormArray) => {
+        this.dataGridForm.controls.forEach((line: UntypedFormArray) => {
             line.removeAt(col);
         });
 
@@ -221,7 +221,7 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
         return [];
     }
 
-    private createLine(line: Array<KeyValue>): FormArray {
+    private createLine(line: Array<KeyValue>): UntypedFormArray {
         let lineArray = this.fb.array([]) as UntypedFormArray;
         line.map(kv => this.createKeyValue(kv.key, kv.value))
             .forEach(cell => {
@@ -230,14 +230,14 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
         return lineArray;
     }
 
-    private createKeyValue(key?: string, value?: string): FormGroup {
+    private createKeyValue(key?: string, value?: string): UntypedFormGroup {
         return this.fb.group({
             key: key ? key : '',
             value: value ? value : ''
         });
     }
 
-    private insertLine(line: FormArray, i?: number) {
+    private insertLine(line: UntypedFormArray, i?: number) {
         if (i == null) {
             i = this.dataGridForm.length;
         }
@@ -269,5 +269,5 @@ export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
         };
     }
 
-    protected readonly FormControl = FormControl;
+    protected readonly UntypedFormControl = UntypedFormControl;
 }

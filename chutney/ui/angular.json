@@ -24,9 +24,7 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "tsconfig.chutney.json",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "assets": [
               "src/assets",
               "src/manifest.json",
@@ -66,7 +64,8 @@
                   "core-js",
                   "file-saver"
 
-              ]
+              ],
+            "aot": true
           },
           "configurations": {
             "production": {
@@ -115,9 +114,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "stylePreprocessorOptions": {
