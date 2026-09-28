@@ -110,7 +110,6 @@ export class RawEditionComponent
                 .subscribe({
                     next: (rawScenario) => {
                         this.testCase = rawScenario;
-                        this.modifiedContent = this.testCase.content ?? '';
                         this.previousTestCase = this.testCase.clone();
                         this.checkParseError();
 
