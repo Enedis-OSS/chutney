@@ -13,7 +13,7 @@ import { CampaignSchedulingService } from '@core/services/campaign-scheduling.se
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { NgbTime } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
@@ -120,7 +120,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
         }
 
         const date: NgbDate = formValue['date'];
-        const time: NgbTime = formValue['time'];
+        const time: NgbTimeStruct = formValue['time'];
         const campaignList: Array<Campaign> = this.form.get('selectedCampaigns').value;
         const dateTime = new Date(date.year, date.month - 1, date.day, time.hour, time.minute, 0, 0);
         dateTime.setHours(time.hour - dateTime.getTimezoneOffset() / 60);
