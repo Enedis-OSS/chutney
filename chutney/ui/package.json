@@ -48,7 +48,7 @@
     "ngx-moment": "^6.0.2",
     "ngx-monaco-editor-v2": "^21.1.4",
     "ngx-pagination": "^6.0.3",
-    "ngx-toastr": "^19.0.0",
+    "ngx-toastr": "^20.0.5",
     "primeng": "^21.1.10",
     "rxjs": "^7.8.2",
     "web-app-manifest-loader": "^0.1.1",
