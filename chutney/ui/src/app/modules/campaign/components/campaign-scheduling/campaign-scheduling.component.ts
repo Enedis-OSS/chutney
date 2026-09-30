@@ -17,7 +17,6 @@ import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -38,8 +37,8 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
     environments: Array<Environment> = [];
     model: NgbDateStruct;
 
-    datasets: ListItem[] = [];
-    datasetsSelected: Array<{"campaign": Campaign, "dataset": ListItem}> = [];
+    datasets: any[] = [];
+    datasetsSelected: Array<{"campaign": Campaign, "dataset": any}> = [];
     jirasSelected: Array<{"campaign": Campaign, "jira": string}> = [];
     datasetDropdownSettings: IDropdownSettings;
     EMPTY_DATASET = {"id": "", "text": ""};
@@ -202,7 +201,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
             });
     }
 
-    selectDataset(toAdd: ListItem, campaign: Campaign) {
+    selectDataset(toAdd: any, campaign: Campaign) {
         const foundelt = this.datasetsSelected.find(elt => elt.campaign.id === campaign.id)
         foundelt.dataset = toAdd;
     }

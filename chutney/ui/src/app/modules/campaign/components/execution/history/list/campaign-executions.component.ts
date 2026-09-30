@@ -18,7 +18,6 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { DatasetUtils } from '@shared/tools/dataset-utils';
 
 @Component({
@@ -41,13 +40,13 @@ export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
     private filters$: Subscription;
     filteredExecutions: CampaignReport[] = [];
 
-    status: ListItem[] = [];
+    status: any[] = [];
 
-    environments: ListItem[] = [];
+    environments: any[] = [];
 
-    datasets: ListItem[] = [];
+    datasets: any[] = [];
 
-    executors: ListItem[] = [];
+    executors: any[] = [];
 
     private readonly iso_Date_Delimiter = '-';
 
@@ -234,7 +233,7 @@ export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
         return keywordMatch && statusMatch && dateMatch && userMatch && envMatch && datasetMatch;
     }
 
-    private removeDuplicateListItems(list: ListItem[]) {
+    private removeDuplicateListItems(list: any[]) {
         const seen = new Set<string>();
         return list.filter(elem => {
             if (!elem) return false
