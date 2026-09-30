@@ -58,7 +58,7 @@ import Aura from '@primeng/themes/aura';
             positionClass: 'toast-top-full-width',
             preventDuplicates: true,
         }),
-        ModalModule.forRoot(),
+        ModalModule,
         NgbModule,
         // Internal common
         SharedModule,
