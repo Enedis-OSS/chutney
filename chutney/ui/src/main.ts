@@ -7,10 +7,9 @@
 
 import '@angular/localize/init';
 import { enableProdMode } from '@angular/core';
+import { platformBrowser } from '@angular/platform-browser';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { ChutneyAppModule } from './app/app.module';
 import { environment } from '@env/environment';
 
@@ -20,5 +19,5 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(ChutneyAppModule)
+platformBrowser().bootstrapModule(ChutneyAppModule)
   .catch(err => console.error(err));
