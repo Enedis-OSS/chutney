@@ -7,7 +7,7 @@
 
 // Core
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, provideZoneChangeDetection } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -72,6 +72,7 @@ import Aura from '@primeng/themes/aura';
             multi: true
         },
         provideHttpClient(withInterceptorsFromDi()),
+        provideZoneChangeDetection(),
         provideAnimationsAsync(),
         providePrimeNG({
             theme: {
