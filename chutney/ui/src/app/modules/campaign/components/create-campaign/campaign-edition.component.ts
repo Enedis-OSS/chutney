@@ -32,6 +32,7 @@ import { distinct, flatMap, newInstance } from '@shared/tools/array-utils';
 import { isNotEmpty } from '@shared';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { ListItem } from '@shared/types/list-item';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
@@ -52,9 +53,9 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     campaignId: number;
     submitted: boolean;
     scenarios: Array<ScenarioIndex> = [];
-    scenariosToAdd: Array<{ 'scenarioId': ScenarioIndex, 'dataset': any }> = [];
+    scenariosToAdd: Array<{ 'scenarioId': ScenarioIndex, 'dataset': ListItem }> = [];
     errorMessage: any;
-    datasets: any[] = [];
+    datasets: ListItem[] = [];
     dropdownDatasetSettings: IDropdownSettings
     error: boolean = false;
 
@@ -63,8 +64,8 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     environments: Array<string>;
     selectedEnvironment: string;
 
-    itemList: any[] = [];
-    jiraItemList: any[] = [];
+    itemList: ListItem[] = [];
+    jiraItemList: ListItem[] = [];
     selectedTags: string[] = [];
     jiraSelectedTags: string[] = [];
     datasetId: string;
@@ -136,7 +137,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.unsubscribeSub$.complete();
     }
 
-    drop(event: CdkDragDrop<Array<{ 'scenarioId': ScenarioIndex, 'dataset': any }>>) {
+    drop(event: CdkDragDrop<Array<{ 'scenarioId': ScenarioIndex, 'dataset': ListItem }>>) {
         moveItemInArray(this.scenariosToAdd, event.previousIndex, event.currentIndex);
     }
 
@@ -435,7 +436,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         }
     }
 
-    setCampaignScenariosIdsToAdd(scenariosToAdd: Array<{ scenarioId: ScenarioIndex, dataset: any }>) {
+    setCampaignScenariosIdsToAdd(scenariosToAdd: Array<{ scenarioId: ScenarioIndex, dataset: ListItem }>) {
         this.error = false;
         this.campaign.scenarios = [];
         for (const scenario of scenariosToAdd) {
@@ -465,7 +466,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.refreshForPipe();
     }
 
-    removeScenario(scenario: { 'scenarioId': ScenarioIndex, 'dataset': any }) {
+    removeScenario(scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const index = this.scenariosToAdd.findIndex(scenarioElement => scenarioElement === scenario)
         this.scenariosToAdd.splice(index, 1);
         this.refreshForPipe();
@@ -516,13 +517,13 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.datasetId = datasetId;
     }
 
-    selectDatasetScenario(dataset: any, scenario: { 'scenarioId': ScenarioIndex, 'dataset': any }) {
+    selectDatasetScenario(dataset: any, scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const scenarioSelected = this.scenariosToAdd.find(scenarioElement => scenarioElement === scenario)
         scenarioSelected.dataset = dataset;
         this.refreshForPipe();
     }
 
-    deselectDatasetScenario(scenario: { 'scenarioId': ScenarioIndex, 'dataset': any }) {
+    deselectDatasetScenario(scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const scenarioSelected = this.scenariosToAdd.find(scenarioElement => scenarioElement === scenario)
         scenarioSelected.dataset = null;
         this.refreshForPipe();

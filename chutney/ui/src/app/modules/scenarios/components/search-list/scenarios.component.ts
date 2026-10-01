@@ -25,6 +25,7 @@ import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { TranslateService } from '@ngx-translate/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
+import { ListItem } from '@shared/types/list-item';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/scenario-jira-links-modal.component';
 
@@ -46,7 +47,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     textFilter: string;
     tags = [];
     selectedTags = [];
-    status: any[] = [];
+    status: ListItem[] = [];
     selectedStatus = [];
     // Jira
     jiraLinks: Map<string, JiraScenarioLinks> = new Map();

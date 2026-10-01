@@ -14,6 +14,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ListItem } from '@shared/types/list-item';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
@@ -37,8 +38,8 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
     environments: Array<Environment> = [];
     model: NgbDateStruct;
 
-    datasets: any[] = [];
-    datasetsSelected: Array<{"campaign": Campaign, "dataset": any}> = [];
+    datasets: ListItem[] = [];
+    datasetsSelected: Array<{"campaign": Campaign, "dataset": ListItem}> = [];
     jirasSelected: Array<{"campaign": Campaign, "jira": string}> = [];
     datasetDropdownSettings: IDropdownSettings;
     EMPTY_DATASET = {"id": "", "text": ""};
@@ -201,7 +202,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
             });
     }
 
-    selectDataset(toAdd: any, campaign: Campaign) {
+    selectDataset(toAdd: ListItem, campaign: Campaign) {
         const foundelt = this.datasetsSelected.find(elt => elt.campaign.id === campaign.id)
         foundelt.dataset = toAdd;
     }
