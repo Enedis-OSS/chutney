@@ -9,16 +9,16 @@ import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, S
 import { Campaign, CampaignExecutionReport, CampaignReport, Dataset } from '@model';
 import { Params } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DateFormatPipe } from 'ngx-moment';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
+import { ListItem } from '@shared/types/list-item';
 import { DatasetUtils } from '@shared/tools/dataset-utils';
 
 @Component({
@@ -37,7 +37,7 @@ export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
 
     ExecutionStatus = ExecutionStatus;
 
-    filtersForm: FormGroup;
+    filtersForm: UntypedFormGroup;
     private filters$: Subscription;
     filteredExecutions: CampaignReport[] = [];
 
@@ -51,7 +51,7 @@ export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
 
     private readonly iso_Date_Delimiter = '-';
 
-    constructor(private formBuilder: FormBuilder,
+    constructor(private formBuilder: UntypedFormBuilder,
                 private datePipe: DateFormatPipe,
                 private translateService: TranslateService,
                 private datasetUtils: DatasetUtils,
@@ -81,8 +81,8 @@ export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
         this.onExecutionSelect.emit({execution, focus});
     }
 
-    getFormControl(name: string): FormControl {
-        return this.filtersForm.get(name) as FormControl;
+    getFormControl(name: string): UntypedFormControl {
+        return this.filtersForm.get(name) as UntypedFormControl;
     }
 
     private initFiltersOptions() {

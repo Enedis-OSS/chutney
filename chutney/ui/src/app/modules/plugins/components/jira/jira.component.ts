@@ -6,7 +6,7 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { JiraPluginConfiguration } from '@core/model/jira-plugin-configuration.model';
 import { JiraPluginConfigurationService } from '@core/services/jira-plugin-configuration.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,7 +24,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class JiraComponent implements OnInit, OnDestroy {
 
     configuration: JiraPluginConfiguration = new JiraPluginConfiguration('', '', '', '', '', '');
-    configurationForm: FormGroup;
+    configurationForm: UntypedFormGroup;
 
     message;
     private savedMessage: string;
@@ -36,7 +36,7 @@ export class JiraComponent implements OnInit, OnDestroy {
     constructor(private configurationService: JiraPluginConfigurationService,
                 private translate: TranslateService,
                 private validationService: ValidationService,
-                private formBuilder: FormBuilder) {
+                private formBuilder: UntypedFormBuilder) {
     }
 
     ngOnInit() {

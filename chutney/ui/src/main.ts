@@ -7,7 +7,7 @@
 
 import '@angular/localize/init';
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { platformBrowser } from '@angular/platform-browser';
 
 import { ChutneyAppModule } from './app/app.module';
 import { environment } from '@env/environment';
@@ -16,5 +16,5 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(ChutneyAppModule)
+platformBrowser().bootstrapModule(ChutneyAppModule)
   .catch(err => console.error(err));

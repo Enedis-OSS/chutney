@@ -7,7 +7,7 @@
 
 import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { disabledBoolean } from '@shared/tools/bool-utils';
 
