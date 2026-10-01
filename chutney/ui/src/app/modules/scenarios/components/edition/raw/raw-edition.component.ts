@@ -90,7 +90,8 @@ export class RawEditionComponent
     canDeactivatePage(): boolean {
         return (
             this.modificationsSaved ||
-            this.testCase.equals(this.previousTestCase)
+            (this.testCase.equals(this.previousTestCase) &&
+                this.modifiedContent === (this.previousTestCase.content ?? ''))
         );
     }
 
@@ -120,6 +121,7 @@ export class RawEditionComponent
                             this.testCase.author = null;
                             this.testCase.title = '--COPY-- ' + this.testCase.title;
                             this.testCase.defaultDataset = null;
+                            this.previousTestCase.defaultDataset = null;
                             this.previousTestCase.title =
                                 '--COPY-- ' + this.previousTestCase.title;
                         }
