@@ -24,7 +24,9 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "tsconfig.chutney.json",
-            "polyfills": [],
+            "polyfills": [
+                "zone.js"
+            ],
             "assets": [
               "src/assets",
               "src/manifest.json",
