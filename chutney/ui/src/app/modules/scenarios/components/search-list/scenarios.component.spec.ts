@@ -5,7 +5,7 @@
  *
  */
 
-import { TestBed, waitForAsync, fakeAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScenariosComponent } from './scenarios.component';
