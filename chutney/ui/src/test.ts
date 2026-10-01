@@ -10,11 +10,11 @@
 import 'zone.js/testing';
 import { getTestBed } from '@angular/core/testing';
 import {
-  BrowserDynamicTestingModule,
+  BrowserTestingModule,
   platformBrowserTesting,
 } from '@angular/platform-browser/testing';
 
 getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
+  BrowserTestingModule,
   platformBrowserTesting(),
 );
