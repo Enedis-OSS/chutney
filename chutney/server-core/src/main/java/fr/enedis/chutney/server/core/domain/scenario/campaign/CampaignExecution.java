@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CampaignExecution {
 
@@ -164,11 +165,24 @@ public class CampaignExecution {
         }
     }
 
+    /**
+     * Scenario executions are always reported in the campaign scenarios definition order.
+     * <p>
+     * That order cannot be deduced from execution ids: those are granted by the database when a scenario
+     * execution starts, so they follow the start order of concurrent tasks on parallel campaigns.
+     */
     public List<ScenarioExecutionCampaign> scenarioExecutionReports() {
-        if (findStatus(scenarioExecutions).isFinal()) {
-            scenarioExecutions.sort(ScenarioExecutionCampaign.executionIdComparator());
-        }
         return unmodifiableList(scenarioExecutions);
+    }
+
+    /**
+     * Position in this execution's scenario list, shared by every retry of the same scenario and dataset.
+     */
+    public Optional<Integer> scenarioExecutionRank(String scenarioId, DataSet dataset) {
+        return IntStream.range(0, scenarioExecutions.size())
+            .filter(rank -> scenarioIdAndDatasetMatch(dataset, scenarioId, scenarioExecutions.get(rank)))
+            .boxed()
+            .findFirst();
     }
 
     public ServerReportStatus status() {

@@ -128,8 +128,12 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
         //TODO do not retrieve whole campaignExecution object. We already have the ID
         ScenarioExecutionEntity scenarioExecution = ScenarioExecutionEntity.fromDomain(scenarioId, detachedExecution);
         if (detachedExecution.campaignReport().isPresent()) {
-            Optional<CampaignExecutionEntity> campaignExecution = campaignExecutionJpaRepository.findById(detachedExecution.campaignReport().get().executionId);
-            scenarioExecution.forCampaignExecution(campaignExecution.get());
+            CampaignExecution campaignReport = detachedExecution.campaignReport().get();
+            Optional<CampaignExecutionEntity> campaignExecution = campaignExecutionJpaRepository.findById(campaignReport.executionId);
+            Integer rank = campaignReport
+                .scenarioExecutionRank(scenarioId, detachedExecution.dataset().orElse(null))
+                .orElse(null);
+            scenarioExecution.forCampaignExecution(campaignExecution.get(), rank);
         }
         scenarioExecution = scenarioExecutionsJpaRepository.save(scenarioExecution);
         ScenarioExecutionReportEntity reportEntity = new ScenarioExecutionReportEntity(scenarioExecution, detachedExecution.report());
