@@ -15,18 +15,23 @@ import fr.enedis.chutney.campaign.domain.CampaignExecutionRepository;
 import fr.enedis.chutney.campaign.infra.jpa.CampaignEntity;
 import fr.enedis.chutney.execution.infra.storage.jpa.ScenarioExecutionEntity;
 import fr.enedis.chutney.scenario.infra.jpa.ScenarioEntity;
+import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
+import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
+import fr.enedis.chutney.server.core.domain.execution.history.ImmutableExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecution;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.CampaignExecutionReportBuilder;
 import fr.enedis.chutney.server.core.domain.scenario.campaign.ScenarioExecutionCampaign;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import util.infra.AbstractLocalDatabaseTest;
 import util.infra.EnableH2MemTestInfra;
@@ -54,6 +59,9 @@ public class CampaignExecutionDBRepositoryTest {
 
         @Autowired
         private CampaignExecutionRepository sut;
+
+        @Autowired
+        private ExecutionHistoryRepository scenarioExecutionRepository;
 
 
         @Test
@@ -232,6 +240,143 @@ public class CampaignExecutionDBRepositoryTest {
                 .hasFieldOrPropertyWithValue("status", scenarioTwoExecution.status())
                 .hasFieldOrPropertyWithValue("environment", scenarioTwoExecution.environment())
             ;
+        }
+
+        @Test
+        public void should_keep_campaign_scenarios_definition_order_when_scenario_executions_were_not_stored_in_that_order() {
+            ScenarioEntity scenarioEntityOne = givenScenario();
+            ScenarioEntity scenarioEntityTwo = givenScenario();
+            ScenarioEntity scenarioEntityThree = givenScenario();
+            CampaignEntity campaign = givenCampaign(scenarioEntityOne, scenarioEntityTwo, scenarioEntityThree);
+
+            // On a parallel campaign, execution ids are granted by the database in task start order
+            ScenarioExecutionEntity scenarioThreeExecution = givenScenarioExecution(scenarioEntityThree.getId(), ServerReportStatus.SUCCESS);
+            ScenarioExecutionEntity scenarioOneExecution = givenScenarioExecution(scenarioEntityOne.getId(), ServerReportStatus.SUCCESS);
+            ScenarioExecutionEntity scenarioTwoExecution = givenScenarioExecution(scenarioEntityTwo.getId(), ServerReportStatus.FAILURE);
+
+            Long campaignExecutionId = sut.generateCampaignExecutionId(campaign.id(), "executionEnv");
+            CampaignExecution campaignExecution = CampaignExecutionReportBuilder.builder()
+                .executionId(campaignExecutionId)
+                .campaignId(campaign.id())
+                .campaignName(campaign.title())
+                .environment("env")
+                .userId("user")
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(scenarioEntityOne.getId().toString(), scenarioEntityOne.getTitle(), scenarioOneExecution.toDomain()))
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(scenarioEntityTwo.getId().toString(), scenarioEntityTwo.getTitle(), scenarioTwoExecution.toDomain()))
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(scenarioEntityThree.getId().toString(), scenarioEntityThree.getTitle(), scenarioThreeExecution.toDomain()))
+                .build();
+            sut.saveCampaignExecution(campaign.id(), campaignExecution);
+
+            List<CampaignExecution> reports = sut.getExecutionHistory(campaign.id());
+
+            assertThat(reports.getFirst().scenarioExecutionReports())
+                .extracting(ScenarioExecutionCampaign::scenarioId)
+                .containsExactly(
+                    scenarioEntityOne.getId().toString(),
+                    scenarioEntityTwo.getId().toString(),
+                    scenarioEntityThree.getId().toString()
+                );
+        }
+
+        @Test
+        public void should_keep_campaign_scenarios_definition_order_when_campaign_scenarios_are_reordered_after_execution() {
+            ScenarioEntity scenarioEntityOne = givenScenario();
+            ScenarioEntity scenarioEntityTwo = givenScenario();
+            CampaignEntity campaign = givenCampaign(scenarioEntityOne, scenarioEntityTwo);
+
+            ScenarioExecutionEntity scenarioOneExecution = givenScenarioExecution(scenarioEntityOne.getId(), ServerReportStatus.SUCCESS);
+            ScenarioExecutionEntity scenarioTwoExecution = givenScenarioExecution(scenarioEntityTwo.getId(), ServerReportStatus.SUCCESS);
+
+            Long campaignExecutionId = sut.generateCampaignExecutionId(campaign.id(), "executionEnv");
+            CampaignExecution campaignExecution = CampaignExecutionReportBuilder.builder()
+                .executionId(campaignExecutionId)
+                .campaignId(campaign.id())
+                .campaignName(campaign.title())
+                .environment("env")
+                .userId("user")
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(scenarioEntityOne.getId().toString(), scenarioEntityOne.getTitle(), scenarioOneExecution.toDomain()))
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(scenarioEntityTwo.getId().toString(), scenarioEntityTwo.getTitle(), scenarioTwoExecution.toDomain()))
+                .build();
+            sut.saveCampaignExecution(campaign.id(), campaignExecution);
+
+            // The campaign scenarios are reordered once the execution report is stored
+            namedParameterJdbcTemplate.getJdbcTemplate()
+                .execute("UPDATE CAMPAIGN_SCENARIOS SET RANK = 9 - RANK WHERE CAMPAIGN_ID = " + campaign.id());
+            entityManager.clear();
+
+            List<CampaignExecution> reports = sut.getExecutionHistory(campaign.id());
+
+            assertThat(reports.getFirst().scenarioExecutionReports())
+                .extracting(ScenarioExecutionCampaign::scenarioId)
+                .containsExactly(
+                    scenarioEntityOne.getId().toString(),
+                    scenarioEntityTwo.getId().toString()
+                );
+        }
+
+        @ParameterizedTest
+        @ValueSource(booleans = {false, true})
+        void should_keep_all_retry_attempts_in_definition_order(boolean reversedStartOrder) {
+            ScenarioEntity missingScenario = givenScenario();
+            ScenarioEntity firstScenario = givenScenario();
+            ScenarioEntity secondScenario = givenScenario();
+            CampaignEntity campaign = givenCampaign(missingScenario, firstScenario, secondScenario);
+            Long campaignExecutionId = sut.generateCampaignExecutionId(campaign.id(), "env");
+            var builder = CampaignExecutionReportBuilder.builder()
+                .executionId(campaignExecutionId)
+                .campaignId(campaign.id())
+                .campaignName(campaign.title())
+                .environment("env")
+                .userId("user");
+            // The first scenario cannot be persisted. Its position must not be reassigned to a retry.
+            for (ScenarioEntity scenario : List.of(missingScenario, firstScenario, secondScenario)) {
+                var placeholder = campaignScenarioExecution(null, ServerReportStatus.NOT_EXECUTED)
+                    .attach(-1L, scenario.getId().toString());
+                builder.addScenarioExecutionReport(new ScenarioExecutionCampaign(
+                    scenario.getId().toString(), scenario.getTitle(), placeholder.summary()));
+            }
+            CampaignExecution report = builder.build();
+            String firstId = firstScenario.getId().toString();
+            String secondId = secondScenario.getId().toString();
+            var success = campaignScenarioExecution(report, ServerReportStatus.SUCCESS);
+            ExecutionHistory.Execution second = reversedStartOrder ? scenarioExecutionRepository.store(secondId, success) : null;
+            var firstAttempt = scenarioExecutionRepository.store(firstId, campaignScenarioExecution(report, ServerReportStatus.FAILURE));
+            var retry = scenarioExecutionRepository.store(firstId, ImmutableExecutionHistory.DetachedExecution.builder()
+                .from(success).time(firstAttempt.time().plusSeconds(1)).build());
+            if (!reversedStartOrder) {
+                second = scenarioExecutionRepository.store(secondId, success);
+            }
+
+            // Ranks must already exist before the final campaign save, including for the failed attempt.
+            assertThat(sut.getCampaignExecutionById(campaignExecutionId).scenarioExecutionReports())
+                .extracting(se -> se.execution().executionId())
+                .containsExactly(firstAttempt.executionId(), retry.executionId(), second.executionId());
+
+            report.endScenarioExecution(new ScenarioExecutionCampaign(firstId, firstScenario.getTitle(), retry.summary()));
+            report.endScenarioExecution(new ScenarioExecutionCampaign(secondId, secondScenario.getTitle(), second.summary()));
+            sut.saveCampaignExecution(campaign.id(), report);
+            entityManager.clear();
+            CampaignExecution stored = sut.getCampaignExecutionById(campaignExecutionId);
+
+            assertThat(stored.scenarioExecutionReports())
+                .extracting(se -> se.execution().executionId())
+                .containsExactly(firstAttempt.executionId(), retry.executionId(), second.executionId());
+            assertThat(stored.withoutRetries().scenarioExecutionReports())
+                .extracting(se -> se.execution().executionId())
+                .containsExactly(retry.executionId(), second.executionId());
+        }
+
+        private ExecutionHistory.DetachedExecution campaignScenarioExecution(CampaignExecution report, ServerReportStatus status) {
+            return ImmutableExecutionHistory.DetachedExecution.builder()
+                .time(LocalDateTime.now())
+                .duration(0L)
+                .status(status)
+                .report("")
+                .testCaseTitle("")
+                .environment("env")
+                .user("user")
+                .campaignReport(Optional.ofNullable(report))
+                .build();
         }
 
         @Test

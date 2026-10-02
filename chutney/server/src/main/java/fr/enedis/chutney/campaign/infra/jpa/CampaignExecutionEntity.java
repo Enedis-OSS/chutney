@@ -29,7 +29,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity(name = "CAMPAIGN_EXECUTIONS")
 public class CampaignExecutionEntity {
@@ -107,16 +110,23 @@ public class CampaignExecutionEntity {
         computeDataset(report.dataset);
         ofNullable(this.scenarioExecutions).ifPresent(see -> {
             see.clear();
-            scenarioExecutions.forEach(se -> {
-                se.forCampaignExecution(this);
-                see.add(se);
-            });
+            Map<Long, ScenarioExecutionEntity> executionsById = new HashMap<>();
+            scenarioExecutions.forEach(se -> executionsById.put(se.id(), se));
+            List<ScenarioExecutionCampaign> reports = report.scenarioExecutionReports();
+            for (int rank = 0; rank < reports.size(); rank++) {
+                ScenarioExecutionEntity scenarioExecution = executionsById.get(reports.get(rank).execution().executionId());
+                if (scenarioExecution != null) {
+                    scenarioExecution.forCampaignExecution(this, rank);
+                    see.add(scenarioExecution);
+                }
+            }
         });
     }
 
     public CampaignExecution toDomain(String campaignTitle) {
         List<ScenarioExecutionCampaign> scenarioExecutionReports = ofNullable(scenarioExecutions).map(see ->
             see.stream()
+                .sorted(campaignExecutionRankComparator())
                 .map(se -> new ScenarioExecutionCampaign(se.scenarioId(), se.scenarioTitle(), se.toDomain()))
                 .collect(toCollection(ArrayList::new))
         ).orElseGet(ArrayList::new);
@@ -137,6 +147,17 @@ public class CampaignExecutionEntity {
         }
 
         return campaignExecutionReportBuilder.build();
+    }
+
+    /**
+     * Scenario executions are ordered by their rank in the campaign execution, so that campaign scenarios
+     * definition order is kept. Scenario executions stored before ranks introduction have no rank and are
+     * then ordered by execution id.
+     */
+    private static Comparator<ScenarioExecutionEntity> campaignExecutionRankComparator() {
+        return Comparator
+            .comparing(ScenarioExecutionEntity::campaignExecutionRank, Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparing(ScenarioExecutionEntity::id, Comparator.nullsLast(Comparator.naturalOrder()));
     }
 
     private void computeDataset(DataSet dataset) {
