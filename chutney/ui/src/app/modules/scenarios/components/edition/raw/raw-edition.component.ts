@@ -28,7 +28,6 @@ export class RawEditionComponent
     testCase: TestCase;
     modificationsSaved = false;
     errorMessage: any;
-    modifiedContent = '';
     saveErrorMessage: string;
     defaultContent =
         `{
@@ -90,8 +89,7 @@ export class RawEditionComponent
     canDeactivatePage(): boolean {
         return (
             this.modificationsSaved ||
-            (this.testCase.equals(this.previousTestCase) &&
-                this.modifiedContent === (this.previousTestCase.content ?? ''))
+            this.testCase.equals(this.previousTestCase)
         );
     }
 
@@ -135,14 +133,13 @@ export class RawEditionComponent
             this.testCase.title = 'scenario title';
             this.testCase.description = 'scenario description';
             this.testCase.content = this.defaultContent;
-            this.modifiedContent = this.defaultContent;
             this.previousTestCase = this.testCase.clone();
         }
     }
 
     private checkParseError() {
         try {
-            this.hjsonParserService.parse(this.modifiedContent);
+            this.hjsonParserService.parse(this.testCase.content);
             this.errorMessage = null;
         } catch (e) {
             this.errorMessage = e;
@@ -150,7 +147,6 @@ export class RawEditionComponent
     }
 
     saveScenario() {
-        this.testCase.content = this.modifiedContent;
         this.scenarioService.createOrUpdateRawTestCase(this.testCase)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
@@ -175,7 +171,7 @@ export class RawEditionComponent
     }
 
     onScenarioContentChanged(data) {
-        this.modifiedContent = data;
+        this.testCase.content = data;
         this.checkParseError();
     }
 
