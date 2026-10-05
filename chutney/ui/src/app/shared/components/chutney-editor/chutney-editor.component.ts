@@ -49,8 +49,20 @@ export class ChutneyEditorComponent implements OnInit, AfterViewInit, OnChanges 
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.aceEditor){
-            this.initEditor();
+        if (!this.aceEditor) {
+            return;
+        }
+        // Only reload content coming from outside, to keep cursor and undo history while typing
+        const content = this.content ? this.content : '';
+        if (changes['content'] && content !== this.aceEditor.getValue()) {
+            this.aceEditor.session.setValue(content);
+        }
+        if (changes['readOnly']) {
+            this.aceEditor.setReadOnly(this.readOnly);
+        }
+        if (changes['mode']) {
+            this.currentMode = this.mode;
+            this.aceEditor.session.setMode(`ace/mode/${this.currentMode}`);
         }
     }
 
