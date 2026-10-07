@@ -28,7 +28,6 @@ export class RawEditionComponent
     testCase: TestCase;
     modificationsSaved = false;
     errorMessage: any;
-    modifiedContent = '';
     saveErrorMessage: string;
     defaultContent =
         `{
@@ -120,6 +119,7 @@ export class RawEditionComponent
                             this.testCase.author = null;
                             this.testCase.title = '--COPY-- ' + this.testCase.title;
                             this.testCase.defaultDataset = null;
+                            this.previousTestCase.defaultDataset = null;
                             this.previousTestCase.title =
                                 '--COPY-- ' + this.previousTestCase.title;
                         }
@@ -133,14 +133,13 @@ export class RawEditionComponent
             this.testCase.title = 'scenario title';
             this.testCase.description = 'scenario description';
             this.testCase.content = this.defaultContent;
-            this.modifiedContent = this.defaultContent;
             this.previousTestCase = this.testCase.clone();
         }
     }
 
     private checkParseError() {
         try {
-            this.hjsonParserService.parse(this.modifiedContent);
+            this.hjsonParserService.parse(this.testCase.content);
             this.errorMessage = null;
         } catch (e) {
             this.errorMessage = e;
@@ -148,7 +147,6 @@ export class RawEditionComponent
     }
 
     saveScenario() {
-        this.testCase.content = this.modifiedContent;
         this.scenarioService.createOrUpdateRawTestCase(this.testCase)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
@@ -173,7 +171,7 @@ export class RawEditionComponent
     }
 
     onScenarioContentChanged(data) {
-        this.modifiedContent = data;
+        this.testCase.content = data;
         this.checkParseError();
     }
 

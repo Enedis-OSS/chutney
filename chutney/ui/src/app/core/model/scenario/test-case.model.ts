@@ -32,6 +32,7 @@ export class TestCase implements Equals<TestCase>, Clonable<TestCase> {
             && areEquals(this.title, obj.title)
             && areEquals(this.description, obj.description)
             && areEquals(this.content, obj.content)
+            && areEquals(this.defaultDataset, obj.defaultDataset)
             && areEquals(this.tags, obj.tags);
     }
 
@@ -48,7 +49,7 @@ export class TestCase implements Equals<TestCase>, Clonable<TestCase> {
             null,
             cloneAsPossible(this.tags),
             null,
-            null
+            cloneAsPossible(this.defaultDataset)
         );
     }
 
