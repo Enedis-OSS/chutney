@@ -39,7 +39,7 @@ export class TranslateServiceStub {
 }
 
 function fromKey(key: string): string {
-    let r = TRANSLATIONS_EN;
+    let r: any = TRANSLATIONS_EN;
     key.split('.').forEach((s) => { if (r) r = r[s]; });
     if (r) { return r; } else { return key; }
 }

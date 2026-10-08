@@ -79,11 +79,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   private getTranslation() {
-    this.translateService.get('login.expired').subscribe((res: string) => {
-        this.sessionExpiredMessage = res;
-    });
-    this.translateService.get('login.unauthorized').subscribe((res: string) => {
-        this.unauthorizedMessage = res;
-    });
+    this.sessionExpiredMessage = this.translateService.instant('login.expired');
+    this.unauthorizedMessage = this.translateService.instant('login.unauthorized');
   }
 }

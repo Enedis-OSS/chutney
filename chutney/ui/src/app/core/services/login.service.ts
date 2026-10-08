@@ -38,11 +38,14 @@ export class LoginService {
         private ssoService: SsoService,
         private translateService: TranslateService,
     ) {
-        this.translateService.onLangChange.subscribe(() => {
-            this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
-            this._ssoUserNotFoundMessage = this.translateService.instant('login.sso.userNotFound')
-            this.sessionExpiredMessage = this.translateService.instant('login.expired')
-        });
+        this.getTranslation();
+        this.translateService.onLangChange.subscribe(() => this.getTranslation());
+    }
+
+    private getTranslation() {
+        this.unauthorizedMessage = this.translateService.instant('login.unauthorized')
+        this._ssoUserNotFoundMessage = this.translateService.instant('login.sso.userNotFound')
+        this.sessionExpiredMessage = this.translateService.instant('login.expired')
     }
 
     isAuthorized(requestURL: string, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
