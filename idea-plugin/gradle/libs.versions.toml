@@ -6,8 +6,8 @@
 #
 [versions]
 # plugins
-intelliJPlatform = "2.13.1"
-kotlin = "2.4.0"
+intelliJPlatform = "2.19.0"
+kotlin = "2.4.21"
 
 [plugins]
 intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatform" }

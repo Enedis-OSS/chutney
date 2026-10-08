@@ -8,7 +8,6 @@
 package fr.enedis.chutney.idea.completion.field.model
 
 import com.google.common.collect.ImmutableList
-import org.apache.commons.lang.StringUtils
 
 open class ObjectField : Field {
     constructor(name: String?) : super(name!!, false)
@@ -16,7 +15,7 @@ open class ObjectField : Field {
 
     override fun getJsonPlaceholderSuffix(indentation: Int): String? {
         val sb = StringBuilder()
-        val indentationPadding = StringUtils.repeat(" ", indentation)
+        val indentationPadding = " ".repeat(indentation)
         sb.append(": {\n")
             .append(printJsonChildren(indentation + 2))
             .append("\n")
@@ -30,18 +29,18 @@ open class ObjectField : Field {
     }
 
     override fun getCompleteJson(indentation: Int): String? {
-        val indentationPadding = StringUtils.repeat(" ", indentation)
+        val indentationPadding = " ".repeat(indentation)
         return indentationPadding + "\"" + name + "\"" + getJsonPlaceholderSuffix(indentation)
     }
 
     override fun getCompleteYaml(indentation: Int): String? {
-        val indentationPadding = StringUtils.repeat(" ", indentation)
+        val indentationPadding = " ".repeat(indentation)
         return indentationPadding + name + getYamlPlaceholderSuffix(indentation)
     }
 
     private fun printJsonChildren(indentation: Int): String {
         if (children.isEmpty()) {
-            return StringUtils.repeat(" ", indentation) + CARET
+            return " ".repeat(indentation) + CARET
         }
         val sb = StringBuilder()
         for (field in children) {
@@ -56,7 +55,7 @@ open class ObjectField : Field {
 
     private fun printYamlChildren(indentation: Int): String {
         if (children.isEmpty()) {
-            return StringUtils.repeat(" ", indentation) + CARET
+            return " ".repeat(indentation) + CARET
         }
         val sb = StringBuilder()
         for (field in children) {
