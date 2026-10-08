@@ -14,14 +14,18 @@
   }
 
   @if (environments.length > 1) {
-  <div class="row px-2 mt-3">
-      <p-floatLabel>
-          <p-select [options]="environments" [(ngModel)]="selectedEnv"
-                    [showClear]="true" variant="filled" class="p-0 w-100"></p-select>
-          <label class="p-2">{{ "scenarios.execution.history.env" | translate }}</label>
-
-      </p-floatLabel>
-  </div>
+  <div class="form-floating select-wrapper">
+      <select id="environment" [(ngModel)]="selectedEnv" class="form-select">
+        @for (environment of environments; track environment) {
+            <option>{{environment}}</option>
+        }
+      </select>
+      <label for="environment">
+        {{ "scenarios.execution.history.env" | translate }}
+      </label>
+      <button *ngIf="selectedEnv !== null" type="button" class="select-clear" (click)="selectedEnv = null" aria-label="Clear">
+          <i class="bi bi-x"></i>
+      </button>
   }
 
   @if (jiraLink) {

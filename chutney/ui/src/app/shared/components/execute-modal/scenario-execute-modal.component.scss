@@ -13,12 +13,26 @@ th > span, th > button {
     white-space: normal !important;
 }
 
-p-select {
-    .btn-sm, .btn-group-sm > .btn {
-        line-height: initial;
-    }
-}
-
 .display-flex {
     display: flex;
+}
+
+.select-wrapper .select-clear {
+    position: absolute;
+    right: 2.25rem;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 3;
+}
+
+.select-clear {
+    top: 29px;
+
+    border: 0;
+    background: transparent;
 }
