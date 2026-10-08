@@ -47,6 +47,14 @@ public class ScenarioExecutionEntity {
     @JoinColumn(name = "CAMPAIGN_EXECUTION_ID")
     private CampaignExecutionEntity campaignExecution;
 
+    /**
+     * Position of this scenario execution in its campaign execution, following the campaign scenarios definition order.
+     * It is required to report scenarios in their definition order because execution ids cannot be used for that:
+     * on parallel campaigns they are granted in task start order.
+     */
+    @Column(name = "CAMPAIGN_EXECUTION_RANK")
+    private Integer campaignExecutionRank;
+
     @Column(name = "EXECUTION_TIME")
     private Long executionTime;
 
@@ -130,11 +138,20 @@ public class ScenarioExecutionEntity {
     }
 
     public void forCampaignExecution(CampaignExecutionEntity campaignExecutionEntity) {
+        forCampaignExecution(campaignExecutionEntity, null);
+    }
+
+    public void forCampaignExecution(CampaignExecutionEntity campaignExecutionEntity, Integer rank) {
         this.campaignExecution = campaignExecutionEntity;
+        this.campaignExecutionRank = rank;
+    }
+
+    public Integer campaignExecutionRank() {
+        return campaignExecutionRank;
     }
 
     public void clearCampaignExecution() {
-        this.campaignExecution = null;
+        forCampaignExecution(null);
     }
 
     public Integer version() {

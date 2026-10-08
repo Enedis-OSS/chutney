@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -222,6 +223,58 @@ class CampaignExecutionTest {
             // Then
             assertThat(campaignReport.scenarioExecutionReports()).hasSize(1);
             assertThat(campaignReport.scenarioExecutionReports().getFirst().execution().status()).isEqualTo(SUCCESS);
+        }
+
+        @Test
+        void keep_scenarios_definitions_order_on_parallel_execution() {
+            // Given
+            CampaignExecution campaignReport = CampaignExecutionReportBuilder.builder()
+                .userId("")
+                .build();
+            List<TestCaseDataset> testCasesToExecute = List.of(
+                new TestCaseDataset(buildTestCase("1", "title1"), null),
+                new TestCaseDataset(buildTestCase("2", "title2"), null),
+                new TestCaseDataset(buildTestCase("3", "title3"), null)
+            );
+            campaignReport.addScenarioExecution(testCasesToExecute, "env");
+
+            // When : execution ids are granted by the database when each concurrent task starts,
+            // so they do not follow the campaign scenarios definition order
+            Map<String, Long> executionIds = Map.of("1", 31L, "2", 12L, "3", 23L);
+            testCasesToExecute.forEach(testCaseDataset -> {
+                campaignReport.startScenarioExecution(testCaseDataset, "env");
+                campaignReport.endScenarioExecution(
+                    buildScenarioExecutionCampaign(
+                        testCaseDataset.testcase().id(),
+                        executionIds.get(testCaseDataset.testcase().id()),
+                        SUCCESS
+                    )
+                );
+            });
+            campaignReport.endCampaignExecution();
+
+            // Then
+            assertThat(campaignReport.scenarioExecutionReports())
+                .extracting(ScenarioExecutionCampaign::scenarioId)
+                .containsExactly("1", "2", "3");
+        }
+
+        @Test
+        void find_scenario_rank_using_dataset_before_execution_ids_are_assigned() {
+            CampaignExecution report = CampaignExecutionReportBuilder.builder().userId("").build();
+            TestCase scenario = buildTestCase("1", "title");
+            DataSet named = DataSet.builder().withId("named").withName("named").build();
+            DataSet custom = DataSet.builder().withName("").withConstants(Map.of("key", "value")).build();
+            report.addScenarioExecution(List.of(
+                new TestCaseDataset(scenario, null),
+                new TestCaseDataset(scenario, named),
+                new TestCaseDataset(scenario, custom)
+            ), "env");
+
+            assertThat(report.scenarioExecutionRank("1", DataSet.NO_DATASET)).contains(0);
+            assertThat(report.scenarioExecutionRank("1", named)).contains(1);
+            assertThat(report.scenarioExecutionRank("1", custom)).contains(2);
+            assertThat(report.scenarioExecutionRank("2", null)).isEmpty();
         }
 
         @Test
@@ -435,6 +488,19 @@ class CampaignExecutionTest {
         when(execution.dataset()).thenReturn(Optional.ofNullable(dataset));
         when(execution.time()).thenReturn(LocalDateTime.now());
         return new ScenarioExecutionCampaign(scenarioId, scenarioTitle, execution);
+    }
+
+    private ScenarioExecutionCampaign buildScenarioExecutionCampaign(String scenarioId, Long executionId, ServerReportStatus status) {
+        return new ScenarioExecutionCampaign(scenarioId, "", ImmutableExecutionHistory.ExecutionSummary.builder()
+            .executionId(executionId)
+            .testCaseTitle("")
+            .time(LocalDateTime.now())
+            .duration(0L)
+            .environment("env")
+            .user("")
+            .scenarioId(scenarioId)
+            .status(status)
+            .build());
     }
 
     private TestCase buildTestCase(String scenarioId, String scenarioTitle) {
