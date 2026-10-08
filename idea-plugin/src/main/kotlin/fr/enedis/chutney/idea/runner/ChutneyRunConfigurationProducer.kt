@@ -19,7 +19,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.ObjectUtils
 import fr.enedis.chutney.idea.ChutneyUtil
 import fr.enedis.chutney.idea.runner.settings.ChutneyRunSettings
-import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
+import org.jetbrains.kotlin.psi.KtNamedDeclaration
+import org.jetbrains.kotlin.psi.psiUtil.parentsWithSelf
 import java.io.File
 import java.util.*
 
@@ -197,7 +198,12 @@ class ChutneyRunConfigurationProducer :
 }
 
 fun getFullyQualifiedMethodName(psiElement: PsiElement): String {
-    val methodName = psiElement.getKotlinFqName()?.asString() ?: error("cannot get fqName")
+    val methodName = psiElement.parentsWithSelf
+        .filterIsInstance<KtNamedDeclaration>()
+        .firstOrNull()
+        ?.fqName
+        ?.asString()
+        ?: error("cannot get fqName")
     if (methodName.contains(" ") && methodName.contains(".")) {
         return methodName.substringBeforeLast(".") + "." + "`${methodName.substringAfterLast(".")}`"
     }

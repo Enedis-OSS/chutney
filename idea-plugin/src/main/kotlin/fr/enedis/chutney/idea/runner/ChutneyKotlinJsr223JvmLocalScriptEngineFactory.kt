@@ -15,7 +15,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.impl.FsRoot
 import org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineFactoryBase
 import org.jetbrains.kotlin.cli.common.repl.ScriptArgsWithTypes
-import org.jetbrains.kotlin.jsr223.KotlinJsr223JvmScriptEngine4Idea
+import org.jetbrains.kotlin.jsr223.Jsr223KotlincProvider
+import org.jetbrains.kotlin.jsr223.KotlinJsr223JvmScriptEngine4IdeaBase
 import org.jetbrains.kotlin.script.util.scriptCompilationClasspathFromContextOrStlib
 import java.io.File
 import javax.script.ScriptContext
@@ -48,10 +49,11 @@ class ChutneyKotlinJsr223JvmLocalScriptEngineFactory(val ktVirtualFile: VirtualF
 
         LOG.info("dependencies for ${module.name}" + roots + classes)
 
-        return KotlinJsr223JvmScriptEngine4Idea(
+        return KotlinJsr223JvmScriptEngine4IdeaBase(
             this,
             scriptCompilationClasspathFromContextOrStlib(wholeClasspath = true) + KotlinJars.kotlinScriptStandardJars + roots + target,
             "kotlin.script.templates.standard.ScriptTemplateWithBindings",
+            { Jsr223KotlincProvider.ideKotlinc.toFile() },
             { ctx, argTypes ->
                 ScriptArgsWithTypes(
                     arrayOf(ctx.getBindings(ScriptContext.ENGINE_SCOPE)),

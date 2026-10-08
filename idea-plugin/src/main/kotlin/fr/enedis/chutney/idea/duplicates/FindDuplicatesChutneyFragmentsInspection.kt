@@ -7,7 +7,6 @@
 
 package fr.enedis.chutney.idea.duplicates
 
-import com.intellij.codeInsight.daemon.GroupNames
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 
@@ -21,7 +20,7 @@ class FindDuplicatesChutneyFragmentsInspection : LocalInspectionTool() {
     }
 
     override fun getGroupDisplayName(): String {
-        return GroupNames.BUGS_GROUP_NAME
+        return "General"
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): FindDuplicatesChutneyFragmentsVisitor {

@@ -7,8 +7,6 @@
 
 package fr.enedis.chutney.idea.completion.field.model
 
-import org.apache.commons.lang.StringUtils
-
 class StringField : Field {
     constructor(name: String?, required: Boolean) : super(name!!, required)
     constructor(name: String?) : super(name!!, false)
@@ -22,12 +20,12 @@ class StringField : Field {
     }
 
     override fun getCompleteJson(indentation: Int): String? {
-        val leftPadding = StringUtils.repeat(" ", indentation)
+        val leftPadding = " ".repeat(indentation)
         return "$leftPadding\"$name\": \"$CARET\""
     }
 
     override fun getCompleteYaml(indentation: Int): String? {
-        val leftPadding = StringUtils.repeat(" ", indentation)
+        val leftPadding = " ".repeat(indentation)
         return "$leftPadding$name: $CARET"
     }
 

@@ -88,7 +88,7 @@ dependencies {
   implementation("tools.jackson.dataformat", "jackson-dataformat-yaml")
 
   implementation("org.jetbrains:annotations") {
-    version { strictly("24.0.0") }
+    version { strictly("26.1.0") }
   }
 
   implementation("org.jetbrains.kotlin:kotlin-script-util:1.8.22")
@@ -102,13 +102,13 @@ dependencies {
     artifact { classifier = "boot" }
   }
 
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
   testImplementation("junit:junit:4.13.2")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.1.3")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-  testImplementation("org.mockito:mockito-core:5.12.0")
-  testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+  testImplementation("org.mockito:mockito-core:5.24.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:6.4.0")
 }
 
 tasks.test {

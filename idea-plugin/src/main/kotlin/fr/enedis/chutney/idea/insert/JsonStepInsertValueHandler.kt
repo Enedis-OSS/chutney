@@ -16,7 +16,6 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.util.text.CharArrayUtil
-import org.apache.commons.lang.StringUtils
 import java.util.stream.Collectors
 
 class JsonStepInsertValueHandler(private val value: Value) : InsertHandler<LookupElement> {
@@ -60,7 +59,7 @@ class JsonStepInsertValueHandler(private val value: Value) : InsertHandler<Looku
 
     private fun getJsonPlaceholderSuffix(test: List<StepValueData>, indentation: Int): String {
         val sb = StringBuilder()
-        val indentationPadding = StringUtils.repeat(" ", indentation)
+        val indentationPadding = " ".repeat(indentation)
         sb.append(", \n\"steps\":")
         sb.append("[\n")
         sb.append(

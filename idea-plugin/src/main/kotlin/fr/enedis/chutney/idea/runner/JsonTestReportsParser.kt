@@ -26,6 +26,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.LightVirtualFile
 import fr.enedis.chutney.idea.ChutneyUtil
 import fr.enedis.chutney.idea.actions.converter.JsonSerializer
+import fr.enedis.chutney.kotlin.authentication.AuthMethod
+import fr.enedis.chutney.kotlin.authentication.AuthMethod.Basic
 import fr.enedis.chutney.kotlin.util.ChutneyServerInfo
 import fr.enedis.chutney.kotlin.util.HttpClient
 import org.jetbrains.yaml.psi.YAMLFile
@@ -61,7 +63,6 @@ data class Report(
 )
 
 data class Base(
-    val executionId: Long,
     val name: String?,
     val duration: Number?,
     val startDate: String?,
@@ -69,7 +70,6 @@ data class Base(
     val information: List<Any>?,
     val errors: List<Any>?,
     val steps: List<Base>?,
-    //val context: Context?,
     val type: String?,
     val targetName: String?,
     val targetUrl: String?,
@@ -86,7 +86,6 @@ class JsonTestReportsParser(
     val jsonFile: VirtualFile
 ) {
 
-    private val mapper = JsonSerializer()
 
     fun parseReports(index: Int) {
         val query = "/api/idea/scenario/execution/GLOBAL"
@@ -103,7 +102,7 @@ class JsonTestReportsParser(
         val request = Request(content = json, params = configuration.getRunSettings().variables.envs)
         val body = Gson().toJson(request, Request::class.java)
         try {
-            val result = HttpClient.post<Report>(ChutneyServerInfo(serverUrl, "", ""), query, body)
+            val result = HttpClient.post<Report>(ChutneyServerInfo(serverUrl, Basic("", "")), query, body)
             val report = result.report
             if (report.steps?.size != 0) {
                 report.steps?.forEachIndexed { testCaseIndex, base ->
