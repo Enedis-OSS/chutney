@@ -13,12 +13,69 @@ th > span, th > button {
     white-space: normal !important;
 }
 
-p-select {
-    .btn-sm, .btn-group-sm > .btn {
-        line-height: initial;
-    }
-}
-
 .display-flex {
     display: flex;
+}
+
+.select-wrapper .select-clear {
+    position: absolute;
+    right: 2.25rem;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 3;
+}
+
+.select-clear {
+    top: 29px;
+
+    border: 0;
+    background: transparent;
+}
+
+.dataset-select {
+    position: relative;
+}
+.dataset-field {
+    position: relative;
+    padding-top: 0.5rem;
+    > label {
+        position: absolute;
+        top: 0;
+        left: 0.75rem;
+        z-index: 2;
+        padding: 0 0.25rem;
+        font-size: 0.75rem;
+        color: var(--bs-secondary-color);
+        background-color: var(--bs-body-bg);
+    }
+}
+.dataset-select-toggle {
+    min-height: 3rem;
+    padding-top: 0.75rem;
+    padding-right: 2rem;
+    &::after {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+    }
+}
+.dataset-dropdown-menu {
+    max-height: 25rem;
+    overflow: hidden;
+}
+.dataset-options {
+    max-height: 18rem;
+    overflow-y: auto;
+}
+.dataset-options .dropdown-item {
+    white-space: normal;
+}
+.dataset-options .dropdown-item.active {
+    color: inherit;
+    background-color: var(--bs-primary-bg-subtle);
 }

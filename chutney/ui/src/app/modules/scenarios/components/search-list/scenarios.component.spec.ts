@@ -5,7 +5,7 @@
  *
  */
 
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScenariosComponent } from './scenarios.component';
@@ -90,10 +90,11 @@ describe('ScenariosComponent', () => {
 }).compileComponents();
     }));
 
-    it('should create the component ScenariosComponent with three scenarios', waitForAsync(() => {
+    it('should create the component ScenariosComponent with three scenarios', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         activatedRouteStub.setParamMap({orderBy: 'id'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const app = fixture.debugElement.componentInstance;
@@ -108,9 +109,10 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should filter the list of scenario', waitForAsync(() => {
+    it('should filter the list of scenario', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             const html: HTMLElement = fixture.nativeElement;
 
@@ -124,11 +126,12 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should open scenario as a routerLink anchor so it supports "open in new tab"', waitForAsync(() => {
+    it('should open scenario as a routerLink anchor so it supports "open in new tab"', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.componentInstance.isAuthorizedToReadExecutions = true;
         activatedRouteStub.setParamMap({orderBy: 'id'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const html: HTMLElement = fixture.nativeElement;
@@ -154,11 +157,12 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should fall back to raw-edition when not authorized to read executions', waitForAsync(() => {
+    it('should fall back to raw-edition when not authorized to read executions', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.componentInstance.isAuthorizedToReadExecutions = false;
         activatedRouteStub.setParamMap({orderBy: 'id'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const html: HTMLElement = fixture.nativeElement;
@@ -171,10 +175,11 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should apply filters from the URL',  waitForAsync(() => {
+    it('should apply filters from the URL',  fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         activatedRouteStub.setParamMap({ text: 'title', orderBy: 'title', reverseOrder: 'true'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const app = fixture.debugElement.componentInstance;

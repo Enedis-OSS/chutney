@@ -9,14 +9,14 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleCha
 import { Authorization, Dataset, Execution, GwtTestCase } from '@model';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DateFormatPipe } from 'ngx-moment';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
+import { ListItem } from '@shared/types/list-item';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DatasetUtils } from "@shared/tools/dataset-utils";
 
@@ -29,7 +29,7 @@ import { DatasetUtils } from "@shared/tools/dataset-utils";
 export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     ExecutionStatus = ExecutionStatus;
     filteredExecutions: Execution[] = [];
-    filtersForm: FormGroup;
+    filtersForm: UntypedFormGroup;
 
     status: ListItem[] = [];
     environments: ListItem[] = [];
@@ -64,7 +64,7 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     modalRef: BsModalRef;
 
     constructor(private router: Router,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private datePipe: DateFormatPipe,
                 private translateService: TranslateService,
                 private modalService: BsModalService,
@@ -165,13 +165,13 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
             params['keyword'] = filters.keyword;
         }
         if (filters.status && filters.status.length) {
-            params['status'] = filters.status.map((status: ListItem) => status.id).toString();
+            params['status'] = filters.status.map((status:ListItem) => status.id).toString();
         }
         if (filters.date) {
             params['date'] = this.toIsoDate(filters.date);
         }
         if (filters.environments && filters.environments.length) {
-            params['env'] = filters.environments.map((env: ListItem) => env.id).toString();
+            params['env'] = filters.environments.map((env:ListItem) => env.id).toString();
         }
         if (filters.datasets && filters.datasets.length) {
             params['datasets'] = filters.datasets.map((ds:ListItem) => ds.id).toString();
@@ -180,10 +180,10 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
             params['camp'] = filters.campaigns.map((campaign:ListItem) => campaign.id).toString();
         }
         if (filters.executors && filters.executors.length) {
-            params['exec'] = filters.executors.map((executor: ListItem) => executor.id).toString();
+            params['exec'] = filters.executors.map((executor:ListItem) => executor.id).toString();
         }
         if (filters.tags && filters.tags.length) {
-            params['tags'] = filters.tags.map((tag: ListItem) => tag.id).toString();
+            params['tags'] = filters.tags.map((tag:ListItem) => tag.id).toString();
         }
         return params;
     }
@@ -276,8 +276,8 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
         }
     }
 
-    getFormControl(name: string): FormControl {
-        return this.filtersForm.get(name) as FormControl;
+    getFormControl(name: string): UntypedFormControl {
+        return this.filtersForm.get(name) as UntypedFormControl;
     }
 
     replay(execution: Execution, event: MouseEvent) {
@@ -285,7 +285,7 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
         this.onReplay.emit(execution.executionId);
     }
 
-    private removeDuplicateListItems(list: ListItem[]) {
+    private removeDuplicateListItems(list:ListItem[]) {
         const seen = new Set<string>();
         return list.filter(elem => {
             if (!elem) return false

@@ -18,6 +18,7 @@ export class FakeLoader implements TranslateLoader {
 }
 
 @Pipe({
+    standalone: false,
     name: 'translate'
 })
 export class TranslatePipeMock implements PipeTransform {

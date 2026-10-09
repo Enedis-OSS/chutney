@@ -6,7 +6,7 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { Execution } from '@model';
@@ -28,7 +28,7 @@ export class ExecutionSearchListComponent
 {
     ExecutionStatus = ExecutionStatus;
     filteredExecutions: Execution[] = [];
-    filtersForm: FormGroup;
+    filtersForm: UntypedFormGroup;
 
     status: { id: string; text: string }[] = [];
     environments: { id: string; text: string }[] = [];
@@ -46,16 +46,16 @@ export class ExecutionSearchListComponent
     private filters$: Subscription;
 
     private readonly iso_Date_Delimiter = '-';
-    @ViewChild('statusDropdown', { static: false })
+    @ViewChild('statusDropdown')
     statusDropdown: MultiSelectComponent;
 
-    @ViewChild('envsDropdown', { static: false })
+    @ViewChild('envsDropdown')
     envsDropdown: MultiSelectComponent;
-    @ViewChild('executorsDropdown', { static: false })
+    @ViewChild('executorsDropdown')
     executorsDropdown: MultiSelectComponent;
-    @ViewChild('campsDropdown', { static: false })
+    @ViewChild('campsDropdown')
     campsDropdown: MultiSelectComponent;
-    @ViewChild('tagsDropdown', { static: false })
+    @ViewChild('tagsDropdown')
     tagsDropdown: MultiSelectComponent;
 
     @Input() executions: Execution[] = [];
@@ -68,7 +68,7 @@ export class ExecutionSearchListComponent
 
     constructor(
         private router: Router,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private datePipe: DateFormatPipe,
         private translateService: TranslateService
     ) {}
@@ -94,8 +94,8 @@ export class ExecutionSearchListComponent
     openReport(execution: Execution, focus: boolean = true) {
         this.onExecutionSelect.emit({ execution, focus });
     }
-    getFormControl(name: string): FormControl {
-        return this.filtersForm.get(name) as FormControl;
+    getFormControl(name: string): UntypedFormControl {
+        return this.filtersForm.get(name) as UntypedFormControl;
     }
 
     ngOnDestroy(): void {

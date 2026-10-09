@@ -79,7 +79,7 @@ import { InputTextModule } from 'primeng/inputtext';
         InputTextModule,
         InputGroupModule,
         InputGroupAddonModule,
-        TypeaheadModule.forRoot(),
+        TypeaheadModule,
         RxFor,
         MonacoEditorModule
     ],
