@@ -8,7 +8,7 @@
 import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Dataset, KeyValue, Authorization } from '@core/model';
 import { DataSetService, EnvironmentService } from '@core/services';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
@@ -32,6 +32,8 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     filteredDatasets: Array<Dataset>;
 
     selectedEnv: string = null;
+
+    filterValue: string = "";
     selectedDataset: Dataset = null;
     selectedJiraId: string = null;
     datasetDetails: Dataset = null;
@@ -103,6 +105,13 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
             this.editionDataset = false;
             this.activeModal.update({ size: 'lg' });
         }
+    }
+
+    selectDataset(dataset: Dataset, dropdown: NgbDropdown) {
+        this.selectedDataset = dataset;
+        this.selectedDatasetChanged();
+        this.getDatasetDetails();
+        dropdown.close();
     }
 
     async executeModal() {
