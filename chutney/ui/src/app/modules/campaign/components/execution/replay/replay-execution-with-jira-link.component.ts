@@ -6,7 +6,7 @@
  */
 
 import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { Dataset } from "@core/model";
 import { CampaignService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -31,12 +31,12 @@ export class ReplayExecutionWithJiraLinkComponent implements OnInit, OnDestroy {
 
     @Input() executeCallback: () => void;
 
-    form: FormGroup;
+    form: UntypedFormGroup;
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private campaignService: CampaignService,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private translateService: TranslateService) {
     }
 

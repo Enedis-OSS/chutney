@@ -7,7 +7,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ValidationService } from '../../../../molecules/validation/validation.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LinkifierService } from '@core/services';
 import { delay } from '@shared/tools';
 import { Linkifier } from '@model';
@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class LinkifierComponent implements OnInit {
 
-    linkifierForm: FormGroup;
+    linkifierForm: UntypedFormGroup;
 
     message;
     private savedMessage: string;
@@ -33,7 +33,7 @@ export class LinkifierComponent implements OnInit {
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
-    constructor(private fb: FormBuilder,
+    constructor(private fb: UntypedFormBuilder,
                 private translate: TranslateService,
                 private linkifierService: LinkifierService,
                 private validationService: ValidationService) {

@@ -12,7 +12,7 @@ let service: ValidationService;
 
 beforeEach(() => {
   TestBed.configureTestingModule({ providers: [ValidationService] });
-  service = TestBed.get(ValidationService);
+  service = TestBed.inject(ValidationService);
 });
 
 afterEach(() => {
