@@ -50,10 +50,6 @@ import { ChutneyLeftMenuComponent } from '@shared/components/layout/left-menu/ch
 import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
 import { DistinctPipe } from './pipes/distinct.pipe';
 import { ScenarioExecuteModalComponent } from './components/execute-modal/scenario-execute-modal.component';
-import { SelectModule } from 'primeng/select';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
 import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -61,7 +57,6 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
 import { ScenarioExecutionComponent } from './components/scenario-execution/execution.component';
 import { RxFor } from '@rx-angular/template/for';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
     imports: [
@@ -74,11 +69,6 @@ import { InputTextModule } from 'primeng/inputtext';
         NgbModule,
         NgbTooltipModule,
         NgbDropdownModule,
-        SelectModule,
-        FloatLabelModule,
-        InputTextModule,
-        InputGroupModule,
-        InputGroupAddonModule,
         TypeaheadModule,
         RxFor,
         MonacoEditorModule
