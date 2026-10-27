@@ -7,6 +7,35 @@
 
 # Changelog
 
+## [5.0.1](https://github.com/Enedis-OSS/chutney/tree/5.0.1)
+
+### 🔧 Technical enhancements:
+* Upgrade node version by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/433
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/5.0.1.0...5.0.1
+
+
+## [5.0.1.0](https://github.com/Enedis-OSS/chutney/tree/5.0.1.0)
+
+### 🐛 Fixed bugs:
+* Warn before leaving an edition page with unsaved changes by @Redouane-E in https://github.com/Enedis-OSS/chutney/pull/418
+* Idea plugin: Remove legacy report attributes & bump dependencies by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/432
+### 👒 Dependencies:
+* chore(deps): Bump org.codehaus.mojo:exec-maven-plugin from 3.6.3 to 3.6.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/422
+* chore(deps): Bump org.apache.zookeeper:zookeeper from 3.9.5 to 3.9.6 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/429
+* chore(deps): Bump sshd.version from 2.19.0 to 2.20.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/428
+* chore(deps): Bump org.codehaus.mojo:build-helper-maven-plugin from 3.6.1 to 3.6.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/427
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.5 to 3.6.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/425
+* chore(deps): Bump qpid-broker.version from 10.1.0 to 10.1.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/424
+* chore(deps): Bump org.bouncycastle:bcprov-jdk18on from 1.85.2 to 1.86 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/430
+* chore(deps): Bump com.hierynomus:sshj from 0.40.0 to 0.41.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/426
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-compiler-plugin from 3.15.0 to 3.16.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/423
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/5.0.0...5.0.1.0
+
+
 ## [5.0.0](https://github.com/Enedis-OSS/chutney/tree/5.0.0)
 
 ### ⚡ Breaking changes:
