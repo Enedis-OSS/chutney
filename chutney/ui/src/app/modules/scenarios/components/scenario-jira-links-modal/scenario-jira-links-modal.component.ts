@@ -6,7 +6,7 @@
  */
 
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Authorization, JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
 import { JiraPluginService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -29,8 +29,8 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 
     jiraDatasetList: Array<JiraDatasetLinks> = new Array();
 
-    datasetForm: FormArray;
-    jiraFormGroup: FormGroup;
+    datasetForm: UntypedFormArray;
+    jiraFormGroup: UntypedFormGroup;
 
     errorMessage = "";
 
@@ -40,7 +40,7 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 
     constructor(
         private jiraPluginService: JiraPluginService,
-        private formBuilder: FormBuilder
+        private formBuilder: UntypedFormBuilder
     ) {
         this.datasetForm = this.formBuilder.array([]);
         this.jiraFormGroup = this.formBuilder.group({
@@ -122,7 +122,7 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
             });
     }
 
-    private createNewEntry(key?: string, value?: string): FormGroup {
+    private createNewEntry(key?: string, value?: string): UntypedFormGroup {
         return this.formBuilder.group({
             datasetId: key ? key : '',
             jiraId: value ? value : ''

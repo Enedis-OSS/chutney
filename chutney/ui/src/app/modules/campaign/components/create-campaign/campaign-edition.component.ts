@@ -7,7 +7,7 @@
 
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, } from '@angular/cdk/drag-drop';
 import {
@@ -32,7 +32,7 @@ import { distinct, flatMap, newInstance } from '@shared/tools/array-utils';
 import { isNotEmpty } from '@shared';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
+import { ListItem } from '@shared/types/list-item';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
@@ -47,7 +47,7 @@ import {
 })
 export class CampaignEditionComponent implements OnInit, OnDestroy {
 
-    campaignForm: FormGroup;
+    campaignForm: UntypedFormGroup;
 
     campaign = new Campaign();
     campaignId: number;
@@ -85,7 +85,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private scenarioService: ScenarioService,
         private jiraLinkService: JiraPluginService,
         private jiraPluginConfigurationService: JiraPluginConfigurationService,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private router: Router,
         private route: ActivatedRoute,
         private environmentService: EnvironmentService,
@@ -517,7 +517,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         this.datasetId = datasetId;
     }
 
-    selectDatasetScenario(dataset: ListItem, scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
+    selectDatasetScenario(dataset: any, scenario: { 'scenarioId': ScenarioIndex, 'dataset': ListItem }) {
         const scenarioSelected = this.scenariosToAdd.find(scenarioElement => scenarioElement === scenario)
         scenarioSelected.dataset = dataset;
         this.refreshForPipe();

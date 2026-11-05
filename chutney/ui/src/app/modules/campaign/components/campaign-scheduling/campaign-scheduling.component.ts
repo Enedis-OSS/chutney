@@ -10,14 +10,14 @@ import { Campaign, Dataset, Environment } from '@core/model';
 import { CampaignService, DataSetService, EnvironmentService } from '@core/services';
 import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campaign/campaign-scheduling.model';
 import { CampaignSchedulingService } from '@core/services/campaign-scheduling.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
-import { NgbTime } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ListItem } from '@shared/types/list-item';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -30,7 +30,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
     scheduledCampaigns: Array<CampaignScheduling> = [];
-    form: FormGroup;
+    form: UntypedFormGroup;
     errorMessage: string;
     submitted: boolean;
     frequencies = Object.values(FREQUENCY);
@@ -49,7 +49,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
     constructor(private campaignSchedulingService: CampaignSchedulingService,
                 private campaignService: CampaignService,
                 private environmentService: EnvironmentService,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private configTime: NgbTimepickerConfig,
                 private configDate: NgbDatepickerConfig,
                 @Inject(DROPDOWN_SETTINGS) public dropdownSettings: IDropdownSettings,
@@ -120,7 +120,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
         }
 
         const date: NgbDate = formValue['date'];
-        const time: NgbTime = formValue['time'];
+        const time: NgbTimeStruct = formValue['time'];
         const campaignList: Array<Campaign> = this.form.get('selectedCampaigns').value;
         const dateTime = new Date(date.year, date.month - 1, date.day, time.hour, time.minute, 0, 0);
         dateTime.setHours(time.hour - dateTime.getTimezoneOffset() / 60);
