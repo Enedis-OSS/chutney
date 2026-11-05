@@ -10,7 +10,6 @@ package fr.enedis.chutney.server.core.domain.scenario.campaign;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory;
 import fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus;
 import fr.enedis.chutney.server.core.domain.tools.DatasetUtils;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -26,10 +25,6 @@ public record ScenarioExecutionCampaign(
 
     public ServerReportStatus status() {
         return execution.status();
-    }
-
-    public static Comparator<ScenarioExecutionCampaign> executionIdComparator() {
-        return Comparator.comparingLong(value -> value.execution.executionId() > 0 ? value.execution.executionId() : Long.MAX_VALUE);
     }
 
     @Override

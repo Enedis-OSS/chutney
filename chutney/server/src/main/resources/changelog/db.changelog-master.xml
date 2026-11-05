@@ -1131,4 +1131,11 @@
             <column name="EXPIRES_AT" type="NUMBER"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="add-campaign-execution-rank-on-scenario-executions" author="ICG">
+        <comment>Store scenario execution position in its campaign execution to keep campaigns scenarios definition order</comment>
+        <addColumn tableName="SCENARIO_EXECUTIONS">
+            <column name="CAMPAIGN_EXECUTION_RANK" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
