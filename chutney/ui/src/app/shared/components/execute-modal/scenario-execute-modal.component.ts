@@ -232,6 +232,12 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
         }
     }
 
+    clearDataset() {
+        this.selectedDataset = null;
+        this.datasetDetails = null;
+        this.isCollapsed = false;
+    }
+
     saveDatasetCheckboxChanged() {
         this.datasetForm.get('saveDatasetCheckbox')?.valueChanges
             .pipe(takeUntil(this.unsubscribeSub$))
