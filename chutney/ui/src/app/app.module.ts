@@ -28,8 +28,6 @@ import { DefaultMissingTranslationHandler, HttpLoaderFactory } from '@core/initi
 import { themeInitializer } from '@core/initializer/theme.initializer';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 
 @NgModule({
     declarations: [
@@ -73,15 +71,7 @@ import Aura from '@primeng/themes/aura';
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideZoneChangeDetection(),
-        provideAnimationsAsync(),
-        providePrimeNG({
-            theme: {
-                preset: Aura,
-                options: {
-                    darkModeSelector: false || 'none'
-                }
-            }
-        })
+        provideAnimationsAsync()
     ]
 })
 export class ChutneyAppModule {
