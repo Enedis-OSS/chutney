@@ -7,8 +7,6 @@
 
 import { Component, } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
 import * as moment from 'moment';
 
 @Component({
@@ -21,18 +19,14 @@ export class AppComponent {
 
 
     constructor(private translate: TranslateService) {
-        // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang('en');
-        // // the lang to use, if the lang isn't available, it will use the current loader to get them
-        // // take only language designator, i.e. forget about region
-        let lang = navigator.language.substring(0, 2) || translate.getDefaultLang();
-        translate.use(lang);
-        registerLocaleData(localeFr);
-        this.updateMomentLocal(lang);
+        // the language is already selected and loaded by the app initializer
+        this.updateMomentLocal(this.translate.currentLang || this.translate.getDefaultLang());
     }
 
     private updateMomentLocal(lang: string) {
-        moment.updateLocale(lang, chutneyMomentCalendar[lang]);
+        if (chutneyMomentCalendar[lang]) {
+            moment.updateLocale(lang, chutneyMomentCalendar[lang]);
+        }
     }
 }
 
