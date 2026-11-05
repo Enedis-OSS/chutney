@@ -123,7 +123,7 @@
             @if (selectedDataset && selectedDataset !== createDataset) {
             <button type="button"
                     class="select-clear dataset-clear"
-                    (click)="$event.stopPropagation(); selectedDataset = null"
+                    (click)="$event.stopPropagation(); clearDataset()"
                     aria-label="Clear dataset">
                 <i class="bi bi-x"></i>
             </button>
