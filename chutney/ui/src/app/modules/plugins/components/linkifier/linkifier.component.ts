@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ValidationService } from '../../../../molecules/validation/validation.service';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LinkifierService } from '@core/services';
@@ -18,6 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'chutney-config-linkifier',
     templateUrl: './linkifier.component.html',
     styleUrls: ['./linkifier.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LinkifierComponent implements OnInit {

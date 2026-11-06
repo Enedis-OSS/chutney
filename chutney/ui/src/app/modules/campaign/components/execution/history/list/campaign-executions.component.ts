@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Campaign, CampaignExecutionReport, CampaignReport, Dataset } from '@model';
 import { Params } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
@@ -25,6 +25,7 @@ import { DatasetUtils } from '@shared/tools/dataset-utils';
     selector: 'chutney-campaign-executions',
     templateUrl: './campaign-executions.component.html',
     styleUrls: ['./campaign-executions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CampaignExecutionsComponent implements OnChanges, OnDestroy {

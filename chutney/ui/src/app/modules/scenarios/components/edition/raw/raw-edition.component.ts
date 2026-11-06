@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventManagerService } from '@shared/event-manager.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
@@ -18,6 +18,7 @@ import { HjsonParserService } from '@shared/hjson-parser/hjson-parser.service';
     selector: 'chutney-raw-edition',
     templateUrl: './raw-edition.component.html',
     styleUrls: ['./raw-edition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RawEditionComponent

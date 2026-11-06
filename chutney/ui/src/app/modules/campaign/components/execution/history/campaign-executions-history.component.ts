@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { EMPTY, forkJoin, Observable, of, Subject, Subscription, timer, zip } from 'rxjs';
@@ -21,6 +21,7 @@ import { ReplayExecutionWithJiraLinkComponent } from '../replay/replay-execution
     selector: 'chutney-campaign-executions-history',
     templateUrl: './campaign-executions-history.component.html',
     styleUrls: ['./campaign-executions-history.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {

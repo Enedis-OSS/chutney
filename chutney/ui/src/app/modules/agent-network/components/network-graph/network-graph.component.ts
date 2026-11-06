@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Agent, AgentGraphe, Environment } from '@model';
 import { EnvironmentService } from '@core/services';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,7 @@ import { contains } from '@shared/tools';
     selector: 'chutney-network-graph',
     templateUrl: './network-graph.component.html',
     styleUrls: ['./network-graph.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NetworkGraphComponent implements OnDestroy {

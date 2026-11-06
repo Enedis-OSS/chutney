@@ -6,18 +6,19 @@
  */
 
 import {
-    AfterViewChecked,
-    AfterViewInit,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    OnInit,
-    Output,
-    Renderer2,
-    TemplateRef,
-    ViewChild
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { fromEvent, merge, Observable, Subject, Subscription, timer } from 'rxjs';
@@ -61,6 +62,7 @@ import { DatasetUtils } from '@shared/tools/dataset-utils';
     ],
     templateUrl: './execution.component.html',
     styleUrls: ['./execution.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {

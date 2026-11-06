@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LinkifierService } from '@core/services';
 import { LayoutOptions } from '@core/layout/layout-options.service';
@@ -14,6 +14,7 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
     selector: 'chutney-parent',
     templateUrl: './parent.component.html',
     styleUrls: ['./parent.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ParentComponent implements OnInit, OnDestroy {

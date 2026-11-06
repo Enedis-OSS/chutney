@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { combineLatest, identity, Observable, of, Subject, timer } from 'rxjs';
@@ -29,6 +29,7 @@ import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/
     selector: 'chutney-campaign-execution-menu',
     templateUrl: './campaign-execution-menu.component.html',
     styleUrls: ['./campaign-execution-menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {

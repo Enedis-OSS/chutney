@@ -5,12 +5,13 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'chutney-environment-combo',
     templateUrl: './environment-combo.component.html',
     styleUrls: ['./environment-combo.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EnvironmentComboComponent implements OnChanges {

@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Authorization, Environment, EnvironmentVariable } from '@model';
 import { distinct, match } from '@shared/tools';
 import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
@@ -17,6 +17,7 @@ import { ValidationService } from '../../../molecules/validation/validation.serv
     selector: 'chutney-environments-variables',
     templateUrl: './environments-variables.component.html',
     styleUrls: ['./environments-variables.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {

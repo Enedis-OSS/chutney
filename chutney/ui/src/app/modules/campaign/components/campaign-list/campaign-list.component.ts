@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { Subject, Subscription, takeUntil, timer } from 'rxjs';
@@ -26,6 +26,7 @@ import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
     selector: 'chutney-campaigns',
     templateUrl: './campaign-list.component.html',
     styleUrls: ['./campaign-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CampaignListComponent implements OnInit, OnDestroy {

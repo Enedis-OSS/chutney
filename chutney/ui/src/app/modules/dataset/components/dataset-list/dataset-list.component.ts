@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { newInstance } from '@shared/tools';
@@ -21,6 +21,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
     selector: 'chutney-dataset-list',
     templateUrl: './dataset-list.component.html',
     styleUrls: ['./dataset-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DatasetListComponent implements OnInit, OnDestroy {

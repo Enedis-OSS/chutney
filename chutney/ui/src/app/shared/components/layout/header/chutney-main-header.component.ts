@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Authorization, User } from '@model';
 import { LoginService } from '@core/services';
@@ -16,6 +16,7 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
     selector: 'chutney-chutney-main-header',
     templateUrl: './chutney-main-header.component.html',
     styleUrls: ['./chutney-main-header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ChutneyMainHeaderComponent{

@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Campaign, Dataset, Environment } from '@core/model';
 import { CampaignService, DataSetService, EnvironmentService } from '@core/services';
 import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campaign/campaign-scheduling.model';
@@ -25,6 +25,7 @@ import { Subject, takeUntil } from 'rxjs';
     selector: 'chutney-campaign-scheduling',
     templateUrl: './campaign-scheduling.component.html',
     styleUrls: ['./campaign-scheduling.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CampaignSchedulingComponent implements OnInit, OnDestroy {

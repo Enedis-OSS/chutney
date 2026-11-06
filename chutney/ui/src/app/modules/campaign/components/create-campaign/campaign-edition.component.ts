@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -43,6 +43,7 @@ import {
     selector: 'chutney-campaign-edition',
     templateUrl: './campaign-edition.component.html',
     styleUrls: ['./campaign-edition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false,
 })
 export class CampaignEditionComponent implements OnInit, OnDestroy {

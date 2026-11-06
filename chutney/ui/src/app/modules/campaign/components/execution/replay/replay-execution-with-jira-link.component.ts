@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { Dataset } from "@core/model";
 import { CampaignService } from "@core/services";
@@ -16,6 +16,7 @@ import { Observable, Subject, switchMap, takeUntil, timer } from "rxjs";
 @Component({
     selector: 'replay-execution-with-jira-link',
     templateUrl: './replay-execution-with-jira-link.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ReplayExecutionWithJiraLinkComponent implements OnInit, OnDestroy {

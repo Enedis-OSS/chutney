@@ -5,12 +5,13 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'chutney-authoring-info',
     templateUrl: './authoring-info.component.html',
     styleUrls: ['./authoring-info.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AuthoringInfoComponent {

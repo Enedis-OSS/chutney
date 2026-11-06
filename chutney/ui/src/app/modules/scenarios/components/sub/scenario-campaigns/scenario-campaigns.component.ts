@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { CampaignService } from '@core/services';
 import { Authorization, Campaign } from '@model';
@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
     selector: 'chutney-scenario-campaigns',
     templateUrl: './scenario-campaigns.component.html',
     styleUrls: ['./scenario-campaigns.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioCampaignsComponent implements OnChanges, OnDestroy {

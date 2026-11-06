@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Authorization, JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
 import { JiraPluginService } from '@core/services';
@@ -17,6 +17,7 @@ import { Subject, takeUntil } from 'rxjs';
     selector: 'scenarioJiraLinks-modal',
     templateUrl: './scenario-jira-links-modal.component.html',
     styleUrls: ['./scenario-jira-links-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {

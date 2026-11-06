@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, HostListener, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { EditionService } from '@core/services';
 import { TestCaseEdition } from '@model';
@@ -15,6 +15,7 @@ import { lastValueFrom, Subject, takeUntil } from 'rxjs';
     selector: 'chutney-edition-info',
     templateUrl: './edition-info.component.html',
     styleUrls: ['./edition-info.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditionInfoComponent implements OnChanges, OnDestroy {

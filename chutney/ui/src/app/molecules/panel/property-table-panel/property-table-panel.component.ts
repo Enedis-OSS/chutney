@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { Entry } from '@model';
 import { ValidationService } from '../../validation/validation.service';
@@ -14,6 +14,7 @@ import { ValidationService } from '../../validation/validation.service';
     selector: 'chutney-property-table-panel',
     templateUrl: './property-table-panel.component.html',
     styleUrls: ['./property-table-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PropertyTablePanelComponent {

@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { catchError, delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
@@ -20,6 +20,7 @@ import { AlertService, EventManagerService } from '@shared';
     selector: 'chutney-scenario-executions-history',
     templateUrl: './scenario-executions-history.component.html',
     styleUrls: ['./scenario-executions-history.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {

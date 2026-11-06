@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Injectable, ViewChild } from '@angular/core';
+import { Component, Injectable, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Authorization } from '@model';
@@ -139,6 +139,7 @@ class TestInject {
 
 @Component({
     template: `<span *hasAuthorization="authorizations()" #spanView>wtf</span>`,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class HasAuthorizationsHostComponent {

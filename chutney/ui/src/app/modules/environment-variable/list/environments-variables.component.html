@@ -65,7 +65,7 @@
                     <a ngbNavLink class="environment border p-1 text-info border-info">
                       <strong>{{env.name}}</strong></a>
                       <ng-template ngbNavContent>
-                        <ngb-highlight [result]="findVariable(variableKey, env)?.value"
+                        <ngb-highlight [result]="$safeNavigationMigration(findVariable(variableKey, env)?.value)"
                         [term]="keyword"></ngb-highlight>
                       </ng-template>
                     </li>

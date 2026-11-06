@@ -28,7 +28,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { OAuthService } from "angular-oauth2-oidc";
 import { AlertService } from '@shared';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 function getScenarios(html: HTMLElement) {
     return html.querySelectorAll('.scenario-title');
@@ -84,7 +84,7 @@ describe('ScenariosComponent', () => {
         { provide: JiraPluginConfigurationService, useValue: jiraPluginConfigurationService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 }).compileComponents();

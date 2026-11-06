@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
@@ -21,6 +21,7 @@ import { MultiSelectComponent } from 'ng-multiselect-dropdown';
     selector: 'execution-search-report-list',
     templateUrl: './execution-search-list.component.html',
     styleUrls: ['./execution-search-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ExecutionSearchListComponent
