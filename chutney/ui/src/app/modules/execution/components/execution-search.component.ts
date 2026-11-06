@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Execution } from '@model';
 import { ExecutionSearchService } from '@core/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 @Component({
     selector: 'chutney-database-admin',
     templateUrl: './execution-search.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ExecutionSearchComponent implements OnDestroy {

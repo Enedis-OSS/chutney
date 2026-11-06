@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -37,6 +37,7 @@ import { Subject, takeUntil } from 'rxjs';
             multi: true
         }
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {

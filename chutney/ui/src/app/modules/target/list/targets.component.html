@@ -68,7 +68,7 @@
                         'text-warning border-warning': !exist(targetName, env)
                         }"> <strong>{{env.name}}</strong></a>
                     <ng-template ngbNavContent>
-                      <ngb-highlight [result]="findTarget(targetName, env)?.url"
+                      <ngb-highlight [result]="$safeNavigationMigration(findTarget(targetName, env)?.url)"
                       [term]="targetFilter"></ngb-highlight>
                       @if (findTarget(targetName, env)?.properties?.length) {
                         <div class="mt-1">

@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, inject, Input, OnDestroy } from "@angular/core";
+import { Component, inject, Input, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject, takeUntil } from "rxjs";
@@ -14,6 +14,7 @@ import { Subject, takeUntil } from "rxjs";
     selector: 'chutney-tokens-delete',
     templateUrl: './tokens-delete.component.html',
     styleUrls: ['./tokens-delete.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TokenDeleteComponent implements OnDestroy {

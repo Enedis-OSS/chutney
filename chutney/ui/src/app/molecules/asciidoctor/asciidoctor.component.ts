@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import AsciidocConverter from '../../../assets/js/asciidoctor-converter';
 import { HighLightJService } from '@shared/highlight/highlight.service';
 
@@ -14,6 +14,7 @@ import { HighLightJService } from '@shared/highlight/highlight.service';
     templateUrl: './asciidoctor.component.html',
     styleUrls: ['./asciidoctor.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AsciiDoctorComponent implements OnInit, OnChanges {

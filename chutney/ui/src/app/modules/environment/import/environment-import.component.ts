@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -16,6 +16,7 @@ import { ValidationService } from "src/app/molecules/validation/validation.servi
 @Component({
     selector: 'chutney-environment-import',
     templateUrl: './environment-import.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false,
 })
 export class EnvironmentImportComponent implements OnInit, OnDestroy {

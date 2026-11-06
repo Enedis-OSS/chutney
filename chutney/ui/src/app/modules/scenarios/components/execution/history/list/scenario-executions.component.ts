@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Authorization, Dataset, Execution, GwtTestCase } from '@model';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
@@ -24,6 +24,7 @@ import { DatasetUtils } from "@shared/tools/dataset-utils";
     selector: 'chutney-scenario-executions',
     templateUrl: './scenario-executions.component.html',
     styleUrls: ['./scenario-executions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {

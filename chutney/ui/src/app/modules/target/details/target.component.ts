@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Target } from '@model';
 import { ValidationService } from '../../../molecules/validation/validation.service';
@@ -16,6 +16,7 @@ import { Observable, Subject, takeUntil, zip } from 'rxjs';
     selector: 'chutney-target',
     templateUrl: './target.component.html',
     styleUrls: ['./target.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TargetComponent implements OnInit, OnDestroy {

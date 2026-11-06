@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Environment, Target, Authorization } from '@model';
 import { EnvironmentService, LoginService } from '@core/services';
@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
     selector: 'chutney-targets',
     templateUrl: './targets.component.html',
     styleUrls: ['./targets.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TargetsComponent implements OnInit, OnDestroy {

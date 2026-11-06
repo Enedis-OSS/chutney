@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
@@ -17,6 +17,7 @@ import { Subject, takeUntil } from "rxjs";
     selector: 'chutney-tokens-creation',
     templateUrl: './tokens-creation.component.html',
     styleUrls: ['./tokens-creation.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TokenCreationComponent implements OnInit {

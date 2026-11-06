@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EnvironmentService, LoginService } from '@core/services';
 import { Authorization, Environment } from '@model';
@@ -19,6 +19,7 @@ import { EnvironmentImportComponent } from '../import/environment-import.compone
     selector: 'chutney-environments',
     templateUrl: './environments.component.html',
     styleUrls: ['./environments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {

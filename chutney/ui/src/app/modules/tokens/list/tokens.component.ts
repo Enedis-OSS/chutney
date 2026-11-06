@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccessToken, CreatedAccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
@@ -18,6 +18,7 @@ import { TokenDeleteComponent } from "../delete/tokens-delete.component";
     selector: 'chutney-tokens',
     templateUrl: './tokens.component.html',
     styleUrls: ['./tokens.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TokenListComponent implements OnInit, OnDestroy {

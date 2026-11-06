@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Metric } from '@core/model/metric.model';
 import { MetricsService } from '@core/services/metrics.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +16,7 @@ import { interval, Subscription } from 'rxjs';
     selector: 'chutney-metrics',
     templateUrl: './metrics.component.html',
     styleUrls: ['./metrics.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MetricsComponent implements OnInit, OnDestroy {

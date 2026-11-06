@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'chutney-link',
@@ -15,6 +15,7 @@ import { Component, Input } from '@angular/core';
     </a>
 `,
     styleUrls: ['./link.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LinkComponent {

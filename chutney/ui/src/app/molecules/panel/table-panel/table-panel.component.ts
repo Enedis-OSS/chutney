@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PaginationInstance } from 'ngx-pagination';
 
 import { Table } from '@model';
@@ -14,6 +14,7 @@ import { Table } from '@model';
     selector: 'chutney-table-panel',
     templateUrl: './table-panel.component.html',
     styleUrls: ['./table-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TablePanelComponent {

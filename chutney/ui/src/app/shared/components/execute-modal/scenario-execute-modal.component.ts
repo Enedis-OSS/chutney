@@ -5,7 +5,7 @@
  *
  */
 
-import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Dataset, KeyValue, Authorization } from '@core/model';
 import { DataSetService, EnvironmentService } from '@core/services';
 import { NgbActiveModal, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
@@ -19,6 +19,7 @@ import { firstValueFrom, Observable, of, Subject } from 'rxjs';
     selector: 'scenario-execute-modal',
     templateUrl: './scenario-execute-modal.component.html',
     styleUrls: ['./scenario-execute-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {

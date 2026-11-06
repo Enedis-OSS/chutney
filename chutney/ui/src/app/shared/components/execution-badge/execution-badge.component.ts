@@ -5,13 +5,14 @@
  *
  */
 
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     selector: 'chutney-execution-badge',
     templateUrl: './execution-badge.component.html',
     styleUrls: ['./execution-badge.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ExecutionBadgeComponent implements OnChanges {

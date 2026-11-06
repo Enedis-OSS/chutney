@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Observable, Subject, Subscription } from 'rxjs';
 import { catchError, mergeMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
@@ -33,6 +33,7 @@ import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/sc
     selector: 'chutney-scenarios',
     templateUrl: './scenarios.component.html',
     styleUrls: ['./scenarios.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenariosComponent implements OnInit, OnDestroy {

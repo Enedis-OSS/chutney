@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { RolesService } from '@core/services';
@@ -17,6 +17,7 @@ import { Subject, takeUntil } from 'rxjs';
     selector: 'chutney-roles',
     templateUrl: './roles.component.html',
     styleUrls: ['./roles.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RolesComponent implements OnInit {

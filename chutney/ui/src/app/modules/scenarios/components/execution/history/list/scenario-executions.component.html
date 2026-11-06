@@ -181,7 +181,7 @@
               </td>
               <td>
                 <a (click)="openCampaignExecution(execution, $event)" class="link">
-                  <ngb-highlight [result]="execution.campaignReport?.campaignName"
+                  <ngb-highlight [result]="$safeNavigationMigration(execution.campaignReport?.campaignName)"
                   [term]="filtersForm.get('keyword').value"></ngb-highlight>
                 </a>
               </td>

@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { Authorization, ScenarioIndex, TestCase } from '@model';
 import { JiraPluginService, LoginService, ScenarioService } from '@core/services';
@@ -24,6 +24,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
     selector: 'chutney-scenario-execution-menu',
     templateUrl: './scenario-execution-menu.component.html',
     styleUrls: ['./scenario-execution-menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {

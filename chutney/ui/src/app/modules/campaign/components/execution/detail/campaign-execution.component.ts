@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, of, Subject, switchMap, timer } from 'rxjs';
 
 import {
@@ -32,6 +32,7 @@ import { ExecutionDataset } from '@core/model/scenario/execution.dataset';
     selector: 'chutney-campaign-execution',
     templateUrl: './campaign-execution.component.html',
     styleUrls: ['./campaign-execution.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges {

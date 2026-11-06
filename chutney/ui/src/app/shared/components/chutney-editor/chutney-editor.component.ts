@@ -6,16 +6,17 @@
  */
 
 import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnChanges,
-    OnInit,
-    Output,
-    SimpleChanges,
-    ViewChild
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import * as ace from 'ace-builds';
 import { Ace } from 'ace-builds';
@@ -25,6 +26,7 @@ import 'ace-builds/webpack-resolver';
     selector: 'chutney-editor',
     templateUrl: './chutney-editor.component.html',
     styleUrls: ['./chutney-editor.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ChutneyEditorComponent implements OnInit, AfterViewInit, OnChanges {

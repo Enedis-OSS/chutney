@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { DataSetService } from '@core/services';
 import { Dataset } from '@model';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
     selector: 'chutney-dataset-selection',
     templateUrl: './dataset-selection.component.html',
     styleUrls: ['./dataset-selection.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DatasetSelectionComponent implements OnInit, OnDestroy {

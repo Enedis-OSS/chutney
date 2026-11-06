@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LoginService } from '@core/services';
 import { LayoutOptions } from '@core/layout/layout-options.service';
 import { MenuItem } from '@shared/components/layout/menuItem';
@@ -16,6 +16,7 @@ import { FeatureService } from '@core/feature/feature.service';
     selector: 'chutney-chutney-left-menu',
     templateUrl: './chutney-left-menu.component.html',
     styleUrls: ['./chutney-left-menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ChutneyLeftMenuComponent implements OnInit {

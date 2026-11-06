@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 
@@ -13,6 +13,7 @@ import * as moment from 'moment';
     selector: 'chutney-main',
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AppComponent {

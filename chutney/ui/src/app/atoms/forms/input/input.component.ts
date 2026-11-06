@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'chutney-forms-input',
@@ -22,6 +22,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     />
 `,
     styleUrls: ['./input.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InputComponent {

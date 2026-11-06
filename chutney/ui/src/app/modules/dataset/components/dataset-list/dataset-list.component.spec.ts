@@ -24,7 +24,7 @@ import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settin
 import { RouterModule } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AlertService } from '@shared';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DatasetListComponent', () => {
 
@@ -55,7 +55,7 @@ describe('DatasetListComponent', () => {
         { provide: AlertService, useValue: alertService },
         { provide: OAuthService, useValue: oAuthService },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 }).compileComponents();

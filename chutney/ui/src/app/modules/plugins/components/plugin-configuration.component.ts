@@ -5,13 +5,14 @@
  *
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     selector: 'chutney-plugin-configuration',
     templateUrl: './plugin-configuration.component.html',
     styleUrls: ['./plugin-configuration.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PluginConfigurationComponent {
