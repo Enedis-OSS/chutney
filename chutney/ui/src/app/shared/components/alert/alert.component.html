@@ -1,0 +1,35 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2017-2026 Enedis
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  ~
+  -->
+
+<div class="alert-container">
+    @for (alert of alertService.alerts(); track alert.id) {
+    <div
+        class="alert"
+        [class.alert-success]="alert.type === 'success'"
+        [class.alert-info]="alert.type === 'info'"
+        [class.alert-error]="alert.type === 'error'"
+        [class.alert-warning]="alert.type === 'warning'"
+        role="alert"
+    >
+        <div class="alert-content">
+            <strong>{{ alert.title }}</strong>
+            <div>{{ alert.message }}</div>
+        </div>
+
+        @if (alert.closeButton) {
+        <button
+            type="button"
+            class="alert-close"
+            aria-label="Fermer"
+            (click)="alertService.remove(alert.id)"
+        >
+            &times;
+        </button>
+        }
+    </div>
+    }
+</div>
