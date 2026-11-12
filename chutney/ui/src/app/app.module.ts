@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
-import { ToastrModule } from 'ngx-toastr';
 // Internal common
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -50,11 +49,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
                 deps: [HttpClient]
             },
             missingTranslationHandler: { provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler }
-        }),
-        ToastrModule.forRoot({
-            timeOut: 10000,
-            positionClass: 'toast-top-full-width',
-            preventDuplicates: true,
         }),
         ModalModule,
         NgbModule,
