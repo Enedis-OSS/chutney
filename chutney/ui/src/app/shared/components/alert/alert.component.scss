@@ -1,0 +1,80 @@
+/*!
+ * SPDX-FileCopyrightText: 2017-2026 Enedis
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+ 
+ .alert-container {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10000;
+  width: 350px;
+  max-width: calc(100vw - 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px;
+  border-radius: 4px;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: alert-in 0.2s ease-out;
+}
+
+.alert-content {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  strong {
+    display: block;
+    margin-bottom: 5px;
+  }
+}
+
+.alert-success {
+  background: #28a745;
+}
+
+.alert-info {
+  background: #17a2b8;
+}
+
+.alert-error {
+  background: #dc3545;
+}
+
+.alert-warning {
+  background: #ffc107;
+  color: #212529;
+}
+
+.alert-close {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 22px;
+  cursor: pointer;
+  margin-left: 12px;
+  padding: 0;
+  line-height: 1;
+}
+
+@keyframes alert-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

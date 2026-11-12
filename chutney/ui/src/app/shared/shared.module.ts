@@ -50,6 +50,7 @@ import { ChutneyLeftMenuComponent } from '@shared/components/layout/left-menu/ch
 import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
 import { DistinctPipe } from './pipes/distinct.pipe';
 import { ScenarioExecuteModalComponent } from './components/execute-modal/scenario-execute-modal.component';
+import { AlertComponent } from '@shared/components/alert/alert.component';
 import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
 import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -74,6 +75,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
         MonacoEditorModule
     ],
     declarations: [
+        AlertComponent,
         ComponentSearchPipe,
         DataSetSearchPipe,
         DatasetSelectionComponent,
@@ -108,6 +110,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
         ScenarioExecutionComponent
     ],
     exports: [
+        AlertComponent,
         ComponentSearchPipe,
         DataSetSearchPipe,
         DatasetSelectionComponent,
@@ -144,7 +147,6 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
             useClass: ErrorInterceptor,
             multi: true
         },
-        AlertService,
         EventManagerService,
         StateService,
         HjsonParserService
