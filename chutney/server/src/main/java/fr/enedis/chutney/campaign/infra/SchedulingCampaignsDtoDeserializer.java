@@ -44,6 +44,7 @@ class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampa
         List<Long> campaignsId = getLongList(node.get("campaignsId"));
         List<String> campaignsTitle = getStringList(node.get("campaignsTitle"));
         String environment = node.has("environment") ? node.get("environment").asText() : null;
+        Boolean enabled = !node.has("enabled") || node.get("enabled").asBoolean();
         List<String> datasetIds = getStringList(node.get("datasetsId"));
         List<String> jiraIds = getStringList(node.get("jiraIds"));
 
@@ -58,7 +59,7 @@ class SchedulingCampaignsDtoDeserializer extends StdDeserializer<SchedulingCampa
                 .collect(Collectors.toList());
 
 
-        return new SchedulingCampaignDto(id, schedulingDate, frequency, environment, campaignExecutionRequestDto);
+        return new SchedulingCampaignDto(id, schedulingDate, frequency, environment, enabled, campaignExecutionRequestDto);
     }
 
     private String guardArrayOfBoundException(List<String> list, int i) {

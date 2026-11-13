@@ -8,7 +8,11 @@
 package fr.enedis.chutney.campaign.api;
 
 import fr.enedis.chutney.campaign.api.dto.SchedulingCampaignDto;
+import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
+import fr.enedis.chutney.campaign.domain.ScheduledCampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,9 +32,11 @@ public class ScheduleCampaignController {
 
     public static final String BASE_URL = "/api/ui/campaign/v1/scheduling";
     private final ScheduledCampaignRepository scheduledCampaignRepository;
+    private final Clock clock;
 
-    public ScheduleCampaignController(ScheduledCampaignRepository scheduledCampaignRepository) {
+    public ScheduleCampaignController(ScheduledCampaignRepository scheduledCampaignRepository, Clock clock) {
         this.scheduledCampaignRepository = scheduledCampaignRepository;
+        this.clock = clock;
     }
 
     @PreAuthorize("hasAnyAuthority('CAMPAIGN_READ', 'EXECUTION_READ')")
@@ -52,6 +58,26 @@ public class ScheduleCampaignController {
     @DeleteMapping(path = "/{schedulingCampaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void delete(@PathVariable("schedulingCampaignId") Long schedulingCampaignId) {
         scheduledCampaignRepository.removeById(schedulingCampaignId);
+    }
+
+    @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")
+    @PostMapping(path = "/{schedulingCampaignId}/disable", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SchedulingCampaignDto disable(@PathVariable("schedulingCampaignId") Long schedulingCampaignId) {
+        PeriodicScheduledCampaign scheduledCampaign = scheduledCampaignRepository.findById(schedulingCampaignId)
+            .orElseThrow(() -> new ScheduledCampaignNotFoundException(schedulingCampaignId))
+            .disable();
+        scheduledCampaignRepository.update(scheduledCampaign);
+        return SchedulingCampaignDto.toDto(scheduledCampaign);
+    }
+
+    @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")
+    @PostMapping(path = "/{schedulingCampaignId}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SchedulingCampaignDto enable(@PathVariable("schedulingCampaignId") Long schedulingCampaignId) {
+        PeriodicScheduledCampaign scheduledCampaign = scheduledCampaignRepository.findById(schedulingCampaignId)
+            .orElseThrow(() -> new ScheduledCampaignNotFoundException(schedulingCampaignId))
+            .enable(LocalDateTime.now(clock));
+        scheduledCampaignRepository.update(scheduledCampaign);
+        return SchedulingCampaignDto.toDto(scheduledCampaign);
     }
 
 }

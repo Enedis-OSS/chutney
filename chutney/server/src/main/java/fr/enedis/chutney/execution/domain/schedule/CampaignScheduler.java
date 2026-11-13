@@ -81,6 +81,7 @@ public class CampaignScheduler {
         try {
             List<PeriodicScheduledCampaign> all = scheduledCampaignRepository.getAll();
             return all.stream()
+                .filter(sc -> sc.enabled)
                 .filter(sc -> sc.nextExecutionDate != null)
                 .filter(sc -> sc.nextExecutionDate.isBefore(LocalDateTime.now(clock)))
                 .peek(this::prepareScheduledCampaignForNextExecution)

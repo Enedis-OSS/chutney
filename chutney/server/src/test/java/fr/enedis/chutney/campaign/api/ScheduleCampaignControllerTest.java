@@ -25,8 +25,11 @@ import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
 import fr.enedis.chutney.config.web.RestExceptionHandler;
 import fr.enedis.chutney.config.web.WebConfiguration;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -46,7 +49,10 @@ class ScheduleCampaignControllerTest {
 
     private final ScheduledCampaignRepository scheduledCampaignRepository = mock(ScheduledCampaignRepository.class);
 
-    private final ScheduleCampaignController scheduleCampaignController = new ScheduleCampaignController(scheduledCampaignRepository);
+    private final LocalDateTime now = LocalDateTime.of(2024, 10, 20, 10, 0);
+    private final Clock clock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+
+    private final ScheduleCampaignController scheduleCampaignController = new ScheduleCampaignController(scheduledCampaignRepository, clock);
 
     @BeforeEach
     void setup() {
@@ -135,5 +141,51 @@ class ScheduleCampaignControllerTest {
             .andExpect(status().isOk());
 
         verify(scheduledCampaignRepository).removeById(schedulingCampaignId);
+    }
+
+    @Test
+    @WithMockUser(authorities = "CAMPAIGN_WRITE")
+    void should_disable_scheduled_campaign() throws Exception {
+        CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "", "");
+        when(scheduledCampaignRepository.findById(1L)).thenReturn(Optional.of(
+            new PeriodicScheduledCampaign(1L, LocalDateTime.of(2024, 10, 21, 8, 0), Frequency.DAILY, "PROD", List.of(request))
+        ));
+
+        mockMvc.perform(post("/api/ui/campaign/v1/scheduling/{schedulingCampaignId}/disable", 1L))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.enabled").value(false))
+            .andExpect(jsonPath("$.schedulingDate").value("2024-10-21T08:00:00"));
+
+        ArgumentCaptor<PeriodicScheduledCampaign> captor = ArgumentCaptor.forClass(PeriodicScheduledCampaign.class);
+        verify(scheduledCampaignRepository).update(captor.capture());
+        assertThat(captor.getValue().enabled).isFalse();
+    }
+
+    @Test
+    @WithMockUser(authorities = "CAMPAIGN_WRITE")
+    void should_enable_scheduled_campaign_on_its_next_execution() throws Exception {
+        CampaignExecutionRequest request = new CampaignExecutionRequest(1L, "title", "", "");
+        when(scheduledCampaignRepository.findById(1L)).thenReturn(Optional.of(
+            new PeriodicScheduledCampaign(1L, LocalDateTime.of(2024, 10, 12, 8, 0), Frequency.DAILY, "PROD", List.of(request), false)
+        ));
+
+        mockMvc.perform(post("/api/ui/campaign/v1/scheduling/{schedulingCampaignId}/enable", 1L))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.enabled").value(true))
+            .andExpect(jsonPath("$.schedulingDate").value("2024-10-21T08:00:00"));
+
+        ArgumentCaptor<PeriodicScheduledCampaign> captor = ArgumentCaptor.forClass(PeriodicScheduledCampaign.class);
+        verify(scheduledCampaignRepository).update(captor.capture());
+        assertThat(captor.getValue().enabled).isTrue();
+        assertThat(captor.getValue().nextExecutionDate).isEqualTo(LocalDateTime.of(2024, 10, 21, 8, 0));
+    }
+
+    @Test
+    @WithMockUser(authorities = "CAMPAIGN_WRITE")
+    void should_return_not_found_when_scheduled_campaign_does_not_exist() throws Exception {
+        when(scheduledCampaignRepository.findById(42L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/ui/campaign/v1/scheduling/{schedulingCampaignId}/disable", 42L))
+            .andExpect(status().isNotFound());
     }
 }
