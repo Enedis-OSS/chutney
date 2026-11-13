@@ -176,6 +176,23 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
             });
     }
 
+    toggle(scheduledCampaign: CampaignScheduling, enabledSwitch: HTMLInputElement) {
+        const request = scheduledCampaign.enabled
+            ? this.campaignSchedulingService.disable(scheduledCampaign.id)
+            : this.campaignSchedulingService.enable(scheduledCampaign.id);
+        request
+            .pipe(takeUntil(this.unsubscribeSub$))
+            .subscribe({
+                next: () => {
+                    this.loadSchedulingCampaign();
+                },
+                error: (error) => {
+                    this.errorMessage = 'Cannot update - ' + error;
+                    enabledSwitch.checked = scheduledCampaign.enabled;
+                }
+            });
+    }
+
     selectCampaign(campaign: Campaign) {
         this.datasetsSelected.push({campaign: campaign, dataset: this.EMPTY_DATASET});
         this.jirasSelected.push({campaign: campaign, jira: ""});

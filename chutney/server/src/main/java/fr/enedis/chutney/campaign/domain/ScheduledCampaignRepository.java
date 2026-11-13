@@ -8,6 +8,7 @@
 package fr.enedis.chutney.campaign.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * CRUD for SchedulingCampaign
@@ -15,6 +16,10 @@ import java.util.List;
 public interface ScheduledCampaignRepository {
 
     PeriodicScheduledCampaign add(PeriodicScheduledCampaign periodicScheduledCampaign);
+
+    Optional<PeriodicScheduledCampaign> findById(Long id);
+
+    void update(PeriodicScheduledCampaign periodicScheduledCampaign);
 
     void removeById(Long id);
 

@@ -35,4 +35,12 @@ export class CampaignSchedulingService {
     delete(id: number): Observable<Object> {
         return this.http.delete(environment.backend + `${this.resourceUrl}/${id}`);
     }
+
+    enable(id: number): Observable<CampaignScheduling> {
+        return this.http.post<CampaignScheduling>(environment.backend + `${this.resourceUrl}/${id}/enable`, null);
+    }
+
+    disable(id: number): Observable<CampaignScheduling> {
+        return this.http.post<CampaignScheduling>(environment.backend + `${this.resourceUrl}/${id}/disable`, null);
+    }
 }

@@ -175,6 +175,8 @@ class SecuredControllerSpringBootIntegrationTest {
                 {"id":1,"schedulingDate":"2024-10-12T14:30:45","frequency":"Daily","environment":"DEFAULT","campaignExecutionRequest":[{"campaignId":1,"campaignTitle":"title","datasetId":"datasetId","jiraId":""}]}
                 """, OK},
             {DELETE, ScheduleCampaignController.BASE_URL + "/123", CAMPAIGN_WRITE.name(), null, OK},
+            {POST, ScheduleCampaignController.BASE_URL + "/123/enable", CAMPAIGN_WRITE.name(), null, NOT_FOUND},
+            {POST, ScheduleCampaignController.BASE_URL + "/123/disable", CAMPAIGN_WRITE.name(), null, NOT_FOUND},
 
             {GET, DataSetController.BASE_URL, "DATASET_READ", null, OK},
             {GET, DataSetController.BASE_URL, SCENARIO_READ.name(), null, OK},

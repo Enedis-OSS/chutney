@@ -10,11 +10,13 @@ package fr.enedis.chutney.campaign.infra;
 
 import static java.time.LocalDateTime.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 
 import fr.enedis.chutney.campaign.domain.Frequency;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
+import fr.enedis.chutney.campaign.domain.ScheduledCampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
 import fr.enedis.chutney.tools.file.FileUtils;
 import java.nio.file.Path;
@@ -61,6 +63,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "1" : {
                     "id" : "1",
                     "schedulingDate" : "2020-02-04T07:10:00",
+                    "enabled" : true,
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
                     "datasetsId" : [ "" ],
@@ -69,6 +72,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "2" : {
                     "id" : "2",
                     "schedulingDate" : "2021-03-05T08:11:00",
+                    "enabled" : true,
                     "campaignsId" : [ 22 ],
                     "campaignsTitle" : [ "campaign title 2" ],
                     "datasetsId" : [ "" ],
@@ -77,6 +81,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "3" : {
                     "id" : "3",
                     "schedulingDate" : "2022-04-06T09:12:00",
+                    "enabled" : true,
                     "campaignsId" : [ 33 ],
                     "campaignsTitle" : [ "campaign title 3" ],
                     "datasetsId" : [ "" ],
@@ -85,6 +90,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "4" : {
                     "id" : "4",
                     "schedulingDate" : "2022-04-06T09:12:00",
+                    "enabled" : true,
                     "campaignsId" : [ 55, 66 ],
                     "campaignsTitle" : [ "campaign title 5", "campaign title 6" ],
                     "datasetsId" : [ "", "" ],
@@ -111,6 +117,7 @@ public class ScheduledCampaignFileRepositoryTest {
                    "1" : {
                      "id" : "1",
                      "schedulingDate" : "2020-02-04T07:10:00",
+                     "enabled" : true,
                      "campaignsId" : [ 11 ],
                      "campaignsTitle" : [ "campaign title 1" ],
                      "datasetsId" : [ "" ],
@@ -119,6 +126,7 @@ public class ScheduledCampaignFileRepositoryTest {
                    "3" : {
                      "id" : "3",
                      "schedulingDate" : "2022-04-06T09:12:00",
+                     "enabled" : true,
                      "campaignsId" : [ 33 ],
                      "campaignsTitle" : [ "campaign title 3" ],
                      "datasetsId" : [ "" ],
@@ -160,6 +168,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "1" : {
                     "id" : "1",
                     "schedulingDate" : "2024-02-04T07:10:00",
+                    "enabled" : true,
                     "campaignsId" : [ 1, 3 ],
                     "campaignsTitle" : [ "campaign title 1", "campaign title 3" ],
                     "datasetsId" : [ "", "" ],
@@ -189,6 +198,7 @@ public class ScheduledCampaignFileRepositoryTest {
                       "2" : {
                         "id" : "2",
                         "schedulingDate" : "2021-03-05T08:11:00",
+                        "enabled" : true,
                         "campaignsId" : [ 22 ],
                         "campaignsTitle" : [ "campaign title 2" ],
                         "datasetsId" : [ "" ],
@@ -261,6 +271,7 @@ public class ScheduledCampaignFileRepositoryTest {
         //Then
         assertThat(periodicScheduledCampaigns).hasSize(1);
         assertThat(periodicScheduledCampaigns).contains(oldSchedule);
+        assertThat(periodicScheduledCampaigns.getFirst().enabled).isTrue();
 
         //// UPDATE
         // When
@@ -278,6 +289,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "1" : {
                     "id" : "1",
                     "schedulingDate" : "2020-02-04T07:10:00",
+                    "enabled" : true,
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
                     "datasetsId" : [ "" ],
@@ -287,6 +299,7 @@ public class ScheduledCampaignFileRepositoryTest {
                     "id" : "2",
                     "schedulingDate" : "2021-03-05T08:11:00",
                     "environment" : "MY_ENV",
+                    "enabled" : true,
                     "campaignsId" : [ 22, 33, 44 ],
                     "campaignsTitle" : [ "campaign title 2", "campaign title 3", "campaign title 4" ],
                     "datasetsId" : [ "FIRST_DATASET", "SECOND_DATASET", "" ],
@@ -296,6 +309,43 @@ public class ScheduledCampaignFileRepositoryTest {
                 """;
         String actualContent = FileUtils.readContent(SCHEDULING_CAMPAIGN_FILE);
         assertThat(actualContent).isEqualToIgnoringWhitespace(expectedScheduledCampaignsAfterUpdate);
+    }
+
+    @Test
+    void should_find_and_update_scheduled_campaign() {
+        sut.add(create(11L, "campaign title 1", of(2020, 2, 4, 7, 10)));
+        PeriodicScheduledCampaign disabled = new PeriodicScheduledCampaign(1L, of(2020, 2, 5, 7, 10), Frequency.DAILY, null,
+            List.of(new CampaignExecutionRequest(11L, "campaign title 1", "", "")), false);
+
+        sut.update(disabled);
+
+        assertThat(sut.findById(1L)).hasValue(disabled);
+        assertThat(sut.findById(2L)).isEmpty();
+        String expected =
+            """
+                {
+                  "1" : {
+                    "id" : "1",
+                    "schedulingDate" : "2020-02-05T07:10:00",
+                    "enabled" : false,
+                    "campaignsId" : [ 11 ],
+                    "campaignsTitle" : [ "campaign title 1" ],
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "" ],
+                    "frequency" : "Daily"
+                  }
+                }
+                """;
+        assertThat(FileUtils.readContent(SCHEDULING_CAMPAIGN_FILE)).isEqualToIgnoringWhitespace(expected);
+    }
+
+    @Test
+    void should_not_update_unknown_scheduled_campaign() {
+        PeriodicScheduledCampaign unknown = create(42L, 11L, "campaign title 1", of(2020, 2, 4, 7, 10));
+
+        assertThatThrownBy(() -> sut.update(unknown))
+            .isInstanceOf(ScheduledCampaignNotFoundException.class);
+        assertThat(sut.getAll()).isEmpty();
     }
 
     private PeriodicScheduledCampaign create(Long id, Long campaignId, String campaignTitle, LocalDateTime nextExecutionDate) {

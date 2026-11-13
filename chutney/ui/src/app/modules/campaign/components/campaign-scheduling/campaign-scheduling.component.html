@@ -166,6 +166,7 @@
               <th class="w60">{{ 'campaigns.scheduling.campaign' | translate }} ({{ 'global.words.dataset' | translate | lowercase }})</th>
               <th class="w10">{{ 'campaigns.scheduling.environment' | translate }}</th>
               <th class="w10">{{ 'campaigns.scheduling.frequency' | translate }}</th>
+              <th class="w5">{{ 'campaigns.scheduling.enabled' | translate }}</th>
               <th class="w5"></th>
             </tr>
           </thead>
@@ -196,6 +197,15 @@
                 <td class="align-middle">
                   @if (scheduledCampaign.frequency !== undefined) {
                     <span>{{ scheduledCampaign.frequency }}</span>
+                  }
+                </td>
+                <td class="align-middle">
+                  @if (scheduledCampaign.frequency) {
+                    <div class="form-check form-switch">
+                      <input #enabledSwitch class="form-check-input" type="checkbox" role="switch"
+                        [checked]="scheduledCampaign.enabled"
+                        (change)="toggle(scheduledCampaign, enabledSwitch)">
+                    </div>
                   }
                 </td>
               <td class="align-middle">
