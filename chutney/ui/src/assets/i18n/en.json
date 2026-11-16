@@ -396,6 +396,10 @@
             "name.placeholder": "Name",
             "host.placeholder": "Host",
             "port.placeholder": "Port",
+            "help": {
+                "why": "An agent is another Chutney server. Agents let scenarios reach targets that this server cannot reach directly, for example in another network zone: the step is delegated to an agent that can.",
+                "how": "Declare each agent (name, host, port) and save. Every agent then checks which agents and targets it can reach, and the resulting network is shown in the graph. With no agent declared, all steps run on this server."
+            },
             "graph": {
                 "agents": {
                     "title": "Agents",

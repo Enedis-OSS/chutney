@@ -396,6 +396,10 @@
             "name.placeholder": "Nom",
             "host.placeholder": "Host",
             "port.placeholder": "Port",
+            "help": {
+                "why": "Un agent est un autre serveur Chutney. Les agents permettent aux scénarios d'atteindre des targets que ce serveur ne peut pas joindre directement, par exemple dans une autre zone réseau : l'étape est déléguée à un agent qui y a accès.",
+                "how": "Déclarez chaque agent (nom, host, port) puis enregistrez. Chaque agent vérifie alors quels agents et quelles targets il peut joindre, et le réseau obtenu est affiché dans le graphe. Sans agent déclaré, toutes les étapes s'exécutent sur ce serveur."
+            },
             "graph": {
                 "agents": {
                     "title": "Agents",

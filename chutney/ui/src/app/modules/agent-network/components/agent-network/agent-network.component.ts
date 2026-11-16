@@ -22,6 +22,7 @@ export class AgentNetworkComponent implements OnInit, OnDestroy {
     description: AgentNetwork;
     errorMessage: any;
     messages: string;
+    help = false;
 
     constructor(private agentService: AgentNetworkService) {}
 
