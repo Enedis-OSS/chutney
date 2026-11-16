@@ -51,7 +51,7 @@ public class ExecutionManagerTest {
     @Test
     public void stopExecution() {
         assertThat(execution.hasToStop()).isFalse();
-        sut.stopExecution(execution.executionId);
+        sut.stopExecution(execution.executionId, false);
         await().atMost(1, SECONDS).untilAsserted(() ->
             assertThat(execution.hasToStop()).isTrue()
         );

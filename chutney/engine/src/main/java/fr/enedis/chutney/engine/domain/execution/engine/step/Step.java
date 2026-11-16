@@ -116,7 +116,7 @@ public class Step {
             failure(e);
             LOGGER.warn("Intercepted exception!", e);
         } finally {
-            if (Status.FAILURE.equals(state.status()) && scenarioExecution.hasToStop()) {
+            if (Status.FAILURE.equals(state.status()) && scenarioExecution.hasToStopImmediately()) {
                 state.addInformation("Stop requested while executing this step");
                 state.stopExecution();
             }

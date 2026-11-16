@@ -96,7 +96,7 @@ public class ExecutionConfigurationTest {
             } else if (StatusDto.PAUSED.equals(report.steps.get(1).status)) {
                 testEngine.resumeExecution(executionId);
             } else if (StatusDto.RUNNING.equals(report.steps.get(1).status)) {
-                testEngine.stopExecution(executionId);
+                testEngine.stopExecution(executionId, false);
             }
             results.add(report);
         });
@@ -107,18 +107,18 @@ public class ExecutionConfigurationTest {
         // check first step status
         assertThat(finalReport.steps.getFirst()).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
         // check second step status
-        assertThat(finalReport.steps.get(1)).hasFieldOrPropertyWithValue("status", StatusDto.STOPPED);
+        assertThat(finalReport.steps.get(1)).hasFieldOrPropertyWithValue("status", StatusDto.SUCCESS);
         // check third step status
         assertThat(finalReport.steps.get(2)).hasFieldOrPropertyWithValue("status", StatusDto.STOPPED);
         assertThat(finalReport.environment).isEqualTo(FAKE_ENV.name());
     }
 
     @Test
-    public void should_stop_immediately_a_running_step() {
+    public void should_stop_immediately_a_running_step_when_forced() {
         StepExecutionReportDto finalReport = executeAndStopWhen(
             scenario(createSleepsStep("long sleep", "30 s"), createSleepsStep("never executed", "1 ms")),
             report -> StatusDto.RUNNING.equals(report.steps.getFirst().status),
-            (testEngine, executionId) -> testEngine.stopExecution(executionId)
+            (testEngine, executionId) -> testEngine.stopExecution(executionId, true)
         );
 
         assertThat(finalReport.status).isEqualTo(StatusDto.STOPPED);
@@ -127,7 +127,7 @@ public class ExecutionConfigurationTest {
     }
 
     @Test
-    public void should_stop_immediately_a_step_waiting_for_its_retry() {
+    public void should_stop_immediately_a_step_waiting_for_its_retry_when_forced() {
         StepDefinitionRequestDto failingStepWithLongRetryDelay = new StepDefinitionRequestDto(
             "retried step",
             null,
@@ -143,18 +143,18 @@ public class ExecutionConfigurationTest {
             scenario(failingStepWithLongRetryDelay),
             report -> StatusDto.FAILURE.equals(report.steps.getFirst().status),
             // Reports are notified by the engine thread, delay to stop while it sleeps before retrying
-            (testEngine, executionId) -> CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS).execute(() -> testEngine.stopExecution(executionId))
+            (testEngine, executionId) -> CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS).execute(() -> testEngine.stopExecution(executionId, true))
         );
 
         assertThat(finalReport.status).isEqualTo(StatusDto.STOPPED);
     }
 
     @Test
-    public void should_stop_immediately_a_paused_scenario() {
+    public void should_stop_a_paused_scenario() {
         StepExecutionReportDto finalReport = executeAndStopWhen(
             scenario(createSleepsStep("sleep", "100 ms"), createSleepsStep("paused", "1 ms")),
             report -> report.steps.stream().anyMatch(step -> StatusDto.PAUSED.equals(step.status)),
-            (testEngine, executionId) -> testEngine.stopExecution(executionId),
+            (testEngine, executionId) -> testEngine.stopExecution(executionId, true),
             (testEngine, executionId) -> testEngine.pauseExecution(executionId)
         );
 

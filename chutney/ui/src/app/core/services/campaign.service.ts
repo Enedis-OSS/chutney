@@ -105,9 +105,9 @@ export class CampaignService {
 
     }
 
-    stopExecution(campaignId: number, executionId: number): Observable<void> {
+    stopExecution(campaignId: number, executionId: number, force = false): Observable<void> {
         return this.http.post(environment.backend +
-            `${this.ressourceUrlExecution}/${executionId}/stop`, {}).pipe(map((res: Response) => {
+            `${this.ressourceUrlExecution}/${executionId}/stop?force=${force}`, {}).pipe(map((res: Response) => {
             }));
     }
 

@@ -30,5 +30,8 @@ public interface TestEngine extends AutoCloseable {
 
     void resumeExecution(Long executionId);
 
-    void stopExecution(Long executionId);
+    /**
+     * @param force true to interrupt the running step, false to let it end
+     */
+    void stopExecution(Long executionId, boolean force);
 }

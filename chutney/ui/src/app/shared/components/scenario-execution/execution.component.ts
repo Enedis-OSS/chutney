@@ -237,8 +237,8 @@ export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewI
         return this.datasetUtils.getExecutionDatasetName(execution.dataset.datasetId)
     }
 
-    stopScenario() {
-        this.scenarioExecutionService.stopScenario(this.scenario.id, this.execution.executionId)
+    stopScenario(force = false) {
+        this.scenarioExecutionService.stopScenario(this.scenario.id, this.execution.executionId, force)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 error: (error) => {

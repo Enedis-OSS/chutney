@@ -41,6 +41,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -155,9 +156,9 @@ public class ScenarioExecutionUiController {
     @PreAuthorize("hasAuthority('EXECUTION_WRITE')")
     @PostMapping(path = BASE_URL + "/{scenarioId}/execution/{executionId}/stop")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void stopExecution(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId) {
-        LOGGER.debug("Stop for scenarioId='{}' and executionID='{}'", scenarioId, executionId);
-        executionEngineAsync.stop(scenarioId, executionId);
+    public void stopExecution(@PathVariable("scenarioId") String scenarioId, @PathVariable("executionId") Long executionId, @RequestParam(name = "force", defaultValue = "false") boolean force) {
+        LOGGER.debug("Stop for scenarioId='{}' and executionID='{}' (force: {})", scenarioId, executionId, force);
+        executionEngineAsync.stop(scenarioId, executionId, force);
     }
 
     @PreAuthorize("hasAuthority('EXECUTION_WRITE')")

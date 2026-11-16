@@ -87,6 +87,12 @@
                 <span class="fa-solid fa-stop me-2" aria-hidden="true"></span>
                 <span class="btn-label">{{ 'global.actions.stop' | translate }}</span>
               </button>
+              <button id="force-stop-btn" type="button" class="btn btn-sm btn-danger ms-3"
+                title="{{ 'global.actions.forceStopTitle' | translate }}"
+                (click)="stop(true)">
+                <span class="fa-solid fa-bolt me-2" aria-hidden="true"></span>
+                <span class="btn-label">{{ 'global.actions.forceStop' | translate }}</span>
+              </button>
             </div>
           }
         </ng-container>

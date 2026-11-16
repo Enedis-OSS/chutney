@@ -30,8 +30,8 @@ public class ExecutionManager {
         RxBus.getInstance().post(new ResumeExecutionCommand(executionId));
     }
 
-    public void stopExecution(Long executionId) {
-        LOGGER.info("Stop requested for " + executionId);
-        RxBus.getInstance().post(new StopExecutionCommand(executionId));
+    public void stopExecution(Long executionId, boolean force) {
+        LOGGER.info((force ? "Forced stop" : "Stop") + " requested for " + executionId);
+        RxBus.getInstance().post(new StopExecutionCommand(executionId, force));
     }
 }

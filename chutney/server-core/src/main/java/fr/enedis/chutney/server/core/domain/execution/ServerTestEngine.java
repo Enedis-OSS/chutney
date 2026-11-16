@@ -17,7 +17,7 @@ public interface ServerTestEngine {
 
     Pair<Observable<StepExecutionReportCore>, Long> executeAndFollow(ExecutionRequest executionRequest);
 
-    void stop(Long executionHash);
+    void stop(Long executionHash, boolean force);
 
     void pause(Long executionHash);
 

@@ -235,9 +235,12 @@ public class ScenarioExecutionEngineAsync {
         }
     }
 
-    public void stop(String scenarioId, Long executionId) {
+    /**
+     * @param force true to interrupt the running step, false to let it end
+     */
+    public void stop(String scenarioId, Long executionId, boolean force) {
         if (scenarioExecutions.containsKey(executionId)) {
-            executionEngine.stop(scenarioExecutions.get(executionId).getRight());
+            executionEngine.stop(scenarioExecutions.get(executionId).getRight(), force);
         } else {
             throw new ScenarioNotRunningException(scenarioId);
         }
