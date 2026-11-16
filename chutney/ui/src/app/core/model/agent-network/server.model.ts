@@ -7,7 +7,8 @@
 
 export class TargetId {
     constructor(
-        public name: string
+        public name: string,
+        public environment: string = null
     ) {
     }
 

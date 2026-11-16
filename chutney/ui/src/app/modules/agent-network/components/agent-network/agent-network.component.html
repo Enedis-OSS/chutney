@@ -5,33 +5,150 @@
   ~
   -->
 
-<div class="row justify-content-center">
-  <div class="btn-group btn-group-sm w-25">
-    <button
-      class="btn btn-sm btn-info rounded mb-2"
-      title="{{'global.actions.help' | translate}}"
-      (click)="help = !help"
-      >
-      {{'global.actions.help' | translate}}
-      <span class="fa fa-info"></span>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h4 class="mb-1">{{ 'admin.agents.title' | translate }}</h4>
+      <p class="text-body-secondary">{{ 'admin.agents.subtitle' | translate }}</p>
+    </div>
+    <button type="button" class="btn btn-sm btn-info" [attr.aria-expanded]="help" (click)="help = !help">
+      {{ 'global.actions.help' | translate }}
+      <span class="fa fa-info" aria-hidden="true"></span>
     </button>
   </div>
-</div>
-@if (help) {
-  <div class="text-white bg-info rounded p-3 mb-2">
-    <p>{{'admin.agents.help.why' | translate}}</p>
-    <p class="mb-0">{{'admin.agents.help.how' | translate}}</p>
+
+  @if (help) {
+    <div class="text-white bg-info rounded p-3 mb-3">
+      <p>{{ 'admin.agents.help.why' | translate }}</p>
+      <p class="mb-0">{{ 'admin.agents.help.how' | translate }}</p>
+    </div>
+  }
+  @if (error) {
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+  }
+
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th scope="col" class="w-25">{{ 'admin.agents.name.placeholder' | translate }}</th>
+        <th scope="col" class="w-25">{{ 'admin.agents.host.placeholder' | translate }}</th>
+        <th scope="col">{{ 'admin.agents.port.placeholder' | translate }}</th>
+        <th scope="col">{{ 'admin.agents.status.title' | translate }}</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (agent of agents; track agent) {
+        <tr>
+          <td>
+            <input class="form-control form-control-sm" type="text" required
+                   [attr.aria-label]="'admin.agents.name.placeholder' | translate"
+                   [(ngModel)]="agent.info.name">
+          </td>
+          <td>
+            <input class="form-control form-control-sm" type="text" required
+                   [attr.aria-label]="'admin.agents.host.placeholder' | translate"
+                   [readOnly]="agent.status === 'local'"
+                   [(ngModel)]="agent.info.host">
+          </td>
+          <td>
+            <input class="form-control form-control-sm" type="number" min="1" max="65535" required
+                   [attr.aria-label]="'admin.agents.port.placeholder' | translate"
+                   [readOnly]="agent.status === 'local'"
+                   [(ngModel)]="agent.info.port">
+          </td>
+          <td class="text-nowrap">
+            @switch (agent.status) {
+              @case ('reachable') {
+                <span class="badge bg-success">{{ 'admin.agents.status.reachable' | translate }}</span>
+              }
+              @case ('unreachable') {
+                <span class="badge bg-warning text-black">{{ 'admin.agents.status.unreachable' | translate }}</span>
+              }
+              @default {
+                <span class="text-body-secondary">{{ 'admin.agents.status.' + agent.status | translate }}</span>
+              }
+            }
+          </td>
+          <td class="text-end">
+            @if (agent.status !== 'local') {
+              <button type="button" class="btn btn-sm btn-outline-danger"
+                      title="{{ 'global.actions.delete' | translate }}"
+                      [attr.aria-label]="'global.actions.delete' | translate"
+                      (click)="removeAgent(agent)">
+                <span class="fa fa-times" aria-hidden="true"></span>
+              </button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" class="text-body-secondary">{{ 'admin.agents.empty' | translate }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-5">
+    <button type="button" class="btn btn-sm btn-outline-primary" (click)="addAgent()">
+      <span class="fa fa-plus" aria-hidden="true"></span> {{ 'admin.agents.add' | translate }}
+    </button>
+    <button type="button" class="btn btn-sm btn-primary" [disabled]="!canSave" (click)="save()">
+      <span class="fa fa-check" aria-hidden="true"></span> {{ 'admin.agents.save' | translate }}
+    </button>
+    <span class="text-body-secondary small" aria-live="polite">
+      @if (saving) {
+        {{ 'admin.agents.saving' | translate }}
+      } @else if (lastChecked) {
+        {{ 'admin.agents.lastChecked' | translate }} {{ lastChecked | date:'yyyy-MM-dd HH:mm' }}
+      }
+    </span>
   </div>
-}
-<div class="row">
-  <div class="col-sm-3">
-    @if (description) {
-      <chutney-agent-network-configuration [currentConfiguration]="description.networkConfiguration" (configurationUpdate)="propagationDone($event)"></chutney-agent-network-configuration>
-    }
+
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-1">
+    <h5 class="mb-0">{{ 'admin.agents.targets.title' | translate }}</h5>
+    <input name="search" type="search" class="form-control form-control-sm w-auto flex-grow-1"
+           placeholder="{{ 'admin.agents.targets.search' | translate }}"
+           [attr.aria-label]="'admin.agents.targets.search' | translate"
+           [(ngModel)]="targetFilter"/>
+    <div class="form-check mb-0">
+      <input id="only-unreachable" type="checkbox" class="form-check-input" [(ngModel)]="onlyUnreachable">
+      <label for="only-unreachable" class="form-check-label">{{ 'admin.agents.targets.onlyUnreachable' | translate }}</label>
+    </div>
   </div>
-  <div class="col-sm-9">
-    @if (description) {
-      <chutney-network-graph [agentGraphe]="description.graphe" [message]="messages"></chutney-network-graph>
-    }
+  <p class="text-body-secondary small">{{ 'admin.agents.targets.subtitle' | translate }}</p>
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col" class="position-sticky start-0">{{ 'admin.agents.targets.name' | translate }}</th>
+          @for (environment of environmentNames; track environment) {
+            <th scope="col" class="text-nowrap">{{ environment }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (target of targets | searchTextPipe: targetFilter:['name']; track target.name) {
+          @if (!onlyUnreachable || target.hasUnreachable) {
+            <tr>
+              <th scope="row" class="position-sticky start-0 fw-normal text-break">{{ target.name }}</th>
+              @for (environment of environmentNames; track environment) {
+                @let cell = target.cellByEnvironment[environment];
+                <td class="text-nowrap" [title]="cell?.url ?? ('admin.agents.targets.absent' | translate)">
+                  @if (!cell) {
+                    <span class="text-body-secondary" aria-hidden="true">·</span>
+                    <span class="visually-hidden">{{ 'admin.agents.targets.absent' | translate }}</span>
+                  } @else if (!cell.reachable) {
+                    <span class="badge bg-warning text-black">{{ 'admin.agents.targets.noAgent' | translate }}</span>
+                  } @else {
+                    {{ cell.runsOn || ('admin.agents.status.local' | translate) }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
   </div>
 </div>

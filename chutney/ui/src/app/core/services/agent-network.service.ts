@@ -28,7 +28,8 @@ export class AgentNetworkService {
         return this.http.get(environment.backend + '/api/v1/description')
             .pipe(map((res: any) => new AgentNetwork(
                 new AgentGraphe(res.agentsGraph.agents.map(this.buildAgent)),
-                res.networkConfiguration as NetworkConfiguration)
+                res.networkConfiguration as NetworkConfiguration,
+                res.localAgentName)
             ));
     }
 
@@ -45,6 +46,6 @@ export class AgentNetworkService {
      * @param {TargetId} targetDescription casted from anonymous object
      */
     private buildTarget = (targetDescription: TargetId) => {
-        return new TargetId(targetDescription.name);
+        return new TargetId(targetDescription.name, targetDescription.environment);
     }
 }

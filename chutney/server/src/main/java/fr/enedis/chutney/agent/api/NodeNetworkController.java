@@ -70,7 +70,10 @@ public class NodeNetworkController {
     @PreAuthorize("hasAuthority('ADMIN_ACCESS')")
     @GetMapping(DESCRIPTION_URL)
     public NetworkDescriptionApiDto getConfiguration() {
-        return networkDescriptionApiMapper.toDto(getCurrentNetworkDescription.getCurrentNetworkDescription());
+        NetworkDescription networkDescription = getCurrentNetworkDescription.getCurrentNetworkDescription();
+        NetworkDescriptionApiDto dto = networkDescriptionApiMapper.toDto(networkDescription);
+        dto.localAgentName = networkDescription.localAgent().map(agent -> agent.agentInfo.name()).orElse(null);
+        return dto;
     }
 
     public static final String EXPLORE_URL = "/api/v1/agentnetwork/explore";

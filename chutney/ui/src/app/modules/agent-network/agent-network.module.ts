@@ -13,12 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AgentNetworkRoute } from './agent-network.routes';
 
-import { AgentComponent } from './components/agent/agent.component';
 import { AgentNetworkComponent } from './components/agent-network/agent-network.component';
-import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
-import {
-    AgentNetworkConfigurationComponent
-} from './components/agent-network-configuration/agent-network-configuration.component';
 import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
@@ -29,7 +24,7 @@ import { SharedModule } from '@shared/shared.module';
         TranslateModule,
         SharedModule
     ],
-    declarations: [AgentNetworkComponent, AgentComponent, NetworkGraphComponent, AgentNetworkConfigurationComponent],
+    declarations: [AgentNetworkComponent],
 })
 export class AgentNetworkModule {
 }

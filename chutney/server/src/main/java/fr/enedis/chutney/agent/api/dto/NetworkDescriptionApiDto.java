@@ -15,4 +15,5 @@ import fr.enedis.chutney.agent.domain.network.NetworkDescription;
 public class NetworkDescriptionApiDto {
     public AgentsGraphApiDto agentsGraph;
     public NetworkConfigurationApiDto networkConfiguration;
+    public String localAgentName;
 }

@@ -396,27 +396,32 @@
             "name.placeholder": "Nom",
             "host.placeholder": "Host",
             "port.placeholder": "Port",
+            "title": "Agents",
+            "subtitle": "Autres serveurs Chutney qui exécutent les étapes que ce serveur ne peut pas atteindre.",
+            "add": "Ajouter un agent",
+            "save": "Enregistrer et vérifier les connexions",
+            "saving": "Vérification des connexions…",
+            "lastChecked": "Dernière vérification :",
+            "empty": "Aucun agent déclaré : toutes les étapes s'exécutent sur ce serveur.",
             "help": {
                 "why": "Un agent est un autre serveur Chutney. Les agents permettent aux scénarios d'atteindre des targets que ce serveur ne peut pas joindre directement, par exemple dans une autre zone réseau : l'étape est déléguée à un agent qui y a accès.",
-                "how": "Déclarez chaque agent (nom, host, port) puis enregistrez. Chaque agent vérifie alors quels agents et quelles targets il peut joindre, et le réseau obtenu est affiché dans le graphe. Sans agent déclaré, toutes les étapes s'exécutent sur ce serveur."
+                "how": "Déclarez chaque agent (nom, host, port) puis enregistrez. Chaque agent vérifie quels agents et quelles targets il peut joindre. Le tableau des targets indique alors où s'exécutent les étapes de chaque target. Sans agent déclaré, toutes les étapes s'exécutent sur ce serveur."
             },
-            "graph": {
-                "agents": {
-                    "title": "Agents",
-                    "name": "Nom",
-                    "url": "URL",
-                    "reach": "Accède à",
-                    "noreach": "Aucun"
-                },
-                "targets": {
-                    "title": "Targets",
-                    "search": "Filtre les noms des targets",
-                    "environment": "Environnement",
-                    "name": "Nom",
-                    "url": "URL",
-                    "reachable": "Accessible depuis",
-                    "unreachable": "Inaccessible"
-                }
+            "status": {
+                "title": "État",
+                "local": "Ce serveur",
+                "reachable": "Joignable",
+                "unreachable": "Pas de réponse",
+                "unchecked": "Pas encore vérifié"
+            },
+            "targets": {
+                "title": "Targets",
+                "subtitle": "Où s'exécutent les étapes de chaque target, par environnement. Survolez une cellule pour voir l'URL de la target.",
+                "search": "Filtrer par target",
+                "onlyUnreachable": "Seulement les inaccessibles",
+                "name": "Nom",
+                "noAgent": "Inaccessible",
+                "absent": "Non définie dans cet environnement"
             }
         },
         "database": {

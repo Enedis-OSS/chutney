@@ -9,7 +9,8 @@ import { AgentInfo } from '.';
 
 export class NetworkConfiguration {
     constructor(
-        public agentNetworkConfiguration: Array<AgentInfo>
+        public agentNetworkConfiguration: Array<AgentInfo>,
+        public creationDate: string = null
     ) {
 
     }
