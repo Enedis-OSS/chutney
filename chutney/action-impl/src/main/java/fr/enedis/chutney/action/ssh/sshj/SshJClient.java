@@ -54,14 +54,18 @@ public class SshJClient implements SshClient {
             return executeCommand(sshClient, command);
         } finally {
             sshClient.disconnect();
-            tunnel.reversed().forEach(t -> {
-                try {
-                    t.disconnect();
-                } catch (IOException e) {
-                    logger.error("Error disconnecting tunnel : " + e.getMessage());
-                }
-            });
+            disconnect(tunnel);
         }
+    }
+
+    private void disconnect(List<SSHClient> tunnel) {
+        tunnel.reversed().forEach(t -> {
+            try {
+                t.disconnect();
+            } catch (IOException e) {
+                logger.error("Error disconnecting tunnel : " + e.getMessage());
+            }
+        });
     }
 
     private List<SSHClient> connect(SSHClient client) throws IOException {
@@ -75,23 +79,25 @@ public class SshJClient implements SshClient {
         return tunnel;
     }
 
-    private List<SSHClient> tunnel() {
+    private List<SSHClient> tunnel() throws IOException {
         List<SSHClient> result = new ArrayList<>();
         for (int i = 0; i < proxyConnections.size(); i++) {
             Connection pc = proxyConnections.get(i);
             SSHClient sshClient = new SSHClient();
+            result.add(sshClient);
             try {
                 sshClient.addHostKeyVerifier(alwaysVerified()); // TODO : Add best way host key verifier to really check.
                 if (i == 0) {
                     sshClient.connect(pc.serverHost, pc.serverPort);
                 } else {
-                    sshClient.connectVia(result.getLast().newDirectConnection(pc.serverHost, pc.serverPort));
+                    sshClient.connectVia(result.get(i - 1).newDirectConnection(pc.serverHost, pc.serverPort));
                 }
                 authenticate(sshClient, pc);
             } catch (IOException e) {
                 logger.error("Error in tunnel setup : " + e.getMessage());
+                disconnect(result);
+                throw e;
             }
-            result.add(sshClient);
         }
         return result;
     }

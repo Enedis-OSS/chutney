@@ -16,6 +16,7 @@ import fr.enedis.chutney.action.TestLogger;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
+import fr.enedis.chutney.action.ssh.fakes.FakeServerSsh;
 import fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -60,6 +61,28 @@ public class SftpActionTest {
         // Then
         assertThat(actualResult.status).isEqualTo(Success);
         assertThat((List<String>) actualResult.outputs.get("files")).containsExactly("text.txt");
+    }
+
+    @Test
+    public void should_list_directory_files_via_proxy_with_private_key(@TempDir Path tempDir) throws IOException {
+        // Given
+        SshServer proxy = FakeServerSsh.buildLocalProxyWithAuthorizedKeys("src/test/resources/security/authorized_keys");
+        try {
+            proxy.start();
+            Files.createFile(tempDir.resolve("text.txt"));
+            Target target = FakeTargetInfo.buildTargetWithPasswordViaProxyWithPrivateKey(sftpServer, "ssh://" + proxy.getHost() + ":" + proxy.getPort(), "proxySshUser");
+
+            SftpListDirAction action = new SftpListDirAction(target, new TestLogger(), tempDir.toString(), "1 m");
+
+            // When
+            ActionExecutionResult actualResult = action.execute();
+
+            // Then
+            assertThat(actualResult.status).isEqualTo(Success);
+            assertThat((List<String>) actualResult.outputs.get("files")).containsExactly("text.txt");
+        } finally {
+            proxy.stop();
+        }
     }
 
     @Test

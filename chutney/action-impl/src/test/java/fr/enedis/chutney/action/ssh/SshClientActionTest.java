@@ -10,6 +10,7 @@ package fr.enedis.chutney.action.ssh;
 import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Failure;
 import static fr.enedis.chutney.action.ssh.fakes.FakeServerSsh.buildLocalSshServer;
 import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPassword;
+import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPasswordViaProxyWithPrivateKey;
 import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPrivateKeyWithPassphrase;
 import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPrivateKeyWithoutPassphrase;
 import static java.util.Collections.singletonList;
@@ -208,6 +209,56 @@ public class SshClientActionTest {
             assertThat(logger.info.getFirst()).startsWith("Authentication on " + proxy.getHost() + " via username/password as proxySshUser");
             assertThat(logger.info.get(1)).startsWith("Authentication on " + proxyBis.getHost() + " via username/password as proxySshBisUser");
             assertThat(logger.info.get(2)).startsWith("Authentication on " + fakeSshServer.getHost() + " via username/password as mockssh");
+        } finally {
+            proxy.stop();
+            proxyBis.stop();
+        }
+    }
+
+    @Test
+    public void should_succeed_to_execute_a_command_via_proxy_with_private_key() throws IOException {
+        // Given
+        SshServer proxy = FakeServerSsh.buildLocalProxyWithAuthorizedKeys("src/test/resources/security/authorized_keys");
+        try {
+            proxy.start();
+            Target target = buildTargetWithPasswordViaProxyWithPrivateKey(fakeSshServer, "ssh://" + proxy.getHost() + ":" + proxy.getPort(), "proxySshUser");
+            TestLogger logger = new TestLogger();
+
+            // When
+            ActionExecutionResult actualResult = new SshClientAction(target, logger, singletonList("echo Hello"), null).execute();
+
+            // Then
+            assertThat(actualResult.outputs.get("results")).usingRecursiveComparison()
+                .isEqualTo(List.of(new CommandResult(new Command("echo Hello"), 0, "Hello\n", "")));
+            assertThat(logger.info.getFirst()).startsWith("Authentication on " + proxy.getHost() + " via private key as proxySshUser");
+        } finally {
+            proxy.stop();
+        }
+    }
+
+    @Test
+    public void should_fail_at_first_proxy_in_error() throws IOException {
+        // Given
+        SshServer proxy = FakeServerSsh.buildLocalProxy("proxySshUser", "proxySshPassword");
+        SshServer proxyBis = FakeServerSsh.buildLocalProxy("proxySshBisUser", "proxySshBisPassword");
+        try {
+            proxy.start();
+            proxyBis.start();
+            Target target = buildTargetWithPassword(
+                fakeSshServer,
+                List.of("ssh://" + proxy.getHost() + ":" + proxy.getPort(), "ssh://" + proxyBis.getHost() + ":" + proxyBis.getPort()),
+                List.of("proxySshUser", "proxySshBisUser"),
+                List.of("wrong", "proxySshBisPassword")
+            );
+            TestLogger logger = new TestLogger();
+
+            // When
+            ActionExecutionResult actualResult = new SshClientAction(target, logger, singletonList("echo Hello"), null).execute();
+
+            // Then
+            assertThat(actualResult.status).isEqualTo(Failure);
+            assertThat(logger.info).singleElement().asString().startsWith("Authentication on " + proxy.getHost());
+            assertThat(logger.errors).filteredOn(error -> error.startsWith("Error in tunnel setup")).hasSize(1);
         } finally {
             proxy.stop();
             proxyBis.stop();

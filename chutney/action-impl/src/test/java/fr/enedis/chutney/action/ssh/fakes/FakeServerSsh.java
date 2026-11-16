@@ -87,6 +87,13 @@ public class FakeServerSsh {
         return sshd;
     }
 
+    public static SshServer buildLocalProxyWithAuthorizedKeys(String authorizedKeys) throws IOException {
+        SshServer sshd = buildLocalProxy("", "");
+        sshd.setPasswordAuthenticator(RejectAllPasswordAuthenticator.INSTANCE);
+        sshd.setPublickeyAuthenticator(new AuthorizedKeysAuthenticator(Path.of(authorizedKeys)));
+        return sshd;
+    }
+
     private static PublickeyAuthenticator getPublicKeyAuthenticator(boolean acceptAllPubKeys, String authorizedKeys) {
         if (StringUtils.isNotBlank(authorizedKeys)) {
             return new AuthorizedKeysAuthenticator(Path.of(authorizedKeys));
