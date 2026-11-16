@@ -14,6 +14,7 @@ server:
 management:
   endpoints:
     web:
+      base-path: /api/actuator
       exposure:
         include: "*"
       cors:
@@ -51,8 +52,8 @@ chutney:
     jwt:
       issuer: chutney
       expiresIn: 240
-  configuration-folder: .chutney
-  index-folder: ${chutney.configuration-folder}/index
+  workspace: /.chutney
+  index-folder: ${chutney.workspace}/conf/index
 
   server:
     editions:

@@ -13,7 +13,7 @@ services:
       SPRING_CONFIG_LOCATION: file:/config/
       LOADER_PATH: /schema/*
     volumes:
-      - ./demo/conf/:/.chutney
+      - ./demo/conf/:/.chutney/conf
       - ./demo/spring-config/:/config/
       - ./demo/schema/:/schema/
 
