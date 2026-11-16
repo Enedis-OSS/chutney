@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +91,14 @@ public class JiraXrayService {
 
     public void linkCampaignExecution(Long campaignExecutionId, String jiraId) {
         jiraRepository.saveCampaignExecutionOverriddenLink(campaignExecutionId.toString(), jiraId);
+    }
+
+    public String campaignExecutionJiraId(Long campaignExecutionId) {
+        String id = campaignExecutionId.toString();
+        return Stream.of(jiraRepository.getByCampaignExecutionId(id), jiraRepository.getCampaignExecutionOverriddenLink(id))
+            .filter(jiraId -> !jiraId.isEmpty())
+            .findFirst()
+            .orElse(null);
     }
 
     public List<XrayTestExecTest> getTestExecutionScenarios(String testExecutionId) {

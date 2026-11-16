@@ -190,7 +190,9 @@ public class CampaignExecutionEngine {
         }
         Campaign campaign = campaignRepository.findById(campaignExecution.campaignId);
         campaign.executionEnvironment(campaignExecution.executionEnvironment);
-        return executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset, campaignExecution.jiraId);
+        String initialExecutionJiraId = jiraXrayEmbeddedApi.campaignExecutionJiraId(campaignExecutionId);
+        CampaignExecution replayExecution = executeScenarioInCampaign(failedExecutions, campaign, userId, campaignExecution.dataset, initialExecutionJiraId);
+        return linkCampaignExecution(replayExecution, initialExecutionJiraId);
     }
 
     /**

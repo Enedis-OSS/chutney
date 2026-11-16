@@ -345,6 +345,29 @@ public class CampaignExecutionEngineTest {
     }
 
     @Test
+    public void replay_failed_scenarios_with_jira_id_of_initial_execution() {
+        Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
+        when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
+        when(campaignExecutionRepository.getCampaignExecutionById(1L)).thenReturn(
+            CampaignExecutionReportBuilder.builder()
+                .executionId(1L)
+                .campaignId(campaign.id)
+                .environment("env")
+                .addScenarioExecutionReport(
+                    new ScenarioExecutionCampaign(secondTestCase.id(), "", failedExecutionWithId(secondTestCase.id(), secondScenarioExecutionId).summary())
+                )
+                .build()
+        );
+        when(jiraXrayPlugin.campaignExecutionJiraId(1L)).thenReturn("JIRA-INITIAL-EXEC");
+
+        CampaignExecution replay = sut.replayFailedScenariosExecutionsForExecution(1L, "user");
+
+        assertThat(replay.jiraId).isEqualTo("JIRA-INITIAL-EXEC");
+        verify(jiraXrayPlugin).updateTestExecution(eq(new ExecutionJiraLink(campaign.id, replay.executionId, secondTestCase.id(), "", "JIRA-INITIAL-EXEC")), any());
+        verify(jiraXrayPlugin).linkCampaignExecution(replay.executionId, "JIRA-INITIAL-EXEC");
+    }
+
+    @Test
     public void execute_campaign_in_parallel_on_two_different_envs() {
         String otherEnv = "otherEnv";
         Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
