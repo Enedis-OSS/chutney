@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -144,18 +145,18 @@ public class JiraController {
             return new ArrayList<>();
         }
 
-        Map<String, String> allLinkedScenarios = jiraRepository.getAllLinkedScenarios();
-        Map<String, XrayTestExecTest> collect = jiraXrayService.getTestExecutionScenarios(testExecId).stream().collect(Collectors.toMap(XrayTestExecTest::getKey, Function.identity()));
+        Map<String, XrayTestExecTest> testsByKey = jiraXrayService.getTestExecutionScenarios(testExecId).stream().collect(Collectors.toMap(XrayTestExecTest::getKey, Function.identity()));
 
-        return allLinkedScenarios.entrySet()
-            .stream()
-            .filter(entry -> collect.get(entry.getValue()) != null)
-            .map(m -> ImmutableJiraDto.builder()
-                .id(m.getValue())
-                .chutneyId(m.getKey())
-                .executionStatus(Optional.ofNullable(collect.get(m.getValue()).getStatus()))
-                .build())
-            .collect(Collectors.toList());
+        Stream<JiraDto> scenarioLinks = jiraRepository.getAllLinkedScenarios().entrySet().stream()
+            .map(link -> JiraDto.of(link.getValue(), link.getKey(), null, null));
+        Stream<JiraDto> scenarioDatasetLinks = jiraRepository.getAllLinkedScenariosWithDataset().entrySet().stream()
+            .flatMap(links -> links.getValue().entrySet().stream()
+                .map(datasetLink -> JiraDto.of(datasetLink.getValue(), links.getKey(), null, datasetLink.getKey())));
+
+        return Stream.concat(scenarioLinks, scenarioDatasetLinks)
+            .filter(link -> testsByKey.containsKey(link.id()))
+            .map(link -> JiraDto.of(link.id(), link.chutneyId(), testsByKey.get(link.id()).getStatus(), link.datasetId().orElse(null)))
+            .toList();
     }
 
     @PreAuthorize("hasAnyAuthority('CAMPAIGN_WRITE', 'EXECUTION_READ')")
@@ -243,7 +244,8 @@ public class JiraController {
         consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateScenarioStatus(@PathVariable String testExecId, @RequestBody JiraDto jiraDto) {
         if (!testExecId.isEmpty() && jiraDto.executionStatus().isPresent()) {
-            jiraXrayService.updateScenarioStatus(testExecId, jiraDto.chutneyId(), jiraDto.executionStatus().get());
+            String testKey = jiraDto.id().isEmpty() ? jiraRepository.getByScenarioId(jiraDto.chutneyId()) : jiraDto.id();
+            jiraXrayService.updateScenarioStatus(testExecId, testKey, jiraDto.executionStatus().get());
         }
     }
 }
