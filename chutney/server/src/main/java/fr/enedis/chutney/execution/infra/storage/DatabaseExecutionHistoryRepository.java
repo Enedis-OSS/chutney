@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,14 +194,21 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
 
     @Override
     @Transactional
-    public int setAllRunningExecutionsToKO() {
-        List<ExecutionSummary> runningExecutions = getExecutionsWithStatus(ServerReportStatus.RUNNING);
-        updateExecutionsToKO(runningExecutions);
+    public List<ExecutionSummary> setAllRunningExecutionsToKO() {
+        List<Long> unfinishedExecutionsIds = Stream.of(ServerReportStatus.RUNNING, ServerReportStatus.PAUSED)
+            .flatMap(status -> getExecutionsWithStatus(status).stream())
+            .map(ExecutionSummary::executionId)
+            .toList();
+        unfinishedExecutionsIds.forEach(this::setExecutionToKO);
 
-        List<ExecutionSummary> pausedExecutions = getExecutionsWithStatus(ServerReportStatus.PAUSED);
-        updateExecutionsToKO(pausedExecutions);
+        // Read once all are KO, so campaign reports do not hold running executions anymore
+        return unfinishedExecutionsIds.stream().map(this::getExecutionSummary).toList();
+    }
 
-        return runningExecutions.size() + pausedExecutions.size();
+    @Override
+    @Transactional
+    public void setExecutionToKO(Long executionId) {
+        update(buildKnockoutExecutionFrom(getExecutionSummary(executionId)));
     }
 
     @Override
@@ -237,12 +245,6 @@ class DatabaseExecutionHistoryRepository implements ExecutionHistoryRepository {
             .filter(campaignExecution -> campaignExecution.scenarioExecutionReports().size() == 1)
             .map(campaignExecution -> campaignExecution.executionId)
             .collect(Collectors.toSet());
-    }
-
-    private void updateExecutionsToKO(List<ExecutionSummary> executions) {
-        executions.stream()
-            .map(this::buildKnockoutExecutionFrom)
-            .forEach(this::update);
     }
 
     private ImmutableExecutionHistory.Execution buildKnockoutExecutionFrom(ExecutionSummary executionSummary) {

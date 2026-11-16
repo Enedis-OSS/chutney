@@ -27,6 +27,7 @@ import fr.enedis.chutney.campaign.domain.CampaignRepository;
 import fr.enedis.chutney.campaign.domain.CampaignService;
 import fr.enedis.chutney.dataset.domain.DataSetRepository;
 import fr.enedis.chutney.engine.api.execution.TestEngine;
+import fr.enedis.chutney.execution.domain.UnfinishedExecutionsCleaner;
 import fr.enedis.chutney.execution.domain.campaign.CampaignExecutionEngine;
 import fr.enedis.chutney.execution.infra.execution.ExecutionRequestMapper;
 import fr.enedis.chutney.execution.infra.execution.ServerTestEngineJavaImpl;
@@ -124,6 +125,14 @@ public class ExecutionsConfiguration {
             objectMapper,
             replayerRetention,
             debounceMilliSeconds);
+    }
+
+    @Bean
+    UnfinishedExecutionsCleaner unfinishedExecutionsCleaner(ExecutionHistoryRepository executionHistoryRepository,
+                                                            TestCaseRepositoryAggregator testCaseRepository,
+                                                            CampaignRepository campaignRepository,
+                                                            ChutneyMetrics metrics) {
+        return new UnfinishedExecutionsCleaner(executionHistoryRepository, testCaseRepository, campaignRepository, metrics);
     }
 
     @Bean

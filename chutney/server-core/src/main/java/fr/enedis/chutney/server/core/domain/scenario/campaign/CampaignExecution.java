@@ -7,6 +7,8 @@
 
 package fr.enedis.chutney.server.core.domain.scenario.campaign;
 
+import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.FAILURE;
+import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.PAUSED;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.RUNNING;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.SKIPPED;
 import static fr.enedis.chutney.server.core.domain.execution.report.ServerReportStatus.SUCCESS;
@@ -160,9 +162,21 @@ public class CampaignExecution {
     }
 
     public void endCampaignExecution() {
+        scenarioExecutions.replaceAll(CampaignExecution::failedIfUnfinished);
         if (!this.status.isFinal()) {
             this.status = findStatus(this.scenarioExecutions);
         }
+    }
+
+    private static ScenarioExecutionCampaign failedIfUnfinished(ScenarioExecutionCampaign scenarioExecution) {
+        if (!RUNNING.equals(scenarioExecution.status()) && !PAUSED.equals(scenarioExecution.status())) {
+            return scenarioExecution;
+        }
+        return new ScenarioExecutionCampaign(
+            scenarioExecution.scenarioId(),
+            scenarioExecution.scenarioName(),
+            ImmutableExecutionHistory.ExecutionSummary.builder().from(scenarioExecution.execution()).status(FAILURE).build()
+        );
     }
 
     /**
