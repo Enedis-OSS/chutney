@@ -208,10 +208,10 @@
               </td>
               @if (jiraTestExecutionId) {
                 <td>
-                  @if (jiraLinkFrom(scenarioReportOutline.scenarioId) !== null) {
+                  @if (jiraLinkFrom(scenarioReportOutline) !== null) {
                     <a role="button" class="btn btn-sm btn-link m-0" target="_blank"
-                      href="{{ jiraLinkFrom(scenarioReportOutline.scenarioId) }}" rel="noopener noreferrer"
-                      title="{{ jiraLinkFrom(scenarioReportOutline.scenarioId) }}"
+                      href="{{ jiraLinkFrom(scenarioReportOutline) }}" rel="noopener noreferrer"
+                      title="{{ jiraLinkFrom(scenarioReportOutline) }}"
                       (click)="$event.stopPropagation()">
                       <span class="fab fa-jira" aria-hidden="true">
                       </span>
@@ -221,24 +221,24 @@
               }
               @if (jiraTestExecutionId) {
                 <td>
-                  @if (jiraLinkFrom(scenarioReportOutline.scenarioId) !== null) {
+                  @if (jiraLinkFrom(scenarioReportOutline) !== null) {
                     <chutney-confirm-dialog class="me-2 mt-1"
                       [dialogMessage]="('campaigns.execution.update.jira' | translate)" [label]=null
                       [title]="'global.actions.update'"
-                      [disabled]="selectedStatusByScenarioId.get(scenarioReportOutline.scenarioId) !=='PASS' && selectedStatusByScenarioId.get(scenarioReportOutline.scenarioId) !=='FAIL'"
+                      [disabled]="!isStatusUpdatable(scenarioReportOutline)"
                       [btnSizeClass]="'sm'" [btnClassIcon]="'fa-pencil-alt'" [btnColor]="'primary'"
-                      (callbackEvent)="updateStatus(scenarioReportOutline.scenarioId)">
+                      (callbackEvent)="updateStatus(scenarioReportOutline)">
                     </chutney-confirm-dialog>
                     <select class="custom-select mt-1"
-                      (change)="selectedUpdateStatus(scenarioReportOutline.scenarioId, $event)"
+                      (change)="selectedUpdateStatus(scenarioReportOutline, $event)"
                       style="width: 120px">
                       @for (enum of xrayStatuses(); track $index) {
                         <option
-                          [selected]="scenarioStatus(scenarioReportOutline.scenarioId) === enum">
+                          [selected]="scenarioStatus(scenarioReportOutline) === enum">
                           {{ enum }}
                         </option>
                       }
-                      <option [selected]="scenarioStatus(scenarioReportOutline.scenarioId) === UNSUPPORTED">
+                      <option [selected]="scenarioStatus(scenarioReportOutline) === UNSUPPORTED">
                         {{ UNSUPPORTED }}
                       </option>
                     </select>
