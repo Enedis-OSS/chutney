@@ -8,12 +8,14 @@
 package fr.enedis.chutney.action.ssh;
 
 import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Failure;
+import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Success;
 import static fr.enedis.chutney.action.ssh.fakes.FakeServerSsh.buildLocalSshServer;
 import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPassword;
 import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPrivateKeyWithPassphrase;
 import static fr.enedis.chutney.action.ssh.fakes.FakeTargetInfo.buildTargetWithPrivateKeyWithoutPassphrase;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.mock;
 
 import fr.enedis.chutney.action.TestLogger;
@@ -24,6 +26,9 @@ import fr.enedis.chutney.action.ssh.fakes.FakeServerSsh;
 import fr.enedis.chutney.action.ssh.sshj.Command;
 import fr.enedis.chutney.action.ssh.sshj.CommandResult;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +69,7 @@ public class SshClientActionTest {
         List<Object> commands = singletonList("echo Hello");
 
         // When
-        SshClientAction action = new SshClientAction(targetMock, logger, commands, null);
+        SshClientAction action = new SshClientAction(targetMock, logger, commands, null, null);
         ActionExecutionResult actualResult = action.execute();
 
         // Then
@@ -83,7 +88,7 @@ public class SshClientActionTest {
         String command = "echo Hello";
 
         // When
-        SshClientAction action = new SshClientAction(targetMock, logger, singletonList(command), null);
+        SshClientAction action = new SshClientAction(targetMock, logger, singletonList(command), null, null);
         ActionExecutionResult actualResult = action.execute();
 
         // Then
@@ -109,11 +114,48 @@ public class SshClientActionTest {
         command.put("timeout", "1 ms");
 
         // When
-        SshClientAction sshClient = new SshClientAction(target, logger, singletonList(command), null);
+        SshClientAction sshClient = new SshClientAction(target, logger, singletonList(command), null, null);
         ActionExecutionResult actualResult = sshClient.execute();
 
         // Then
         assertThat(actualResult.status).isEqualTo(Failure);
+    }
+
+    @Test
+    public void should_fail_on_timeout_when_target_server_accepts_connection_but_never_answers() throws IOException {
+        // Given
+        try (ServerSocket serverNeverSendingSshIdentification = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            TestLogger logger = new TestLogger();
+            SshServer unstartedServerHoldingAddress = SshServer.setUpDefaultServer();
+            unstartedServerHoldingAddress.setHost(serverNeverSendingSshIdentification.getInetAddress().getHostAddress());
+            unstartedServerHoldingAddress.setPort(serverNeverSendingSshIdentification.getLocalPort());
+            Target target = buildTargetWithPassword(unstartedServerHoldingAddress);
+
+            // When
+            SshClientAction sshClient = new SshClientAction(target, logger, singletonList("echo Hello"), null, "500 ms");
+            ActionExecutionResult actualResult = assertTimeoutPreemptively(Duration.ofSeconds(10), sshClient::execute);
+
+            // Then
+            assertThat(actualResult.status).isEqualTo(Failure);
+            assertThat(logger.errors).isNotEmpty();
+        }
+    }
+
+    @Test
+    public void should_not_apply_connection_timeout_to_command_execution() {
+        // Given
+        Target target = buildTargetWithPassword(fakeSshServer);
+
+        Map<String, String> command = new HashMap<>();
+        command.put("command", OsUtils.isWin32() ? "START /WAIT TIMEOUT /T 2 /NOBREAK >NUL" : "sleep 2");
+        command.put("timeout", "10 s");
+
+        // When
+        SshClientAction sshClient = new SshClientAction(target, new TestLogger(), singletonList(command), null, "500 ms");
+        ActionExecutionResult actualResult = sshClient.execute();
+
+        // Then
+        assertThat(actualResult.status).isEqualTo(Success);
     }
 
     @Test
@@ -125,7 +167,7 @@ public class SshClientActionTest {
         String command = "echo Hello";
 
         // when
-        SshClientAction sshClient = new SshClientAction(target, logger, singletonList(command), null);
+        SshClientAction sshClient = new SshClientAction(target, logger, singletonList(command), null, null);
         ActionExecutionResult actualResult = sshClient.execute();
 
         // Then
@@ -134,7 +176,7 @@ public class SshClientActionTest {
 
     @Test
     void should_validate_all_input() {
-        SshClientAction sshClientAction = new SshClientAction(null, null, null, null);
+        SshClientAction sshClientAction = new SshClientAction(null, null, null, null, null);
         List<String> errors = sshClientAction.validateInputs();
 
         assertThat(errors.size()).isEqualTo(6);
@@ -146,6 +188,13 @@ public class SshClientActionTest {
         softly.assertThat(errors.get(4)).isEqualTo("No commands provided (List)");
         softly.assertThat(errors.get(5)).isEqualTo("[commands should not be empty] not applied because of exception java.lang.NullPointerException(Cannot invoke \"java.util.List.isEmpty()\" because \"m\" is null)");
         softly.assertAll();
+    }
+
+    @Test
+    void should_validate_timeout_input() {
+        SshClientAction sshClientAction = new SshClientAction(buildTargetWithPassword(fakeSshServer), null, singletonList("echo Hello"), null, "not a duration");
+
+        assertThat(sshClientAction.validateInputs()).singleElement().asString().startsWith("[timeout is not parsable]");
     }
 
     @Test
@@ -164,7 +213,7 @@ public class SshClientActionTest {
             List<Object> commands = singletonList("echo Hello");
 
             // When
-            SshClientAction action = new SshClientAction(targetMock, logger, commands, null);
+            SshClientAction action = new SshClientAction(targetMock, logger, commands, null, null);
             ActionExecutionResult actualResult = action.execute();
 
             // Then
@@ -200,7 +249,7 @@ public class SshClientActionTest {
             List<Object> commands = singletonList("echo Hello");
 
             // When
-            SshClientAction action = new SshClientAction(targetMock, logger, commands, null);
+            SshClientAction action = new SshClientAction(targetMock, logger, commands, null, null);
             ActionExecutionResult actualResult = action.execute();
 
             // Then

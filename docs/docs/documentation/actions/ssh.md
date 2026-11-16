@@ -272,6 +272,7 @@ SftpUploadAction(
     |    *     | `target`   | String |           |                      |
     |    *     | `commands` | String |           |                      |
     |          | `channel`  | String | `COMMAND` | `COMMAND` or `SHELL` |
+    |          | `timeout`  | [Duration](/documentation/actions/introduction.md/#duration-type) | `30 s` | Connection timeout (connect, SSH handshake and authentication), applied to the target and to each proxy. Execution time is bounded by each command timeout. |
 
 === "Outputs"
 
