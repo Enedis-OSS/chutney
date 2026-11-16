@@ -86,22 +86,24 @@ public class SshJClient implements SshClient {
         }
     }
 
-    private List<SSHClient> tunnel() {
+    private List<SSHClient> tunnel() throws IOException {
         List<SSHClient> result = new ArrayList<>();
         for (int i = 0; i < proxyConnections.size(); i++) {
             Connection pc = proxyConnections.get(i);
             SSHClient sshClient = newClient();
+            result.add(sshClient);
             try {
                 if (i == 0) {
                     sshClient.connect(pc.serverHost, pc.serverPort);
                 } else {
-                    sshClient.connectVia(result.getLast().newDirectConnection(pc.serverHost, pc.serverPort));
+                    sshClient.connectVia(result.get(i - 1).newDirectConnection(pc.serverHost, pc.serverPort));
                 }
                 authenticate(sshClient, pc);
             } catch (IOException e) {
                 logger.error("Error in tunnel setup : " + e.getMessage());
+                result.reversed().forEach(this::disconnect);
+                throw e;
             }
-            result.add(sshClient);
         }
         return result;
     }

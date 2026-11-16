@@ -39,6 +39,7 @@ public class ScpClientImpl implements ScpClient {
     public void close() throws Exception {
         session.close();
         scpClient.close();
+        SshClientFactory.stopClientOf(session);
     }
 
     public static ScpClient buildFor(Target target, long timeout) throws IOException {

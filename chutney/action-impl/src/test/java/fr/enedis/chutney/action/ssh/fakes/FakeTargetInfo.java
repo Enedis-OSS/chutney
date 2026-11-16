@@ -41,6 +41,17 @@ public class FakeTargetInfo {
         return buildTarget(sshServer, FakeServerSsh.PASSWORD, null, null, proxy, proxyUser, proxyPassword);
     }
 
+    public static Target buildTargetWithPasswordViaProxyWithPrivateKey(SshServer sshServer, String proxy, String proxyUser) {
+        return new HardcodedTarget(sshServer, Map.of(
+            "user", FakeServerSsh.USERNAME,
+            "password", FakeServerSsh.PASSWORD,
+            "proxy", proxy,
+            "proxyUser", proxyUser,
+            "proxyPrivateKey", ECDSA_PRIVATE_KEY,
+            "proxyPassphrase", "password"
+        ));
+    }
+
     private static Target buildTarget(
         SshServer sshServer,
         String userPassword,
