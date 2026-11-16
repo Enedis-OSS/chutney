@@ -75,6 +75,7 @@ public class DefaultExecutionEngine implements ExecutionEngine {
             final ScenarioContext scenarioContext = new ScenarioContextImpl();
             try {
                 try {
+                    execution.allowInterruption();
                     scenarioContext.put("environment", environment.name());
                     scenarioContext.putAll(ofNullable(environment.variables()).orElse(emptyMap()));
                     scenarioContext.put("dataset", getDataSet(dataset, scenarioContext));
@@ -92,6 +93,9 @@ public class DefaultExecutionEngine implements ExecutionEngine {
                     // (such as exceptions not raised by the engine)
                     rootStep.get().failure(t);
                     LOGGER.warn("Intercepted exception in root step execution !", t);
+                } finally {
+                    // Teardown and pooled thread reuse must not be interrupted by a stop request
+                    execution.forbidInterruption();
                 }
 
                 executeFinallyActions(execution, rootStep, scenarioContext);

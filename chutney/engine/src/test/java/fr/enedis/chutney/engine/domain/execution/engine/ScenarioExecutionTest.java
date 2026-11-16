@@ -52,4 +52,19 @@ public class ScenarioExecutionTest {
             }
         );
     }
+
+    @Test
+    public void stop_should_interrupt_thread_only_while_interruption_is_allowed() {
+        ScenarioExecution interruptible = ScenarioExecution.createScenarioExecution(null);
+        interruptible.allowInterruption();
+        getInstance().post(new StopExecutionCommand(interruptible.executionId));
+        assertThat(Thread.interrupted()).isTrue();
+
+        ScenarioExecution inTeardown = ScenarioExecution.createScenarioExecution(null);
+        inTeardown.allowInterruption();
+        inTeardown.forbidInterruption();
+        getInstance().post(new StopExecutionCommand(inTeardown.executionId));
+        assertThat(inTeardown.hasToStop()).isTrue();
+        assertThat(Thread.interrupted()).isFalse();
+    }
 }

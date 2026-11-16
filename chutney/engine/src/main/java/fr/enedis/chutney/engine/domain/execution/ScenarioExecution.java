@@ -25,8 +25,9 @@ public class ScenarioExecution {
     private final ActionsConfiguration actionConfiguration;
     public final long executionId;
 
-    private boolean pause = false;
-    private boolean stop = false;
+    private volatile boolean pause = false;
+    private volatile boolean stop = false;
+    private Thread interruptibleThread;
 
     private Disposable endExecutionSubscriber;
 
@@ -63,13 +64,30 @@ public class ScenarioExecution {
     }
 
     public void waitForRestart() {
-        while (pause) {
+        while (pause && !stop) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                if (!stop) {
+                    throw new RuntimeException(e);
+                }
             }
         }
+    }
+
+    /**
+     * From now on, a stop request interrupts the calling thread.
+     */
+    public synchronized void allowInterruption() {
+        interruptibleThread = Thread.currentThread();
+    }
+
+    /**
+     * To call from the thread which allowed interruption.
+     */
+    public synchronized void forbidInterruption() {
+        interruptibleThread = null;
+        Thread.interrupted();
     }
 
     public boolean hasToPause() {
@@ -84,8 +102,11 @@ public class ScenarioExecution {
         pause = true;
     }
 
-    private void stop() {
+    private synchronized void stop() {
         stop = true;
+        if (interruptibleThread != null) {
+            interruptibleThread.interrupt();
+        }
     }
 
     private void resume() {
