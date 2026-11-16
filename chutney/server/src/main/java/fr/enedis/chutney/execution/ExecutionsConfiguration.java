@@ -131,8 +131,9 @@ public class ExecutionsConfiguration {
     UnfinishedExecutionsCleaner unfinishedExecutionsCleaner(ExecutionHistoryRepository executionHistoryRepository,
                                                             TestCaseRepositoryAggregator testCaseRepository,
                                                             CampaignRepository campaignRepository,
+                                                            CampaignExecutionEngine campaignExecutionEngine,
                                                             ChutneyMetrics metrics) {
-        return new UnfinishedExecutionsCleaner(executionHistoryRepository, testCaseRepository, campaignRepository, metrics);
+        return new UnfinishedExecutionsCleaner(executionHistoryRepository, testCaseRepository, campaignRepository, campaignExecutionEngine, metrics);
     }
 
     @Bean

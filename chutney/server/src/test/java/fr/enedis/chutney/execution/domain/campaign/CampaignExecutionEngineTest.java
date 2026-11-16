@@ -153,7 +153,7 @@ public class CampaignExecutionEngineTest {
         assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(firstScenarioExecutionId);
         assertThat(campaignExecution.scenarioExecutionReports().get(1).execution().executionId()).isEqualTo(secondScenarioExecutionId);
         assertThat(campaignExecution.partialExecution).isFalse();
-        verify(campaignExecutionRepository).saveCampaignExecution(campaign.id, campaignExecution);
+        verify(campaignExecutionRepository, times(2)).saveCampaignExecution(campaign.id, campaignExecution);
         verify(metrics).onCampaignExecutionEnded(
             eq(campaign),
             eq(campaignExecution)
@@ -181,7 +181,7 @@ public class CampaignExecutionEngineTest {
         assertThat(campaignExecution.scenarioExecutionReports()).hasSize(1);
         assertThat(campaignExecution.scenarioExecutionReports().getFirst().execution().executionId()).isEqualTo(secondScenarioExecutionId);
         assertThat(campaignExecution.partialExecution).isTrue();
-        verify(campaignExecutionRepository).saveCampaignExecution(campaign.id, campaignExecution);
+        verify(campaignExecutionRepository, times(2)).saveCampaignExecution(campaign.id, campaignExecution);
     }
 
     @Test
@@ -786,6 +786,73 @@ public class CampaignExecutionEngineTest {
         } else {
             verify(spySut).executeById(campaignId, environment, null, userId, jiraId);
         }
+    }
+
+    @Test
+    public void complete_interrupted_execution_with_not_started_scenarios_as_not_executed() {
+        // Given
+        Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase));
+        when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
+        CampaignExecution interruptedExecution = CampaignExecutionReportBuilder.builder()
+            .executionId(1L)
+            .campaignId(campaign.id)
+            .environment("env")
+            .userId("user")
+            .addScenarioExecutionReport(new ScenarioExecutionCampaign(firstTestCase.id(), "", failedExecutionWithId(firstTestCase.id(), firstScenarioExecutionId).summary()))
+            .build();
+        when(campaignExecutionRepository.getCampaignExecutionById(1L)).thenReturn(interruptedExecution);
+        when(scenarioExecutionEngine.saveNotExecutedScenarioExecution(any(ExecutionRequest.class)))
+            .thenReturn(createExecution(secondTestCase.id(), secondScenarioExecutionId, NOT_EXECUTED));
+
+        // When
+        sut.completeInterruptedExecution(1L);
+
+        // Then
+        ArgumentCaptor<ExecutionRequest> notExecuted = ArgumentCaptor.forClass(ExecutionRequest.class);
+        verify(scenarioExecutionEngine).saveNotExecutedScenarioExecution(notExecuted.capture());
+        ExecutionRequest request = notExecuted.getValue();
+        assertThat(request.testCase).isEqualTo(secondTestCase);
+        assertThat(request.environment).isEqualTo("env");
+        assertThat(request.userId).isEqualTo("user");
+        assertThat(request.campaignExecution.executionId).isEqualTo(1L);
+        assertThat(request.campaignExecution.scenarioExecutionRank(secondTestCase.id(), request.dataset)).contains(1);
+    }
+
+    @Test
+    public void replay_not_executed_and_failed_scenarios_of_a_completed_interrupted_execution() {
+        // Given
+        GwtTestCase thirdTestCase = createAndMockExecutedGwtTestCase(30L, SUCCESS);
+        Campaign campaign = createCampaign(List.of(firstTestCase, secondTestCase, thirdTestCase));
+        when(campaignRepository.findById(campaign.id)).thenReturn(campaign);
+        when(campaignExecutionRepository.getCampaignExecutionById(1L)).thenReturn(
+            CampaignExecutionReportBuilder.builder()
+                .executionId(1L)
+                .campaignId(campaign.id)
+                .environment("env")
+                .userId("user")
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(firstTestCase.id(), "", createExecution(firstTestCase.id(), 1L).summary()))
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(secondTestCase.id(), "", failedExecutionWithId(secondTestCase.id(), 2L).summary()))
+                .addScenarioExecutionReport(new ScenarioExecutionCampaign(thirdTestCase.id(), "", createExecution(thirdTestCase.id(), 3L, NOT_EXECUTED).summary()))
+                .build()
+        );
+
+        // When
+        CampaignExecution replay = sut.replayFailedScenariosExecutionsForExecution(1L, "user");
+
+        // Then
+        assertThat(replay.scenarioExecutionReports())
+            .extracting(ScenarioExecutionCampaign::scenarioId)
+            .containsExactly(secondTestCase.id(), thirdTestCase.id());
+    }
+
+    @Test
+    public void do_not_complete_interrupted_partial_execution() {
+        CampaignExecution interruptedReplay = CampaignExecutionReportBuilder.builder().executionId(1L).partialExecution(true).userId("user").build();
+        when(campaignExecutionRepository.getCampaignExecutionById(1L)).thenReturn(interruptedReplay);
+
+        assertThat(sut.completeInterruptedExecution(1L)).isSameAs(interruptedReplay);
+
+        verify(scenarioExecutionEngine, times(0)).saveNotExecutedScenarioExecution(any());
     }
 
     private final static Random campaignIdGenerator = new Random();

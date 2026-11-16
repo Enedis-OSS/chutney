@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -195,6 +196,44 @@ public class CampaignExecutionEngine {
         return linkCampaignExecution(replayExecution, initialExecutionJiraId);
     }
 
+    public CampaignExecution completeInterruptedExecution(Long campaignExecutionId) {
+        CampaignExecution interruptedExecution = campaignExecutionRepository.getCampaignExecutionById(campaignExecutionId);
+        if (interruptedExecution.partialExecution) {
+            // ponytail: replayed scenarios list is not stored, store it at start to complete interrupted replays
+            return interruptedExecution;
+        }
+        Campaign campaign = campaignRepository.findById(interruptedExecution.campaignId);
+        campaign.executionEnvironment(interruptedExecution.executionEnvironment);
+
+        List<TestCaseDataset> plannedScenarios = findExecutableScenarios(campaign.scenarios, interruptedExecution);
+        CampaignExecution plannedExecution = CampaignExecutionReportBuilder.builder()
+            .executionId(interruptedExecution.executionId)
+            .campaignId(campaign.id)
+            .campaignName(campaign.title)
+            .environment(interruptedExecution.executionEnvironment)
+            .dataset(interruptedExecution.dataset)
+            .userId(interruptedExecution.userId)
+            .build();
+        plannedExecution.addScenarioExecution(plannedScenarios, campaign.executionEnvironment());
+
+        Set<String> startedScenarios = interruptedExecution.scenarioExecutionReports().stream()
+            .map(started -> scenarioDatasetKey(started.scenarioId(), started.execution().dataset().orElse(null)))
+            .collect(Collectors.toSet());
+        plannedScenarios.stream()
+            .filter(planned -> !startedScenarios.contains(scenarioDatasetKey(planned.testcase().id(), planned.dataset())))
+            .forEach(notStarted -> generateNotExecutedScenarioExecutionAndReport(campaign, notStarted, plannedExecution));
+
+        return campaignExecutionRepository.getCampaignExecutionById(campaignExecutionId);
+    }
+
+    // Stored executions only keep their dataset id, inline datasets being identified as custom
+    private static String scenarioDatasetKey(String scenarioId, DataSet dataset) {
+        String datasetId = ofNullable(dataset)
+            .map(ds -> ds.id != null ? ds.id : "".equals(ds.name) ? DataSet.CUSTOM_ID : null)
+            .orElse(null);
+        return scenarioId + "/" + datasetId;
+    }
+
     /**
      * Called by tests only
      */
@@ -227,6 +266,7 @@ public class CampaignExecutionEngine {
             .jiraId(jiraId)
             .build();
 
+        campaignExecutionRepository.saveCampaignExecution(campaign.id, campaignExecution);
         campaignExecutionRepository.startExecution(campaign.id, campaignExecution);
         currentCampaignExecutionsStopRequests.put(executionId, Boolean.FALSE);
         try {
@@ -262,14 +302,7 @@ public class CampaignExecutionEngine {
 
     private CampaignExecution execute(Campaign campaign, CampaignExecution campaignExecution, List<Campaign.CampaignScenario> scenariosToExecute) {
         LOGGER.trace("Execute campaign {} : {}", campaign.id, campaign.title);
-        List<TestCaseDataset> testCaseDatasets = scenariosToExecute.stream()
-            .map(cs ->
-                testCaseRepository.findExecutableById(cs.scenarioId())
-                    .map(tc -> new TestCaseDataset(tc, resolveScenarioDataset(cs, campaignExecution)))
-            )
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .toList();
+        List<TestCaseDataset> testCaseDatasets = findExecutableScenarios(scenariosToExecute, campaignExecution);
 
         campaignExecution.addScenarioExecution(testCaseDatasets, campaign.executionEnvironment());
         try {
@@ -290,6 +323,16 @@ public class CampaignExecutionEngine {
             LOGGER.error("Unexpected error ", e);
         }
         return campaignExecution;
+    }
+
+    private List<TestCaseDataset> findExecutableScenarios(List<Campaign.CampaignScenario> scenarios, CampaignExecution campaignExecution) {
+        return scenarios.stream()
+            .map(cs ->
+                testCaseRepository.findExecutableById(cs.scenarioId())
+                    .map(tc -> new TestCaseDataset(tc, resolveScenarioDataset(cs, campaignExecution)))
+            )
+            .flatMap(Optional::stream)
+            .toList();
     }
 
     private Consumer<TestCaseDataset> executeScenarioInCampaign(Campaign campaign, CampaignExecution campaignExecution) {
