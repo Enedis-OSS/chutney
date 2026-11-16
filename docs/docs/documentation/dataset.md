@@ -78,10 +78,28 @@ A dataset contains :
         }
     }
     val executionService = ExecutionService()
-    executionService.execute(scenario, dataset = dataset)
+    executionService.execute(scenario, dataset = datatable)
     ```
-    In this example the step `When` of the scenario will be executed `2` times (because `dataset.size == 2`).  
+    In this example the step `When` of the scenario will be executed `2` times (because `datatable.size == 2`).  
     The variable `< i >` will be replaced by the iteration (the row index here) and `\${#key1}` `\${#key2}` will be replaced by the content of the row.
+
+    ### With the Launcher
+
+    The `Launcher` takes a `Dataset` : its `uniqueValues` are the constants and its `multipleValues` are the datatable rows.
+
+    ``` kotlin
+    val dataset = Dataset(
+        name = "my dataset",
+        uniqueValues = setOf(KeyValue("key1", "X")),
+        multipleValues = listOf(
+            listOf(KeyValue("key2", "Y")),
+            listOf(KeyValue("key2", "B"))
+        )
+    )
+
+    Launcher().run(scenario, environment, dataset = dataset)
+    ```
+    The same dataset applies to every scenario when you run a list of scenarios.
 
 === "UI"
     ### Link dataset to a scenario

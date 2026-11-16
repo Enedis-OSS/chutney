@@ -63,6 +63,10 @@ class SearchFeat {
 }
 ```
 
+??? tip "Run with a dataset"
+
+    The launcher accepts a [dataset](/documentation/dataset.md) : `Launcher().run(search_scenario, environment, dataset = my_dataset)`
+
 # Run it !
 
 ??? note "Configure your build tool"
