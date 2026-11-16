@@ -48,18 +48,22 @@ public class ExecutionReportMigrator implements DataMigrator {
             LOGGER.info("Report index not empty. Skipping indexing and in-db compression...");
             return;
         }
-        LOGGER.info("Start indexing and in-db compression...");
         List<ScenarioEntity> activeScenarios = scenarioJpaRepository.findByActivated(true);
         activatedScenariosIds = activeScenarios.stream().map(scenarioEntity -> scenarioEntity.getId().toString()).toList();
-        PageRequest firstPage = PageRequest.of(0, 10);
-        int count = 0;
-        migrate(firstPage, count);
+        Slice<ScenarioExecutionReportEntity> firstSlice = findReports(PageRequest.of(0, 10));
+        if (!firstSlice.isEmpty()) {
+            LOGGER.info("Start indexing and in-db compression...");
+            migrate(firstSlice, 0);
+        }
         activatedScenariosIds = null;
     }
 
-    private void migrate(Pageable pageable, int previousCount) {
-        LOGGER.debug("Indexing and compressing reports in page n° {}", pageable.getPageNumber());
-        Slice<ScenarioExecutionReportEntity> slice = scenarioExecutionReportJpaRepository.findByScenarioExecutionScenarioIdIn(activatedScenariosIds, pageable);
+    private Slice<ScenarioExecutionReportEntity> findReports(Pageable pageable) {
+        return scenarioExecutionReportJpaRepository.findByScenarioExecutionScenarioIdIn(activatedScenariosIds, pageable);
+    }
+
+    private void migrate(Slice<ScenarioExecutionReportEntity> slice, int previousCount) {
+        LOGGER.debug("Indexing and compressing reports in page n° {}", slice.getNumber());
         List<ScenarioExecutionReportEntity> reports = slice.getContent();
 
         executionReportRepository.compressAndSaveInDb(reports);
@@ -67,7 +71,7 @@ public class ExecutionReportMigrator implements DataMigrator {
 
         int count = previousCount + slice.getNumberOfElements();
         if (slice.hasNext()) {
-            migrate(slice.nextPageable(), count);
+            migrate(findReports(slice.nextPageable()), count);
         } else {
             LOGGER.info("{} report(s) successfully compressed and indexed", count);
         }
