@@ -8,6 +8,7 @@
 package fr.enedis.chutney.execution.domain;
 
 import fr.enedis.chutney.campaign.domain.CampaignRepository;
+import fr.enedis.chutney.execution.domain.campaign.CampaignExecutionEngine;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistory.ExecutionSummary;
 import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
 import fr.enedis.chutney.server.core.domain.instrument.ChutneyMetrics;
@@ -27,15 +28,18 @@ public class UnfinishedExecutionsCleaner {
     private final ExecutionHistoryRepository executionHistoryRepository;
     private final TestCaseRepository testCaseRepository;
     private final CampaignRepository campaignRepository;
+    private final CampaignExecutionEngine campaignExecutionEngine;
     private final ChutneyMetrics metrics;
 
     public UnfinishedExecutionsCleaner(ExecutionHistoryRepository executionHistoryRepository,
                                        TestCaseRepository testCaseRepository,
                                        CampaignRepository campaignRepository,
+                                       CampaignExecutionEngine campaignExecutionEngine,
                                        ChutneyMetrics metrics) {
         this.executionHistoryRepository = executionHistoryRepository;
         this.testCaseRepository = testCaseRepository;
         this.campaignRepository = campaignRepository;
+        this.campaignExecutionEngine = campaignExecutionEngine;
         this.metrics = metrics;
     }
 
@@ -52,6 +56,7 @@ public class UnfinishedExecutionsCleaner {
             .map(ExecutionSummary::campaignReport)
             .flatMap(Optional::stream)
             .filter(campaignExecution -> campaignExecutionsIds.add(campaignExecution.executionId))
+            .map(this::completeWithNotExecutedScenarios)
             .forEach(this::sendCampaignExecutionMetrics);
 
         return koExecutions.size();
@@ -64,6 +69,15 @@ public class UnfinishedExecutionsCleaner {
             );
         } catch (Exception e) {
             LOGGER.error("Send metrics for execution {} failed", execution.executionId(), e);
+        }
+    }
+
+    private CampaignExecution completeWithNotExecutedScenarios(CampaignExecution campaignExecution) {
+        try {
+            return campaignExecutionEngine.completeInterruptedExecution(campaignExecution.executionId);
+        } catch (Exception e) {
+            LOGGER.error("Complete interrupted campaign execution {} failed", campaignExecution.executionId, e);
+            return campaignExecution;
         }
     }
 
