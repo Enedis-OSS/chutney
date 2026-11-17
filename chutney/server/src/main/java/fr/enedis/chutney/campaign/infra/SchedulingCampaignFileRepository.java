@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -83,23 +84,19 @@ public class SchedulingCampaignFileRepository implements ScheduledCampaignReposi
     }
 
     @Override
-    public Optional<PeriodicScheduledCampaign> findById(Long id) {
-        return Optional.ofNullable(readFromDisk().get(String.valueOf(id)))
-            .map(this::fromDto);
-    }
-
-    @Override
-    public void update(PeriodicScheduledCampaign periodicScheduledCampaign) {
+    public PeriodicScheduledCampaign update(Long id, UnaryOperator<PeriodicScheduledCampaign> updater) {
         final Lock writeLock = rwLock.writeLock();
         writeLock.lock();
         try {
             Map<String, SchedulingCampaignDto> schedulingCampaigns = readFromDisk();
-            String id = String.valueOf(periodicScheduledCampaign.id);
-            if (!schedulingCampaigns.containsKey(id)) {
-                throw new ScheduledCampaignNotFoundException(periodicScheduledCampaign.id);
+            SchedulingCampaignDto current = schedulingCampaigns.get(String.valueOf(id));
+            if (current == null) {
+                throw new ScheduledCampaignNotFoundException(id);
             }
-            schedulingCampaigns.put(id, toDto(periodicScheduledCampaign.id, periodicScheduledCampaign));
+            PeriodicScheduledCampaign updated = updater.apply(fromDto(current));
+            schedulingCampaigns.put(String.valueOf(id), toDto(id, updated));
             writeOnDisk(resolvedFilePath, schedulingCampaigns);
+            return updated;
         } finally {
             writeLock.unlock();
         }

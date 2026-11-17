@@ -19,7 +19,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 import { TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chutney-campaign-scheduling',
@@ -177,11 +177,15 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
     }
 
     toggle(scheduledCampaign: CampaignScheduling, enabledSwitch: HTMLInputElement) {
-        const request = scheduledCampaign.enabled
-            ? this.campaignSchedulingService.disable(scheduledCampaign.id)
-            : this.campaignSchedulingService.enable(scheduledCampaign.id);
+        const request = enabledSwitch.checked
+            ? this.campaignSchedulingService.enable(scheduledCampaign.id)
+            : this.campaignSchedulingService.disable(scheduledCampaign.id);
+        enabledSwitch.disabled = true;
         request
-            .pipe(takeUntil(this.unsubscribeSub$))
+            .pipe(
+                takeUntil(this.unsubscribeSub$),
+                finalize(() => enabledSwitch.disabled = false)
+            )
             .subscribe({
                 next: () => {
                     this.loadSchedulingCampaign();
@@ -189,6 +193,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
                 error: (error) => {
                     this.errorMessage = 'Cannot update - ' + error;
                     enabledSwitch.checked = scheduledCampaign.enabled;
+                    this.loadSchedulingCampaign();
                 }
             });
     }

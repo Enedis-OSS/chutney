@@ -9,7 +9,6 @@ package fr.enedis.chutney.campaign.api;
 
 import fr.enedis.chutney.campaign.api.dto.SchedulingCampaignDto;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
-import fr.enedis.chutney.campaign.domain.ScheduledCampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -63,21 +62,18 @@ public class ScheduleCampaignController {
     @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")
     @PostMapping(path = "/{schedulingCampaignId}/disable", produces = MediaType.APPLICATION_JSON_VALUE)
     public SchedulingCampaignDto disable(@PathVariable("schedulingCampaignId") Long schedulingCampaignId) {
-        PeriodicScheduledCampaign scheduledCampaign = scheduledCampaignRepository.findById(schedulingCampaignId)
-            .orElseThrow(() -> new ScheduledCampaignNotFoundException(schedulingCampaignId))
-            .disable();
-        scheduledCampaignRepository.update(scheduledCampaign);
-        return SchedulingCampaignDto.toDto(scheduledCampaign);
+        return SchedulingCampaignDto.toDto(
+            scheduledCampaignRepository.update(schedulingCampaignId, PeriodicScheduledCampaign::disable)
+        );
     }
 
     @PreAuthorize("hasAuthority('CAMPAIGN_WRITE')")
     @PostMapping(path = "/{schedulingCampaignId}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
     public SchedulingCampaignDto enable(@PathVariable("schedulingCampaignId") Long schedulingCampaignId) {
-        PeriodicScheduledCampaign scheduledCampaign = scheduledCampaignRepository.findById(schedulingCampaignId)
-            .orElseThrow(() -> new ScheduledCampaignNotFoundException(schedulingCampaignId))
-            .enable(LocalDateTime.now(clock));
-        scheduledCampaignRepository.update(scheduledCampaign);
-        return SchedulingCampaignDto.toDto(scheduledCampaign);
+        LocalDateTime now = LocalDateTime.now(clock);
+        return SchedulingCampaignDto.toDto(
+            scheduledCampaignRepository.update(schedulingCampaignId, scheduledCampaign -> scheduledCampaign.enable(now))
+        );
     }
 
 }
