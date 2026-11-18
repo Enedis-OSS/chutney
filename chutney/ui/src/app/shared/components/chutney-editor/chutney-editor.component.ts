@@ -20,7 +20,7 @@ import {
 } from '@angular/core';
 import * as ace from 'ace-builds';
 import { Ace } from 'ace-builds';
-import 'ace-builds/webpack-resolver';
+import 'ace-builds/esm-resolver';
 
 @Component({
     selector: 'chutney-editor',
