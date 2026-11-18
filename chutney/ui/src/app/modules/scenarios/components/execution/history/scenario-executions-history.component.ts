@@ -9,7 +9,7 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/
 import { catchError, delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services/scenario-execution.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip, repeat, retry } from 'rxjs';
 import { ScenarioService } from '@core/services';

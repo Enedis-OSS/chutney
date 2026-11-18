@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MetricsComponent } from './components/metrics.component';
 import { MetricsRoute } from './metrics.routes';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MoleculesModule } from 'src/app/molecules/molecules.module';
+import { MoleculesModule } from '@molecules/molecules.module';
 
 @NgModule({
     imports: [

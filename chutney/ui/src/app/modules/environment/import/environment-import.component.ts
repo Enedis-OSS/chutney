@@ -11,7 +11,7 @@ import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { Subject, takeUntil } from "rxjs";
-import { ValidationService } from "src/app/molecules/validation/validation.service";
+import { ValidationService } from "@molecules/validation/validation.service";
 
 @Component({
     selector: 'chutney-environment-import',

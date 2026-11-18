@@ -1,7 +1,6 @@
 {
     "compileOnSave": true,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -22,7 +21,6 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "ignoreDeprecations": "6.0",
 
     // Lib
     "lib": [
@@ -32,14 +30,14 @@
 
     // Alias
     "paths": {
-      "@env/*": ["src/environments/*"],
-      "@core/*": ["src/app/core/*"],
-      "@model": ["src/app/core/model/index"],
-      "@shared": ["src/app/shared/index"],
-      "@shared/*": ["src/app/shared/*"],
-      "@modules/*": ["src/app/modules/*"],
-      "os": ["node_modules/os-browserify/main.js"],
-      "@angular/*": ["node_modules/@angular/*"]
+      "@env/*": ["./src/environments/*"],
+      "@core/*": ["./src/app/core/*"],
+      "@model": ["./src/app/core/model/index"],
+      "@shared": ["./src/app/shared/index"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@modules/*": ["./src/app/modules/*"],
+      "@molecules/*": ["./src/app/molecules/*"],
+      "os": ["./node_modules/os-browserify/main.js"]
     }
   }
 }

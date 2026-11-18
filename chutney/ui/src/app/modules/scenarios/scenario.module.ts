@@ -31,7 +31,7 @@ import {
 } from '@modules/scenarios/components/sub/scenario-campaigns/scenario-campaigns.component';
 import { AuthoringInfoComponent } from './components/edition/authoring-info/authoring-info.component';
 import { EditionInfoComponent } from './components/edition/edition-info/edition-info.component';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services/scenario-execution.service';
 import {
     ScenarioExecutionsComponent
 } from '@modules/scenarios/components/execution/history/list/scenario-executions.component';

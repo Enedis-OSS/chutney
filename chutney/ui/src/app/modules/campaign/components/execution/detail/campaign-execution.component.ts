@@ -25,7 +25,7 @@ import { sortByAndOrder } from '@shared/tools';
 import { CampaignReportService } from '@core/services/campaign-report.service';
 import { DatasetUtils } from '@shared/tools/dataset-utils';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services/scenario-execution.service';
 import { ExecutionDataset } from '@core/model/scenario/execution.dataset';
 
 @Component({

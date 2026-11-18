@@ -19,7 +19,7 @@ import { SharedModule } from '@shared/shared.module';
 
 import { DatasetListComponent } from './components/dataset-list/dataset-list.component';
 import { DatasetRoute } from './dataset.routes';
-import { MoleculesModule } from 'src/app/molecules/molecules.module';
+import { MoleculesModule } from '@molecules/molecules.module';
 import { DatasetEditionComponent } from './components/dataset-edition/dataset-edition.component';
 import { AtomsModule } from '../../atoms/atoms.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
