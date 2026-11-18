@@ -15,7 +15,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FileSaverService } from 'ngx-filesaver';
 
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 
 import { CampaignService, EnvironmentService, JiraPluginService, LoginService, ScenarioService } from '@core/services';
 import { Authorization, Campaign, Dataset, ScenarioIndex, TestCase } from '@model';
