@@ -12,7 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
     standalone: false
 })
 export class ObjectAsEntryListPipe implements PipeTransform {
-  transform(value, args:string[]): any {
+  transform(value): any {
     const keys = [];
     for(const key of Object.getOwnPropertyNames(value)) {
       keys.push({'key': key, value: value[key]});

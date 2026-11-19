@@ -326,7 +326,7 @@
                 </div>
             }
             @if (step.evaluatedInputs && Object.keys(step.evaluatedInputs).length > 0) {
-                <ng-cntainer>
+                <ng-container>
                     <hr class="inputs hr-text" [ngClass]="{'d-none': !inputsDNoneToggle}"
                         attr.data-content="{{'scenarios.execution.step.inputs' | translate}}">
                     <div class="inputs" [ngClass]="{'d-none': !inputsDNoneToggle}">
@@ -352,7 +352,7 @@
                             </div>
                         </div>
                     </div>
-                </ng-cntainer>
+                </ng-container>
             }
             @if ((step.information && step.information.length > 0) || (step.errors && step.errors.length > 0)) {
                 <hr class="infos hr-text" [ngClass]="{'d-none': !infosToggle}"
