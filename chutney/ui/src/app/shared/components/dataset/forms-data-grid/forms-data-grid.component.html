@@ -5,7 +5,7 @@
   ~
   -->
 
-<div class="mt-3" [formGroup]="dataGridForm">
+<div class="mt-3" [formGroup]="$any(dataGridForm)">
   <div class="mb-3">
     <button type="button" class="btn btn-primary" (click)="addLine()">
       {{ 'global.actions.add' | translate }} <span class="fa fa-grip-lines" aria-hidden="true"></span>
