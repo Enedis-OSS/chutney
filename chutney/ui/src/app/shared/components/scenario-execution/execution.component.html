@@ -27,15 +27,15 @@
             -  {{ 'admin.targets.environment' | translate }} : <b>{{ scenarioExecutionReport.environment }}</b>
           </small>
           <small class="text-muted ms-2">
-            @if (execution.campaignExecutionReport) {
+            @if (execution.campaignReport) {
                 -  {{ 'scenarios.execution.history.campaign' | translate }} :
                 <ng-container *hasAuthorization="[Authorization.CAMPAIGN_READ]">
-                <a [routerLink]="['/campaign', execution.campaignExecutionReport.campaignId, 'execution', execution.campaignExecutionReport.executionId]">
-                  {{ execution.campaignExecutionReport.campaignName }}
+                <a [routerLink]="['/campaign', execution.campaignReport.campaignId, 'execution', execution.campaignReport.executionId]">
+                  {{ execution.campaignReport.campaignName }}
                 </a>
               </ng-container>
                 <ng-container *hasAuthorization="{not: true, authorizations: [Authorization.CAMPAIGN_READ]}">
-                <span>{{ execution.campaignExecutionReport.campaignName }}</span>
+                <span>{{ execution.campaignReport.campaignName }}</span>
               </ng-container>
             }
           </small>
