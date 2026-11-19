@@ -23,7 +23,7 @@
   }
 
   @for (keyValue of keyValuesForm.controls; track keyValue; let i = $index) {
-    <div [formGroup]="keyValuesForm">
+    <div [formGroup]="$any(keyValuesForm)">
       <div [formGroupName]="i" class="row mb-2">
         <div style="flex: 0 0 110px;" class="align-self-center">
           <button type="button" class="btn btn-sm btn-outline-primary delete-button-height"

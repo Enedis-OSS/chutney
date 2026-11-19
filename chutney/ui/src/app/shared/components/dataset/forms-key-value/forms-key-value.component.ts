@@ -9,9 +9,9 @@ import { Component, forwardRef, Input, OnDestroy, ChangeDetectionStrategy } from
 import {
     AbstractControl,
     ControlValueAccessor,
-    UntypedFormArray,
-    UntypedFormBuilder,
-    UntypedFormGroup,
+    FormArray,
+    FormBuilder,
+    FormGroup,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors
@@ -41,17 +41,17 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
 
-    keyValuesForm: UntypedFormArray;
+    keyValuesForm: FormArray<FormGroup>;
     isDisabled: boolean;
     @Input() enableImportExport: boolean = true;
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(
-        private fb: UntypedFormBuilder,
+        private fb: FormBuilder,
         private fileSaverService: FileSaverService,
     ) {
-        this.keyValuesForm = this.fb.array([]);
+        this.keyValuesForm = this.fb.array<FormGroup>([]);
     }
 
     ngOnDestroy() {
@@ -71,7 +71,7 @@ export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
         this.keyValuesForm.insert(i, this.createKeyValue(key, value));
     }
 
-    private createKeyValue(key?: string, value?: string): UntypedFormGroup {
+    private createKeyValue(key?: string, value?: string): FormGroup {
         return this.fb.group({
             key: key ? key : '',
             value: value ? value : ''
