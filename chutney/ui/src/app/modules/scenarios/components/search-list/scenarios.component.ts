@@ -27,7 +27,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { ListItem } from '@shared/types/list-item';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/scenario-jira-links-modal.component';
+import { ScenarioJiraLinksModalComponent } from '@modules/scenarios/components/scenario-jira-links-modal/scenario-jira-links-modal.component';
 
 @Component({
     selector: 'chutney-scenarios',

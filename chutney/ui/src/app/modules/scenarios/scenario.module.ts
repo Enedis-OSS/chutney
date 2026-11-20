@@ -38,7 +38,6 @@ import {
     ScenarioExecutionMenuComponent
 } from '@modules/scenarios/components/execution/sub/right-side-bar/scenario-execution-menu.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { ScenarioJiraLinksModalComponent } from './components/scenario-jira-links-modal/scenario-jira-links-modal.component';
 
 const ROUTES = [
     ...scenarioRoute
@@ -69,8 +68,7 @@ const ROUTES = [
         ScenarioExecutionMenuComponent,
         AuthoringInfoComponent,
         EditionInfoComponent,
-        ScenarioExecutionsComponent,
-        ScenarioJiraLinksModalComponent,
+        ScenarioExecutionsComponent
     ],
     providers: [
         DateFormatPipe,

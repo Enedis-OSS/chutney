@@ -6,10 +6,12 @@
  */
 
 import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Authorization, JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
 import { JiraPluginService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
 
@@ -18,7 +20,11 @@ import { Subject, takeUntil } from 'rxjs';
     templateUrl: './scenario-jira-links-modal.component.html',
     styleUrls: ['./scenario-jira-links-modal.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    standalone: true,
+    imports: [
+        TranslatePipe,
+        ReactiveFormsModule
+    ]
 })
 export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 
@@ -30,8 +36,8 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 
     jiraDatasetList: Array<JiraDatasetLinks> = new Array();
 
-    datasetForm: UntypedFormArray;
-    jiraFormGroup: UntypedFormGroup;
+    datasetForm: FormArray;
+    jiraFormGroup: FormGroup;
 
     errorMessage = "";
 
@@ -41,7 +47,7 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 
     constructor(
         private jiraPluginService: JiraPluginService,
-        private formBuilder: UntypedFormBuilder
+        private formBuilder: FormBuilder
     ) {
         this.datasetForm = this.formBuilder.array([]);
         this.jiraFormGroup = this.formBuilder.group({
@@ -123,7 +129,7 @@ export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
             });
     }
 
-    private createNewEntry(key?: string, value?: string): UntypedFormGroup {
+    private createNewEntry(key?: string, value?: string): FormGroup {
         return this.formBuilder.group({
             datasetId: key ? key : '',
             jiraId: value ? value : ''

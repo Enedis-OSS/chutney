@@ -54,7 +54,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     ], providers: [
         provideTranslateService({
             loader: provideTranslateHttpLoader({
-                prefix: './i18n/',
+                prefix: 'assets/i18n/',
                 suffix: '.json'
             }),
             missingTranslationHandler: provideMissingTranslationHandler(

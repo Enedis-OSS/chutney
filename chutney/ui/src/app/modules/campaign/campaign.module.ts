@@ -61,7 +61,7 @@ const ROUTES = [
         CampaignSchedulingComponent,
         CampaignExecutionsHistoryComponent,
         CampaignExecutionMenuComponent,
-        ReplayExecutionWithJiraLinkComponent
+        ReplayExecutionWithJiraLinkComponent,
     ],
     providers: [
         DateFormatPipe
