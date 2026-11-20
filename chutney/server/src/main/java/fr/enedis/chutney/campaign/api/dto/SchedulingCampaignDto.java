@@ -25,6 +25,7 @@ public class SchedulingCampaignDto {
     private LocalDateTime schedulingDate;
     private String frequency;
     private String environment;
+    private Boolean enabled;
 
     private List<CampaignExecutionRequestDto> campaignExecutionRequest = new ArrayList<>();
 
@@ -36,12 +37,14 @@ public class SchedulingCampaignDto {
                                  LocalDateTime schedulingDate,
                                  String frequency,
                                  String environment,
+                                 Boolean enabled,
                                  List<CampaignExecutionRequestDto> campaignExecutionRequest
     ) {
         this.id = id;
         this.schedulingDate = schedulingDate;
         this.frequency = frequency;
         this.environment = environment;
+        this.enabled = enabled;
         this.campaignExecutionRequest = campaignExecutionRequest;
     }
 
@@ -64,6 +67,10 @@ public class SchedulingCampaignDto {
         return environment;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
     public List<CampaignExecutionRequestDto> getCampaignExecutionRequest() {
         return campaignExecutionRequest;
     }
@@ -73,6 +80,7 @@ public class SchedulingCampaignDto {
             sc.nextExecutionDate,
             sc.frequency.label,
             sc.environment,
+            sc.enabled,
             sc.campaignExecutionRequests.stream().map(cer -> new CampaignExecutionRequestDto(cer.campaignId(), cer.campaignTitle(), cer.datasetId(), cer.jiraId())).toList()
         );
     }

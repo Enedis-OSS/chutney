@@ -19,6 +19,7 @@ export interface CampaignScheduling {
     schedulingDate: Date;
     frequency: FREQUENCY;
     environment: string;
+    enabled?: boolean;
     campaignExecutionRequest: CampaignExecutionRequest[];
 }
 

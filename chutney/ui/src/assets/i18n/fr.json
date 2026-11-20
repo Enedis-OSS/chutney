@@ -336,7 +336,8 @@
                 "time": "Horaire",
                 "date": "Date"
             },
-            "nothing": "Aucune planification"
+            "nothing": "Aucune planification",
+            "enabled": "Active"
         }
     },
     "tokens": {

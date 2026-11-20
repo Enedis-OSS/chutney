@@ -299,7 +299,7 @@ export class CampaignListComponent implements OnInit, OnDestroy {
         this.campaignSchedulingService.findAll()
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
-                next: (res) => this.scheduledCampaigns = res,
+                next: (res) => this.scheduledCampaigns = res.filter(sc => sc.enabled),
                 error: (error) => console.log(error)
             });
     }
