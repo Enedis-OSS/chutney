@@ -222,7 +222,7 @@
                   </th>
                 </thead>
                 <tbody>
-                  @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd | withoutScenario:jiraScenariosToExclude; track trackViewedScenarios($index, scenario)) {
+                  @for (scenario of scenarios |  scenarioCampaignSearch : selectedTags | searchTextPipe  : campaignForm.controls['scenariosFilter'].value : ['title', 'id'] | withoutScenario:scenariosToAdd.map(scenarioToAdd => scenarioToAdd.scenarioId) | withoutScenario:jiraScenariosToExclude; track trackViewedScenarios($index, scenario)) {
                     <tr>
                       <td class="w-3">
                         <button type="button" class="btn btn-outline-primary btn-sm"
