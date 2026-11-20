@@ -40,6 +40,7 @@ public class ApiAuthenticationFilter extends GenericFilterBean {
         new ApiKeyEndpoint(HttpMethod.POST, GwtTestCaseController.BASE_URL + "/raw"),
         new ApiKeyEndpoint(HttpMethod.GET, GwtTestCaseController.BASE_URL + "/raw/**"),
         new ApiKeyEndpoint(HttpMethod.GET, DataSetController.BASE_URL),
+        new ApiKeyEndpoint(HttpMethod.GET, DataSetController.BASE_URL + "/*"),
         new ApiKeyEndpoint(HttpMethod.POST, DataSetController.BASE_URL),
         new ApiKeyEndpoint(HttpMethod.PUT, DataSetController.BASE_URL),
         new ApiKeyEndpoint(HttpMethod.POST, CampaignController.BASE_URL),
