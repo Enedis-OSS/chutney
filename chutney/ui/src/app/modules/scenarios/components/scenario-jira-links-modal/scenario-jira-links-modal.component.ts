@@ -13,6 +13,7 @@ import { JiraPluginService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { SharedModule } from '@shared/shared.module';
 
 
 @Component({
@@ -23,7 +24,8 @@ import { Subject, takeUntil } from 'rxjs';
     standalone: true,
     imports: [
         TranslatePipe,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SharedModule
     ]
 })
 export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
