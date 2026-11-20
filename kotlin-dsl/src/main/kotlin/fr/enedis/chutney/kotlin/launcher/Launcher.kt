@@ -13,6 +13,7 @@ import fr.enedis.chutney.kotlin.ChutneyConfigurationParameters.CONFIG_ENVIRONMEN
 import fr.enedis.chutney.kotlin.ChutneyConfigurationParameters.CONFIG_REPORT_ROOT_PATH
 import fr.enedis.chutney.kotlin.dsl.ChutneyEnvironment
 import fr.enedis.chutney.kotlin.dsl.ChutneyScenario
+import fr.enedis.chutney.kotlin.dsl.Dataset
 import fr.enedis.chutney.kotlin.execution.ExecutionService
 import fr.enedis.chutney.kotlin.execution.report.AnsiReportWriter
 import fr.enedis.chutney.kotlin.execution.report.JsonReportWriter
@@ -44,11 +45,18 @@ class Launcher(
         )
     )
 
-    private fun run(
+    private fun execute(
         scenario: ChutneyScenario,
-        environment: ChutneyEnvironment
+        environment: ChutneyEnvironment,
+        dataset: Dataset?
     ): StatusDto? {
-        val report = executionService.waitLastReport(executionService.execute(scenario, environment))
+        val executionId = executionService.execute(
+            scenario,
+            environment,
+            dataset?.uniqueValues.orEmpty().associate { it.key to it.value },
+            dataset?.multipleValues.orEmpty().map { line -> line.associate { it.key to it.value } }
+        )
+        val report = executionService.waitLastReport(executionId)
         AnsiReportWriter().printReport(report)
         JsonReportWriter.writeReport(report, reportRootPath)
         return report.status
@@ -57,44 +65,38 @@ class Launcher(
     fun run(
         scenario: ChutneyScenario,
         environmentName: String,
-        expected: StatusDto = SUCCESS
+        expected: StatusDto = SUCCESS,
+        dataset: Dataset? = null
     ) {
-        run(scenario, executionService.getEnvironment(environmentName), expected)
+        run(scenario, executionService.getEnvironment(environmentName), expected, dataset)
     }
 
     fun run(
         scenarios: List<ChutneyScenario>,
         environmentName: String,
-        expected: StatusDto = SUCCESS
+        expected: StatusDto = SUCCESS,
+        dataset: Dataset? = null
     ) {
-        run(scenarios, executionService.getEnvironment(environmentName), expected)
+        run(scenarios, executionService.getEnvironment(environmentName), expected, dataset)
     }
 
     fun run(
         scenario: ChutneyScenario,
         environment: ChutneyEnvironment,
-        expected: StatusDto = SUCCESS
+        expected: StatusDto = SUCCESS,
+        dataset: Dataset? = null
     ) {
-        Assertions.assertThat(run(scenario, environment)).isEqualTo(expected)
+        Assertions.assertThat(execute(scenario, environment, dataset)).isEqualTo(expected)
     }
 
     fun run(
         scenarios: List<ChutneyScenario>,
         environment: ChutneyEnvironment,
-        expected: StatusDto = SUCCESS
+        expected: StatusDto = SUCCESS,
+        dataset: Dataset? = null
     ) {
         val softly = SoftAssertions()
-        scenarios.map { runSoftly(it, environment, expected, softly) }
+        scenarios.forEach { softly.assertThat(execute(it, environment, dataset)).isEqualTo(expected) }
         softly.assertAll()
-    }
-
-    private fun runSoftly(
-        scenario: ChutneyScenario,
-        environment: ChutneyEnvironment,
-        expected: StatusDto,
-        softly: SoftAssertions
-    ) {
-        val status = run(scenario, environment)
-        softly.assertThat(status).isEqualTo(expected)
     }
 }
