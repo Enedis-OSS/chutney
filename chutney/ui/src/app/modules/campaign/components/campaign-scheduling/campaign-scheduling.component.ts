@@ -177,12 +177,24 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
             });
     }
 
-    selectCampaign(campaign: Campaign) {
+    selectCampaign(item: ListItem) {
+        const campaign = this.campaigns.find(c => c.id === item.id);
+
+        if (!campaign) {
+            return;
+        }
+
         this.datasetsSelected.push({campaign: campaign, dataset: this.EMPTY_DATASET});
         this.jirasSelected.push({campaign: campaign, jira: ""});
     }
 
-    unselectCampaign(campaign: Campaign) {
+    unselectCampaign(item: ListItem) {
+        const campaign = this.campaigns.find(c => c.id === item.id);
+
+        if (!campaign) {
+            return;
+        }
+        
         const selectedCampaigns = this.form.get('selectedCampaigns').value.filter( (c: Campaign) => c.id !== campaign.id);
         this.form.get('selectedCampaigns').setValue([...selectedCampaigns]);
 
