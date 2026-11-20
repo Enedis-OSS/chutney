@@ -10,11 +10,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 import { DatasetSelectionComponent } from '@shared/components/dataset-selection/dataset-selection.component';
 import { ThumbnailPipe } from '@shared/pipes/thumbnail.pipe';
 import { MomentModule } from 'ngx-moment';
-import { AlertService } from './alert.service';
 import { ErrorInterceptor } from './error-interceptor.service';
 import { EnvironmentComboComponent, ExecutionBadgeComponent } from './components';
 import {
@@ -58,6 +56,7 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
 import { ScenarioExecutionComponent } from './components/scenario-execution/execution.component';
 import { RxFor } from '@rx-angular/template/for';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
@@ -66,13 +65,14 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
         MomentModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
         NgbModule,
         NgbTooltipModule,
         NgbDropdownModule,
         TypeaheadModule,
         RxFor,
-        MonacoEditorModule
+        MonacoEditorModule,
+        TranslatePipe,
+        TranslateDirective
     ],
     declarations: [
         AlertComponent,
@@ -139,7 +139,9 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
         ScenarioExecuteModalComponent,
         FormsDataGridComponent,
         FormsKeyValueComponent,
-        ScenarioExecutionComponent
+        ScenarioExecutionComponent,
+        TranslatePipe,
+        TranslateDirective
     ],
     providers: [
         {

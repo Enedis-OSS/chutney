@@ -14,7 +14,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FileSaverModule } from 'ngx-filesaver';
-import { TranslateModule } from '@ngx-translate/core';
 // Internal common
 import { SharedModule } from '@shared/shared.module';
 // Internal
@@ -57,7 +56,6 @@ const ROUTES = [
         // External libs
         NgbModule,
         NgMultiSelectDropDownModule.forRoot(),
-        TranslateModule,
         FileSaverModule,
         // Internal common
         SharedModule,

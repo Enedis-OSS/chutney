@@ -13,8 +13,6 @@ import { MomentModule } from 'ngx-moment';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { TranslateModule } from '@ngx-translate/core';
-
 import { SharedModule } from '@shared/shared.module';
 
 import { DatasetListComponent } from './components/dataset-list/dataset-list.component';
@@ -38,7 +36,6 @@ const ROUTES = [
         SharedModule,
         NgbModule,
         MomentModule,
-        TranslateModule,
         MoleculesModule,
         NgMultiSelectDropDownModule.forRoot(),
         AtomsModule

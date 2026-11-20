@@ -12,7 +12,6 @@ import { EnvironmentVariableRoutes } from '@modules/environment-variable/environ
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MoleculesModule } from '../../molecules/molecules.module';
 import { NgbNavModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -27,7 +26,6 @@ import { TranslateModule } from '@ngx-translate/core';
         NgbNavModule,
         NgbTooltipModule,
         NgbTypeaheadModule,
-        TranslateModule,
         ReactiveFormsModule
     ]
 })

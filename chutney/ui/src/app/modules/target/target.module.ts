@@ -9,7 +9,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { SharedModule } from '@shared/shared.module';
 import { AtomsModule } from '../../atoms/atoms.module';
@@ -33,7 +32,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
         CoreModule,
         AtomsModule,
         MoleculesModule,
-        TranslateModule,
         FileSaverModule,
         NgbModule,
         TooltipModule

@@ -8,7 +8,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 
 
 import { MetricsComponent } from './components/metrics.component';
@@ -20,7 +19,6 @@ import { MoleculesModule } from '@molecules/molecules.module';
     imports: [
         CommonModule,
         NgbModule,
-        TranslateModule,
         MoleculesModule,
         RouterModule.forChild(MetricsRoute)
     ],

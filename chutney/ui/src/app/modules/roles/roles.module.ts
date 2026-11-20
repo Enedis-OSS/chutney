@@ -9,7 +9,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { RolesRoute } from './roles.routes';
 
@@ -22,7 +21,6 @@ import { RolesComponent } from './components/roles.component';
     CommonModule,
     RouterModule.forChild(RolesRoute),
     FormsModule,
-    TranslateModule,
     MoleculesModule,
     SharedModule
   ],
