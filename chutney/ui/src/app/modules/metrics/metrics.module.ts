@@ -14,13 +14,20 @@ import { MetricsComponent } from './components/metrics.component';
 import { MetricsRoute } from './metrics.routes';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MoleculesModule } from '@molecules/molecules.module';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
         CommonModule,
         NgbModule,
         MoleculesModule,
-        RouterModule.forChild(MetricsRoute)
+        RouterModule.forChild(MetricsRoute),
+        TranslatePipe,
+        TranslateDirective
+    ],
+    exports: [
+        TranslatePipe,
+        TranslateDirective
     ],
     declarations: [
         MetricsComponent
