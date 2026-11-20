@@ -37,7 +37,8 @@
                 }
             </div>
         </div>
-        <table class="table table-sm table-striped table-hover">
+        <div [formArray]="datasetForm">
+            <table class="table table-sm table-striped table-hover">
             <thead>
                 <th class="w50" scope="col">@if ( isEditable || jiraDatasetList.length ){ <span>Dataset</span>}</th>
                 <th class="w45" scope="col">@if ( isEditable || jiraDatasetList.length ){ <span>Jira id</span>}</th>
@@ -51,23 +52,21 @@
             <tbody>
                 @if ( isEditable ) {
                     @for (datasetJiraId of datasetForm.controls; track datasetJiraId; let i = $index) {
-                    <tr [formGroup]="datasetForm" >
-                        <ng-container [formGroupName]="i">
-                            <td>
-                                <chutney-dataset-selection
-                                    [selectedDatasetId]="datasetJiraId.controls['datasetId'].value"
-                                    (selectionEvent)="selectDataset($event,i)">
-                                </chutney-dataset-selection>
-                                <input type="text" class="form-control" [id]="'datasetId-' + i" formControlName="datasetId" hidden >
-                            </td>
-                            <td><input type="text" class="form-control" [id]="'jiraId-' + i" formControlName="jiraId" />
-                            </td>
-                            <td class="align-middle">
-                                <button type="button" class="btn btn-sm text-danger" (click)="deleteEntry(i)">
-                                    <span class="fa fa-trash"></span>
-                                </button>
-                            </td>
-                        </ng-container>
+                    <tr [formGroupName]="i">
+                        <td>
+                            <chutney-dataset-selection
+                                [selectedDatasetId]="datasetJiraId.get('datasetId')?.value"
+                                (selectionEvent)="selectDataset($event,i)">
+                            </chutney-dataset-selection>
+                            <input type="text" class="form-control" [id]="'datasetId-' + i" formControlName="datasetId" hidden >
+                        </td>
+                        <td><input type="text" class="form-control" [id]="'jiraId-' + i" formControlName="jiraId" />
+                        </td>
+                        <td class="align-middle">
+                            <button type="button" class="btn btn-sm text-danger" (click)="deleteEntry(i)">
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </td>
                     </tr>
                     }
                 } @else {
@@ -86,6 +85,7 @@
                 }
             </tbody>
         </table>
+        </div>
     </form>
 
 </div>
