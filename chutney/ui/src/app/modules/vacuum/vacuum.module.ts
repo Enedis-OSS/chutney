@@ -12,6 +12,7 @@ import { VacuumRoute } from '@modules/vacuum/vacuum.routes';
 import { AsyncPipe } from '@angular/common';
 import { MoleculesModule } from '../../molecules/molecules.module';
 import { NgbNav, NgbNavContent, NgbNavLink, NgbNavLinkBase } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
@@ -22,6 +23,12 @@ import { NgbNav, NgbNavContent, NgbNavLink, NgbNavLinkBase } from '@ng-bootstrap
         NgbNavContent,
         NgbNavLink,
         NgbNavLinkBase,
+        TranslatePipe,
+        TranslateDirective
+    ],
+    exports: [
+        TranslatePipe,
+        TranslateDirective
     ],
   declarations: [VacuumComponent],
   providers: []

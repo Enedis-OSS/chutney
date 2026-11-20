@@ -23,10 +23,10 @@ export class AppComponent {
 
     constructor(private translate: TranslateService) {
         // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang('en');
+        translate.setFallbackLang('en');
         // // the lang to use, if the lang isn't available, it will use the current loader to get them
         // // take only language designator, i.e. forget about region
-        let lang = navigator.language.substring(0, 2) || translate.getDefaultLang();
+        let lang = navigator.language.substring(0, 2) || translate.getFallbackLang();
         translate.use(lang);
         registerLocaleData(localeFr);
         this.updateMomentLocal(lang);
