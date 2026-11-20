@@ -32,8 +32,11 @@ public class DatasetMigrator implements DataMigrator {
             LOGGER.info("Dataset index not empty. Skipping indexing...");
             return;
         }
-        LOGGER.info("Start indexing...");
         List<DataSet> dataSets = datasetRepository.findAll();
+        if (dataSets.isEmpty()) {
+            return;
+        }
+        LOGGER.info("Start indexing...");
         index(dataSets);
         LOGGER.info("{} dataset(s) successfully indexed", dataSets.size());
     }
