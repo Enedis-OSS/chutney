@@ -90,7 +90,7 @@
                   (onDeSelect)="unselectCampaign($event)"
                 >
                 </ng-multiselect-dropdown>
-                @if (submitted && f.selectedCampaigns.errors?.required) {
+                @if (submitted && f['selectedCampaigns'].errors?.['required']) {
                   <div class="error-message">
                     {{ 'campaigns.scheduling.required.campaign' | translate }}
                   </div>
