@@ -75,7 +75,7 @@ public class StepTest {
 
         ScenarioExecution execution = ScenarioExecution.createScenarioExecution(null);
         awaitDuring(500, MILLISECONDS);
-        RxBus.getInstance().post(new StopExecutionCommand(execution.executionId));
+        RxBus.getInstance().post(new StopExecutionCommand(execution.executionId, false));
         await().atMost(5, SECONDS).untilAsserted(() -> assertThat(execution.hasToStop()).isTrue());
 
         Status result = step.execute(execution, new ScenarioContextImpl());

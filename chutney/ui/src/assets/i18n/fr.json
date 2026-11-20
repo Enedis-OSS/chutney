@@ -527,6 +527,8 @@
             "create": "Créer",
             "replay": "Rejouer",
             "stop": "Stopper",
+            "forceStop": "Forcer l'arrêt",
+            "forceStopTitle": "Arrêter immédiatement, sans attendre la fin de l'étape en cours",
             "resume": "Reprendre",
             "pause": "Suspendre",
             "help": "Aide",

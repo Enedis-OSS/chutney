@@ -45,8 +45,8 @@ public class ServerTestEngineJavaImpl implements ServerTestEngine {
     }
 
     @Override
-    public void stop(Long executionHash) {
-        executionEngine.stopExecution(executionHash);
+    public void stop(Long executionHash, boolean force) {
+        executionEngine.stopExecution(executionHash, force);
     }
 
     @Override

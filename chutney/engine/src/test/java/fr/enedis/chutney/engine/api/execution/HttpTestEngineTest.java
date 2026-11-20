@@ -91,7 +91,7 @@ public class HttpTestEngineTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> httpTestEngine.executeAsync(null));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> httpTestEngine.pauseExecution(null));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> httpTestEngine.resumeExecution(null));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> httpTestEngine.stopExecution(null));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> httpTestEngine.stopExecution(null, false));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> httpTestEngine.receiveNotification(null));
     }
 }

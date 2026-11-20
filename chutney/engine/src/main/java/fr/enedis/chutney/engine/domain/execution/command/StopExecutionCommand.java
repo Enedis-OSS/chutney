@@ -12,9 +12,14 @@ import fr.enedis.chutney.engine.domain.execution.event.Event;
 public class StopExecutionCommand implements Event {
 
     private final Long executionId;
+    public final boolean force;
 
-    public StopExecutionCommand(Long executionId) {
+    /**
+     * @param force true to interrupt the running step, false to let it end
+     */
+    public StopExecutionCommand(Long executionId, boolean force) {
         this.executionId = executionId;
+        this.force = force;
     }
 
     @Override

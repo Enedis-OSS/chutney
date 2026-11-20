@@ -25,8 +25,10 @@ public class ScenarioExecution {
     private final ActionsConfiguration actionConfiguration;
     public final long executionId;
 
-    private boolean pause = false;
-    private boolean stop = false;
+    private volatile boolean pause = false;
+    private volatile boolean stop = false;
+    private volatile boolean forcedStop = false;
+    private Thread interruptibleThread;
 
     private Disposable endExecutionSubscriber;
 
@@ -42,7 +44,7 @@ public class ScenarioExecution {
         final Disposable pauseSubscriber = RxBus.getInstance()
             .registerOnExecutionId(PauseExecutionCommand.class, executionId, e -> this.pause());
         final Disposable stopSubscriber = RxBus.getInstance()
-            .registerOnExecutionId(StopExecutionCommand.class, executionId, e -> this.stop());
+            .registerOnExecutionId(StopExecutionCommand.class, executionId, e -> this.stop(((StopExecutionCommand) e).force));
         final Disposable resumeSubscriber = RxBus.getInstance()
             .registerOnExecutionId(ResumeExecutionCommand.class, executionId, e -> this.resume());
 
@@ -59,17 +61,35 @@ public class ScenarioExecution {
     }
 
     public void initFinallyActionExecution() {
+        this.forcedStop = false;
         this.stop = false; // In case of a stopped scenario, we should set it to false in order to execute finally actions
     }
 
     public void waitForRestart() {
-        while (pause) {
+        while (pause && !stop) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                if (!stop) {
+                    throw new RuntimeException(e);
+                }
             }
         }
+    }
+
+    /**
+     * From now on, a forced stop request interrupts the calling thread.
+     */
+    public synchronized void allowInterruption() {
+        interruptibleThread = Thread.currentThread();
+    }
+
+    /**
+     * To call from the thread which allowed interruption.
+     */
+    public synchronized void forbidInterruption() {
+        interruptibleThread = null;
+        Thread.interrupted();
     }
 
     public boolean hasToPause() {
@@ -80,12 +100,20 @@ public class ScenarioExecution {
         return stop;
     }
 
+    public boolean hasToStopImmediately() {
+        return forcedStop;
+    }
+
     private void pause() {
         pause = true;
     }
 
-    private void stop() {
+    private synchronized void stop(boolean force) {
         stop = true;
+        forcedStop = forcedStop || force;
+        if (force && interruptibleThread != null) {
+            interruptibleThread.interrupt();
+        }
     }
 
     private void resume() {

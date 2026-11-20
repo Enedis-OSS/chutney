@@ -45,11 +45,28 @@ public class ScenarioExecutionTest {
         );
 
         // Stop
-        getInstance().post(new StopExecutionCommand(scenarioExecution.executionId));
+        getInstance().post(new StopExecutionCommand(scenarioExecution.executionId, false));
         await().atMost(1, SECONDS).untilAsserted(() -> {
                 assertThat(scenarioExecution.hasToPause()).isFalse();
                 assertThat(scenarioExecution.hasToStop()).isTrue();
             }
         );
+    }
+
+    @Test
+    public void forced_stop_should_interrupt_thread_only_while_interruption_is_allowed() {
+        ScenarioExecution interruptible = ScenarioExecution.createScenarioExecution(null);
+        interruptible.allowInterruption();
+        getInstance().post(new StopExecutionCommand(interruptible.executionId, false));
+        assertThat(Thread.interrupted()).isFalse();
+        getInstance().post(new StopExecutionCommand(interruptible.executionId, true));
+        assertThat(Thread.interrupted()).isTrue();
+
+        ScenarioExecution inTeardown = ScenarioExecution.createScenarioExecution(null);
+        inTeardown.allowInterruption();
+        inTeardown.forbidInterruption();
+        getInstance().post(new StopExecutionCommand(inTeardown.executionId, true));
+        assertThat(inTeardown.hasToStop()).isTrue();
+        assertThat(Thread.interrupted()).isFalse();
     }
 }

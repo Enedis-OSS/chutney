@@ -90,6 +90,10 @@ public class RetryWithTimeOutStrategy implements StepExecutionStrategy {
                     step.startWatch();
                     TimeUnit.MILLISECONDS.sleep(retryDelayMs);
                 } catch (InterruptedException e) {
+                    if (scenarioExecution.hasToStop()) {
+                        step.stopExecution(scenarioExecution);
+                        return Status.STOPPED;
+                    }
                     throw new IllegalStateException("Sleeping between executions have been interrupted", e);
                 } finally {
                     step.stopWatch();

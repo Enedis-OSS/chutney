@@ -185,8 +185,8 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges 
         ).subscribe();
     }
 
-    stop() {
-        this.campaignService.stopExecution(this.campaignId, this.report.report.executionId)
+    stop(force = false) {
+        this.campaignService.stopExecution(this.campaignId, this.report.report.executionId, force)
             .pipe(takeUntil(this.unsubscribeSub$))
             .subscribe({
                 error: (error) => this.eventManagerService.broadcast({ name: 'error', msg: error.error })

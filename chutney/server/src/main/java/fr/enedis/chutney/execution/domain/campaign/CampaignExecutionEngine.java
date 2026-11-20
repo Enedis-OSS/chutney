@@ -157,22 +157,25 @@ public class CampaignExecutionEngine {
             .findAny();
     }
 
-    public void stopExecution(Long executionId) {
-        LOGGER.trace("Stop requested for {}", executionId);
+    /**
+     * @param force true to interrupt the running steps, false to let them end
+     */
+    public void stopExecution(Long executionId, boolean force) {
+        LOGGER.trace("Stop requested for {} (force: {})", executionId, force);
         ofNullable(currentCampaignExecutionsStopRequests.computeIfPresent(executionId, (aLong, aBoolean) -> Boolean.TRUE))
             .orElseThrow(() -> new CampaignExecutionNotFoundException(null, executionId));
 
-        stopScenarioExecutions(executionId);
+        stopScenarioExecutions(executionId, force);
     }
 
-    private void stopScenarioExecutions(Long campaignExecutionId) {
+    private void stopScenarioExecutions(Long campaignExecutionId, boolean force) {
         try {
             var execution = campaignExecutionRepository.getCampaignExecutionById(campaignExecutionId);
             execution.scenarioExecutionReports().stream()
                 .filter(ScenarioExecutionCampaign.isRunning())
                 .forEach(sec -> {
                     try {
-                        scenarioExecutionEngineAsync.stop(sec.scenarioId(), sec.execution().executionId());
+                        scenarioExecutionEngineAsync.stop(sec.scenarioId(), sec.execution().executionId(), force);
                     } catch (Exception e) {
                         LOGGER.warn("Cannot stop scenario execution {} from campaign execution {}", sec.execution().executionId(), campaignExecutionId);
                     }
