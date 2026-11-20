@@ -94,6 +94,7 @@ public class SftpClientImpl implements ChutneySftpClient {
     public void close() throws Exception {
         sftpClient.close();
         session.close();
+        SshClientFactory.stopClientOf(session);
     }
 
     public static ChutneySftpClient buildFor(Target target, long timeout, Logger logger) throws IOException {
