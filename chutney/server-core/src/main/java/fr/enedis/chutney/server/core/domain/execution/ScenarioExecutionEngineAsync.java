@@ -171,6 +171,8 @@ public class ScenarioExecutionEngineAsync {
                 LOGGER.error("Error in execution report processing", throwable);
                 return Observable.empty();
             })
+            // Before completion, so followers read a final status
+            .doOnComplete(() -> setUnfinishedExecutionToKO(executionId))
             .doFinally(() -> {
                 notifyExecutionEnd(executionId, executionRequest.testCase);
                 sendMetrics(executionId, executionRequest.testCase);
@@ -331,6 +333,18 @@ public class ScenarioExecutionEngineAsync {
         }
     }
 
+
+    private void setUnfinishedExecutionToKO(long executionId) {
+        try {
+            ServerReportStatus status = executionHistoryRepository.getExecutionSummary(executionId).status();
+            if (ServerReportStatus.RUNNING.equals(status) || ServerReportStatus.PAUSED.equals(status)) {
+                LOGGER.warn("Execution {} ended with status {}, set it to KO", executionId, status);
+                executionHistoryRepository.setExecutionToKO(executionId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Set unfinished execution {} to KO failed", executionId, e);
+        }
+    }
 
     private void sendMetrics(long executionId, TestCase testCase) {
         LOGGER.trace("Send metrics for execution {}", executionId);

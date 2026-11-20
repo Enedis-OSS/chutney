@@ -13,7 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -204,9 +206,47 @@ public class ScenarioExecutionEngineAsyncTest {
         verify(executionHistoryRepository, times(4)).update(eq(scenarioId), any());
 
         verify(executionStateRepository).notifyExecutionEnd(scenarioId);
+        verify(executionHistoryRepository, never()).setExecutionToKO(any());
         verify(metrics).onScenarioExecutionEnded(any(), any());
 
         testObserver.dispose();
+    }
+
+    @Test
+    public void should_set_execution_to_KO_before_sending_metrics_when_engine_execution_ends_without_final_status() {
+        // Given
+        final TestCase testCase = emptyTestCase();
+        final long executionId = 5L;
+        ImmutableExecutionHistory.Execution runningExecution = ImmutableExecutionHistory.Execution.builder()
+            .from(stubHistoryExecution(testCase.id(), executionId))
+            .status(ServerReportStatus.RUNNING)
+            .build();
+        ImmutableExecutionHistory.Execution koExecution = runningExecution.withStatus(ServerReportStatus.FAILURE);
+        when(executionHistoryRepository.getExecutionSummary(executionId)).thenReturn(runningExecution.summary());
+        when(executionHistoryRepository.getExecution(testCase.id(), executionId)).thenReturn(runningExecution);
+        doAnswer(invocation -> when(executionHistoryRepository.getExecution(testCase.id(), executionId)).thenReturn(koExecution))
+            .when(executionHistoryRepository).setExecutionToKO(executionId);
+
+        final ScenarioExecutionEngineAsync sut = new ScenarioExecutionEngineAsync(
+            executionHistoryRepository,
+            executionEngine,
+            executionStateRepository,
+            metrics,
+            om,
+            0,
+            0
+        );
+        Observable<StepExecutionReportCore> engineExecutionEndingWhileRunning = Observable.just(stepExecution("name", ServerReportStatus.RUNNING, null, Instant.now()));
+
+        // When
+        sut.buildScenarioExecutionReportObservable(new ExecutionRequest(testCase, "", ""), executionId, Pair.of(engineExecutionEndingWhileRunning, 0L))
+            .test()
+            .awaitDone(5, TimeUnit.SECONDS);
+
+        // Then
+        verify(executionHistoryRepository).setExecutionToKO(executionId);
+        verify(metrics, timeout(250)).onScenarioExecutionEnded(testCase, koExecution);
+        verify(metrics, never()).onScenarioExecutionEnded(testCase, runningExecution);
     }
 
     @Test
@@ -405,6 +445,7 @@ public class ScenarioExecutionEngineAsyncTest {
 
         when(executionHistoryRepository.store(eq(scenarioId), any())).thenReturn(storedExecution);
         when(executionHistoryRepository.getExecution(scenarioId, executionId)).thenReturn(storedExecution);
+        when(executionHistoryRepository.getExecutionSummary(executionId)).thenReturn(storedExecution.summary());
 
         return storedExecution;
     }
