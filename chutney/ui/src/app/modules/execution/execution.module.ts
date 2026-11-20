@@ -9,7 +9,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
 import { ExecutionSearchRoute } from './execution.routes';
@@ -27,7 +26,6 @@ import { RxFor } from '@rx-angular/template/for';
     CommonModule,
     RouterModule.forChild(ExecutionSearchRoute),
     FormsModule,
-    TranslateModule,
     MoleculesModule,
     MomentModule,
     NgbModule,

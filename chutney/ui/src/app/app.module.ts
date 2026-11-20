@@ -14,7 +14,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // External libs
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import {
+  provideTranslateService,
+  provideMissingTranslationHandler
+} from '@ngx-translate/core';
 
 // Internal common
 import { AppComponent } from './app.component';
@@ -23,7 +27,7 @@ import { SharedModule } from '@shared/shared.module';
 import { CoreModule } from '@core/core.module';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ThemeService } from '@core/theme/theme.service';
-import { DefaultMissingTranslationHandler, HttpLoaderFactory } from '@core/initializer/app.translate.factory';
+import { DefaultMissingTranslationHandler } from '@core/initializer/app.translate.factory';
 import { themeInitializer } from '@core/initializer/theme.initializer';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -42,20 +46,21 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
         CoreModule,
         // External libs
         FormsModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            },
-            missingTranslationHandler: { provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler }
-        }),
         ModalModule,
         NgbModule,
         // Internal common
         SharedModule,
         OAuthModule.forRoot()
     ], providers: [
+        provideTranslateService({
+            loader: provideTranslateHttpLoader({
+                prefix: './i18n/',
+                suffix: '.json'
+            }),
+            missingTranslationHandler: provideMissingTranslationHandler(
+                DefaultMissingTranslationHandler
+            )
+        }),
         BsModalService,
         {
             provide: APP_INITIALIZER,

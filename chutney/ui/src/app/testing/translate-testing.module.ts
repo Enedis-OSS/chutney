@@ -5,7 +5,13 @@
  *
  */
 
-import { TranslateLoader, TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import {
+  provideTranslateService,
+  provideMissingTranslationHandler
+} from '@ngx-translate/core';
+
 import { EventEmitter, Injectable, NgModule, Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -52,15 +58,19 @@ function fromKey(key: string): string {
     providers: [
         { provide: TranslateService, useClass: TranslateServiceStub },
         { provide: TranslatePipe, useClass: TranslatePipeMock },
-    ],
-    imports: [
-        TranslateModule.forRoot({
-            loader: { provide: TranslateLoader, useClass: FakeLoader },
-        })
+        provideTranslateService({
+                    loader: provideTranslateHttpLoader({
+                        prefix: './i18n/',
+                        suffix: '.json'
+                    }),
+                    missingTranslationHandler: provideMissingTranslationHandler(
+                        DefaultMissingTranslationHandler
+                    )
+                }),
     ],
     exports: [
         TranslatePipeMock,
-        TranslateModule
+        TranslatePipe
     ]
 })
 export class TranslateTestingModule {

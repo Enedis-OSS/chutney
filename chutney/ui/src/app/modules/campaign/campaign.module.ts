@@ -12,7 +12,6 @@ import { RouterModule } from '@angular/router';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { SharedModule } from '@shared/shared.module';
@@ -48,7 +47,6 @@ const ROUTES = [
         SharedModule,
         NgbModule,
         MomentModule,
-        TranslateModule,
         NgMultiSelectDropDownModule.forRoot(),
         MoleculesModule,
         CdkDropList,

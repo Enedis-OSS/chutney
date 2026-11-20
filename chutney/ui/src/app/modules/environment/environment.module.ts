@@ -11,7 +11,6 @@ import { EnvironmentsComponent } from './list/environments.component';
 import { RouterModule } from '@angular/router';
 import { environmentsRoutes } from '@modules/environment/environments.routes';
 import { MoleculesModule } from '@molecules/molecules.module';
-import { TranslateModule } from '@ngx-translate/core';
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { EnvironmentImportComponent } from './import/environment-import.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,7 +27,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         FormsModule,
         ReactiveFormsModule,
         MoleculesModule,
-        TranslateModule,
         NgbModule,
         NgbTooltipModule
     ]
