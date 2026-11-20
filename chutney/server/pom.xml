@@ -378,6 +378,7 @@
                                 <runImage>eclipse-temurin:${maven.compiler.target}-jre</runImage>
                                 <env>
                                     <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
+                                    <BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>
                                 </env>
                             </image>
                         </configuration>
