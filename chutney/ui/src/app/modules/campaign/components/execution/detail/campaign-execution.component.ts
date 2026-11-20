@@ -49,7 +49,7 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges 
     jiraTestExecutionId: string;
     private jiraScenarios: JiraScenario[] = [];
     UNSUPPORTED = 'UNSUPPORTED';
-    selectedStatusByScenarioId: Map<string, string> = new Map();
+    selectedStatusByJiraId: Map<string, string> = new Map();
     showMore: boolean[] = [];
 
     orderBy: string;
@@ -128,14 +128,19 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges 
         return keys.slice();
     }
 
-    selectedUpdateStatus(scenarioId: string, event: any) {
-        this.selectedStatusByScenarioId.set(scenarioId, event.target.value);
+    selectedUpdateStatus(execution: ScenarioExecutionReportOutline, event: any) {
+        this.selectedStatusByJiraId.set(this.jiraScenarioOf(execution).id, event.target.value);
     }
 
-    updateStatus(scenarioId: string) {
-        const newStatus = this.selectedStatusByScenarioId.get(scenarioId);
-        if (newStatus === XrayStatus.PASS || newStatus === XrayStatus.FAIL) {
-            this.jiraLinkService.updateScenarioStatus(this.jiraTestExecutionId, scenarioId, newStatus)
+    isStatusUpdatable(execution: ScenarioExecutionReportOutline): boolean {
+        const newStatus = this.selectedStatusByJiraId.get(this.jiraScenarioOf(execution)?.id);
+        return newStatus === XrayStatus.PASS || newStatus === XrayStatus.FAIL;
+    }
+
+    updateStatus(execution: ScenarioExecutionReportOutline) {
+        if (this.isStatusUpdatable(execution)) {
+            const jiraScenario = this.jiraScenarioOf(execution);
+            this.jiraLinkService.updateScenarioStatus(this.jiraTestExecutionId, jiraScenario, this.selectedStatusByJiraId.get(jiraScenario.id))
                 .pipe(takeUntil(this.unsubscribeSub$))
                 .subscribe({
                     error: (error) => {
@@ -145,23 +150,21 @@ export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges 
         }
     }
 
-    scenarioStatus(scenarioId: String): string {
-        const jiraScenario = this.jiraScenarios.filter(s => s.chutneyId === scenarioId);
-        if (jiraScenario.length > 0) {
-            if (jiraScenario[0].executionStatus === XrayStatus.PASS || jiraScenario[0].executionStatus === XrayStatus.FAIL) {
-                return jiraScenario[0].executionStatus;
-            }
-        }
-        return this.UNSUPPORTED;
+    scenarioStatus(execution: ScenarioExecutionReportOutline): string {
+        const status = this.jiraScenarioOf(execution)?.executionStatus;
+        return status === XrayStatus.PASS || status === XrayStatus.FAIL ? status : this.UNSUPPORTED;
     }
 
-    jiraLinkFrom(chutneyId: string) {
-        const foundScenario = this.jiraScenarios.find(s => s.chutneyId === chutneyId);
-        if (foundScenario) {
-            return this.jiraUrl + '/browse/' + foundScenario.id;
-        } else {
-            return null;
-        }
+    jiraLinkFrom(execution: ScenarioExecutionReportOutline) {
+        const jiraScenario = this.jiraScenarioOf(execution);
+        return jiraScenario ? this.jiraUrl + '/browse/' + jiraScenario.id : null;
+    }
+
+    // Same resolution as the server report to xray: dataset link first, scenario link otherwise
+    private jiraScenarioOf(execution: ScenarioExecutionReportOutline): JiraScenario {
+        const datasetId = execution.dataset?.id ?? this.datasetByScenarioExecutionId.get(String(execution.executionId))?.datasetId;
+        const links = this.jiraScenarios.filter(s => s.chutneyId === execution.scenarioId);
+        return links.find(s => s.datasetId && s.datasetId === datasetId) ?? links.find(s => !s.datasetId);
     }
 
     toQueryParams(scenarioExecutionReportOutline: ScenarioExecutionReportOutline): Params {

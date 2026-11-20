@@ -342,13 +342,8 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
                 .subscribe({
                     next: (result) => {
                         this.jiraScenarios = result;
-                        let index = 0;
-                        this.jiraScenarios.forEach((currentValue) => {
-                            if (isNotEmpty(currentValue.executionStatus)) {
-                                this.jiraItemList.push({'id': index, 'text': currentValue.executionStatus});
-                                index++;
-                            }
-                        });
+                        this.jiraItemList = distinct(result.map(s => s.executionStatus).filter(isNotEmpty))
+                            .map((status, index) => ({id: index, text: status}));
                         this.jiraFilter();
                     },
                     error: (error) => {

@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.jira.api;
 
+import static fr.enedis.chutney.jira.domain.XrayStatus.FAIL;
 import static fr.enedis.chutney.jira.domain.XrayStatus.PASS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -189,6 +190,29 @@ class JiraControllerTest {
     }
 
     @Test
+    void getScenariosByTestExecutionId_includes_scenarios_linked_by_dataset() {
+        when(mockJiraXrayApi.getTestExecutionScenarios(anyString())).thenReturn(List.of(
+            xrayTest("SCE-2", PASS.value), xrayTest("JIRA-02", FAIL.value), xrayTest("JIRA-04", FAIL.value)
+        ));
+
+        List<JiraDto> scenarios = getJiraController("/api/ui/jira/v1/testexec/JIRA-10", new TypeReference<>() {
+        });
+
+        assertThat(scenarios).containsExactlyInAnyOrder(
+            JiraDto.of("SCE-2", "2", PASS.value, null),
+            JiraDto.of("JIRA-02", "2", FAIL.value, "dataset_1"),
+            JiraDto.of("JIRA-04", "4", FAIL.value, "dataset_1")
+        );
+    }
+
+    private static XrayTestExecTest xrayTest(String key, String status) {
+        XrayTestExecTest xrayTestExecTest = new XrayTestExecTest();
+        xrayTestExecTest.setKey(key);
+        xrayTestExecTest.setStatus(status);
+        return xrayTestExecTest;
+    }
+
+    @Test
     void getScenariosByCampaignExecutionId() {
         List<XrayTestExecTest> result = new ArrayList<>();
         XrayTestExecTest xrayTestExecTest = new XrayTestExecTest();
@@ -303,6 +327,22 @@ class JiraControllerTest {
             .andExpect(MockMvcResultMatchers.status().isOk());
 
         verify(mockJiraXrayApi).updateStatusByTestRunId(eq("runIdentifier"), eq(PASS.value));
+    }
+
+    @Test
+    void updateStatus_of_the_given_jira_test_for_a_scenario_linked_by_dataset() throws Exception {
+        JiraDto dto = JiraDto.of("JIRA-04", "4", FAIL.value, "dataset_1");
+        XrayTestExecTest datasetTest = xrayTest("JIRA-04", PASS.value);
+        datasetTest.setId("datasetRunIdentifier");
+        when(mockJiraXrayApi.getTestExecutionScenarios(anyString())).thenReturn(list(xrayTest("SCE-2", PASS.value), datasetTest));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ui/jira/v1/testexec/JIRA-10")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(om.writeValueAsString(dto))
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(MockMvcResultMatchers.status().isOk());
+
+        verify(mockJiraXrayApi).updateStatusByTestRunId(eq("datasetRunIdentifier"), eq(FAIL.value));
     }
 
     private <T> T getJiraController(String url, TypeReference<T> typeReference) {
