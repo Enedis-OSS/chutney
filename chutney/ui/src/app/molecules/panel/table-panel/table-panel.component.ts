@@ -9,6 +9,7 @@ import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from 
 import { PaginationInstance } from 'ngx-pagination';
 
 import { Table } from '@model';
+import { PaginationControlConfig } from './pagination-control-config';
 
 @Component({
     selector: 'chutney-table-panel',
@@ -21,7 +22,7 @@ export class TablePanelComponent {
 
   @Input() table: Table;
   @Input() paginationInstanceConfig: PaginationInstance;
-  @Input() paginationControlConfig: Object = {
+  @Input() paginationControlConfig: PaginationControlConfig = {
     maxSize: 7,
     directionLinks: true,
     autoHide: false,
