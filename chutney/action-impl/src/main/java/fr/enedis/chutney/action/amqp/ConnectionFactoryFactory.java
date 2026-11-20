@@ -39,8 +39,8 @@ public class ConnectionFactoryFactory {
                 SSLContext sslContext = buildSslContext(target).build();
                 connectionFactory.useSslProtocol(sslContext);
             }
-        } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (GeneralSecurityException | IllegalArgumentException e) {
+            throw new IOException("SSL configuration error: " + e.getMessage(), e);
         }
 
         target.user().ifPresent(connectionFactory::setUsername);
