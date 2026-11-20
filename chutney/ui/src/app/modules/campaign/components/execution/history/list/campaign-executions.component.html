@@ -50,7 +50,7 @@
             <th></th>
             <th></th>
             <th>
-              @if (filtersForm.controls.date.value) {
+              @if (filtersForm.controls['date'].value) {
                 <div (click)="filtersForm.get('date').reset()"
                   class="chutney-tag chutney-tag-selected">
                   {{ getDateFilterValue() | amDateFormat:'LL'}}
