@@ -3,7 +3,7 @@
 
 chutney:
   db-server:
-    base-dir: ./.chutney
+    base-dir: ${chutney.workspace}/conf
 
 spring:
   jpa:

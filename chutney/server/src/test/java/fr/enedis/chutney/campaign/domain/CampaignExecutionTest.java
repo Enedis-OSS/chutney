@@ -295,6 +295,27 @@ class CampaignExecutionTest {
         }
 
         @Test
+        void fail_scenario_execution_still_running_when_end_campaign_execution() {
+            // Given
+            CampaignExecution campaignReport = CampaignExecutionReportBuilder.builder()
+                .userId("")
+                .build();
+            addScenarioExecutions(campaignReport, "1", "title1", SUCCESS);
+            TestCaseDataset neverEndedScenario = new TestCaseDataset(buildTestCase("2", "title2"), null);
+            campaignReport.addScenarioExecution(List.of(neverEndedScenario), "env");
+            campaignReport.startScenarioExecution(neverEndedScenario, "env");
+
+            // When
+            campaignReport.endCampaignExecution();
+
+            // Then
+            assertThat(campaignReport.scenarioExecutionReports())
+                .extracting(ScenarioExecutionCampaign::status)
+                .containsExactly(SUCCESS, FAILURE);
+            assertThat(campaignReport.status()).isEqualTo(FAILURE);
+        }
+
+        @Test
         void compute_stop_final_status_when_having_not_executed_scenario() {
             // Given
             CampaignExecution campaignReport = CampaignExecutionReportBuilder.builder()
