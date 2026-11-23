@@ -9,6 +9,10 @@
 
 # Implement
 
+!!! warning "Only one constructor"
+    A custom action class must declare exactly one constructor.  
+    An action with more than one constructor is rejected at startup with the parsing error `More than one constructor`, and is not registered.
+
 === "Custom action 1"
 
     ``` java
