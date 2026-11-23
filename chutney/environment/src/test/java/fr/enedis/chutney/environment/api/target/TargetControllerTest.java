@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,6 +38,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -226,5 +228,24 @@ public class TargetControllerTest extends TestHelper {
         assertThat(savedEnvironment).isNotNull();
         assertThat(savedEnvironment.targets).hasSize(1);
         assertThat(savedEnvironment.targets.iterator().next().name).isEqualTo("server 2");
+    }
+
+    @Test
+    public void importTarget_returns_target_with_its_environment() throws Exception {
+        addAvailableEnvironment("env_test", emptyList());
+        var file = new MockMultipartFile("file", "target.json", MediaType.APPLICATION_JSON_VALUE,
+            "{\"name\": \"server 1\", \"url\": \"http://somehost:42\"}".getBytes());
+
+        mockMvc.perform(multipart(environmentBasePath + "/env_test/targets").file(file))
+            .andDo(MockMvcResultHandlers.log())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", equalTo("server 1")))
+            .andExpect(jsonPath("$.environment", equalTo("env_test")));
+
+        ArgumentCaptor<Environment> environmentArgumentCaptor = ArgumentCaptor.forClass(Environment.class);
+        verify(environmentRepository).save(environmentArgumentCaptor.capture());
+        assertThat(environmentArgumentCaptor.getValue().targets).containsExactly(
+            Target.builder().withName("server 1").withUrl("http://somehost:42").withEnvironment("env_test").build()
+        );
     }
 }
