@@ -7,6 +7,7 @@
 
 package fr.enedis.chutney.action.ssh;
 
+import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Failure;
 import static fr.enedis.chutney.action.spi.ActionExecutionResult.Status.Success;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
@@ -24,6 +25,7 @@ import java.util.List;
 import org.apache.sshd.server.SshServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -89,6 +91,41 @@ public class ScpActionTest {
         // Then
         assertThat(actualResult.status).isEqualTo(Success);
         assertThat(Files.exists(expectedFile)).isTrue();
+    }
+
+    @Test
+    void should_upload_local_file_to_remote_destination_via_proxies() throws IOException {
+        // Given
+        SshServer proxy = FakeServerSsh.buildLocalProxy("proxySshUser", "proxySshPassword");
+        SshServer proxyBis = FakeServerSsh.buildLocalProxy("proxySshBisUser", "proxySshBisPassword");
+        try {
+            proxy.start();
+            proxyBis.start();
+            List<String> proxyUrls = List.of(urlOf(proxy), urlOf(proxyBis));
+            List<String> proxyUsers = List.of("proxySshUser", "proxySshBisUser");
+
+            String srcFile = ScpActionTest.class.getResource(ScpActionTest.class.getSimpleName() + ".class").getPath();
+            Path dstDir = Files.createDirectory(temporaryFolder.resolve("via_proxies"));
+
+            Target target = FakeTargetInfo.buildTargetWithPassword(credentialSshServer, proxyUrls, proxyUsers, List.of("proxySshPassword", "proxySshBisPassword"));
+            Target targetWithWrongProxyPassword = FakeTargetInfo.buildTargetWithPassword(credentialSshServer, proxyUrls, proxyUsers, List.of("proxySshPassword", "wrong"));
+
+            // When
+            ActionExecutionResult result = new ScpUploadAction(target, mock(Logger.class), srcFile, dstDir.toString(), "10 s").execute();
+            ActionExecutionResult wrongProxyPasswordResult = new ScpUploadAction(targetWithWrongProxyPassword, mock(Logger.class), srcFile, dstDir.toString(), "10 s").execute();
+
+            // Then
+            assertThat(result.status).isEqualTo(Success);
+            assertThat(dstDir.resolve(ScpActionTest.class.getSimpleName() + ".class")).exists();
+            assertThat(wrongProxyPasswordResult.status).isEqualTo(Failure);
+        } finally {
+            proxy.stop();
+            proxyBis.stop();
+        }
+    }
+
+    private static String urlOf(SshServer server) {
+        return "ssh://" + server.getHost() + ":" + server.getPort();
     }
 
     public static List<Arguments> securedTargets() {
