@@ -107,13 +107,11 @@ public class JiraXrayService {
         return jiraXrayApi.getTestExecutionScenarios(testExecutionId);
     }
 
-    public void updateScenarioStatus(String testExecId, String chutneyId, String executionStatus) {
+    public void updateScenarioStatus(String testExecId, String testKey, String executionStatus) {
         JiraXrayApi jiraXrayApi = createHttpJiraXrayImpl();
 
-        String scenarioJiraId = jiraRepository.getByScenarioId(chutneyId);
-
         List<XrayTestExecTest> testExecutionScenarios = getTestExecutionScenarios(testExecId);
-        Optional<XrayTestExecTest> foundTest = testExecutionScenarios.stream().filter(test -> scenarioJiraId.equals(test.getKey())).findFirst();
+        Optional<XrayTestExecTest> foundTest = testExecutionScenarios.stream().filter(test -> testKey.equals(test.getKey())).findFirst();
         foundTest.ifPresent(xrayTestExecTest -> {
             LOGGER.info("Update xray test execution {} status to {}", testExecId, executionStatus);
             jiraXrayApi.updateStatusByTestRunId(xrayTestExecTest.getId(), executionStatus);

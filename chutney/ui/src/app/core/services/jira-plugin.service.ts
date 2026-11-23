@@ -80,8 +80,8 @@ export class JiraPluginService {
         return this.http.delete<HttpResponse<any>>(environment.backend + this.campaignUrl + '/' + campaignId);
     }
 
-    public updateScenarioStatus(testExecId: string, scenarioId: string, newStatus: string) {
+    public updateScenarioStatus(testExecId: string, jiraScenario: JiraScenario, newStatus: string) {
         return this.http.put<HttpResponse<any>>(environment.backend + this.testExecUrl + '/' + testExecId,
-                                                new JiraScenario('', scenarioId, newStatus));
+                                                new JiraScenario(jiraScenario.id, jiraScenario.chutneyId, newStatus));
     }
 }
