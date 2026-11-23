@@ -72,8 +72,6 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.api.AccessTokenController;
-import fr.enedis.chutney.tools.file.FileUtils;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,7 +118,7 @@ class SecuredControllerSpringBootIntegrationTest {
 
     @BeforeAll
     public static void cleanUp() {
-        FileUtils.deleteFolder(new File("./target/.chutney").toPath());
+        BlackboxWorkspace.cleanOnce();
     }
 
     @BeforeEach

@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,6 +64,11 @@ class ApiKeySynchronizationSpringBootIntegrationTest {
     private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
     private MockMvc mvc;
     private String apiKey;
+
+    @BeforeAll
+    static void cleanUp() {
+        BlackboxWorkspace.cleanOnce();
+    }
 
     @BeforeEach
     void setup() {
