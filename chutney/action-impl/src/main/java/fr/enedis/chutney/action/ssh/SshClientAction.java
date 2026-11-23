@@ -7,16 +7,19 @@
 
 package fr.enedis.chutney.action.ssh;
 
+import static fr.enedis.chutney.action.spi.validation.ActionValidatorsUtils.durationValidation;
 import static fr.enedis.chutney.action.spi.validation.ActionValidatorsUtils.notEmptyListValidation;
 import static fr.enedis.chutney.action.spi.validation.ActionValidatorsUtils.targetValidation;
 import static fr.enedis.chutney.action.spi.validation.Validator.getErrorsFrom;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 
 import fr.enedis.chutney.action.spi.Action;
 import fr.enedis.chutney.action.spi.ActionExecutionResult;
 import fr.enedis.chutney.action.spi.injectable.Input;
 import fr.enedis.chutney.action.spi.injectable.Logger;
 import fr.enedis.chutney.action.spi.injectable.Target;
+import fr.enedis.chutney.action.spi.time.Duration;
 import fr.enedis.chutney.action.spi.validation.Validator;
 import fr.enedis.chutney.action.ssh.sshj.CommandResult;
 import fr.enedis.chutney.action.ssh.sshj.Commands;
@@ -33,12 +36,16 @@ public class SshClientAction implements Action {
     private final Logger logger;
     private final List<Object> commands;
     private final String channel;
+    private final String timeout;
 
-    public SshClientAction(Target target, Logger logger, @Input("commands") List<Object> commands, @Input("channel") String channel) {
+    private static final String SSHJ_DEFAULT_HANDSHAKE_TIMEOUT = "30 s";
+
+    public SshClientAction(Target target, Logger logger, @Input("commands") List<Object> commands, @Input("channel") String channel, @Input("timeout") String timeout) {
         this.target = target;
         this.logger = logger;
         this.commands = commands;
         this.channel = ofNullable(channel).orElse(CHANNEL.COMMAND.name());
+        this.timeout = defaultIfEmpty(timeout, SSHJ_DEFAULT_HANDSHAKE_TIMEOUT);
     }
 
     @Override
@@ -47,7 +54,8 @@ public class SshClientAction implements Action {
             .validate(Commands::from, noException -> true, "Syntax is a List of String or a List of {command: \"xxx\", timeout:\"10 s\"} Json");
         return getErrorsFrom(
             targetValidation(target),
-            commandsValidator
+            commandsValidator,
+            durationValidation(timeout, "timeout")
         );
     }
 
@@ -57,7 +65,7 @@ public class SshClientAction implements Action {
             Connection connection = Connection.from(target);
             List<Connection> proxyConnection = Connection.tunnelFrom(target);
             boolean isSshChannel = CHANNEL.SHELL.equals(CHANNEL.from(this.channel));
-            SshClient sshClient = new SshJClient(connection, proxyConnection, isSshChannel, logger);
+            SshClient sshClient = new SshJClient(connection, proxyConnection, isSshChannel, Duration.parseToMs(timeout), logger);
 
             List<CommandResult> commandResults = Commands.from(this.commands).executeWith(sshClient);
 

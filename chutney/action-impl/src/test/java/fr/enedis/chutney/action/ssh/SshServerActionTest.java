@@ -49,7 +49,7 @@ class SshServerActionTest {
         startSshServer(singletonList("user"), singletonList("pass"), null);
 
         Target targetMock = buildInfoWithPasswordFor(sshServer);
-        SshClientAction action = new SshClientAction(targetMock, new TestLogger(), singletonList("echo Hello"), null);
+        SshClientAction action = new SshClientAction(targetMock, new TestLogger(), singletonList("echo Hello"), null, null);
 
         ActionExecutionResult actualResult = action.execute();
 
@@ -65,7 +65,7 @@ class SshServerActionTest {
             "echo Hello" + System.lineSeparator() + "exit" + System.lineSeparator(),
             "cat a_file" + System.lineSeparator() + "exit" + System.lineSeparator()
         );
-        SshClientAction action = new SshClientAction(targetMock, new TestLogger(), commands, "shell");
+        SshClientAction action = new SshClientAction(targetMock, new TestLogger(), commands, "shell", null);
 
         ActionExecutionResult actualResult = action.execute();
 
@@ -88,7 +88,7 @@ class SshServerActionTest {
 
         Target targetMock = buildInfoWithPasswordFor(sshServer);
         List<Object> commands = Arrays.asList("echo Hello", "cat a_file");
-        SshClientAction action = new SshClientAction(targetMock, new TestLogger(), commands, "command");
+        SshClientAction action = new SshClientAction(targetMock, new TestLogger(), commands, "command", null);
 
         ActionExecutionResult actualResult = action.execute();
 

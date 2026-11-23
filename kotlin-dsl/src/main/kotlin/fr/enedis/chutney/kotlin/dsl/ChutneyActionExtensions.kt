@@ -955,6 +955,7 @@ fun ChutneyStepBuilder.SshClientAction(
     target: String,
     commands: List<Any>,
     channel: SSH_CLIENT_CHANNEL?,
+    timeout: String? = null,
     outputs: Map<String, Any> = mapOf(),
     validations: Map<String, Any> = mapOf(),
     strategy: Strategy? = null
@@ -964,7 +965,8 @@ fun ChutneyStepBuilder.SshClientAction(
         target = target,
         inputs = listOf(
             "commands" to commands,
-            "channel" to channel?.name
+            "channel" to channel?.name,
+            "timeout" to timeout
         ).notEmptyToMap(),
         outputs = outputs,
         validations = validations

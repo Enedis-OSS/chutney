@@ -37,51 +37,61 @@ public class SshJClient implements SshClient {
     private final List<Connection> proxyConnections;
     private final Logger logger;
     private final boolean shell;
+    private final int connectionTimeoutMs;
 
-    public SshJClient(Connection connection, List<Connection> proxyConnections, boolean shell, Logger logger) {
+    public SshJClient(Connection connection, List<Connection> proxyConnections, boolean shell, long connectionTimeoutMs, Logger logger) {
         this.connection = connection;
         this.proxyConnections = proxyConnections;
         this.logger = logger;
         this.shell = shell;
+        this.connectionTimeoutMs = Math.toIntExact(connectionTimeoutMs);
     }
 
     @Override
     public CommandResult execute(Command command) throws IOException {
-        SSHClient sshClient = new SSHClient();
-        List<SSHClient> tunnel = connect(sshClient);
+        List<SSHClient> tunnel = tunnel();
+        SSHClient sshClient = newClient();
         try {
+            connect(sshClient, tunnel);
             authenticate(sshClient, connection);
             return executeCommand(sshClient, command);
         } finally {
-            sshClient.disconnect();
-            tunnel.reversed().forEach(t -> {
-                try {
-                    t.disconnect();
-                } catch (IOException e) {
-                    logger.error("Error disconnecting tunnel : " + e.getMessage());
-                }
-            });
+            disconnect(sshClient);
+            tunnel.reversed().forEach(this::disconnect);
         }
     }
 
-    private List<SSHClient> connect(SSHClient client) throws IOException {
+    private void disconnect(SSHClient client) {
+        try {
+            client.disconnect();
+        } catch (IOException e) {
+            logger.error("Error disconnecting : " + e.getMessage());
+        }
+    }
+
+    private SSHClient newClient() {
+        SSHClient client = new SSHClient();
         client.addHostKeyVerifier(alwaysVerified()); // TODO : Add best way host key verifier to really check.
-        List<SSHClient> tunnel = tunnel();
+        client.setConnectTimeout(connectionTimeoutMs);
+        client.setTimeout(connectionTimeoutMs);
+        client.getTransport().setTimeoutMs(connectionTimeoutMs);
+        return client;
+    }
+
+    private void connect(SSHClient client, List<SSHClient> tunnel) throws IOException {
         if (!tunnel.isEmpty()) {
             client.connectVia(tunnel.getLast().newDirectConnection(connection.serverHost, connection.serverPort));
         } else {
             client.connect(connection.serverHost, connection.serverPort);
         }
-        return tunnel;
     }
 
     private List<SSHClient> tunnel() {
         List<SSHClient> result = new ArrayList<>();
         for (int i = 0; i < proxyConnections.size(); i++) {
             Connection pc = proxyConnections.get(i);
-            SSHClient sshClient = new SSHClient();
+            SSHClient sshClient = newClient();
             try {
-                sshClient.addHostKeyVerifier(alwaysVerified()); // TODO : Add best way host key verifier to really check.
                 if (i == 0) {
                     sshClient.connect(pc.serverHost, pc.serverPort);
                 } else {
