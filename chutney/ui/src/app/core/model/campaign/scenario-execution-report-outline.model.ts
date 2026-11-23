@@ -17,6 +17,7 @@ export class ScenarioExecutionReportOutline {
         public startDate?: Date,
         public info: Array<string> = [],
         public error: Array<string> = [],
-        public dataset?: Dataset
+        public dataset?: Dataset,
+        public tags: Array<string> = []
     ) {}
 }
