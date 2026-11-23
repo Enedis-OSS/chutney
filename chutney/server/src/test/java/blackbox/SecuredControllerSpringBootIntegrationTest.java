@@ -138,6 +138,8 @@ class SecuredControllerSpringBootIntegrationTest {
             {GET, "/api/actuator", ADMIN_ACCESS.name(), null, OK},
             {GET, "/api/actuator/health", ADMIN_ACCESS.name(), null, OK},
             {GET, "/api/actuator/prometheus", ADMIN_ACCESS.name(), null, OK},
+            {GET, "/api/actuator/loggers", ADMIN_ACCESS.name(), null, OK},
+            {POST, "/api/actuator/loggers/blackbox.dummy", ADMIN_ACCESS.name(), "{\"configuredLevel\": \"DEBUG\"}", NO_CONTENT},
 
             // Server
             {GET, BackupController.BASE_URL, ADMIN_ACCESS.name(), null, OK},
