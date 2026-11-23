@@ -35,6 +35,60 @@
     ]
 }
 ```
+
+!!! note "SSL/TLS"
+    SSL is enabled when the target `url` scheme is `amqps`, for all AMQP actions. It is configured with the following target properties, all optional :
+
+    | Property             | Description                                                                 |
+    |:---------------------|:----------------------------------------------------------------------------|
+    | `trustStore`         | Path of the trust store used to verify the server certificate               |
+    | `trustStorePassword` | Trust store password                                                        |
+    | `keyStore`           | Path of the key store holding the client certificate (mutual authentication) |
+    | `keyStorePassword`   | Key store password                                                          |
+    | `keyPassword`        | Key password. Default is the key store password                             |
+    | `sslProtocol`        | SSL protocol to use, for example `TLSv1.3`                                  |
+
+    * Without `trustStore`, any server certificate is trusted.
+    * With `trustStore`, self-signed server certificates are still trusted.
+    * The server hostname is not verified against its certificate.
+    * The `addresses` property (comma separated list of `host:port`) could be used with `amqps` scheme too.
+
+```json title="Rabbitmq target with SSL"
+{
+    "name":"RABBITMQ_SSL_TARGET",
+    "url":"amqps://localhost:5671",
+    "properties": [
+        {
+            "key":"username",
+            "value":"admin"
+        },
+        {
+            "key":"password",
+            "value":"admin"
+        },
+        {
+            "key":"trustStore",
+            "value":"/home/APP/security/mytruststore.jks"
+        },
+        {
+            "key":"trustStorePassword",
+            "value":"myTrustStorePassword"
+        },
+        {
+            "key":"keyStore",
+            "value":"/home/APP/security/mykeyStore.jks"
+        },
+        {
+            "key":"keyStorePassword",
+            "value":"mykeyStorePassword"
+        },
+        {
+            "key":"keyPassword",
+            "value":"myKeyStoreKeyPassword"
+        }
+    ]
+}
+```
 # Basic publish
 !!! info "[Browse implementation](https://github.com/Enedis-OSS/chutney/blob/main/chutney/action-impl/src/main/java/fr/enedis/chutney/action/amqp/AmqpBasicPublishAction.java){:target="_blank"}"
 
