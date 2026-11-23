@@ -214,6 +214,35 @@ fun `is able to run many scenarios`() {
 }
 ```
 
+#### Running with a dataset
+
+You can pass a `Dataset` to the launcher. Its `uniqueValues` are available as constants in the execution context,
+and its `multipleValues` are the rows a `ForStrategy` iterates over.
+
+```kotlin
+val users = Dataset(
+    name = "users",
+    uniqueValues = setOf(KeyValue("greeting", "Hello")),
+    multipleValues = listOf(
+        listOf(KeyValue("name", "Alice")),
+        listOf(KeyValue("name", "Bob"))
+    )
+)
+
+val greet_users = Scenario(title = "Greet users") {
+    When("<i> - \${#greeting} \${#name}", strategy = ForStrategy()) {
+        SuccessAction()
+    }
+}
+
+@Test
+fun `is able to run with a dataset`() {
+    launcher.run(greet_users, environment, dataset = users)
+}
+```
+
+The same dataset applies to every scenario when you pass a list.
+
 #### Running many scenarios, again
 
 You can create campaigns by using ```@ParameterizedTest```
