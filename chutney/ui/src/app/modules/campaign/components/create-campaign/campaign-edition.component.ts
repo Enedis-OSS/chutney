@@ -7,6 +7,7 @@
 
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, } from '@angular/cdk/drag-drop';
@@ -78,7 +79,6 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
     private jiraEditText: string = '';
 
     isAuthorizedToWriteCampaign: boolean = false;
-    private isAuthorizedToReadExecutions: boolean = false;
 
     constructor(
         private campaignService: CampaignService,
@@ -93,9 +93,9 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private translateService: TranslateService,
         private modalService: NgbModal,
         private loginService: LoginService,
+        private location: Location,
         @Inject(DROPDOWN_SETTINGS) public dropdownSettings: IDropdownSettings
     ) {
-        this.isAuthorizedToReadExecutions = this.loginService.hasAuthorization(Authorization.EXECUTION_READ);
         this.isAuthorizedToWriteCampaign = this.loginService.hasAuthorization(Authorization.CAMPAIGN_WRITE);
         this.campaignForm = this.formBuilder.group({
             title: ['', Validators.required],
@@ -384,11 +384,12 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
 
     clear() {
         this.campaignForm.reset();
-        let url: string[] = ['/campaign'];
-        if (this.campaign.id && this.isAuthorizedToReadExecutions) {
-            url.push(this.campaign.id + '', '/executions');
+        // navigationId is 1 when the app was opened directly on this page: no previous screen
+        if ((this.location.getState() as any)?.navigationId > 1) {
+            this.location.back();
+        } else {
+            this.router.navigate(['/campaign']);
         }
-        this.router.navigate(url);
     }
 
     saveCampaign() {
