@@ -242,14 +242,14 @@ public class CampaignExecutionEngineTest {
         Executors.newFixedThreadPool(1).submit(() -> campaignExecutionReport.set(sut.executeScenarioInCampaign(campaign, "user")));
 
         awaitDuring(500, MILLISECONDS);
-        sut.stopExecution(0L);
+        sut.stopExecution(0L, true);
         awaitDuring(1, SECONDS);
 
         // Then
         verify(scenarioExecutionEngine).execute(any(ExecutionRequest.class));
         verify(executionHistoryRepository, times(3)).getExecution(anyString(), anyLong());
         verify(campaignExecutionRepository).getCampaignExecutionById(0L);
-        verify(scenarioExecutionEngineAsync).stop(firstTestCase.id(), firstScenarioExecutionId);
+        verify(scenarioExecutionEngineAsync).stop(firstTestCase.id(), firstScenarioExecutionId, true);
 
         assertThat(campaignExecutionReport.get().status()).isEqualTo(ServerReportStatus.STOPPED);
         assertThat(campaignExecutionReport.get().scenarioExecutionReports()).hasSize(2);
@@ -556,7 +556,7 @@ public class CampaignExecutionEngineTest {
 
     @Test
     public void throw_when_stop_unknown_campaign_execution() {
-        assertThatThrownBy(() -> sut.stopExecution(generateId()))
+        assertThatThrownBy(() -> sut.stopExecution(generateId(), false))
             .isInstanceOf(CampaignExecutionNotFoundException.class);
     }
 

@@ -528,6 +528,8 @@
             "create": "Create",
             "replay": "Replay",
             "stop": "Stop",
+            "forceStop": "Force stop",
+            "forceStopTitle": "Stop immediately, without waiting for the running step to end",
             "resume": "Resume",
             "pause": "Pause",
             "help": "Help",

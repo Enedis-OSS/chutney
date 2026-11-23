@@ -59,9 +59,9 @@ export class ScenarioExecutionService {
             }));
     }
 
-    stopScenario(scenarioId: string, executionId: number): Observable<void> {
+    stopScenario(scenarioId: string, executionId: number, force = false): Observable<void> {
         return this.http.post(environment.backend +
-            `${this.resourceUrl}/executionasync/v1/${scenarioId}/execution/${executionId}/stop`, {}).pipe(map((res: Response) => {
+            `${this.resourceUrl}/executionasync/v1/${scenarioId}/execution/${executionId}/stop?force=${force}`, {}).pipe(map((res: Response) => {
         }));
     }
 

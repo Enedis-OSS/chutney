@@ -27,8 +27,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -91,7 +96,7 @@ public class ExecutionConfigurationTest {
             } else if (StatusDto.PAUSED.equals(report.steps.get(1).status)) {
                 testEngine.resumeExecution(executionId);
             } else if (StatusDto.RUNNING.equals(report.steps.get(1).status)) {
-                testEngine.stopExecution(executionId);
+                testEngine.stopExecution(executionId, false);
             }
             results.add(report);
         });
@@ -106,6 +111,92 @@ public class ExecutionConfigurationTest {
         // check third step status
         assertThat(finalReport.steps.get(2)).hasFieldOrPropertyWithValue("status", StatusDto.STOPPED);
         assertThat(finalReport.environment).isEqualTo(FAKE_ENV.name());
+    }
+
+    @Test
+    public void should_stop_immediately_a_running_step_when_forced() {
+        StepExecutionReportDto finalReport = executeAndStopWhen(
+            scenario(createSleepsStep("long sleep", "30 s"), createSleepsStep("never executed", "1 ms")),
+            report -> StatusDto.RUNNING.equals(report.steps.getFirst().status),
+            (testEngine, executionId) -> testEngine.stopExecution(executionId, true)
+        );
+
+        assertThat(finalReport.status).isEqualTo(StatusDto.STOPPED);
+        assertThat(finalReport.steps).extracting(step -> step.status).containsExactly(StatusDto.STOPPED, StatusDto.STOPPED);
+        assertThat(finalReport.steps.getFirst().information).contains("Stop requested while executing this step");
+    }
+
+    @Test
+    public void should_stop_immediately_a_step_waiting_for_its_retry_when_forced() {
+        StepDefinitionRequestDto failingStepWithLongRetryDelay = new StepDefinitionRequestDto(
+            "retried step",
+            null,
+            new ExecutionRequestDto.StepStrategyDefinitionRequestDto("retry-with-timeout", Map.of("timeOut", "60 s", "retryDelay", "30 s")),
+            "fail",
+            Collections.emptyMap(),
+            null,
+            Collections.emptyMap(),
+            Collections.emptyMap()
+        );
+
+        StepExecutionReportDto finalReport = executeAndStopWhen(
+            scenario(failingStepWithLongRetryDelay),
+            report -> StatusDto.FAILURE.equals(report.steps.getFirst().status),
+            // Reports are notified by the engine thread, delay to stop while it sleeps before retrying
+            (testEngine, executionId) -> CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS).execute(() -> testEngine.stopExecution(executionId, true))
+        );
+
+        assertThat(finalReport.status).isEqualTo(StatusDto.STOPPED);
+    }
+
+    @Test
+    public void should_stop_a_paused_scenario() {
+        StepExecutionReportDto finalReport = executeAndStopWhen(
+            scenario(createSleepsStep("sleep", "100 ms"), createSleepsStep("paused", "1 ms")),
+            report -> report.steps.stream().anyMatch(step -> StatusDto.PAUSED.equals(step.status)),
+            (testEngine, executionId) -> testEngine.stopExecution(executionId, true),
+            (testEngine, executionId) -> testEngine.pauseExecution(executionId)
+        );
+
+        assertThat(finalReport.status).isEqualTo(StatusDto.STOPPED);
+    }
+
+    private StepExecutionReportDto executeAndStopWhen(StepDefinitionRequestDto scenario,
+                                                      Predicate<StepExecutionReportDto> stopCondition,
+                                                      BiConsumer<TestEngine, Long> stop) {
+        return executeAndStopWhen(scenario, stopCondition, stop, (testEngine, executionId) -> {});
+    }
+
+    private StepExecutionReportDto executeAndStopWhen(StepDefinitionRequestDto scenario,
+                                                      Predicate<StepExecutionReportDto> stopCondition,
+                                                      BiConsumer<TestEngine, Long> stop,
+                                                      BiConsumer<TestEngine, Long> onStart) {
+        final TestEngine testEngine = sut.embeddedTestEngine();
+        Long executionId = testEngine.executeAsync(new ExecutionRequestDto(scenario, FAKE_ENV, dataset));
+        onStart.accept(testEngine, executionId);
+
+        AtomicBoolean stopRequested = new AtomicBoolean();
+        return testEngine.receiveNotification(executionId)
+            .doOnNext(report -> {
+                if (stopCondition.test(report) && stopRequested.compareAndSet(false, true)) {
+                    stop.accept(testEngine, executionId);
+                }
+            })
+            .timeout(10, TimeUnit.SECONDS)
+            .blockingLast();
+    }
+
+    private StepDefinitionRequestDto scenario(StepDefinitionRequestDto... steps) {
+        return new StepDefinitionRequestDto(
+            "scenario name",
+            null,
+            null,
+            null,
+            Collections.emptyMap(),
+            List.of(steps),
+            Collections.emptyMap(),
+            Collections.emptyMap()
+        );
     }
 
     @Test
@@ -181,12 +272,16 @@ public class ExecutionConfigurationTest {
     }
 
     private StepDefinitionRequestDto createSleepsStep(String name) {
+        return createSleepsStep(name, "1 s");
+    }
+
+    private StepDefinitionRequestDto createSleepsStep(String name, String duration) {
         return new StepDefinitionRequestDto(
             name,
             null,
             null,
             "sleep",
-            Maps.newHashMap("duration", "1 s"),
+            Maps.newHashMap("duration", duration),
             null,
             Collections.emptyMap(),
             Collections.emptyMap()
