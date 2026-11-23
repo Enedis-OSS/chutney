@@ -28,14 +28,19 @@ public interface JiraDto {
     @JsonProperty("executionStatus")
     Optional<String> executionStatus();
 
+    @JsonProperty("datasetId")
+    Optional<String> datasetId();
+
     @JsonCreator
     static JiraDto of(
         @JsonProperty("id") String id,
         @JsonProperty("chutneyId") String chutneyId,
-        @JsonProperty("executionStatus") @Nullable String executionStatus
+        @JsonProperty("executionStatus") @Nullable String executionStatus,
+        @JsonProperty("datasetId") @Nullable String datasetId
     ) {
         ImmutableJiraDto.Builder builder = ImmutableJiraDto.builder().id(id).chutneyId(chutneyId);
         if (executionStatus != null) builder.executionStatus(executionStatus);
+        if (datasetId != null) builder.datasetId(datasetId);
         return builder.build();
     }
 }
