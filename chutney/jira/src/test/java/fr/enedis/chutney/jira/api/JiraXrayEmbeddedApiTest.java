@@ -213,6 +213,26 @@ class JiraXrayEmbeddedApiTest {
         assertThat(jiraId).isEqualTo("CHT-87");
     }
 
+    @Test
+    void campaign_execution_jira_id_is_the_test_execution_it_reported_to() {
+        jiraXrayEmbeddedApi.linkCampaignExecution(4L, "TEST-PLAN-1");
+        jiraRepository.saveForCampaignExecution("4", "TEST-EXEC-2");
+
+        assertThat(jiraXrayEmbeddedApi.campaignExecutionJiraId(4L)).isEqualTo("TEST-EXEC-2");
+    }
+
+    @Test
+    void campaign_execution_jira_id_is_its_overridden_link_when_nothing_was_reported() {
+        jiraXrayEmbeddedApi.linkCampaignExecution(4L, "CHT-87");
+
+        assertThat(jiraXrayEmbeddedApi.campaignExecutionJiraId(4L)).isEqualTo("CHT-87");
+    }
+
+    @Test
+    void campaign_execution_without_jira_link_has_no_jira_id() {
+        assertThat(jiraXrayEmbeddedApi.campaignExecutionJiraId(4L)).isNull();
+    }
+
     private static Object[] datatableListParameters() {
         return new Object[]{
             new Object[]{

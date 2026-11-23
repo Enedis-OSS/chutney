@@ -31,6 +31,10 @@ public class JiraXrayEmbeddedApi {
         jiraXrayService.linkCampaignExecution(campaignExecutionId, jiraId);
     }
 
+    public String campaignExecutionJiraId(Long campaignExecutionId) {
+        return jiraXrayService.campaignExecutionJiraId(campaignExecutionId);
+    }
+
     public List<XrayTestExecTest> getTestStatusInTestExec(String testExec) { // TODO - Only used in a test ?
         return jiraXrayService.getTestExecutionScenarios(testExec);
     }
