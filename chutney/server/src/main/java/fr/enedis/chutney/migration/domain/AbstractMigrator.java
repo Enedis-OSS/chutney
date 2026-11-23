@@ -22,20 +22,20 @@ public abstract class AbstractMigrator<T> implements DataMigrator {
             LOGGER.info("{} index not empty. Skipping indexing...", getEntityName());
             return;
         }
+        Slice<T> firstSlice = findAll(PageRequest.of(0, 10));
+        if (firstSlice.isEmpty()) {
+            return;
+        }
         LOGGER.info("Start indexing {}...", getEntityName());
-        PageRequest firstPage = PageRequest.of(0, 10);
-        int count = 0;
-        migrate(firstPage, count);
+        migrate(firstSlice, 0);
     }
 
-    protected void migrate(Pageable pageable, int previousCount) {
-        LOGGER.debug("Indexing page n° {}", pageable.getPageNumber());
-        Slice<T> slice = findAll(pageable);
-        List<T> entities = slice.getContent();
-        index(entities);
+    private void migrate(Slice<T> slice, int previousCount) {
+        LOGGER.debug("Indexing page n° {}", slice.getNumber());
+        index(slice.getContent());
         int count = previousCount + slice.getNumberOfElements();
         if (slice.hasNext()) {
-            migrate(slice.nextPageable(), count);
+            migrate(findAll(slice.nextPageable()), count);
         } else {
             LOGGER.info("{} {} successfully indexed", count, getEntityName());
         }
