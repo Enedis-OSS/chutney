@@ -72,8 +72,6 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.api.AccessTokenController;
-import fr.enedis.chutney.tools.file.FileUtils;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,7 +118,7 @@ class SecuredControllerSpringBootIntegrationTest {
 
     @BeforeAll
     public static void cleanUp() {
-        FileUtils.deleteFolder(new File("./target/.chutney").toPath());
+        BlackboxWorkspace.cleanOnce();
     }
 
     @BeforeEach
@@ -234,8 +232,8 @@ class SecuredControllerSpringBootIntegrationTest {
             {GET, AggregatedTestCaseController.BASE_URL, EXECUTION_READ.name(), null, OK},
             {DELETE, AggregatedTestCaseController.BASE_URL + "/testCaseId", SCENARIO_WRITE.name(), null, OK},
 
-            {GET, GwtTestCaseController.BASE_URL + "/1", SCENARIO_READ.name(), null, NOT_FOUND},
-            {GET, GwtTestCaseController.BASE_URL + "/1", EXECUTION_READ.name(), null, NOT_FOUND},
+            {GET, GwtTestCaseController.BASE_URL + "/unknownScenarioId", SCENARIO_READ.name(), null, NOT_FOUND},
+            {GET, GwtTestCaseController.BASE_URL + "/unknownScenarioId", EXECUTION_READ.name(), null, NOT_FOUND},
             {POST, GwtTestCaseController.BASE_URL, SCENARIO_WRITE.name(), "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
             {PATCH, GwtTestCaseController.BASE_URL, SCENARIO_WRITE.name(), "{\"title\":\"\",\"scenario\":{\"when\":{}}}", OK},
             {POST, GwtTestCaseController.BASE_URL + "/raw", SCENARIO_WRITE.name(), "{\"title\":\"\",\"content\":\"{\\\"when\\\":{}}\"}", OK},
