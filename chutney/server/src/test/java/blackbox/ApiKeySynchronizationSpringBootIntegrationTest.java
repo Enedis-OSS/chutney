@@ -26,13 +26,10 @@ import fr.enedis.chutney.server.core.domain.security.Role;
 import fr.enedis.chutney.server.core.domain.security.User;
 import fr.enedis.chutney.server.core.domain.security.UserRoles;
 import fr.enedis.chutney.tokens.domain.AccessTokensService;
-import fr.enedis.chutney.tools.file.FileUtils;
-import java.io.File;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,11 +63,6 @@ class ApiKeySynchronizationSpringBootIntegrationTest {
     private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
     private MockMvc mvc;
     private String apiKey;
-
-    @BeforeAll
-    static void cleanUp() {
-        FileUtils.deleteFolder(new File("./target/.chutney").toPath());
-    }
 
     @BeforeEach
     void setup() {
