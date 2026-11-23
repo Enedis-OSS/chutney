@@ -10,11 +10,14 @@ package fr.enedis.chutney.campaign.infra;
 
 import static java.time.LocalDateTime.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
+import static org.awaitility.Awaitility.await;
 
 import fr.enedis.chutney.campaign.domain.Frequency;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
+import fr.enedis.chutney.campaign.domain.ScheduledCampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
 import fr.enedis.chutney.tools.file.FileUtils;
 import java.nio.file.Path;
@@ -22,6 +25,8 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -61,6 +66,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "1" : {
                     "id" : "1",
                     "schedulingDate" : "2020-02-04T07:10:00",
+                    "enabled" : true,
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
                     "datasetsId" : [ "" ],
@@ -69,6 +75,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "2" : {
                     "id" : "2",
                     "schedulingDate" : "2021-03-05T08:11:00",
+                    "enabled" : true,
                     "campaignsId" : [ 22 ],
                     "campaignsTitle" : [ "campaign title 2" ],
                     "datasetsId" : [ "" ],
@@ -77,6 +84,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "3" : {
                     "id" : "3",
                     "schedulingDate" : "2022-04-06T09:12:00",
+                    "enabled" : true,
                     "campaignsId" : [ 33 ],
                     "campaignsTitle" : [ "campaign title 3" ],
                     "datasetsId" : [ "" ],
@@ -85,6 +93,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "4" : {
                     "id" : "4",
                     "schedulingDate" : "2022-04-06T09:12:00",
+                    "enabled" : true,
                     "campaignsId" : [ 55, 66 ],
                     "campaignsTitle" : [ "campaign title 5", "campaign title 6" ],
                     "datasetsId" : [ "", "" ],
@@ -111,6 +120,7 @@ public class ScheduledCampaignFileRepositoryTest {
                    "1" : {
                      "id" : "1",
                      "schedulingDate" : "2020-02-04T07:10:00",
+                     "enabled" : true,
                      "campaignsId" : [ 11 ],
                      "campaignsTitle" : [ "campaign title 1" ],
                      "datasetsId" : [ "" ],
@@ -119,6 +129,7 @@ public class ScheduledCampaignFileRepositoryTest {
                    "3" : {
                      "id" : "3",
                      "schedulingDate" : "2022-04-06T09:12:00",
+                     "enabled" : true,
                      "campaignsId" : [ 33 ],
                      "campaignsTitle" : [ "campaign title 3" ],
                      "datasetsId" : [ "" ],
@@ -160,6 +171,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "1" : {
                     "id" : "1",
                     "schedulingDate" : "2024-02-04T07:10:00",
+                    "enabled" : true,
                     "campaignsId" : [ 1, 3 ],
                     "campaignsTitle" : [ "campaign title 1", "campaign title 3" ],
                     "datasetsId" : [ "", "" ],
@@ -189,6 +201,7 @@ public class ScheduledCampaignFileRepositoryTest {
                       "2" : {
                         "id" : "2",
                         "schedulingDate" : "2021-03-05T08:11:00",
+                        "enabled" : true,
                         "campaignsId" : [ 22 ],
                         "campaignsTitle" : [ "campaign title 2" ],
                         "datasetsId" : [ "" ],
@@ -261,6 +274,7 @@ public class ScheduledCampaignFileRepositoryTest {
         //Then
         assertThat(periodicScheduledCampaigns).hasSize(1);
         assertThat(periodicScheduledCampaigns).contains(oldSchedule);
+        assertThat(periodicScheduledCampaigns.getFirst().enabled).isTrue();
 
         //// UPDATE
         // When
@@ -278,6 +292,7 @@ public class ScheduledCampaignFileRepositoryTest {
                   "1" : {
                     "id" : "1",
                     "schedulingDate" : "2020-02-04T07:10:00",
+                    "enabled" : true,
                     "campaignsId" : [ 11 ],
                     "campaignsTitle" : [ "campaign title 1" ],
                     "datasetsId" : [ "" ],
@@ -287,6 +302,7 @@ public class ScheduledCampaignFileRepositoryTest {
                     "id" : "2",
                     "schedulingDate" : "2021-03-05T08:11:00",
                     "environment" : "MY_ENV",
+                    "enabled" : true,
                     "campaignsId" : [ 22, 33, 44 ],
                     "campaignsTitle" : [ "campaign title 2", "campaign title 3", "campaign title 4" ],
                     "datasetsId" : [ "FIRST_DATASET", "SECOND_DATASET", "" ],
@@ -296,6 +312,96 @@ public class ScheduledCampaignFileRepositoryTest {
                 """;
         String actualContent = FileUtils.readContent(SCHEDULING_CAMPAIGN_FILE);
         assertThat(actualContent).isEqualToIgnoringWhitespace(expectedScheduledCampaignsAfterUpdate);
+    }
+
+    @Test
+    void should_update_scheduled_campaign() {
+        sut.add(daily(null, true, new CampaignExecutionRequest(11L, "campaign title 1", "", "")));
+
+        PeriodicScheduledCampaign updated = sut.update(1L, PeriodicScheduledCampaign::disable);
+
+        PeriodicScheduledCampaign expected = daily(1L, false, new CampaignExecutionRequest(11L, "campaign title 1", "", ""));
+        assertThat(updated).isEqualTo(expected);
+        assertThat(sut.getAll()).containsExactly(expected);
+        String expectedContent =
+            """
+                {
+                  "1" : {
+                    "id" : "1",
+                    "schedulingDate" : "2020-02-04T07:10:00",
+                    "enabled" : false,
+                    "campaignsId" : [ 11 ],
+                    "campaignsTitle" : [ "campaign title 1" ],
+                    "datasetsId" : [ "" ],
+                    "jiraIds" : [ "" ],
+                    "frequency" : "Daily"
+                  }
+                }
+                """;
+        assertThat(FileUtils.readContent(SCHEDULING_CAMPAIGN_FILE)).isEqualToIgnoringWhitespace(expectedContent);
+    }
+
+    @Test
+    void should_not_update_unknown_scheduled_campaign() {
+        assertThatThrownBy(() -> sut.update(42L, PeriodicScheduledCampaign::disable))
+            .isInstanceOf(ScheduledCampaignNotFoundException.class);
+        assertThat(sut.getAll()).isEmpty();
+    }
+
+    @Test
+    void should_not_lose_a_campaign_removal_that_happens_during_an_update() throws InterruptedException {
+        sut.add(daily(null, true,
+            new CampaignExecutionRequest(11L, "campaign title 1", "", ""),
+            new CampaignExecutionRequest(22L, "campaign title 2", "", "")));
+        CountDownLatch updateStarted = new CountDownLatch(1);
+        CountDownLatch releaseUpdate = new CountDownLatch(1);
+        List<Throwable> errors = new CopyOnWriteArrayList<>();
+
+        Thread update = new Thread(() -> {
+            try {
+                sut.update(1L, scheduledCampaign -> {
+                    updateStarted.countDown();
+                    try {
+                        releaseUpdate.await(5, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    return scheduledCampaign.disable();
+                });
+            } catch (Throwable t) {
+                errors.add(t);
+            }
+        });
+        Thread removeCampaign = new Thread(() -> {
+            try {
+                sut.removeCampaignId(22L);
+            } catch (Throwable t) {
+                errors.add(t);
+            }
+        });
+
+        // The update has read the scheduling and is busy changing it...
+        update.start();
+        assertThat(updateStarted.await(5, TimeUnit.SECONDS)).isTrue();
+        // ...when campaign 22 is deleted.
+        removeCampaign.start();
+        await().atMost(5, TimeUnit.SECONDS).until(() ->
+            removeCampaign.getState() == Thread.State.WAITING || removeCampaign.getState() == Thread.State.TERMINATED);
+        releaseUpdate.countDown();
+        update.join(5_000);
+        removeCampaign.join(5_000);
+
+        assertThat(errors).isEmpty();
+        assertThat(sut.getAll()).singleElement().satisfies(scheduledCampaign -> {
+            assertThat(scheduledCampaign.enabled).isFalse();
+            assertThat(scheduledCampaign.campaignExecutionRequests)
+                .extracting(CampaignExecutionRequest::campaignId)
+                .containsExactly(11L);
+        });
+    }
+
+    private PeriodicScheduledCampaign daily(Long id, boolean enabled, CampaignExecutionRequest... campaignExecutionRequests) {
+        return new PeriodicScheduledCampaign(id, of(2020, 2, 4, 7, 10), Frequency.DAILY, null, List.of(campaignExecutionRequests), enabled);
     }
 
     private PeriodicScheduledCampaign create(Long id, Long campaignId, String campaignTitle, LocalDateTime nextExecutionDate) {

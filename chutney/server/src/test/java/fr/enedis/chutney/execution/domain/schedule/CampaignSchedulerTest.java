@@ -89,6 +89,18 @@ public class CampaignSchedulerTest {
     }
 
     @Test
+    void should_not_execute_disabled_scheduled_campaign() {
+        PeriodicScheduledCampaign disabled = createPeriodicScheduledCampaigns(singletonList(Frequency.DAILY)).getFirst().disable();
+        when(scheduledCampaignRepository.getAll()).thenReturn(of(disabled));
+
+        sut.executeScheduledCampaigns();
+
+        verify(campaignExecutionEngine, times(0)).executeScheduledCampaign(any(), any(), any(), any(), any());
+        verify(scheduledCampaignRepository, times(0)).add(any());
+        verify(scheduledCampaignRepository, times(0)).removeById(any());
+    }
+
+    @Test
     void should_not_throw_exception_when_runtime_exceptions_occur_retrieving_campaigns_to_execute() {
         when(scheduledCampaignRepository.getAll())
             .thenThrow(new RuntimeException("scheduledCampaignRepository.getAll()"));

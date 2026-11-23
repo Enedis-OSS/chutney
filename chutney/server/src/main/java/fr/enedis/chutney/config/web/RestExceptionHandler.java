@@ -9,6 +9,7 @@ package fr.enedis.chutney.config.web;
 
 import fr.enedis.chutney.admin.domain.BackupNotFoundException;
 import fr.enedis.chutney.campaign.domain.CampaignNotFoundException;
+import fr.enedis.chutney.campaign.domain.ScheduledCampaignNotFoundException;
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingEnvironmentException;
 import fr.enedis.chutney.environment.domain.exception.AlreadyExistingTargetException;
 import fr.enedis.chutney.environment.domain.exception.EnvVariableNotFoundException;
@@ -89,6 +90,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ReportNotFoundException.class,
         ScenarioNotFoundException.class,
         ScenarioNotRunningException.class,
+        ScheduledCampaignNotFoundException.class,
         TargetNotFoundException.class,
         EnvVariableNotFoundException.class,
         DataSetNotFoundException.class

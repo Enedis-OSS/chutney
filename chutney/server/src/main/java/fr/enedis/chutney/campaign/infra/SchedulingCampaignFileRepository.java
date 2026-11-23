@@ -14,6 +14,7 @@ import static fr.enedis.chutney.tools.file.FileUtils.initFolder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign;
 import fr.enedis.chutney.campaign.domain.PeriodicScheduledCampaign.CampaignExecutionRequest;
+import fr.enedis.chutney.campaign.domain.ScheduledCampaignNotFoundException;
 import fr.enedis.chutney.campaign.domain.ScheduledCampaignRepository;
 import fr.enedis.chutney.campaign.infra.SchedulingCampaignDto.CampaignExecutionRequestDto;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -76,6 +78,25 @@ public class SchedulingCampaignFileRepository implements ScheduledCampaignReposi
             writeOnDisk(resolvedFilePath, schedulingCampaigns);
 
             return periodicScheduledCampaign;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public PeriodicScheduledCampaign update(Long id, UnaryOperator<PeriodicScheduledCampaign> updater) {
+        final Lock writeLock = rwLock.writeLock();
+        writeLock.lock();
+        try {
+            Map<String, SchedulingCampaignDto> schedulingCampaigns = readFromDisk();
+            SchedulingCampaignDto current = schedulingCampaigns.get(String.valueOf(id));
+            if (current == null) {
+                throw new ScheduledCampaignNotFoundException(id);
+            }
+            PeriodicScheduledCampaign updated = updater.apply(fromDto(current));
+            schedulingCampaigns.put(String.valueOf(id), toDto(id, updated));
+            writeOnDisk(resolvedFilePath, schedulingCampaigns);
+            return updated;
         } finally {
             writeLock.unlock();
         }
@@ -151,11 +172,11 @@ public class SchedulingCampaignFileRepository implements ScheduledCampaignReposi
     }
 
     private PeriodicScheduledCampaign fromDto(SchedulingCampaignDto dto) {
-        return new PeriodicScheduledCampaign(Long.valueOf(dto.id), dto.schedulingDate, toFrequency(dto.frequency), dto.environment, dto.campaignExecutionRequestDto.stream().map(aa -> new CampaignExecutionRequest(aa.campaignId(), aa.campaignTitle(), aa.datasetId(), aa.jiraId())).toList());
+        return new PeriodicScheduledCampaign(Long.valueOf(dto.id), dto.schedulingDate, toFrequency(dto.frequency), dto.environment, dto.campaignExecutionRequestDto.stream().map(aa -> new CampaignExecutionRequest(aa.campaignId(), aa.campaignTitle(), aa.datasetId(), aa.jiraId())).toList(), dto.enabled);
     }
 
     private SchedulingCampaignDto toDto(long id, PeriodicScheduledCampaign periodicScheduledCampaign) {
-        return new SchedulingCampaignDto(String.valueOf(id), periodicScheduledCampaign.nextExecutionDate, periodicScheduledCampaign.frequency.label, periodicScheduledCampaign.environment,  periodicScheduledCampaign.campaignExecutionRequests.stream().map(aa -> new CampaignExecutionRequestDto(aa.campaignId(), aa.campaignTitle(), aa.datasetId(), aa.jiraId())).toList());
+        return new SchedulingCampaignDto(String.valueOf(id), periodicScheduledCampaign.nextExecutionDate, periodicScheduledCampaign.frequency.label, periodicScheduledCampaign.environment, periodicScheduledCampaign.enabled, periodicScheduledCampaign.campaignExecutionRequests.stream().map(aa -> new CampaignExecutionRequestDto(aa.campaignId(), aa.campaignTitle(), aa.datasetId(), aa.jiraId())).toList());
     }
 
     private Long getCurrentMaxId(Map<String, SchedulingCampaignDto> schedulingCampaigns) {

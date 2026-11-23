@@ -15,12 +15,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@JsonPropertyOrder({ "id", "schedulingDate", "environment", "campaignsId", "campaignsTitle", "datasetsId", "jiraIds" })
+@JsonPropertyOrder({ "id", "schedulingDate", "environment", "enabled", "campaignsId", "campaignsTitle", "datasetsId", "jiraIds" })
 public class SchedulingCampaignDto {
     public final String id;
     public final LocalDateTime schedulingDate;
     public final String frequency;
     public final String environment;
+    public final Boolean enabled;
 
     @JsonIgnore
     public final List<CampaignExecutionRequestDto> campaignExecutionRequestDto;
@@ -34,6 +35,7 @@ public class SchedulingCampaignDto {
         schedulingDate = null;
         frequency = null;
         environment = null;
+        enabled = null;
         campaignExecutionRequestDto = null;
     }
 
@@ -42,12 +44,14 @@ public class SchedulingCampaignDto {
                                  LocalDateTime schedulingDate,
                                  String frequency,
                                  String environment,
+                                 Boolean enabled,
                                  List<CampaignExecutionRequestDto> campaignExecutionRequestDto) {
         this.id = id;
         this.schedulingDate = schedulingDate;
         this.frequency = frequency;
         this.campaignExecutionRequestDto = campaignExecutionRequestDto;
         this.environment = environment;
+        this.enabled = enabled;
     }
 
     public List<Long> getCampaignsId() {

@@ -336,7 +336,8 @@
                 "time": "Time",
                 "date": "Date"
             },
-            "nothing": "Nothing scheduled"
+            "nothing": "Nothing scheduled",
+            "enabled": "Active"
         }
     },
     "tokens": {
