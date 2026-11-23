@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.tuple;
 
 import com.google.common.collect.Maps;
 import fr.enedis.chutney.campaign.infra.CampaignExecutionDBRepository;
@@ -52,6 +53,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -283,15 +285,51 @@ public class DatabaseExecutionHistoryRepositoryTest {
             sut.store(scenarioIdTwo, buildDetachedExecution(RUNNING, "exec2", ""));
 
             // When
-            int nbOfAffectedExecutions = sut.setAllRunningExecutionsToKO();
+            List<ExecutionSummary> koExecutions = sut.setAllRunningExecutionsToKO();
 
             // Then, these executions are KO
-            assertThat(nbOfAffectedExecutions).isEqualTo(2);
+            assertThat(koExecutions)
+                .extracting(ExecutionSummary::scenarioId, ExecutionSummary::status)
+                .containsExactlyInAnyOrder(tuple(scenarioIdOne, FAILURE), tuple(scenarioIdTwo, FAILURE));
             assertThat(sut.getExecutions(scenarioIdOne).getFirst().status()).isEqualTo(FAILURE);
             assertThat(sut.getExecutions(scenarioIdTwo).getFirst().status()).isEqualTo(FAILURE);
 
             // And there is no more running execution
             assertThat(sut.getExecutionsWithStatus(RUNNING).size()).isEqualTo(0);
+        }
+
+        @Test
+        public void executions_set_to_KO_on_startup_have_campaign_report_without_running_execution() {
+            // Given a campaign execution with two running scenario executions
+            ScenarioEntity scenarioOne = givenScenario();
+            ScenarioEntity scenarioTwo = givenScenario();
+            CampaignEntity campaign = givenCampaign(scenarioOne, scenarioTwo);
+            Long campaignExecutionId = campaignExecutionDBRepository.generateCampaignExecutionId(campaign.id(), "env");
+            CampaignExecutionReportBuilder campaignExecution = CampaignExecutionReportBuilder.builder()
+                .executionId(campaignExecutionId)
+                .campaignId(campaign.id())
+                .campaignName(campaign.title())
+                .environment("env")
+                .userId("user");
+            Stream.of(scenarioOne, scenarioTwo).forEach(scenario -> {
+                String scenarioId = scenario.getId().toString();
+                ExecutionSummary running = sut.store(scenarioId, buildDetachedExecution(RUNNING, "exec", "")).summary();
+                campaignExecution.addScenarioExecutionReport(new ScenarioExecutionCampaign(scenarioId, scenario.getTitle(), running));
+            });
+            campaignExecutionDBRepository.saveCampaignExecution(campaign.id(), campaignExecution.build());
+
+            // When
+            List<ExecutionSummary> koExecutions = sut.setAllRunningExecutionsToKO();
+
+            // Then
+            assertThat(koExecutions).hasSize(2).allSatisfy(koExecution -> {
+                CampaignExecution campaignReport = koExecution.campaignReport().orElseThrow();
+                assertThat(campaignReport.executionId).isEqualTo(campaignExecutionId);
+                assertThat(campaignReport.status()).isEqualTo(FAILURE);
+                assertThat(campaignReport.scenarioExecutionReports())
+                    .extracting(ScenarioExecutionCampaign::status)
+                    .containsExactly(FAILURE, FAILURE);
+            });
         }
 
         @Test
@@ -301,7 +339,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
             Long scenarioId = sut.store(scenarioIdOne, buildDetachedExecution(RUNNING, "exec1", "")).summary().executionId();
 
             // When
-            int nbOfAffectedExecutions = sut.setAllRunningExecutionsToKO();
+            int nbOfAffectedExecutions = sut.setAllRunningExecutionsToKO().size();
 
             // Then, these executions are KO
             assertThat(nbOfAffectedExecutions).isEqualTo(1);
@@ -325,7 +363,7 @@ public class DatabaseExecutionHistoryRepositoryTest {
             Long scenarioId = sut.store(scenarioIdOne, buildDetachedExecution(PAUSED, "exec1", "")).summary().executionId();
 
             // When
-            int nbOfAffectedExecutions = sut.setAllRunningExecutionsToKO();
+            int nbOfAffectedExecutions = sut.setAllRunningExecutionsToKO().size();
 
             // Then, these executions are KO
             assertThat(nbOfAffectedExecutions).isEqualTo(1);

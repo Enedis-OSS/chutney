@@ -54,7 +54,12 @@ public interface ExecutionHistoryRepository {
      */
     void update(String scenarioId, ExecutionHistory.Execution updatedExecution);
 
-    int setAllRunningExecutionsToKO();
+    /**
+     * @return the executions set to KO
+     */
+    List<ExecutionSummary> setAllRunningExecutionsToKO();
+
+    void setExecutionToKO(Long executionId);
 
     List<ExecutionSummary> getExecutionsWithStatus(ServerReportStatus status);
 

@@ -7,7 +7,7 @@
 
 package fr.enedis.chutney;
 
-import fr.enedis.chutney.server.core.domain.execution.history.ExecutionHistoryRepository;
+import fr.enedis.chutney.execution.domain.UnfinishedExecutionsCleaner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -49,7 +49,7 @@ public class ServerBootstrap {
     }
 
     private static void cleanApplicationState(ConfigurableApplicationContext context) {
-        int staleExecutionCount = context.getBean(ExecutionHistoryRepository.class).setAllRunningExecutionsToKO();
+        int staleExecutionCount = context.getBean(UnfinishedExecutionsCleaner.class).setUnfinishedExecutionsToKO();
         LOGGER.info("Starting with " + staleExecutionCount + " unfinished executions");
     }
 }
