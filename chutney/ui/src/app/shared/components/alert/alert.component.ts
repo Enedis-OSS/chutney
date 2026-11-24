@@ -11,8 +11,7 @@
  @Component({
    selector: 'chutney-alert',
    templateUrl: './alert.component.html',
-   styleUrl: './alert.component.scss',
-   standalone: false
+   styleUrl: './alert.component.scss'
  })
  export class AlertComponent {
 

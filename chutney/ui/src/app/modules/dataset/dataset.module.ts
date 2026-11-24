@@ -19,7 +19,6 @@ import { DatasetListComponent } from './components/dataset-list/dataset-list.com
 import { DatasetRoute } from './dataset.routes';
 import { MoleculesModule } from '@molecules/molecules.module';
 import { DatasetEditionComponent } from './components/dataset-edition/dataset-edition.component';
-import { AtomsModule } from '../../atoms/atoms.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 
@@ -29,22 +28,19 @@ const ROUTES = [
 
 @NgModule({
     imports: [
-        CommonModule,
-        RouterModule.forChild(ROUTES),
-        FormsModule,
-        ReactiveFormsModule,
-        SharedModule,
-        NgbModule,
-        MomentModule,
-        MoleculesModule,
-        NgMultiSelectDropDownModule.forRoot(),
-        AtomsModule
-    ],
+    CommonModule,
+    RouterModule.forChild(ROUTES),
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    NgbModule,
+    MomentModule,
+    MoleculesModule,
+    NgMultiSelectDropDownModule.forRoot(),
+    DatasetListComponent,
+    DatasetEditionComponent
+],
     exports: [
-        DatasetEditionComponent,
-    ],
-    declarations: [
-        DatasetListComponent,
         DatasetEditionComponent,
     ]
 })

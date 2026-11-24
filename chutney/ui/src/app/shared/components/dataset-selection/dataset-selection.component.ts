@@ -9,6 +9,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetect
 import { DataSetService } from '@core/services';
 import { Dataset } from '@model';
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './dataset-selection.component.html',
     styleUrls: ['./dataset-selection.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule]
 })
 export class DatasetSelectionComponent implements OnInit, OnDestroy {
 

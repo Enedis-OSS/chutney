@@ -6,23 +6,35 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { Execution } from '@model';
 import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
-import { DateFormatPipe } from 'ngx-moment';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
-import { MultiSelectComponent } from 'ng-multiselect-dropdown';
+import { MultiSelectComponent, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgClass, SlicePipe } from '@angular/common';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
 
 @Component({
     selector: 'execution-search-report-list',
     templateUrl: './execution-search-list.component.html',
     styleUrls: ['./execution-search-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule,
+        NgbHighlight,
+        NgClass,
+        NgbInputDatepicker,
+        SlicePipe,
+        MomentModule,
+        TranslatePipe
+    ]
 })
 export class ExecutionSearchListComponent
     implements OnChanges, OnDestroy

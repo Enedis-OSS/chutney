@@ -11,14 +11,24 @@ import { Hit } from '@core/model/search/hit.model';
 import { SearchService } from '@core/services/search.service';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { Location } from '@angular/common';
+import { Location, NgIf, NgFor, NgStyle, AsyncPipe, UpperCasePipe, KeyValuePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
     selector: 'chutney-search-bar',
     templateUrl: './search-bar.component.html',
     styleUrl: './search-bar.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgIf,
+        FormsModule,
+        NgFor,
+        NgStyle,
+        AlertComponent,
+        AsyncPipe,
+        UpperCasePipe,
+        KeyValuePipe
+    ]
 })
 export class SearchBarComponent {
 

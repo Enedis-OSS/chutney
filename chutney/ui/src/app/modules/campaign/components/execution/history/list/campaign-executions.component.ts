@@ -9,24 +9,33 @@ import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, S
 import { Campaign, CampaignExecutionReport, CampaignReport, Dataset } from '@model';
 import { Params } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { DateFormatPipe } from 'ngx-moment';
+import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
 import { ListItem } from '@shared/types/list-item';
 import { DatasetUtils } from '@shared/tools/dataset-utils';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
 
 @Component({
     selector: 'chutney-campaign-executions',
     templateUrl: './campaign-executions.component.html',
     styleUrls: ['./campaign-executions.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule,
+        NgbHighlight,
+        NgbInputDatepicker,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class CampaignExecutionsComponent implements OnChanges, OnDestroy {
 

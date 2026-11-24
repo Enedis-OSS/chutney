@@ -6,18 +6,34 @@
  */
 
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Target } from '@model';
 import { ValidationService } from '../../../molecules/validation/validation.service';
 import { EnvironmentService } from '@core/services';
 import { Observable, Subject, takeUntil, zip } from 'rxjs';
+import { ErrorPanelComponent } from '@molecules/panel/error-panel/error-panel.component';
+import { InputLineComponent } from '@molecules/forms/input-line/input-line.component';
+import { ConfirmDialogComponent } from '@molecules/dialog/delete-confirm-dialog/confirm-dialog.component';
+import { NgTemplateOutlet, LowerCasePipe } from '@angular/common';
+import { ImportButtonComponent } from '@molecules/forms/import-button/import-button.component';
+import { PropertyTablePanelComponent } from '@molecules/panel/property-table-panel/property-table-panel.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-target',
     templateUrl: './target.component.html',
     styleUrls: ['./target.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ErrorPanelComponent,
+        InputLineComponent,
+        RouterLink,
+        ConfirmDialogComponent,
+        NgTemplateOutlet,
+        ImportButtonComponent,
+        PropertyTablePanelComponent,
+        LowerCasePipe,
+        TranslatePipe
+    ]
 })
 export class TargetComponent implements OnInit, OnDestroy {
     targets: Target[] = [];

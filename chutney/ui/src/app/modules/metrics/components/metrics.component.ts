@@ -11,13 +11,27 @@ import { MetricsService } from '@core/services/metrics.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { filterOnTextContent } from '@shared/tools';
 import { interval, Subscription } from 'rxjs';
+import { SearchFieldComponent } from '@molecules/forms/search-field/search-field.component';
+import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap/nav';
+import { NgTemplateOutlet } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-metrics',
     templateUrl: './metrics.component.html',
     styleUrls: ['./metrics.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [SearchFieldComponent,
+        NgbNav,
+        NgbNavItem,
+        NgbNavItemRole,
+        NgbNavLink,
+        NgbNavLinkBase,
+        NgbNavContent,
+        NgTemplateOutlet,
+        NgbNavOutlet,
+        TranslatePipe
+    ]
 })
 export class MetricsComponent implements OnInit, OnDestroy {
 

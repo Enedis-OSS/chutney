@@ -18,10 +18,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 
 @NgModule({
-    declarations: [
-        EnvironmentsComponent,
-        EnvironmentImportComponent
-    ],
     imports: [
         CommonModule,
         RouterModule.forChild(environmentsRoutes),
@@ -31,7 +27,9 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
         NgbModule,
         NgbTooltipModule,
         TranslatePipe,
-        TranslateDirective
+        TranslateDirective,
+        EnvironmentsComponent,
+        EnvironmentImportComponent
     ],
     exports: [
         TranslatePipe,

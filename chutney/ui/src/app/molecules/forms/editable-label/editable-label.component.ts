@@ -6,13 +6,15 @@
  */
 
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { InputFocusDirective } from '@shared/directives/input-focus.directive';
 
 @Component({
     selector: 'chutney-forms-editable-label',
     templateUrl: './editable-label.component.html',
     styleUrls: ['./editable-label.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, InputFocusDirective]
 })
 export class EditableLabelComponent {
 

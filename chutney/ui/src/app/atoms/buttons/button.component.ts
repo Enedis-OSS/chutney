@@ -18,8 +18,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
     </button>
     `,
     styleUrls: ['./button.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ButtonComponent {
 

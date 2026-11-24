@@ -19,13 +19,14 @@ import { AuthInterceptor, TokenInterceptor } from '@core/services/auth.intercept
 import { authAppInitializerFactory } from '@core/services/auth.app.initializer.factory';
 import { SsoService } from '@core/services/sso.service';
 
-@NgModule({ declarations: [
-        LoginComponent,
-        ParentComponent,
-    ], imports: [CommonModule,
+@NgModule({
+    imports: [CommonModule,
         FormsModule,
         RouterModule,
-        SharedModule], providers: [
+        SharedModule,
+        LoginComponent,
+        ParentComponent],
+     providers: [
         { provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [SsoService], multi: true },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
         { provide: HTTP_INTERCEPTORS, useClass: OAuth2ContentTypeInterceptor, multi: true },

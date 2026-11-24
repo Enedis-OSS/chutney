@@ -36,28 +36,26 @@ describe('DatasetEditionComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.resetTestingModule();
         TestBed.configureTestingModule({
-            imports: [
-                RouterModule.forRoot([]),
-                TranslateModule.forRoot(),
-                MoleculesModule,
-                SharedModule,
-                MomentModule,
-                NgbModule,
-                NgMultiSelectDropDownModule.forRoot(), // todo remove
-                FormsModule,
-                ReactiveFormsModule
-            ],
-            declarations: [
-                DatasetListComponent,
-                DatasetEditionComponent,
-                FormsKeyValueComponent,
-                FormsDataGridComponent
-            ],
-            providers: [
-                {provide: DataSetService, useValue: dataSetService},
-                {provide: FeatureService, useValue: featureService}
-            ]
-        }).compileComponents();
+    imports: [
+        RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+        MoleculesModule,
+        SharedModule,
+        MomentModule,
+        NgbModule,
+        NgMultiSelectDropDownModule.forRoot(), // todo remove
+        FormsModule,
+        ReactiveFormsModule,
+        DatasetListComponent,
+        DatasetEditionComponent,
+        FormsKeyValueComponent,
+        FormsDataGridComponent
+    ],
+    providers: [
+        { provide: DataSetService, useValue: dataSetService },
+        { provide: FeatureService, useValue: featureService }
+    ]
+}).compileComponents();
     }));
 
     it('should create the component DatasetEditionComponent', () => {

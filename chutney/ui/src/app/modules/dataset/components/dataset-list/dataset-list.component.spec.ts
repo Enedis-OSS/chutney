@@ -38,9 +38,6 @@ describe('DatasetListComponent', () => {
     TestBed.resetTestingModule();
 
     TestBed.configureTestingModule({
-    declarations: [
-        DatasetListComponent
-    ],
     imports: [RouterModule.forRoot([]),
         TranslateModule.forRoot(),
         MoleculesModule,
@@ -49,7 +46,8 @@ describe('DatasetListComponent', () => {
         NgbModule,
         NgMultiSelectDropDownModule.forRoot(),
         FormsModule,
-        ReactiveFormsModule],
+        ReactiveFormsModule,
+        DatasetListComponent],
     providers: [
         { provide: DataSetService, useValue: dataSetService },
         { provide: AlertService, useValue: alertService },

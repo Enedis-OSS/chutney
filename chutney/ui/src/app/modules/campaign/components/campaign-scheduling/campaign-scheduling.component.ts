@@ -10,23 +10,39 @@ import { Campaign, Dataset, Environment } from '@core/model';
 import { CampaignService, DataSetService, EnvironmentService } from '@core/services';
 import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campaign/campaign-scheduling.model';
 import { CampaignSchedulingService } from '@core/services/campaign-scheduling.service';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ListItem } from '@shared/types/list-item';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { finalize, Subject, takeUntil } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
+import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap/timepicker';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { LowerCasePipe } from '@angular/common';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-campaign-scheduling',
     templateUrl: './campaign-scheduling.component.html',
     styleUrls: ['./campaign-scheduling.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [RouterLink,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbInputDatepicker,
+        NgbTimepicker,
+        NgMultiSelectDropDownModule,
+        NgbPopover,
+        LowerCasePipe,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 

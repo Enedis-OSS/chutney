@@ -72,9 +72,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
         RxFor,
         MonacoEditorModule,
         TranslatePipe,
-        TranslateDirective
-    ],
-    declarations: [
+        TranslateDirective,
         AlertComponent,
         ComponentSearchPipe,
         DataSetSearchPipe,

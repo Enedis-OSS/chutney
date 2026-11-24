@@ -11,13 +11,22 @@ import { LayoutOptions } from '@core/layout/layout-options.service';
 import { MenuItem } from '@shared/components/layout/menuItem';
 import { allMenuItems } from '@shared/components/layout/left-menu/chutney-left-menu.items';
 import { FeatureService } from '@core/feature/feature.service';
+import { RouterLinkActive, RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
+import { AlertComponent } from '../../alert/alert.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-chutney-left-menu',
     templateUrl: './chutney-left-menu.component.html',
     styleUrls: ['./chutney-left-menu.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [RouterLinkActive,
+        RouterLink,
+        NgClass,
+        AlertComponent,
+        TranslatePipe
+    ]
 })
 export class ChutneyLeftMenuComponent implements OnInit {
     public menuItems = allMenuItems;

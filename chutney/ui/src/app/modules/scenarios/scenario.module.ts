@@ -58,9 +58,7 @@ const ROUTES = [
         FileSaverModule,
         // Internal common
         SharedModule,
-        MoleculesModule
-    ],
-    declarations: [
+        MoleculesModule,
         ScenariosComponent,
         ScenarioCampaignsComponent,
         ScenarioExecutionsHistoryComponent,

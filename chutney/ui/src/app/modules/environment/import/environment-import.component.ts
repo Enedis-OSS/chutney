@@ -6,18 +6,28 @@
  */
 
 import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { Subject, takeUntil } from "rxjs";
 import { ValidationService } from "@molecules/validation/validation.service";
+import { ErrorPanelComponent } from "@molecules/panel/error-panel/error-panel.component";
+import { NgbPopover } from "@ng-bootstrap/ng-bootstrap/popover";
+import { ImportButtonComponent } from "@molecules/forms/import-button/import-button.component";
 
 @Component({
     selector: 'chutney-environment-import',
     templateUrl: './environment-import.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false,
+    imports: [
+        ErrorPanelComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbPopover,
+        ImportButtonComponent,
+        TranslatePipe,
+    ],
 })
 export class EnvironmentImportComponent implements OnInit, OnDestroy {
 

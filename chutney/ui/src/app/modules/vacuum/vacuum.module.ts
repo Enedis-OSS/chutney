@@ -24,14 +24,14 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
         NgbNavLink,
         NgbNavLinkBase,
         TranslatePipe,
-        TranslateDirective
+        TranslateDirective,
+        VacuumComponent
     ],
     exports: [
         TranslatePipe,
         TranslateDirective
     ],
-  declarations: [VacuumComponent],
-  providers: []
+    providers: []
 })
 export class VacuumModule {
 }

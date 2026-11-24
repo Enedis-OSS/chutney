@@ -12,8 +12,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
     selector: 'chutney-toast-info',
     templateUrl: './toast-info.html',
     styleUrls: ['./toast-info.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ToastInfoComponent {
 

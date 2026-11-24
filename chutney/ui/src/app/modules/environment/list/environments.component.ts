@@ -10,17 +10,24 @@ import { ActivatedRoute } from '@angular/router';
 import { EnvironmentService, LoginService } from '@core/services';
 import { Authorization, Environment } from '@model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ValidationService } from '../../../molecules/validation/validation.service';
 import { EnvironmentImportComponent } from '../import/environment-import.component';
+import { ErrorPanelComponent } from '@molecules/panel/error-panel/error-panel.component';
+import { InputLineComponent } from '@molecules/forms/input-line/input-line.component';
+import { ConfirmDialogComponent } from '@molecules/dialog/delete-confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'chutney-environments',
     templateUrl: './environments.component.html',
     styleUrls: ['./environments.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ErrorPanelComponent,
+        InputLineComponent,
+        ConfirmDialogComponent,
+        TranslatePipe
+    ]
 })
 export class EnvironmentsComponent implements OnInit, DoCheck, OnDestroy {
 

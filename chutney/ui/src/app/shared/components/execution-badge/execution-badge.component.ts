@@ -6,6 +6,7 @@
  */
 
 import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { NgClass } from '@angular/common';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/c
     templateUrl: './execution-badge.component.html',
     styleUrls: ['./execution-badge.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgClass]
 })
 export class ExecutionBadgeComponent implements OnChanges {
 

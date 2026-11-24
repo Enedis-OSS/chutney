@@ -9,13 +9,15 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/
 import { Subscription } from 'rxjs';
 import { LinkifierService } from '@core/services';
 import { LayoutOptions } from '@core/layout/layout-options.service';
+import { NgClass } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'chutney-parent',
     templateUrl: './parent.component.html',
     styleUrls: ['./parent.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgClass, RouterOutlet]
 })
 export class ParentComponent implements OnInit, OnDestroy {
 

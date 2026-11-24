@@ -6,20 +6,25 @@
  */
 
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ValidationService } from '../../../../molecules/validation/validation.service';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ValidationService } from '@molecules/validation/validation.service';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LinkifierService } from '@core/services';
 import { delay } from '@shared/tools';
 import { Linkifier } from '@model';
 import { Subject, takeUntil } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'chutney-config-linkifier',
     templateUrl: './linkifier.component.html',
     styleUrls: ['./linkifier.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgClass,
+        FormsModule,
+        ReactiveFormsModule,
+        TranslatePipe
+    ]
 })
 export class LinkifierComponent implements OnInit {
 

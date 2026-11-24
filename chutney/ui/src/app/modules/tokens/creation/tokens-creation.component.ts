@@ -6,19 +6,25 @@
  */
 
 import { Component, inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal, NgbDatepickerConfig } from "@ng-bootstrap/ng-bootstrap";
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from "rxjs";
+import { NgbInputDatepicker } from "@ng-bootstrap/ng-bootstrap/datepicker";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: 'chutney-tokens-creation',
     templateUrl: './tokens-creation.component.html',
     styleUrls: ['./tokens-creation.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgbInputDatepicker,
+        TranslatePipe
+    ]
 })
 export class TokenCreationComponent implements OnInit {
 

@@ -8,17 +8,38 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Authorization, Environment, EnvironmentVariable } from '@model';
 import { distinct, match } from '@shared/tools';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EnvironmentService, LoginService } from '@core/services';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { ValidationService } from '../../../molecules/validation/validation.service';
+import { ErrorPanelComponent } from '@molecules/panel/error-panel/error-panel.component';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap/nav';
+import { ConfirmDialogComponent } from '@molecules/dialog/delete-confirm-dialog/confirm-dialog.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-environments-variables',
     templateUrl: './environments-variables.component.html',
     styleUrls: ['./environments-variables.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ErrorPanelComponent,
+        NgClass,
+        FormsModule,
+        NgTemplateOutlet,
+        NgbHighlight,
+        NgbNav,
+        NgbNavItem,
+        NgbNavItemRole,
+        NgbNavLink,
+        NgbNavLinkBase,
+        NgbNavContent,
+        NgbNavOutlet,
+        ConfirmDialogComponent,
+        ReactiveFormsModule,
+        TranslatePipe
+     ]
 })
 export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
 

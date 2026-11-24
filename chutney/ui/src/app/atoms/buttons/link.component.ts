@@ -15,8 +15,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
     </a>
 `,
     styleUrls: ['./link.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class LinkComponent {
 

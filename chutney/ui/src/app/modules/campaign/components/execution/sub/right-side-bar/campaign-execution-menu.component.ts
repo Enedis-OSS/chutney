@@ -24,13 +24,15 @@ import { MenuItem } from '@shared/components/layout/menuItem';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/scenario-execute-modal.component';
+import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-campaign-execution-menu',
     templateUrl: './campaign-execution-menu.component.html',
     styleUrls: ['./campaign-execution-menu.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ChutneyRightMenuComponent, TranslatePipe]
 })
 export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 

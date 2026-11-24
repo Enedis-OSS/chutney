@@ -7,10 +7,7 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'distinct',
-    standalone: false
-})
+@Pipe({ name: 'distinct' })
 export class DistinctPipe implements PipeTransform {
 
     transform(values: any [], property: string = null): any [] {

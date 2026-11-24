@@ -6,18 +6,23 @@
  */
 
 import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Dataset } from "@core/model";
 import { CampaignService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { Observable, Subject, switchMap, takeUntil, timer } from "rxjs";
+import { NgIf } from "@angular/common";
 
 @Component({
     selector: 'replay-execution-with-jira-link',
     templateUrl: './replay-execution-with-jira-link.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        TranslatePipe
+    ]
 })
 export class ReplayExecutionWithJiraLinkComponent implements OnInit, OnDestroy {
 

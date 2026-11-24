@@ -9,13 +9,15 @@ import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from 
 
 import { Entry } from '@model';
 import { ValidationService } from '../../validation/validation.service';
+import { InputComponent } from '../../../atoms/forms/input/input.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-property-table-panel',
     templateUrl: './property-table-panel.component.html',
     styleUrls: ['./property-table-panel.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [InputComponent, TranslatePipe]
 })
 export class PropertyTablePanelComponent {
 

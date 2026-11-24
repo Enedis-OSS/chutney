@@ -9,10 +9,7 @@ import { ScenarioIndex } from '@model';
 import { Pipe, PipeTransform } from '@angular/core';
 import { containsAll } from '@shared/tools/array-utils';
 
-@Pipe({
-    name: 'scenarioCampaignSearch',
-    standalone: false
-})
+@Pipe({ name: 'scenarioCampaignSearch' })
 export class ScenarioCampaignSearchPipe implements PipeTransform {
 
     transform(input: any, tags: String[]) {

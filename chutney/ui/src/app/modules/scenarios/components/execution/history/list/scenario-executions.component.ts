@@ -9,23 +9,38 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleCha
 import { Authorization, Dataset, Execution, GwtTestCase } from '@model';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { DateFormatPipe } from 'ngx-moment';
+import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ListItem } from '@shared/types/list-item';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DatasetUtils } from "@shared/tools/dataset-utils";
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgClass, SlicePipe } from '@angular/common';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
 
 @Component({
     selector: 'chutney-scenario-executions',
     templateUrl: './scenario-executions.component.html',
     styleUrls: ['./scenario-executions.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule,
+        NgbHighlight,
+        NgClass,
+        HasAuthorizationDirective,
+        NgbInputDatepicker,
+        SlicePipe,
+        MomentModule,
+        TranslatePipe
+    ]
 })
 export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     ExecutionStatus = ExecutionStatus;

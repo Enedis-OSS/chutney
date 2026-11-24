@@ -29,11 +29,9 @@ import { TokenDeleteComponent } from './delete/tokens-delete.component';
         SharedModule,
         CoreModule,
         NgbModule,
-    ],
-    declarations: [
         TokenListComponent,
         TokenCreationComponent,
-        TokenDeleteComponent
+        TokenDeleteComponent,
     ],
     providers: [
         TokenService

@@ -6,13 +6,15 @@
  */
 
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { InputFocusDirective } from '@shared/directives/input-focus.directive';
 
 @Component({
     selector: 'chutney-forms-editable-text-area',
     templateUrl: './editable-text-area.component.html',
     styleUrls: ['./editable-text-area.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, InputFocusDirective]
 })
 export class EditableTextAreaComponent {
 

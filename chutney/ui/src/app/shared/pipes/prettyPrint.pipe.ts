@@ -8,10 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { escapeHtml } from '@shared/tools/string-utils';
 import { isLosslessNumber, parse, stringify } from 'lossless-json';
 
-@Pipe({
-    name: 'prettyPrint',
-    standalone: false
-})
+@Pipe({ name: 'prettyPrint' })
 export class PrettyPrintPipe implements PipeTransform {
     transform(value: any, escapeHtmlFlag: boolean = false): string {
         if (Array.isArray(value)) {

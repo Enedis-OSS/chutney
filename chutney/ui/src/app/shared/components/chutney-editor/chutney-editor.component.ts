@@ -21,13 +21,15 @@ import {
 import * as ace from 'ace-builds';
 import { Ace } from 'ace-builds';
 import 'ace-builds/esm-resolver';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-editor',
     templateUrl: './chutney-editor.component.html',
     styleUrls: ['./chutney-editor.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, TranslatePipe]
 })
 export class ChutneyEditorComponent implements OnInit, AfterViewInit, OnChanges {
 

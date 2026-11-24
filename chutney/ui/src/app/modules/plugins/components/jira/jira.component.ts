@@ -6,13 +6,14 @@
  */
 
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JiraPluginConfiguration } from '@core/model/jira-plugin-configuration.model';
 import { JiraPluginConfigurationService } from '@core/services/jira-plugin-configuration.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { delay } from '@shared/tools';
-import { ValidationService } from '../../../../molecules/validation/validation.service';
+import { ValidationService } from '@molecules/validation/validation.service';
 import { Subject, takeUntil } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 
 @Component({
@@ -20,7 +21,11 @@ import { Subject, takeUntil } from 'rxjs';
     templateUrl: './jira.component.html',
     styleUrls: ['./jira.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        TranslatePipe
+    ]
 })
 export class JiraComponent implements OnInit, OnDestroy {
 

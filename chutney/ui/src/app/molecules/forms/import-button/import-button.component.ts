@@ -7,14 +7,15 @@
 
 import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-import-button',
     templateUrl: './import-button.component.html',
     styleUrls: ['./import-button.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, TranslatePipe]
 })
 export class ImportButtonComponent implements OnInit {
 

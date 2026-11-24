@@ -10,13 +10,21 @@ import { Agent, AgentGraphe, Environment } from '@model';
 import { EnvironmentService } from '@core/services';
 import { Subscription } from 'rxjs';
 import { contains } from '@shared/tools';
+import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
+import { SearchTextPipe } from '@shared/pipes';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-network-graph',
     templateUrl: './network-graph.component.html',
     styleUrls: ['./network-graph.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        NgClass,
+        SearchTextPipe,
+        TranslatePipe
+    ]
 })
 export class NetworkGraphComponent implements OnDestroy {
     private serviceSubscription: Subscription = null;

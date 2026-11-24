@@ -11,8 +11,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
     selector: 'chutney-collapsible-panel',
     templateUrl: './collapsible-panel.component.html',
     styleUrls: ['./collapsible-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class CollapsiblePanelComponent {
 

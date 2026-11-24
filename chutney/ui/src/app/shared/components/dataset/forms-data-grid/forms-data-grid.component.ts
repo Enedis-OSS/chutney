@@ -6,20 +6,11 @@
  */
 
 import { Component, forwardRef, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import {
-    AbstractControl,
-    ControlValueAccessor,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    NG_VALIDATORS,
-    NG_VALUE_ACCESSOR,
-    FormArray,
-    ValidationErrors
-} from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, FormArray, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KeyValue } from '@model';
 import { FileSaverService } from 'ngx-filesaver';
 import { Subject, takeUntil } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-forms-data-grid',
@@ -38,7 +29,10 @@ import { Subject, takeUntil } from 'rxjs';
         }
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        TranslatePipe
+    ]
 })
 export class FormsDataGridComponent implements ControlValueAccessor, OnDestroy {
 

@@ -9,13 +9,14 @@ import { Component, inject, Input, OnDestroy, ChangeDetectionStrategy } from "@a
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject, takeUntil } from "rxjs";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: 'chutney-tokens-delete',
     templateUrl: './tokens-delete.component.html',
     styleUrls: ['./tokens-delete.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [TranslatePipe]
 })
 export class TokenDeleteComponent implements OnDestroy {
 

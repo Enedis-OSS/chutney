@@ -20,7 +20,7 @@ import {
   ViewChild,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { Location } from '@angular/common';
+import { Location, NgClass, NgTemplateOutlet, DatePipe } from '@angular/common';
 import { fromEvent, merge, Observable, Subject, Subscription, timer } from 'rxjs';
 import {
     auditTime,
@@ -36,15 +36,24 @@ import {
 } from 'rxjs/operators';
 import { FileSaverService } from 'ngx-filesaver';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
-import { NGX_MONACO_EDITOR_CONFIG } from 'ngx-monaco-editor-v2';
+import { NGX_MONACO_EDITOR_CONFIG, EditorComponent } from 'ngx-monaco-editor-v2';
 
 import { Authorization, Execution, GwtTestCase, ScenarioExecutionReport, StepExecutionReport } from '@model';
 import { ScenarioExecutionService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { StringifyPipe } from '@shared/pipes';
+import { StringifyPipe, DurationPipe, ObjectAsEntryListPipe, PrettyPrintPipe, SafePipe } from '@shared/pipes';
 import { findScrollContainer } from '@shared/tools';
 import { parse, stringify } from 'lossless-json'
 import { DatasetUtils } from '@shared/tools/dataset-utils';
+import { ExecutionBadgeComponent } from '../execution-badge/execution-badge.component';
+import { HasAuthorizationDirective } from '../../directives/hasAuthorization.directive';
+import { RouterLink } from '@angular/router';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap/collapse';
+import { RxFor } from '@rx-angular/template/for';
+import { ResizeDirective } from '../../directives/resize.directive';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ThumbnailPipe } from '@shared/pipes/thumbnail.pipe';
 
 @Component({
     selector: 'chutney-scenario-execution',
@@ -63,7 +72,25 @@ import { DatasetUtils } from '@shared/tools/dataset-utils';
     templateUrl: './execution.component.html',
     styleUrls: ['./execution.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ExecutionBadgeComponent,
+        HasAuthorizationDirective,
+        RouterLink,
+        NgClass,
+        NgbCollapse,
+        RxFor,
+        ResizeDirective,
+        NgTemplateOutlet,
+        FormsModule,
+        EditorComponent,
+        DatePipe,
+        TranslatePipe,
+        DurationPipe,
+        ObjectAsEntryListPipe,
+        PrettyPrintPipe,
+        SafePipe,
+        StringifyPipe,
+        ThumbnailPipe
+    ]
 })
 export class ScenarioExecutionComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
     @Input() execution: Execution;

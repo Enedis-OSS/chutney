@@ -7,10 +7,10 @@
 
 import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { CdkDragDrop, moveItemInArray, } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import {
     Authorization,
     Campaign,
@@ -32,20 +32,39 @@ import {
 import { distinct, flatMap, newInstance } from '@shared/tools/array-utils';
 import { isNotEmpty } from '@shared';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ListItem } from '@shared/types/list-item';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
     ScenarioJiraLinksModalComponent
 } from '@modules/scenarios/components/scenario-jira-links-modal/scenario-jira-links-modal.component';
+import { NgClass } from '@angular/common';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { DatasetSelectionComponent } from '@shared/components/dataset-selection/dataset-selection.component';
+import { EnvironmentComboComponent } from '@shared/components/environment-combo/environment-combo.component';
+import { ScenarioCampaignSearchPipe, SearchTextPipe, WithoutScenarioPipe } from '@shared/pipes';
 
 @Component({
     selector: 'chutney-campaign-edition',
     templateUrl: './campaign-edition.component.html',
     styleUrls: ['./campaign-edition.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false,
+    imports: [
+        NgClass,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbPopover,
+        DatasetSelectionComponent,
+        EnvironmentComboComponent,
+        NgMultiSelectDropDownModule,
+        CdkDropList,
+        CdkDrag,
+        ScenarioCampaignSearchPipe,
+        SearchTextPipe,
+        WithoutScenarioPipe,
+        TranslatePipe,
+    ],
 })
 export class CampaignEditionComponent implements OnInit, OnDestroy {
 

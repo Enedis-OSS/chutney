@@ -14,8 +14,7 @@ import { HighLightJService } from '@shared/highlight/highlight.service';
     templateUrl: './asciidoctor.component.html',
     styleUrls: ['./asciidoctor.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class AsciiDoctorComponent implements OnInit, OnChanges {
 

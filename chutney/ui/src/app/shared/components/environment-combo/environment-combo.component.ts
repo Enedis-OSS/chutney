@@ -6,13 +6,14 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'chutney-environment-combo',
     templateUrl: './environment-combo.component.html',
     styleUrls: ['./environment-combo.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule]
 })
 export class EnvironmentComboComponent implements OnChanges {
 

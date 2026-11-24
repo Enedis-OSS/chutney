@@ -10,13 +10,15 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { disabledBoolean } from '@shared/tools/bool-utils';
+import { LinkComponent } from '../../../atoms/buttons/link.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-confirm-dialog',
     templateUrl: './confirm-dialog.component.html',
     styleUrls: ['./confirm-dialog.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [LinkComponent, TranslatePipe]
 })
 export class ConfirmDialogComponent {
 

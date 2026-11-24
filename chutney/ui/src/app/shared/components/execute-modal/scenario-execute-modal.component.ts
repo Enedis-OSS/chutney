@@ -9,10 +9,17 @@ import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit, ChangeD
 import { Dataset, KeyValue, Authorization } from '@core/model';
 import { DataSetService, EnvironmentService } from '@core/services';
 import { NgbActiveModal, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { catchError, takeUntil } from 'rxjs/operators';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom, Observable, of, Subject } from 'rxjs';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { NgbDropdown as NgbDropdown_1, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownButtonItem, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap/collapse';
+import { NgClass } from '@angular/common';
+import { FormsKeyValueComponent } from '../dataset/forms-key-value/forms-key-value.component';
+import { FormsDataGridComponent } from '../dataset/forms-data-grid/forms-data-grid.component';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
 
 
 @Component({
@@ -20,7 +27,21 @@ import { firstValueFrom, Observable, of, Subject } from 'rxjs';
     templateUrl: './scenario-execute-modal.component.html',
     styleUrls: ['./scenario-execute-modal.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule,
+        NgbPopover,
+        NgbDropdown_1,
+        NgbDropdownToggle,
+        NgbDropdownMenu,
+        NgbDropdownButtonItem,
+        NgbDropdownItem,
+        NgbCollapse,
+        ReactiveFormsModule,
+        NgClass,
+        FormsKeyValueComponent,
+        FormsDataGridComponent,
+        HasAuthorizationDirective,
+        TranslatePipe
+    ]
 })
 export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 

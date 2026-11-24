@@ -6,7 +6,7 @@
  */
 
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { PaginationInstance } from 'ngx-pagination';
+import { PaginationInstance, NgxPaginationModule } from 'ngx-pagination';
 
 import { Table } from '@model';
 import { PaginationControlConfig } from './pagination-control-config';
@@ -16,7 +16,7 @@ import { PaginationControlConfig } from './pagination-control-config';
     templateUrl: './table-panel.component.html',
     styleUrls: ['./table-panel.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgxPaginationModule]
 })
 export class TablePanelComponent {
 

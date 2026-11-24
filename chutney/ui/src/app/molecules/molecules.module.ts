@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MomentModule } from 'ngx-moment';
 import { NgxPaginationModule } from 'ngx-pagination';
 
-import { AtomsModule } from '../atoms/atoms.module';
+
 import { SharedModule } from '@shared/shared.module';
 
 import { ConfirmDialogComponent } from './dialog/delete-confirm-dialog/confirm-dialog.component';
@@ -36,16 +36,30 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
-        AtomsModule,
-        CommonModule,
-        FormsModule,
-        MomentModule,
-        NgxPaginationModule,
-        RouterModule,
-        SharedModule,
-        NgbTooltipModule,
-        ReactiveFormsModule
-    ],
+    CommonModule,
+    FormsModule,
+    MomentModule,
+    NgxPaginationModule,
+    RouterModule,
+    SharedModule,
+    NgbTooltipModule,
+    ReactiveFormsModule,
+    AsciiDoctorComponent,
+    CollapsiblePanelComponent,
+    ConfirmDialogComponent,
+    EditableBadgeComponent,
+    EditableLabelComponent,
+    EditableTextAreaComponent,
+    ErrorPanelComponent,
+    ImportButtonComponent,
+    ImportFileComponent,
+    InputLineComponent,
+    //MenuItemComponent,
+    PropertyTablePanelComponent,
+    SearchFieldComponent,
+    TablePanelComponent,
+    ToastInfoComponent
+],
     exports: [
         AsciiDoctorComponent,
         CollapsiblePanelComponent,
@@ -57,24 +71,6 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
         ImportButtonComponent,
         ImportFileComponent,
         InputLineComponent,
-        //MenuItemComponent,
-        PropertyTablePanelComponent,
-        SearchFieldComponent,
-        TablePanelComponent,
-        ToastInfoComponent,
-    ],
-    declarations: [
-        AsciiDoctorComponent,
-        CollapsiblePanelComponent,
-        ConfirmDialogComponent,
-        EditableBadgeComponent,
-        EditableLabelComponent,
-        EditableTextAreaComponent,
-        ErrorPanelComponent,
-        ImportButtonComponent,
-        ImportFileComponent,
-        InputLineComponent,
-       //MenuItemComponent,
         PropertyTablePanelComponent,
         SearchFieldComponent,
         TablePanelComponent,

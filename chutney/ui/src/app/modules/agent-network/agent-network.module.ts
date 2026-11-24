@@ -25,9 +25,12 @@ import { SharedModule } from '@shared/shared.module';
         CommonModule,
         RouterModule.forChild(AgentNetworkRoute),
         FormsModule,
-        SharedModule
+        SharedModule,
+        AgentNetworkComponent,
+        AgentComponent,
+        NetworkGraphComponent,
+        AgentNetworkConfigurationComponent
     ],
-    declarations: [AgentNetworkComponent, AgentComponent, NetworkGraphComponent, AgentNetworkConfigurationComponent],
 })
 export class AgentNetworkModule {
 }

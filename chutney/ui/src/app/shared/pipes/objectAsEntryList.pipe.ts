@@ -7,10 +7,7 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'objectAsEntryList',
-    standalone: false
-})
+@Pipe({ name: 'objectAsEntryList' })
 export class ObjectAsEntryListPipe implements PipeTransform {
   transform(value): any {
     const keys = [];

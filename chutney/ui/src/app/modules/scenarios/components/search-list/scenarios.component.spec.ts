@@ -64,9 +64,6 @@ describe('ScenariosComponent', () => {
         jiraPluginService.findCampaigns.and.returnValue(EMPTY);
         activatedRouteStub = new ActivatedRouteStub();
         TestBed.configureTestingModule({
-    declarations: [
-        ScenariosComponent
-    ],
     schemas: [NO_ERRORS_SCHEMA],
     imports: [RouterModule.forRoot([]),
         TranslateModule.forRoot(),
@@ -74,7 +71,8 @@ describe('ScenariosComponent', () => {
         SharedModule,
         MomentModule,
         NgbModule,
-        NgMultiSelectDropDownModule.forRoot()],
+        NgMultiSelectDropDownModule.forRoot(),
+        ScenariosComponent],
     providers: [
         NgbPopoverConfig,
         { provide: ScenarioService, useValue: scenarioService },

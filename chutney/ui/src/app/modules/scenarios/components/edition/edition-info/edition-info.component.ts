@@ -10,13 +10,23 @@ import { Component, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, Ch
 import { EditionService } from '@core/services';
 import { TestCaseEdition } from '@model';
 import { lastValueFrom, Subject, takeUntil } from 'rxjs';
+import { NgClass } from '@angular/common';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { ScenariosComponent } from '../../search-list/scenarios.component';
+import { MomentModule } from 'ngx-moment';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-edition-info',
     templateUrl: './edition-info.component.html',
     styleUrls: ['./edition-info.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgClass,
+        NgbPopover,
+        ScenariosComponent,
+        MomentModule,
+        TranslatePipe
+    ]
 })
 export class EditionInfoComponent implements OnChanges, OnDestroy {
     @Input() testCase;

@@ -30,14 +30,13 @@ describe('hasAuthorization directive...', () => {
     beforeEach(() => {
         TestBed.resetTestingModule();
         TestBed.configureTestingModule({
-            declarations: [
-                HasAuthorizationsHostComponent,
-                HasAuthorizationDirective
-            ], providers: [
-                { provide: LoginService, useValue: loginService },
-                { provide: TestInject, useValue: testInject }
-            ]
-        }).compileComponents();
+    imports: [HasAuthorizationsHostComponent,
+        HasAuthorizationDirective],
+    providers: [
+        { provide: LoginService, useValue: loginService },
+        { provide: TestInject, useValue: testInject }
+    ]
+}).compileComponents();
 
         fixture = TestBed.createComponent(HasAuthorizationsHostComponent);
         testHostComponent = fixture.componentInstance;
@@ -139,8 +138,7 @@ class TestInject {
 
 @Component({
     template: `<span *hasAuthorization="authorizations()" #spanView>wtf</span>`,
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 class HasAuthorizationsHostComponent {
     @ViewChild('spanView') spanView: any;

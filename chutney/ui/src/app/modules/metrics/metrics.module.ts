@@ -23,14 +23,12 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
         MoleculesModule,
         RouterModule.forChild(MetricsRoute),
         TranslatePipe,
-        TranslateDirective
+        TranslateDirective,
+        MetricsComponent
     ],
     exports: [
         TranslatePipe,
         TranslateDirective
-    ],
-    declarations: [
-        MetricsComponent
     ],
 })
 export class MetricsModule {

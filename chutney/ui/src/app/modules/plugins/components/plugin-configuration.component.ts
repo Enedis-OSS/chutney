@@ -6,6 +6,8 @@
  */
 
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { JiraComponent } from './jira/jira.component';
+import { LinkifierComponent } from './linkifier/linkifier.component';
 
 
 @Component({
@@ -13,7 +15,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     templateUrl: './plugin-configuration.component.html',
     styleUrls: ['./plugin-configuration.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [JiraComponent, LinkifierComponent]
 })
 export class PluginConfigurationComponent {
 

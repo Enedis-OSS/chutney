@@ -19,13 +19,15 @@ import { MenuItem } from '@shared/components/layout/menuItem';
 import { EnvironmentService } from '@core/services/environment.service';
 import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/scenario-execute-modal.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-scenario-execution-menu',
     templateUrl: './scenario-execution-menu.component.html',
     styleUrls: ['./scenario-execution-menu.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ChutneyRightMenuComponent, TranslatePipe]
 })
 export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 

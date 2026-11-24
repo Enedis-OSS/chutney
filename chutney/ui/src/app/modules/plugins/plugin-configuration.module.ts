@@ -26,11 +26,9 @@ import { SharedModule } from '@shared/shared.module';
         ReactiveFormsModule,
         RouterModule.forChild(PluginConfigurationRoute),
         SharedModule,
-    ],
-    declarations: [
         JiraComponent,
         LinkifierComponent,
-        PluginConfigurationComponent
+        PluginConfigurationComponent,
     ],
 })
 export class PluginConfigurationModule {

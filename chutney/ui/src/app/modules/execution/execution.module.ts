@@ -22,25 +22,22 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { RxFor } from '@rx-angular/template/for';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(ExecutionSearchRoute),
-    FormsModule,
-    MoleculesModule,
-    MomentModule,
-    NgbModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgMultiSelectDropDownModule.forRoot(),
-    SharedModule,
-    RxFor
-  ],
-  declarations: [
-    ExecutionSearchComponent,
-    ExecutionSearchListComponent,
-
-  ],
-  providers: [DateFormatPipe]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(ExecutionSearchRoute),
+        FormsModule,
+        MoleculesModule,
+        MomentModule,
+        NgbModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule.forRoot(),
+        SharedModule,
+        RxFor,
+        ExecutionSearchComponent,
+        ExecutionSearchListComponent
+    ],
+    providers: [DateFormatPipe]
 })
 export class ExecutionModule {
 }

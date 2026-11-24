@@ -16,9 +16,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 
 @NgModule({
-  declarations: [
-    EnvironmentsVariablesComponent
-  ],
     imports: [
         CommonModule,
         EnvironmentVariableRoutes,
@@ -29,11 +26,12 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
         NgbTypeaheadModule,
         ReactiveFormsModule,
         TranslatePipe,
-        TranslateDirective
+        TranslateDirective,
+        EnvironmentsVariablesComponent
     ],
     exports: [
-      TranslatePipe,
-      TranslateDirective
+        TranslatePipe,
+        TranslateDirective
     ]
 })
 export class EnvironmentVariableModule { }
