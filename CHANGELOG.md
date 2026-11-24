@@ -7,6 +7,51 @@
 
 # Changelog
 
+## [5.1.0](https://github.com/Enedis-OSS/chutney/tree/5.1.0)
+
+### 🚀 Implemented enhancements:
+* Pause and resume a scheduled campaign by @Redouane-E in https://github.com/Enedis-OSS/chutney/pull/447
+* Stop normally or force an immediate stop by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/455
+* Dsl launcher takes a dataset by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/456
+* SCP/SFTP actions - Allow proxies jumps by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/459
+### 🐛 Fixed bugs:
+* Load translation earlier  by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/420
+* Preserve scenario order in execution reports and retries by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/431
+* Add connection timeout to ssh-client action by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/448
+* Go back to previous screen on campaign edition cancel by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/449
+* Replay failed scenarios with initial execution jira id by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/450
+* Do not log indexing when there is nothing to index by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/451
+* Send metrics for unfinished executions set to KO by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/453
+* Complete interrupted campaign executions with not executed scenarios by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/454
+* Handle jira links of scenarios with dataset in campaign edition and execution by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/458
+* Allow personal token on dataset read for kotlin dsl sync by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/462
+### 🔧 Technical enhancements:
+* Chore/upgrade maven by @joelgaspard in https://github.com/Enedis-OSS/chutney/pull/436
+* Disable spring cloud bindings in acceptance test image build by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/463
+* Cover target import returning its environment by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/452
+* AMQP actions - Cover and document SSL by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/460
+* Expose actuator loggers endpoint for admin by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/461
+* Skip all tests with maven.test.skip on release builds by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/465
+### 📖 Documentation:
+* One constructor for custom actions by @KarimGl in https://github.com/Enedis-OSS/chutney/pull/457
+### 👒 Dependencies:
+* chore(deps): Bump org.apache.wss4j:wss4j-ws-security-dom from 4.0.1 to 4.0.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/437
+* chore(deps-dev): Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.5 to 3.6.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/438
+* chore(deps): Bump org.apache.zookeeper:zookeeper from 3.9.6 to 3.9.7 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/439
+* chore(deps): Bump joda-time:joda-time from 2.14.3 to 2.15.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/440
+* chore(deps): Bump org.liquibase:liquibase-core from 5.0.3 to 5.0.4 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/442
+* chore(deps): Bump sshd.version from 2.20.0 to 2.20.1 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/443
+* chore(deps): Bump org.jacoco:jacoco-maven-plugin from 0.8.15 to 0.8.16 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/444
+* chore(deps): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.2 to 3.7.0 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/445
+* chore(deps): Bump springboot.version from 4.1.1 to 4.1.2 in /chutney by @dependabot[bot] in https://github.com/Enedis-OSS/chutney/pull/446
+
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/5.0.1...5.1.0
+
+**Full Changelog**: https://github.com/Enedis-OSS/chutney/compare/5.0.1...5.1.0
+
+
+
 ## [5.0.1](https://github.com/Enedis-OSS/chutney/tree/5.0.1)
 
 ### 🔧 Technical enhancements:
