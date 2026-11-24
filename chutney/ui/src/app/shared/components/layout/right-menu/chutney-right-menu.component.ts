@@ -25,7 +25,8 @@ import { TranslatePipe } from '@ngx-translate/core';
         NgbDropdownMenu,
         NgbDropdownItem,
         RouterLink,
-        TranslatePipe
+        TranslatePipe,
+        HasAuthorizationDirective
     ]
 })
 export class ChutneyRightMenuComponent {
