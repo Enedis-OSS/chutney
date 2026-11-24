@@ -10,13 +10,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import * as moment from 'moment';
+import { AlertComponent } from '@shared/components/alert/alert.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'chutney-main',
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AlertComponent, RouterOutlet]
 })
 export class AppComponent {
 

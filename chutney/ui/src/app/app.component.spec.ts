@@ -13,13 +13,11 @@ describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      declarations: [
+    imports: [
+        TranslateModule.forRoot(),
         AppComponent
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
   }));
   it('should create the app', () => {
 
