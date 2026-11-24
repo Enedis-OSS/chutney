@@ -7,7 +7,7 @@
 
 import '@angular/localize/init';
 import { enableProdMode, APP_INITIALIZER, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
-import { platformBrowser, BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 
 import { environment } from '@env/environment';
 import { provideTranslateService, provideMissingTranslationHandler } from '@ngx-translate/core';
@@ -27,8 +27,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '@shared/shared.module';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AppComponent } from './app/app.component';
-
-registerLocaleData(localeFr);
 
 if (environment.production) {
   enableProdMode();
