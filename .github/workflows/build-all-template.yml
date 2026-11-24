@@ -83,11 +83,11 @@ jobs:
           skipTestArg=""
           mvnGoals="clean install"
           if ${{ inputs.skipTests }}; then
-            skipTestArg="-DskipTests"
+            skipTestArg="-Dmaven.test.skip=true"
           fi
           if ${{ inputs.release }}; then
             mvnGoals="deploy -P ${{inputs.server-id}}"
-            skipTestArg="-DskipTests"
+            skipTestArg="-Dmaven.test.skip=true"
           fi
           echo "CHUTNEY_GOALS=$mvnGoals $skipTestArg -V -B" >> $GITHUB_OUTPUT
 

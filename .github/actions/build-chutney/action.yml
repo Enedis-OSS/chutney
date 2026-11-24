@@ -26,7 +26,7 @@ runs:
     - uses: actions/checkout@v4
 
     - name: Add the current IP address, long hostname and short hostname record to /etc/hosts file
-      if: ${{ ! contains(inputs.goals, '-DskipTests') }}
+      if: ${{ ! contains(inputs.goals, '-Dmaven.test.skip=true') }}
       shell: bash
       run: |
         echo -e "$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)\t$(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
