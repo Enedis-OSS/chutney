@@ -6,7 +6,7 @@
  */
 
 import { Component, inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal, NgbDatepickerConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -30,7 +30,7 @@ export class TokenCreationComponent implements OnInit {
 
     activeModal = inject(NgbActiveModal);
 
-    tokenForm: UntypedFormGroup;
+    tokenForm: FormGroup;
 
     submitted: boolean;
 
@@ -38,7 +38,7 @@ export class TokenCreationComponent implements OnInit {
 
     constructor(
         private tokenService: TokenService,
-        private formBuilder: UntypedFormBuilder,
+        private formBuilder: FormBuilder,
         private configDate: NgbDatepickerConfig,
     ) {
         const currentDate = new Date();
@@ -51,8 +51,8 @@ export class TokenCreationComponent implements OnInit {
 
     ngOnInit() {
         this.tokenForm = this.formBuilder.group({
-            note: ['', Validators.required],
-            expirationDate: null,
+            note: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            expirationDate: new FormControl<Date | null>(null),
         });
     }
 
