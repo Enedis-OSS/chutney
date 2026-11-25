@@ -7,7 +7,7 @@
 
 import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
@@ -68,7 +68,7 @@ import { ScenarioCampaignSearchPipe, SearchTextPipe, WithoutScenarioPipe } from 
 })
 export class CampaignEditionComponent implements OnInit, OnDestroy {
 
-    campaignForm: UntypedFormGroup;
+    campaignForm: FormGroup;
 
     campaign = new Campaign();
     campaignId: number;
@@ -105,7 +105,7 @@ export class CampaignEditionComponent implements OnInit, OnDestroy {
         private scenarioService: ScenarioService,
         private jiraLinkService: JiraPluginService,
         private jiraPluginConfigurationService: JiraPluginConfigurationService,
-        private formBuilder: UntypedFormBuilder,
+        private formBuilder: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
         private environmentService: EnvironmentService,
