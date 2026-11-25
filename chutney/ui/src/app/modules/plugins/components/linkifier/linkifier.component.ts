@@ -7,7 +7,7 @@
 
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ValidationService } from '@molecules/validation/validation.service';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { LinkifierService } from '@core/services';
 import { delay } from '@shared/tools';
 import { Linkifier } from '@model';
@@ -28,7 +28,7 @@ import { NgClass } from '@angular/common';
 })
 export class LinkifierComponent implements OnInit {
 
-    linkifierForm: UntypedFormGroup;
+    linkifierForm: FormGroup;
 
     message;
     private savedMessage: string;
@@ -39,7 +39,7 @@ export class LinkifierComponent implements OnInit {
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
-    constructor(private fb: UntypedFormBuilder,
+    constructor(private fb: FormBuilder,
                 private translate: TranslateService,
                 private linkifierService: LinkifierService,
                 private validationService: ValidationService) {
@@ -47,8 +47,8 @@ export class LinkifierComponent implements OnInit {
 
     ngOnInit() {
         this.linkifierForm = this.fb.group({
-            pattern: ['', Validators.required],
-            link: ['', Validators.required],
+            pattern: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            link: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
         });
 
         this.loadLinkifiers();
