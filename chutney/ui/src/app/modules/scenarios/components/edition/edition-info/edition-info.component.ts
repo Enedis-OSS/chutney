@@ -12,7 +12,6 @@ import { TestCaseEdition } from '@model';
 import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
-import { ScenariosComponent } from '../../search-list/scenarios.component';
 import { MomentModule } from 'ngx-moment';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -23,7 +22,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [NgClass,
         NgbPopover,
-        ScenariosComponent,
         MomentModule,
         TranslatePipe
     ]

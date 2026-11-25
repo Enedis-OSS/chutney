@@ -13,7 +13,6 @@ import { allMenuItems } from '@shared/components/layout/left-menu/chutney-left-m
 import { FeatureService } from '@core/feature/feature.service';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
-import { AlertComponent } from '../../alert/alert.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -24,7 +23,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [RouterLinkActive,
         RouterLink,
         NgClass,
-        AlertComponent,
         TranslatePipe
     ]
 })

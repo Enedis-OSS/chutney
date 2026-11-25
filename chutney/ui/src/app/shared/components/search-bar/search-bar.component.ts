@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { Location, NgIf, NgFor, NgStyle, AsyncPipe, UpperCasePipe, KeyValuePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AlertComponent } from '../alert/alert.component';
 
 @Component({
     selector: 'chutney-search-bar',
@@ -24,7 +23,6 @@ import { AlertComponent } from '../alert/alert.component';
         FormsModule,
         NgFor,
         NgStyle,
-        AlertComponent,
         AsyncPipe,
         UpperCasePipe,
         KeyValuePipe
