@@ -6,7 +6,7 @@
  */
 
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { JiraPluginConfiguration } from '@core/model/jira-plugin-configuration.model';
 import { JiraPluginConfigurationService } from '@core/services/jira-plugin-configuration.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -30,7 +30,7 @@ import { NgClass } from '@angular/common';
 export class JiraComponent implements OnInit, OnDestroy {
 
     configuration: JiraPluginConfiguration = new JiraPluginConfiguration('', '', '', '', '', '');
-    configurationForm: UntypedFormGroup;
+    configurationForm: FormGroup;
 
     message;
     private savedMessage: string;
@@ -42,17 +42,17 @@ export class JiraComponent implements OnInit, OnDestroy {
     constructor(private configurationService: JiraPluginConfigurationService,
                 private translate: TranslateService,
                 private validationService: ValidationService,
-                private formBuilder: UntypedFormBuilder) {
+                private formBuilder: FormBuilder) {
     }
 
     ngOnInit() {
         this.configurationForm = this.formBuilder.group({
-            url: ['', Validators.required],
-            username: '',
-            password: '',
-            urlProxy: '',
-            userProxy: '',
-            passwordProxy: ''
+            url: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            username: new FormControl<string>('', {nonNullable: true}),
+            password: new FormControl<string>('', {nonNullable: true}),
+            urlProxy: new FormControl<string>('', {nonNullable: true}),
+            userProxy: new FormControl<string>('', {nonNullable: true}),
+            passwordProxy: new FormControl<string>('', {nonNullable: true})
         });
 
         this.loadConfiguration();
