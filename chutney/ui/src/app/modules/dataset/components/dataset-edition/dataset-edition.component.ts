@@ -8,7 +8,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location, NgClass } from '@angular/common';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -43,7 +43,7 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
     dataset: Dataset = new Dataset('', '', [], new Date(), [], []);
 
     activeTab = 'keyValue';
-    datasetForm: UntypedFormGroup;
+    datasetForm: FormGroup;
     private unsubscribeSub$: Subject<void> = new Subject();
     private previousDataSet: Dataset = this.dataset;
     private modificationsSaved = false;
@@ -60,18 +60,18 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
                 private route: ActivatedRoute,
                 private validationService: ValidationService,
                 private translate: TranslateService,
-                private formBuilder: UntypedFormBuilder,
+                private formBuilder: FormBuilder,
                 private location: Location) {
         super();
     }
 
     ngOnInit(): void {
         this.datasetForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            description: '',
+            name: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            description: new FormControl<string>('', {nonNullable: true}),
             tags: [],
-            keyValues: new UntypedFormControl(),
-            multiKeyValues: new UntypedFormControl()
+            keyValues: new FormControl(),
+            multiKeyValues: new FormControl()
         });
 
         this.route.params
@@ -193,10 +193,10 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
         const tags = this.datasetForm.value['tags'] ? this.datasetForm.value['tags'].split(',') : [];
         const date = new Date();
 
-        const kv = this.datasetForm.controls['keyValues'] as UntypedFormArray;
+        const kv = this.datasetForm.controls['keyValues'] as FormArray;
         const keyValues = kv.value ? kv.value.map((p) => new KeyValue(p.key, p.value)) : [];
 
-        const mkv = this.datasetForm.controls['multiKeyValues'] as UntypedFormArray;
+        const mkv = this.datasetForm.controls['multiKeyValues'] as FormArray;
         const multiKeyValues = mkv.value ? mkv.value.map(a => a.map((p) => new KeyValue(p.key, p.value))) : [];
 
         const id = this.dataset.id ? this.dataset.id : null;

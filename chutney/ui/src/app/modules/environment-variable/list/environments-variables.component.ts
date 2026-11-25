@@ -8,7 +8,7 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Authorization, Environment, EnvironmentVariable } from '@model';
 import { distinct, match } from '@shared/tools';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EnvironmentService, LoginService } from '@core/services';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { ValidationService } from '../../../molecules/validation/validation.service';
@@ -51,7 +51,7 @@ export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
 
     selectedEnvironment: Environment;
     keyword = '';
-    variableEditionForm: UntypedFormGroup = null;
+    variableEditionForm: FormGroup = null;
 
     isAuthorizedToWriteVariables: boolean = false;
 
@@ -101,14 +101,14 @@ export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
     }
 
     initVariableEdition(variableKey: string = '') {
-        this.variableEditionForm = new UntypedFormGroup({
-            key: new UntypedFormControl(variableKey, [Validators.required, this.validationService.asValidatorFn(this.validationService.isValidVariableName.bind(this.validationService), 'name')]),
-            oldKey: new UntypedFormControl(variableKey),
-            values: new UntypedFormArray(
+        this.variableEditionForm = new FormGroup({
+            key: new FormControl(variableKey, [Validators.required, this.validationService.asValidatorFn(this.validationService.isValidVariableName.bind(this.validationService), 'name')]),
+            oldKey: new FormControl(variableKey),
+            values: new FormArray(
                 this.environments.map(env => {
-                    return new UntypedFormGroup({
-                        value: new UntypedFormControl(variableKey ? this.findVariable(variableKey, env)?.value : ''),
-                        env: new UntypedFormControl(env.name),
+                    return new FormGroup({
+                        value: new FormControl(variableKey ? this.findVariable(variableKey, env)?.value : ''),
+                        env: new FormControl(env.name),
                     });
                 })
             )
@@ -142,8 +142,8 @@ export class EnvironmentsVariablesComponent implements OnInit, OnDestroy {
             .subscribe();
     }
 
-    valuesArrayForm(): UntypedFormArray {
-        return this.variableEditionForm.controls['values'] as UntypedFormArray;
+    valuesArrayForm(): FormArray {
+        return this.variableEditionForm.controls['values'] as FormArray;
     }
 
     values(): EnvironmentVariable[] {
