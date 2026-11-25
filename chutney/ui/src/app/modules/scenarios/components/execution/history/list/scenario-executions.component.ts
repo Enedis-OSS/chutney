@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleCha
 import { Authorization, Dataset, Execution, GwtTestCase } from '@model';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -45,7 +45,7 @@ import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
 export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     ExecutionStatus = ExecutionStatus;
     filteredExecutions: Execution[] = [];
-    filtersForm: UntypedFormGroup;
+    filtersForm: FormGroup;
 
     status: ListItem[] = [];
     environments: ListItem[] = [];
@@ -80,7 +80,7 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     modalRef: BsModalRef;
 
     constructor(private router: Router,
-                private formBuilder: UntypedFormBuilder,
+                private formBuilder: FormBuilder,
                 private datePipe: DateFormatPipe,
                 private translateService: TranslateService,
                 private modalService: BsModalService,
@@ -292,8 +292,8 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
         }
     }
 
-    getFormControl(name: string): UntypedFormControl {
-        return this.filtersForm.get(name) as UntypedFormControl;
+    getFormControl(name: string): FormControl {
+        return this.filtersForm.get(name) as FormControl;
     }
 
     replay(execution: Execution, event: MouseEvent) {
