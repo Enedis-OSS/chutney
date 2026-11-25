@@ -7,7 +7,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
-import { UntypedFormControl, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({

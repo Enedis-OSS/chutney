@@ -11,7 +11,7 @@ import { DataSetService, EnvironmentService } from '@core/services';
 import { NgbActiveModal, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { catchError, takeUntil } from 'rxjs/operators';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
 import { NgbDropdown as NgbDropdown_1, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownButtonItem, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
@@ -61,7 +61,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     datasetDetails: Dataset = null;
     createDataset: Dataset = null;
 
-    datasetForm: UntypedFormGroup;
+    datasetForm: FormGroup;
     activeTab = 'keyValue';
     editionDataset: boolean = false;
     editionDatasetValues?: Dataset;
@@ -79,7 +79,7 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     constructor(
         private datasetService: DataSetService,
         private environmentService: EnvironmentService,
-        private formBuilder: UntypedFormBuilder,
+        private formBuilder: FormBuilder,
         private translateService: TranslateService,
         private changeDetectorRef: ChangeDetectorRef){
     }
@@ -96,10 +96,10 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
             });
 
         this.datasetForm = this.formBuilder.group({
-            saveDatasetName: new UntypedFormControl({ value: '', disabled: true }),
+            saveDatasetName: new FormControl({ value: '', disabled: true }),
             saveDatasetCheckbox: [false, Validators.required],
-            keyValues: new UntypedFormControl(),
-            multiKeyValues: new UntypedFormControl()
+            keyValues: new FormControl(),
+            multiKeyValues: new FormControl()
         });
 
         this.environmentService.names()
@@ -189,10 +189,10 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     }
 
     buildDataset() {
-        const kv = this.datasetForm.controls['keyValues'] as UntypedFormArray;
+        const kv = this.datasetForm.controls['keyValues'] as FormArray;
         const keyValues = kv.value ? kv.value.map((p) => new KeyValue(p.key, p.value)) : [];
 
-        const mkv = this.datasetForm.controls['multiKeyValues'] as UntypedFormArray;
+        const mkv = this.datasetForm.controls['multiKeyValues'] as FormArray;
         const multiKeyValues = mkv.value ? mkv.value.map(a => a.map((p) => new KeyValue(p.key, p.value))) : [];
 
         if (this.selectedDataset && this.selectedDataset.id
