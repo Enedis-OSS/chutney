@@ -6,7 +6,7 @@
  */
 
 import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService, TranslatePipe } from "@ngx-translate/core";
@@ -35,7 +35,7 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     private unsubscribeSub$: Subject<void> = new Subject();
 
-    importForm: UntypedFormGroup;
+    importForm: FormGroup;
 
     submitted: boolean;
 
@@ -46,12 +46,12 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     constructor(private environmentService: EnvironmentService,
         public validationService: ValidationService,
-        private formBuilder: UntypedFormBuilder,
+        private formBuilder: FormBuilder,
         private translateService: TranslateService) {}
 
     ngOnInit() {
         this.importForm = this.formBuilder.group({
-            name: ['', Validators.required],
+            name: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
         });
     }
 
