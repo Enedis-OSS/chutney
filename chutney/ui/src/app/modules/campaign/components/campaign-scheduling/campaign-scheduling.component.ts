@@ -10,7 +10,7 @@ import { Campaign, Dataset, Environment } from '@core/model';
 import { CampaignService, DataSetService, EnvironmentService } from '@core/services';
 import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campaign/campaign-scheduling.model';
 import { CampaignSchedulingService } from '@core/services/campaign-scheduling.service';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -47,7 +47,7 @@ import { MomentModule } from 'ngx-moment';
 export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
     scheduledCampaigns: Array<CampaignScheduling> = [];
-    form: UntypedFormGroup;
+    form: FormGroup;
     errorMessage: string;
     submitted: boolean;
     frequencies = Object.values(FREQUENCY);
@@ -66,7 +66,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
     constructor(private campaignSchedulingService: CampaignSchedulingService,
                 private campaignService: CampaignService,
                 private environmentService: EnvironmentService,
-                private formBuilder: UntypedFormBuilder,
+                private formBuilder: FormBuilder,
                 private configTime: NgbTimepickerConfig,
                 private configDate: NgbDatepickerConfig,
                 @Inject(DROPDOWN_SETTINGS) public dropdownSettings: IDropdownSettings,
