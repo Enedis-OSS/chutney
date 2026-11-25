@@ -6,7 +6,7 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { Execution } from '@model';
@@ -41,7 +41,7 @@ export class ExecutionSearchListComponent
 {
     ExecutionStatus = ExecutionStatus;
     filteredExecutions: Execution[] = [];
-    filtersForm: UntypedFormGroup;
+    filtersForm: FormGroup;
 
     status: { id: string; text: string }[] = [];
     environments: { id: string; text: string }[] = [];
@@ -81,7 +81,7 @@ export class ExecutionSearchListComponent
 
     constructor(
         private router: Router,
-        private formBuilder: UntypedFormBuilder,
+        private formBuilder: FormBuilder,
         private datePipe: DateFormatPipe,
         private translateService: TranslateService
     ) {}
@@ -107,8 +107,8 @@ export class ExecutionSearchListComponent
     openReport(execution: Execution, focus: boolean = true) {
         this.onExecutionSelect.emit({ execution, focus });
     }
-    getFormControl(name: string): UntypedFormControl {
-        return this.filtersForm.get(name) as UntypedFormControl;
+    getFormControl(name: string): FormControl {
+        return this.filtersForm.get(name) as FormControl;
     }
 
     ngOnDestroy(): void {
