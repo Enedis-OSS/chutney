@@ -7,13 +7,26 @@
 
 import { pairwise } from '@shared/tools';
 
-import en from 'src/assets/i18n/en.json';
-import fr from 'src/assets/i18n/fr.json';
+import en from './en.json';
+import fr from './fr.json';
 
 const TRANSLATIONS = [
     { lang: 'en', obj: en },
     { lang: 'fr', obj: fr }
   ];
+
+export const TRANSLATIONS_EN = {
+    login: {
+        expired: 'Your session has expired',
+        unauthorized: 'Unauthorized'
+    }
+};
+export const TRANSLATIONS_FR = {
+    login: {
+        expired: 'Votre session a expiré',
+        unauthorized: 'Non autorisé'
+    }
+};
 
 describe('i18n', () => {
 

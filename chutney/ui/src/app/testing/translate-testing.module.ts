@@ -7,6 +7,7 @@
 
 import { TranslateLoader, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { DefaultMissingTranslationHandler } from '@core/initializer/app.translate.factory';
 import {
   provideTranslateService,
   provideMissingTranslationHandler
@@ -15,7 +16,7 @@ import {
 import { EventEmitter, Injectable, NgModule, Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import TRANSLATIONS_EN from 'src/assets/i18n/en.json';
+import {TRANSLATIONS_EN} from '../../assets/i18n/i18n.spec';
 
 export class FakeLoader implements TranslateLoader {
     getTranslation(lang: string): Observable<any> {
@@ -69,8 +70,7 @@ function fromKey(key: string): string {
                 }),
     ],
     exports: [
-        TranslatePipeMock,
-        TranslatePipe
+        TranslatePipeMock
     ]
 })
 export class TranslateTestingModule {

@@ -6,7 +6,6 @@
  */
 
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
 import { MoleculesModule } from '../../../../molecules/molecules.module';
@@ -38,7 +37,6 @@ describe('DatasetEditionComponent', () => {
         TestBed.configureTestingModule({
     imports: [
         RouterModule.forRoot([]),
-        TranslateModule.forRoot(),
         MoleculesModule,
         SharedModule,
         MomentModule,

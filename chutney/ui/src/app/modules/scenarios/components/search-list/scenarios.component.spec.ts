@@ -7,7 +7,6 @@
 
 import { TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { ScenariosComponent } from './scenarios.component';
 import { SharedModule } from '@shared/shared.module';
 
@@ -66,7 +65,6 @@ describe('ScenariosComponent', () => {
         TestBed.configureTestingModule({
     schemas: [NO_ERRORS_SCHEMA],
     imports: [RouterModule.forRoot([]),
-        TranslateModule.forRoot(),
         MoleculesModule,
         SharedModule,
         MomentModule,

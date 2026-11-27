@@ -8,6 +8,7 @@
 import { TranslateService } from '@ngx-translate/core';
 
 import { SsoService } from '@core/services/sso.service';
+import { loadTranslations } from '@core/initializer/app.translate.factory';
 
 /**
  * Translations are loaded before any other call to the server so that the services resolving a
@@ -15,6 +16,7 @@ import { SsoService } from '@core/services/sso.service';
  */
 export function authAppInitializerFactory(translateService: TranslateService, ssoService: SsoService): () => Promise<void> {
     return async () => {
+        await loadTranslations(translateService);
         await ssoService.runInitialLoginSequence();
     };
 }
