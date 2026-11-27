@@ -7,18 +7,31 @@
 
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { TranslateModule } from '@ngx-translate/core';
+import {
+    provideTranslateService,
+    provideMissingTranslationHandler,
+    DefaultMissingTranslationHandler
+} from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       declarations: [
         AppComponent
       ],
+      providers: [
+        provideTranslateService({
+            loader: provideTranslateHttpLoader({
+                                    prefix: './i18n/',
+                                    suffix: '.json'
+                                }),
+                                missingTranslationHandler: provideMissingTranslationHandler(
+                                    DefaultMissingTranslationHandler
+                                )
+        })
+    ]
     }).compileComponents();
   }));
   it('should create the app', () => {

@@ -5,26 +5,42 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Authorization, Dataset, Execution, GwtTestCase } from '@model';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { DateFormatPipe } from 'ngx-moment';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
-import { TranslateService } from '@ngx-translate/core';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
+import { DateFormatPipe, MomentModule } from 'ngx-moment';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ListItem } from '@shared/types/list-item';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DatasetUtils } from "@shared/tools/dataset-utils";
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgClass, SlicePipe } from '@angular/common';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
 
 @Component({
     selector: 'chutney-scenario-executions',
     templateUrl: './scenario-executions.component.html',
     styleUrls: ['./scenario-executions.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule,
+        NgbHighlight,
+        NgClass,
+        HasAuthorizationDirective,
+        NgbInputDatepicker,
+        SlicePipe,
+        MomentModule,
+        TranslatePipe
+    ]
 })
 export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
     ExecutionStatus = ExecutionStatus;
@@ -165,13 +181,13 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
             params['keyword'] = filters.keyword;
         }
         if (filters.status && filters.status.length) {
-            params['status'] = filters.status.map((status: ListItem) => status.id).toString();
+            params['status'] = filters.status.map((status:ListItem) => status.id).toString();
         }
         if (filters.date) {
             params['date'] = this.toIsoDate(filters.date);
         }
         if (filters.environments && filters.environments.length) {
-            params['env'] = filters.environments.map((env: ListItem) => env.id).toString();
+            params['env'] = filters.environments.map((env:ListItem) => env.id).toString();
         }
         if (filters.datasets && filters.datasets.length) {
             params['datasets'] = filters.datasets.map((ds:ListItem) => ds.id).toString();
@@ -180,10 +196,10 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
             params['camp'] = filters.campaigns.map((campaign:ListItem) => campaign.id).toString();
         }
         if (filters.executors && filters.executors.length) {
-            params['exec'] = filters.executors.map((executor: ListItem) => executor.id).toString();
+            params['exec'] = filters.executors.map((executor:ListItem) => executor.id).toString();
         }
         if (filters.tags && filters.tags.length) {
-            params['tags'] = filters.tags.map((tag: ListItem) => tag.id).toString();
+            params['tags'] = filters.tags.map((tag:ListItem) => tag.id).toString();
         }
         return params;
     }
@@ -285,7 +301,7 @@ export class ScenarioExecutionsComponent implements OnChanges, OnDestroy {
         this.onReplay.emit(execution.executionId);
     }
 
-    private removeDuplicateListItems(list: ListItem[]) {
+    private removeDuplicateListItems(list:ListItem[]) {
         const seen = new Set<string>();
         return list.filter(elem => {
             if (!elem) return false

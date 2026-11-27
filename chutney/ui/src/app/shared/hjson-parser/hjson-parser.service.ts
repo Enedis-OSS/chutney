@@ -7,7 +7,7 @@
 
 import { Injectable } from '@angular/core';
 
-import * as hjson from 'hjson';
+import * as hjson from 'hjson/bundle/hjson.js';
 
 @Injectable()
 export class HjsonParserService {

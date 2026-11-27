@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventManagerService } from '@shared/event-manager.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
@@ -13,12 +13,27 @@ import { TestCase, Authorization } from '@model';
 import { ScenarioService, LoginService } from '@core/services';
 import { CanDeactivatePage } from '@core/guards';
 import { HjsonParserService } from '@shared/hjson-parser/hjson-parser.service';
+import { FormsModule } from '@angular/forms';
+import { AuthoringInfoComponent } from '../authoring-info/authoring-info.component';
+import { EditionInfoComponent } from '../edition-info/edition-info.component';
+import { DatasetSelectionComponent } from '@shared/components/dataset-selection/dataset-selection.component';
+import { ErrorPanelComponent } from '@molecules/panel/error-panel/error-panel.component';
+import { ChutneyEditorComponent } from '@shared/components/chutney-editor/chutney-editor.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-raw-edition',
     templateUrl: './raw-edition.component.html',
     styleUrls: ['./raw-edition.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        AuthoringInfoComponent,
+        EditionInfoComponent,
+        DatasetSelectionComponent,
+        ErrorPanelComponent,
+        ChutneyEditorComponent,
+        TranslatePipe
+    ]
 })
 export class RawEditionComponent
     extends CanDeactivatePage

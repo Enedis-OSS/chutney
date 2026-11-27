@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccessToken, CreatedAccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
@@ -13,12 +13,15 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject, takeUntil } from "rxjs";
 import { TokenCreationComponent } from "../creation/tokens-creation.component";
 import { TokenDeleteComponent } from "../delete/tokens-delete.component";
+import { DatePipe } from "@angular/common";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: 'chutney-tokens',
     templateUrl: './tokens.component.html',
     styleUrls: ['./tokens.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [DatePipe, TranslatePipe]
 })
 export class TokenListComponent implements OnInit, OnDestroy {
 

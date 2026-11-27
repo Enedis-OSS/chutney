@@ -5,8 +5,8 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { interval, Observable, Subject, Subscription } from 'rxjs';
 import { catchError, mergeMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 
@@ -22,18 +22,33 @@ import { StateService } from '@shared/state/state.service';
 import { JiraPluginConfigurationService, JiraPluginService, ScenarioService, LoginService } from '@core/services';
 import { Authorization, JiraScenarioLinks, ScenarioIndex } from '@model';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
-import { TranslateService } from '@ngx-translate/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
+import { ListItem } from '@shared/types/list-item';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ScenarioJiraLinksModalComponent } from '../scenario-jira-links-modal/scenario-jira-links-modal.component';
+import { ScenarioJiraLinksModalComponent } from '@modules/scenarios/components/scenario-jira-links-modal/scenario-jira-links-modal.component';
+import { SearchFieldComponent } from '@molecules/forms/search-field/search-field.component';
+import { FormsModule } from '@angular/forms';
+import { ExecutionBadgeComponent } from '@shared/components/execution-badge/execution-badge.component';
+import { NgClass, SlicePipe } from '@angular/common';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-scenarios',
     templateUrl: './scenarios.component.html',
     styleUrls: ['./scenarios.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SearchFieldComponent,
+        NgMultiSelectDropDownModule,
+        FormsModule,
+        ExecutionBadgeComponent,
+        RouterLink,
+        NgClass,
+        SlicePipe,
+        MomentModule,
+        TranslatePipe
+    ]
 })
 export class ScenariosComponent implements OnInit, OnDestroy {
 

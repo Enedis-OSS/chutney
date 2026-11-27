@@ -5,15 +5,28 @@
  *
  */
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Execution } from '@model';
 import { ExecutionSearchService } from '@core/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { SearchFieldComponent } from '@molecules/forms/search-field/search-field.component';
+import { ImportButtonComponent } from '@molecules/forms/import-button/import-button.component';
+import { NgIf } from '@angular/common';
+import { ExecutionSearchListComponent } from './resultExecutionSearchList/execution-search-list.component';
+import { ScenarioExecutionComponent } from '@shared/components/scenario-execution/execution.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-database-admin',
     templateUrl: './execution-search.component.html',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SearchFieldComponent,
+        ImportButtonComponent,
+        NgIf,
+        ExecutionSearchListComponent,
+        ScenarioExecutionComponent,
+        TranslatePipe
+    ]
 })
 export class ExecutionSearchComponent implements OnDestroy {
 

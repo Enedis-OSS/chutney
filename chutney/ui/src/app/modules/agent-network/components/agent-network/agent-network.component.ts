@@ -5,16 +5,19 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AgentNetwork, NetworkConfiguration } from '@model';
 import { AgentNetworkService } from '@core/services';
 import { Subscription } from 'rxjs';
+import { AgentNetworkConfigurationComponent } from '../agent-network-configuration/agent-network-configuration.component';
+import { NetworkGraphComponent } from '../network-graph/network-graph.component';
 
 @Component({
     selector: 'chutney-agent-network',
     templateUrl: './agent-network.component.html',
     styleUrls: ['./agent-network.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AgentNetworkConfigurationComponent, NetworkGraphComponent]
 })
 export class AgentNetworkComponent implements OnInit, OnDestroy {
     private agentSubscription: Subscription = null;

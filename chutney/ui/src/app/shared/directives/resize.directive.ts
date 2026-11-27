@@ -8,10 +8,7 @@
 import { Directive, ElementRef, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, fromEvent, Observable, Subscription } from 'rxjs';
 
-@Directive({
-    selector: '[resize]',
-    standalone: false
-})
+@Directive({ selector: '[resize]' })
 export class ResizeDirective implements OnInit, OnDestroy {
 
     @Input('left') left: HTMLElement;

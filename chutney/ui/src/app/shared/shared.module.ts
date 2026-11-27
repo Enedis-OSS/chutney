@@ -10,11 +10,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 import { DatasetSelectionComponent } from '@shared/components/dataset-selection/dataset-selection.component';
 import { ThumbnailPipe } from '@shared/pipes/thumbnail.pipe';
 import { MomentModule } from 'ngx-moment';
-import { AlertService } from './alert.service';
 import { ErrorInterceptor } from './error-interceptor.service';
 import { EnvironmentComboComponent, ExecutionBadgeComponent } from './components';
 import {
@@ -50,10 +48,7 @@ import { ChutneyLeftMenuComponent } from '@shared/components/layout/left-menu/ch
 import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
 import { DistinctPipe } from './pipes/distinct.pipe';
 import { ScenarioExecuteModalComponent } from './components/execute-modal/scenario-execute-modal.component';
-import { SelectModule } from 'primeng/select';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { AlertComponent } from '@shared/components/alert/alert.component';
 import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
 import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -61,7 +56,7 @@ import { SearchBarComponent } from '@shared/components/search-bar/search-bar.com
 import { ScenarioExecutionComponent } from './components/scenario-execution/execution.component';
 import { RxFor } from '@rx-angular/template/for';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { InputTextModule } from 'primeng/inputtext';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
@@ -70,20 +65,15 @@ import { InputTextModule } from 'primeng/inputtext';
         MomentModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
         NgbModule,
         NgbTooltipModule,
         NgbDropdownModule,
-        SelectModule,
-        FloatLabelModule,
-        InputTextModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        TypeaheadModule.forRoot(),
+        TypeaheadModule,
         RxFor,
-        MonacoEditorModule
-    ],
-    declarations: [
+        MonacoEditorModule,
+        TranslatePipe,
+        TranslateDirective,
+        AlertComponent,
         ComponentSearchPipe,
         DataSetSearchPipe,
         DatasetSelectionComponent,
@@ -118,6 +108,7 @@ import { InputTextModule } from 'primeng/inputtext';
         ScenarioExecutionComponent
     ],
     exports: [
+        AlertComponent,
         ComponentSearchPipe,
         DataSetSearchPipe,
         DatasetSelectionComponent,
@@ -146,7 +137,9 @@ import { InputTextModule } from 'primeng/inputtext';
         ScenarioExecuteModalComponent,
         FormsDataGridComponent,
         FormsKeyValueComponent,
-        ScenarioExecutionComponent
+        ScenarioExecutionComponent,
+        TranslatePipe,
+        TranslateDirective
     ],
     providers: [
         {
@@ -154,7 +147,6 @@ import { InputTextModule } from 'primeng/inputtext';
             useClass: ErrorInterceptor,
             multi: true
         },
-        AlertService,
         EventManagerService,
         StateService,
         HjsonParserService

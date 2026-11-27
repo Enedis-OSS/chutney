@@ -5,15 +5,17 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
-import { FormControl } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-import-button',
     templateUrl: './import-button.component.html',
     styleUrls: ['./import-button.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, TranslatePipe]
 })
 export class ImportButtonComponent implements OnInit {
 

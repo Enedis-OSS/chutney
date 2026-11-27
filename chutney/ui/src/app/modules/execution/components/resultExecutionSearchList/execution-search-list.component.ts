@@ -5,23 +5,36 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { Execution } from '@model';
 import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
-import { DateFormatPipe } from 'ngx-moment';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
-import { MultiSelectComponent } from 'ng-multiselect-dropdown';
+import { MultiSelectComponent, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgClass, SlicePipe } from '@angular/common';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
 
 @Component({
     selector: 'execution-search-report-list',
     templateUrl: './execution-search-list.component.html',
     styleUrls: ['./execution-search-list.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule,
+        NgbHighlight,
+        NgClass,
+        NgbInputDatepicker,
+        SlicePipe,
+        MomentModule,
+        TranslatePipe
+    ]
 })
 export class ExecutionSearchListComponent
     implements OnChanges, OnDestroy
@@ -46,16 +59,16 @@ export class ExecutionSearchListComponent
     private filters$: Subscription;
 
     private readonly iso_Date_Delimiter = '-';
-    @ViewChild('statusDropdown', { static: false })
+    @ViewChild('statusDropdown')
     statusDropdown: MultiSelectComponent;
 
-    @ViewChild('envsDropdown', { static: false })
+    @ViewChild('envsDropdown')
     envsDropdown: MultiSelectComponent;
-    @ViewChild('executorsDropdown', { static: false })
+    @ViewChild('executorsDropdown')
     executorsDropdown: MultiSelectComponent;
-    @ViewChild('campsDropdown', { static: false })
+    @ViewChild('campsDropdown')
     campsDropdown: MultiSelectComponent;
-    @ViewChild('tagsDropdown', { static: false })
+    @ViewChild('tagsDropdown')
     tagsDropdown: MultiSelectComponent;
 
     @Input() executions: Execution[] = [];

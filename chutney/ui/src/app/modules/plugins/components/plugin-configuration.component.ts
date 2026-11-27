@@ -5,14 +5,17 @@
  *
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { JiraComponent } from './jira/jira.component';
+import { LinkifierComponent } from './linkifier/linkifier.component';
 
 
 @Component({
     selector: 'chutney-plugin-configuration',
     templateUrl: './plugin-configuration.component.html',
     styleUrls: ['./plugin-configuration.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [JiraComponent, LinkifierComponent]
 })
 export class PluginConfigurationComponent {
 

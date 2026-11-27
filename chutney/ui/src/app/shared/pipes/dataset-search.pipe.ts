@@ -9,10 +9,7 @@ import { Dataset } from '@model';
 import { Pipe, PipeTransform } from '@angular/core';
 import { containsAll } from '@shared/tools/array-utils';
 
-@Pipe({
-    name: 'dataSetSearch',
-    standalone: false
-})
+@Pipe({ name: 'dataSetSearch' })
 export class DataSetSearchPipe implements PipeTransform {
 
     transform(input: any, tags: String[]) {

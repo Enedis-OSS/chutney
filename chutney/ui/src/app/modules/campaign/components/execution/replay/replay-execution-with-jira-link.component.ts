@@ -5,18 +5,24 @@
  *
  */
 
-import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { Dataset } from "@core/model";
 import { CampaignService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable, Subject, switchMap, takeUntil, timer } from "rxjs";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Subject, takeUntil } from "rxjs";
+import { NgIf } from "@angular/common";
 
 @Component({
     selector: 'replay-execution-with-jira-link',
     templateUrl: './replay-execution-with-jira-link.component.html',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        TranslatePipe
+    ]
 })
 export class ReplayExecutionWithJiraLinkComponent implements OnInit, OnDestroy {
 
@@ -36,14 +42,13 @@ export class ReplayExecutionWithJiraLinkComponent implements OnInit, OnDestroy {
     private unsubscribeSub$: Subject<void> = new Subject();
 
     constructor(private campaignService: CampaignService,
-                private formBuilder: FormBuilder,
-                private translateService: TranslateService) {
+                private formBuilder: FormBuilder) {
     }
 
     ngOnInit(): void {
         this.form = this.formBuilder.group({
-            selectedJiraId: [[], Validators.required],
-            newJiraId: ''
+            selectedJiraId: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
+            newJiraId: new FormControl<string | null>('')
         });
     }
 

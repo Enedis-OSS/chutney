@@ -5,13 +5,17 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { MomentModule } from 'ngx-moment';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-authoring-info',
     templateUrl: './authoring-info.component.html',
     styleUrls: ['./authoring-info.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgbPopover, MomentModule, TranslatePipe]
 })
 export class AuthoringInfoComponent {
     @Input() testCase;

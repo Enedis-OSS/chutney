@@ -14,7 +14,7 @@ export interface CampaignExecutionReport {
     executionId?: number,
     scenarioExecutionReports: Array<ScenarioExecutionReportOutline>,
     status?: string,
-    duration?: string,
+    duration?: number,
     startDate?: string,
     campaignName?: string,
     partialExecution?: boolean,

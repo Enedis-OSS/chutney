@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { EMPTY, forkJoin, Observable, of, Subject, Subscription, timer, zip } from 'rxjs';
@@ -16,12 +16,31 @@ import { Campaign, CampaignReport } from '@model';
 import { CampaignService, JiraPluginConfigurationService, JiraPluginService } from '@core/services';
 import { EventManagerService } from '@shared';
 import { ReplayExecutionWithJiraLinkComponent } from '../replay/replay-execution-with-jira-link.component';
+import { CampaignExecutionMenuComponent } from '../sub/right-side-bar/campaign-execution-menu.component';
+import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap/nav';
+import { CampaignExecutionsComponent } from './list/campaign-executions.component';
+import { CampaignExecutionComponent } from '../detail/campaign-execution.component';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-campaign-executions-history',
     templateUrl: './campaign-executions-history.component.html',
     styleUrls: ['./campaign-executions-history.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [CampaignExecutionMenuComponent,
+        NgbNav,
+        NgbNavItem,
+        NgbNavItemRole,
+        NgbNavLink,
+        NgbNavLinkBase,
+        NgbNavContent,
+        CampaignExecutionsComponent,
+        CampaignExecutionComponent,
+        NgbNavOutlet,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class CampaignExecutionsHistoryComponent implements OnInit, OnDestroy {
 

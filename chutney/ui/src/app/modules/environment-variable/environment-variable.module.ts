@@ -12,13 +12,10 @@ import { EnvironmentVariableRoutes } from '@modules/environment-variable/environ
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MoleculesModule } from '../../molecules/molecules.module';
 import { NgbNavModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 
 @NgModule({
-  declarations: [
-    EnvironmentsVariablesComponent
-  ],
     imports: [
         CommonModule,
         EnvironmentVariableRoutes,
@@ -27,8 +24,14 @@ import { TranslateModule } from '@ngx-translate/core';
         NgbNavModule,
         NgbTooltipModule,
         NgbTypeaheadModule,
-        TranslateModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TranslatePipe,
+        TranslateDirective,
+        EnvironmentsVariablesComponent
+    ],
+    exports: [
+        TranslatePipe,
+        TranslateDirective
     ]
 })
 export class EnvironmentVariableModule { }

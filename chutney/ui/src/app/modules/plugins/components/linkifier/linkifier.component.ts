@@ -5,20 +5,26 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ValidationService } from '../../../../molecules/validation/validation.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ValidationService } from '@molecules/validation/validation.service';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { LinkifierService } from '@core/services';
 import { delay } from '@shared/tools';
 import { Linkifier } from '@model';
 import { Subject, takeUntil } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'chutney-config-linkifier',
     templateUrl: './linkifier.component.html',
     styleUrls: ['./linkifier.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass,
+        FormsModule,
+        ReactiveFormsModule,
+        TranslatePipe
+    ]
 })
 export class LinkifierComponent implements OnInit {
 
@@ -41,8 +47,8 @@ export class LinkifierComponent implements OnInit {
 
     ngOnInit() {
         this.linkifierForm = this.fb.group({
-            pattern: ['', Validators.required],
-            link: ['', Validators.required],
+            pattern: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            link: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
         });
 
         this.loadLinkifiers();

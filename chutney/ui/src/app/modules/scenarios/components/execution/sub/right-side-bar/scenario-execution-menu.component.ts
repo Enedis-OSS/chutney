@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { Authorization, ScenarioIndex, TestCase } from '@model';
 import { JiraPluginService, LoginService, ScenarioService } from '@core/services';
@@ -13,18 +13,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { EventManagerService } from '@shared';
 import { MenuItem } from '@shared/components/layout/menuItem';
 import { EnvironmentService } from '@core/services/environment.service';
 import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/scenario-execute-modal.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-scenario-execution-menu',
     templateUrl: './scenario-execution-menu.component.html',
     styleUrls: ['./scenario-execution-menu.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ChutneyRightMenuComponent, TranslatePipe]
 })
 export class ScenarioExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 

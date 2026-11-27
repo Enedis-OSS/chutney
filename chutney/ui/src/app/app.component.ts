@@ -5,22 +5,27 @@
  *
  */
 
-import { Component, } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 import * as moment from 'moment';
+import { AlertComponent } from '@shared/components/alert/alert.component';
+import { RouterOutlet } from '@angular/router';
+import { detectTranslationLang } from '@core/initializer/app.translate.factory';
 
 @Component({
     selector: 'chutney-main',
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AlertComponent, RouterOutlet]
 })
 export class AppComponent {
 
 
-    constructor(private translate: TranslateService) {
-        // the language is already selected and loaded by the app initializer
-        this.updateMomentLocal(this.translate.currentLang || this.translate.getDefaultLang());
+    constructor() {
+        registerLocaleData(localeFr);
+        this.updateMomentLocal(detectTranslationLang());
     }
 
     private updateMomentLocal(lang: string) {

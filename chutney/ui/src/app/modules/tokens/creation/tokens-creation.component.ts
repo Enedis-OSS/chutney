@@ -5,19 +5,26 @@
  *
  */
 
-import { Component, inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Component, inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { AccessToken } from "@core/model/token.model";
 import { TokenService } from "@core/services/token.service";
 import { NgbActiveModal, NgbDatepickerConfig } from "@ng-bootstrap/ng-bootstrap";
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from "rxjs";
+import { NgbInputDatepicker } from "@ng-bootstrap/ng-bootstrap/datepicker";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: 'chutney-tokens-creation',
     templateUrl: './tokens-creation.component.html',
     styleUrls: ['./tokens-creation.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgbInputDatepicker,
+        TranslatePipe
+    ]
 })
 export class TokenCreationComponent implements OnInit {
 
@@ -44,8 +51,8 @@ export class TokenCreationComponent implements OnInit {
 
     ngOnInit() {
         this.tokenForm = this.formBuilder.group({
-            note: ['', Validators.required],
-            expirationDate: null,
+            note: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            expirationDate: new FormControl<Date | null>(null),
         });
     }
 

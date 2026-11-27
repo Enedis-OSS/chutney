@@ -9,10 +9,7 @@ import { ScenarioIndex } from '@model';
 import { Pipe, PipeTransform } from '@angular/core';
 import { intersection } from '@shared/tools/array-utils';
 
-@Pipe({
-    name: 'scenarioSearch',
-    standalone: false
-})
+@Pipe({ name: 'scenarioSearch' })
 export class ScenarioSearchPipe implements PipeTransform {
 
     transform(input: any, tags: String[], noTag: boolean, all: boolean) {

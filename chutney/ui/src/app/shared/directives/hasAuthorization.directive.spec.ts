@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Injectable, ViewChild } from '@angular/core';
+import { Component, Injectable, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Authorization } from '@model';
@@ -30,14 +30,13 @@ describe('hasAuthorization directive...', () => {
     beforeEach(() => {
         TestBed.resetTestingModule();
         TestBed.configureTestingModule({
-            declarations: [
-                HasAuthorizationsHostComponent,
-                HasAuthorizationDirective
-            ], providers: [
-                { provide: LoginService, useValue: loginService },
-                { provide: TestInject, useValue: testInject }
-            ]
-        }).compileComponents();
+    imports: [HasAuthorizationsHostComponent,
+        HasAuthorizationDirective],
+    providers: [
+        { provide: LoginService, useValue: loginService },
+        { provide: TestInject, useValue: testInject }
+    ]
+}).compileComponents();
 
         fixture = TestBed.createComponent(HasAuthorizationsHostComponent);
         testHostComponent = fixture.componentInstance;
@@ -139,10 +138,10 @@ class TestInject {
 
 @Component({
     template: `<span *hasAuthorization="authorizations()" #spanView>wtf</span>`,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 class HasAuthorizationsHostComponent {
-    @ViewChild('spanView', /* TODO: add static flag */ {}) spanView: any;
+    @ViewChild('spanView') spanView: any;
     constructor(private testInject: TestInject) {}
     authorizations() { return this.testInject.authorizations(); }
 }

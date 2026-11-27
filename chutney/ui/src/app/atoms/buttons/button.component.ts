@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'chutney-button',
@@ -18,7 +18,7 @@ import { Component, Input } from '@angular/core';
     </button>
     `,
     styleUrls: ['./button.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ButtonComponent {
 

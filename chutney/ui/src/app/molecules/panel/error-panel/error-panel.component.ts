@@ -5,12 +5,12 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'chutney-error-panel',
     templateUrl: './error-panel.component.html',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ErrorPanelComponent {
 

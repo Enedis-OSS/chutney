@@ -5,13 +5,15 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { InputComponent } from '../../../atoms/forms/input/input.component';
 
 @Component({
     selector: 'chutney-forms-input-line',
     templateUrl: './input-line.component.html',
     styleUrls: ['./input-line.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [InputComponent]
 })
 export class InputLineComponent {
 

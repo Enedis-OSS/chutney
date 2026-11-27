@@ -5,21 +5,27 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { JiraPluginConfiguration } from '@core/model/jira-plugin-configuration.model';
 import { JiraPluginConfigurationService } from '@core/services/jira-plugin-configuration.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { delay } from '@shared/tools';
-import { ValidationService } from '../../../../molecules/validation/validation.service';
+import { ValidationService } from '@molecules/validation/validation.service';
 import { Subject, takeUntil } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 
 @Component({
     selector: 'chutney-config-jira',
     templateUrl: './jira.component.html',
     styleUrls: ['./jira.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        TranslatePipe
+    ]
 })
 export class JiraComponent implements OnInit, OnDestroy {
 
@@ -41,12 +47,12 @@ export class JiraComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.configurationForm = this.formBuilder.group({
-            url: ['', Validators.required],
-            username: '',
-            password: '',
-            urlProxy: '',
-            userProxy: '',
-            passwordProxy: ''
+            url: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            username: new FormControl<string>('', {nonNullable: true}),
+            password: new FormControl<string>('', {nonNullable: true}),
+            urlProxy: new FormControl<string>('', {nonNullable: true}),
+            userProxy: new FormControl<string>('', {nonNullable: true}),
+            passwordProxy: new FormControl<string>('', {nonNullable: true})
         });
 
         this.loadConfiguration();

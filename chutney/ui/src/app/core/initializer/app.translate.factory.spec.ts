@@ -6,12 +6,17 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+    provideTranslateService,
+    provideMissingTranslationHandler,
+    TranslateLoader,
+    TranslateService
+} from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 
 import { DEFAULT_TRANSLATION_LANG, DefaultMissingTranslationHandler, detectTranslationLang, loadTranslations } from './app.translate.factory';
 
-import TRANSLATIONS_EN from 'src/assets/i18n/en.json';
+import {TRANSLATIONS_EN} from '../../../assets/i18n/i18n.spec';
 
 /**
  * Loader letting the test decide when the translations are served.
@@ -27,10 +32,14 @@ class ControllableLoader implements TranslateLoader {
     }
 
     static serve(translations: any) {
-        ControllableLoader.pending.forEach(subject => {
-            subject.next(translations);
-            subject.complete();
-        });
+        const subject = ControllableLoader.pending.shift();
+
+        if (!subject) {
+            throw new Error('No pending translation request');
+        }
+
+        subject.next(translations);
+        subject.complete();
     }
 
     getTranslation(lang: string): Observable<any> {
@@ -47,11 +56,18 @@ describe('loadTranslations', () => {
         ControllableLoader.reset();
         TestBed.resetTestingModule();
         TestBed.configureTestingModule({
-            imports: [TranslateModule.forRoot({
-                loader: {provide: TranslateLoader, useClass: ControllableLoader},
-                missingTranslationHandler: {provide: MissingTranslationHandler, useClass: DefaultMissingTranslationHandler}
-            })]
-        });
+    providers: [
+        provideTranslateService({
+            loader: {
+                provide: TranslateLoader,
+                useClass: ControllableLoader
+            },
+            missingTranslationHandler: provideMissingTranslationHandler(
+                DefaultMissingTranslationHandler
+            )
+        })
+    ]
+});
     });
 
     it('should settle only once the translations are loaded', async () => {
@@ -78,7 +94,21 @@ describe('loadTranslations', () => {
 
         const loadPromise = loadTranslations(translateService);
         await Promise.resolve();
+
+        expect(ControllableLoader.requested).toEqual([DEFAULT_TRANSLATION_LANG]);
         ControllableLoader.serve(TRANSLATIONS_EN);
+
+        await Promise.resolve();
+
+        if (detectTranslationLang() !== DEFAULT_TRANSLATION_LANG) {
+            expect(ControllableLoader.requested).toEqual([
+                DEFAULT_TRANSLATION_LANG,
+                detectTranslationLang()
+            ]);
+
+            ControllableLoader.serve(TRANSLATIONS_EN);
+        }
+
         await loadPromise;
 
         if (detectTranslationLang() === DEFAULT_TRANSLATION_LANG) {

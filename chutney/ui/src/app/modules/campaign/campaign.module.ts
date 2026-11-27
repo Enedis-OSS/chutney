@@ -11,11 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { InputTextModule } from 'primeng/inputtext';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { SharedModule } from '@shared/shared.module';
@@ -48,19 +44,14 @@ const ROUTES = [
         RouterModule.forChild(ROUTES),
         FormsModule,
         ReactiveFormsModule,
-        RadioButtonModule,
-        InputTextModule,
         SharedModule,
         NgbModule,
         MomentModule,
-        TranslateModule,
         NgMultiSelectDropDownModule.forRoot(),
         MoleculesModule,
         CdkDropList,
         CdkDrag,
-        CdkDragPlaceholder
-    ],
-    declarations: [
+        CdkDragPlaceholder,
         CampaignListComponent,
         CampaignEditionComponent,
         CampaignExecutionsComponent,

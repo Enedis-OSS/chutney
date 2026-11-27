@@ -9,10 +9,7 @@ import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { LoginService } from '@core/services';
 
-@Directive({
-    selector: '[hasAuthorization]',
-    standalone: false
-})
+@Directive({ selector: '[hasAuthorization]' })
 export class HasAuthorizationDirective {
 
     private hasApplied = false;

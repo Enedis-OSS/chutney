@@ -5,17 +5,17 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { combineLatest, identity, Observable, of, Subject, timer } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FileSaverService } from 'ngx-filesaver';
 
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 
 import { CampaignService, EnvironmentService, JiraPluginService, LoginService, ScenarioService } from '@core/services';
 import { Authorization, Campaign, Dataset, ScenarioIndex, TestCase } from '@model';
@@ -24,12 +24,15 @@ import { MenuItem } from '@shared/components/layout/menuItem';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ScenarioExecuteModalComponent } from '@shared/components/execute-modal/scenario-execute-modal.component';
+import { ChutneyRightMenuComponent } from '@shared/components/layout/right-menu/chutney-right-menu.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-campaign-execution-menu',
     templateUrl: './campaign-execution-menu.component.html',
     styleUrls: ['./campaign-execution-menu.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ChutneyRightMenuComponent, TranslatePipe]
 })
 export class CampaignExecutionMenuComponent implements OnInit, OnChanges, OnDestroy {
 

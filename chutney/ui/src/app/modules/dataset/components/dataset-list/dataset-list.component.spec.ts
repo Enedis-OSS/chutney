@@ -7,7 +7,6 @@
 
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
 import { MoleculesModule } from '../../../../molecules/molecules.module';
@@ -24,7 +23,7 @@ import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settin
 import { RouterModule } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AlertService } from '@shared';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DatasetListComponent', () => {
 
@@ -38,24 +37,21 @@ describe('DatasetListComponent', () => {
     TestBed.resetTestingModule();
 
     TestBed.configureTestingModule({
-    declarations: [
-        DatasetListComponent
-    ],
     imports: [RouterModule.forRoot([]),
-        TranslateModule.forRoot(),
         MoleculesModule,
         SharedModule,
         MomentModule,
         NgbModule,
         NgMultiSelectDropDownModule.forRoot(),
         FormsModule,
-        ReactiveFormsModule],
+        ReactiveFormsModule,
+        DatasetListComponent],
     providers: [
         { provide: DataSetService, useValue: dataSetService },
         { provide: AlertService, useValue: alertService },
         { provide: OAuthService, useValue: oAuthService },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 }).compileComponents();

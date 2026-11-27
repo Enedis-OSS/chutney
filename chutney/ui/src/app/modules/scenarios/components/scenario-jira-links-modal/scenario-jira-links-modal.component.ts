@@ -5,19 +5,28 @@
  *
  */
 
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Authorization, JiraDatasetLinks, JiraScenarioLinks, ScenarioIndex } from '@core/model';
 import { JiraPluginService } from '@core/services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { SharedModule } from '@shared/shared.module';
 
 
 @Component({
     selector: 'scenarioJiraLinks-modal',
     templateUrl: './scenario-jira-links-modal.component.html',
     styleUrls: ['./scenario-jira-links-modal.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: true,
+    imports: [
+        TranslatePipe,
+        ReactiveFormsModule,
+        SharedModule
+    ]
 })
 export class ScenarioJiraLinksModalComponent implements OnInit, OnDestroy {
 

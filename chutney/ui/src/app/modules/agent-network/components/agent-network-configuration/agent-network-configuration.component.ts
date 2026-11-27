@@ -5,16 +5,19 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AgentInfo, NetworkConfiguration } from '@model';
 import { AgentNetworkService } from '@core/services';
 import { Subscription } from 'rxjs';
+import { AgentComponent } from '../agent/agent.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-agent-network-configuration',
     templateUrl: './agent-network-configuration.component.html',
     styleUrls: ['./agent-network-configuration.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AgentComponent, TranslatePipe]
 })
 export class AgentNetworkConfigurationComponent implements OnDestroy {
     @Input() currentConfiguration: NetworkConfiguration;

@@ -5,18 +5,27 @@
  *
  */
 
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Authorization, User } from '@model';
 import { LoginService } from '@core/services';
 import { ThemeService } from '@core/theme/theme.service';
 import { LayoutOptions } from '@core/layout/layout-options.service';
+import { HasAuthorizationDirective } from '../../../directives/hasAuthorization.directive';
+import { SearchBarComponent } from '../../search-bar/search-bar.component';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-chutney-main-header',
     templateUrl: './chutney-main-header.component.html',
     styleUrls: ['./chutney-main-header.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [HasAuthorizationDirective,
+        SearchBarComponent,
+        AsyncPipe,
+        TranslatePipe
+    ]
 })
 export class ChutneyMainHeaderComponent{
 

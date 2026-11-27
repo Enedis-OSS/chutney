@@ -5,25 +5,38 @@
  *
  */
 
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Location, NgClass } from '@angular/common';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Subject, takeUntil } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 
 import { delay } from '@shared/tools';
 import { CanDeactivatePage } from '@core/guards';
 import { DataSetService } from '@core/services';
 import { ValidationService } from '../../../../molecules/validation/validation.service';
 import { Dataset, KeyValue } from '@model';
+import { ConfirmDialogComponent } from '@molecules/dialog/delete-confirm-dialog/confirm-dialog.component';
+import { FormsKeyValueComponent } from '@shared/components/dataset/forms-key-value/forms-key-value.component';
+import { FormsDataGridComponent } from '@shared/components/dataset/forms-data-grid/forms-data-grid.component';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-dataset-edition',
     templateUrl: './dataset-edition.component.html',
     styleUrls: ['./dataset-edition.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass,
+        FormsModule,
+        ReactiveFormsModule,
+        ConfirmDialogComponent,
+        FormsKeyValueComponent,
+        FormsDataGridComponent,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class DatasetEditionComponent extends CanDeactivatePage implements OnInit, OnDestroy, AfterViewInit {
 
@@ -54,8 +67,8 @@ export class DatasetEditionComponent extends CanDeactivatePage implements OnInit
 
     ngOnInit(): void {
         this.datasetForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            description: '',
+            name: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
+            description: new FormControl<string>('', {nonNullable: true}),
             tags: [],
             keyValues: new FormControl(),
             multiKeyValues: new FormControl()

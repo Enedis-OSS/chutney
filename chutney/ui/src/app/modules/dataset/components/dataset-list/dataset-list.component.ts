@@ -5,8 +5,8 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { newInstance } from '@shared/tools';
 import { distinct, flatMap } from '@shared/tools/array-utils';
@@ -15,13 +15,34 @@ import { Authorization, Dataset } from '@model';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { DROPDOWN_SETTINGS } from '@core/model/dropdown-settings';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { SearchFieldComponent } from '@molecules/forms/search-field/search-field.component';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
+import { FormsModule } from '@angular/forms';
+import { NgClass, SlicePipe } from '@angular/common';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
+import { DataSetSearchPipe, SearchTextPipe } from '@shared/pipes';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-dataset-list',
     templateUrl: './dataset-list.component.html',
     styleUrls: ['./dataset-list.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [SearchFieldComponent,
+        HasAuthorizationDirective,
+        RouterLink,
+        NgMultiSelectDropDownModule,
+        FormsModule,
+        NgClass,
+        NgbTooltip,
+        SlicePipe,
+        DataSetSearchPipe,
+        SearchTextPipe,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class DatasetListComponent implements OnInit, OnDestroy {
 

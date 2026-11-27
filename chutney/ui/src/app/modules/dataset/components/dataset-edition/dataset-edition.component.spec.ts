@@ -6,7 +6,6 @@
  */
 
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
 import { MoleculesModule } from '../../../../molecules/molecules.module';
@@ -36,28 +35,25 @@ describe('DatasetEditionComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.resetTestingModule();
         TestBed.configureTestingModule({
-            imports: [
-                RouterModule.forRoot([]),
-                TranslateModule.forRoot(),
-                MoleculesModule,
-                SharedModule,
-                MomentModule,
-                NgbModule,
-                NgMultiSelectDropDownModule.forRoot(), // todo remove
-                FormsModule,
-                ReactiveFormsModule
-            ],
-            declarations: [
-                DatasetListComponent,
-                DatasetEditionComponent,
-                FormsKeyValueComponent,
-                FormsDataGridComponent
-            ],
-            providers: [
-                {provide: DataSetService, useValue: dataSetService},
-                {provide: FeatureService, useValue: featureService}
-            ]
-        }).compileComponents();
+    imports: [
+        RouterModule.forRoot([]),
+        MoleculesModule,
+        SharedModule,
+        MomentModule,
+        NgbModule,
+        NgMultiSelectDropDownModule.forRoot(), // todo remove
+        FormsModule,
+        ReactiveFormsModule,
+        DatasetListComponent,
+        DatasetEditionComponent,
+        FormsKeyValueComponent,
+        FormsDataGridComponent
+    ],
+    providers: [
+        { provide: DataSetService, useValue: dataSetService },
+        { provide: FeatureService, useValue: featureService }
+    ]
+}).compileComponents();
     }));
 
     it('should create the component DatasetEditionComponent', () => {

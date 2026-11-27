@@ -5,18 +5,29 @@
  *
  */
 
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { EnvironmentService } from "@core/services";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { Subject, takeUntil } from "rxjs";
-import { ValidationService } from "src/app/molecules/validation/validation.service";
+import { ValidationService } from "@molecules/validation/validation.service";
+import { ErrorPanelComponent } from "@molecules/panel/error-panel/error-panel.component";
+import { NgbPopover } from "@ng-bootstrap/ng-bootstrap/popover";
+import { ImportButtonComponent } from "@molecules/forms/import-button/import-button.component";
 
 @Component({
     selector: 'chutney-environment-import',
     templateUrl: './environment-import.component.html',
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        ErrorPanelComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbPopover,
+        ImportButtonComponent,
+        TranslatePipe,
+    ],
 })
 export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
@@ -40,7 +51,7 @@ export class EnvironmentImportComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.importForm = this.formBuilder.group({
-            name: ['', Validators.required],
+            name: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
         });
     }
 

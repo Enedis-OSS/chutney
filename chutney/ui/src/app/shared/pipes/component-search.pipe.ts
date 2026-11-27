@@ -8,10 +8,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { intersection } from '@shared/tools/array-utils';
 
-@Pipe({
-    name: 'componentSearch',
-    standalone: false
-})
+@Pipe({ name: 'componentSearch' })
 export class ComponentSearchPipe implements PipeTransform {
 
     transform(input: any, tags: String[], noTag: boolean, all: boolean) {

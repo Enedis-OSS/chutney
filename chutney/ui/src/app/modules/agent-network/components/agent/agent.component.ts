@@ -5,14 +5,17 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AgentInfo } from '@model';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-agent',
     templateUrl: './agent.component.html',
     styleUrls: ['./agent.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, TranslatePipe]
 })
 export class AgentComponent {
 

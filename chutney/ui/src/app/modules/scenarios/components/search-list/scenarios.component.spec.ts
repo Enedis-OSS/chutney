@@ -5,9 +5,8 @@
  *
  */
 
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { ScenariosComponent } from './scenarios.component';
 import { SharedModule } from '@shared/shared.module';
 
@@ -28,7 +27,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
 import { OAuthService } from "angular-oauth2-oidc";
 import { AlertService } from '@shared';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 function getScenarios(html: HTMLElement) {
     return html.querySelectorAll('.scenario-title');
@@ -64,17 +63,14 @@ describe('ScenariosComponent', () => {
         jiraPluginService.findCampaigns.and.returnValue(EMPTY);
         activatedRouteStub = new ActivatedRouteStub();
         TestBed.configureTestingModule({
-    declarations: [
-        ScenariosComponent
-    ],
     schemas: [NO_ERRORS_SCHEMA],
     imports: [RouterModule.forRoot([]),
-        TranslateModule.forRoot(),
         MoleculesModule,
         SharedModule,
         MomentModule,
         NgbModule,
-        NgMultiSelectDropDownModule.forRoot()],
+        NgMultiSelectDropDownModule.forRoot(),
+        ScenariosComponent],
     providers: [
         NgbPopoverConfig,
         { provide: ScenarioService, useValue: scenarioService },
@@ -84,16 +80,17 @@ describe('ScenariosComponent', () => {
         { provide: JiraPluginConfigurationService, useValue: jiraPluginConfigurationService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: DROPDOWN_SETTINGS, useClass: DropdownSettings },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 }).compileComponents();
     }));
 
-    it('should create the component ScenariosComponent with three scenarios', waitForAsync(() => {
+    it('should create the component ScenariosComponent with three scenarios', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         activatedRouteStub.setParamMap({orderBy: 'id'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const app = fixture.debugElement.componentInstance;
@@ -108,9 +105,10 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should filter the list of scenario', waitForAsync(() => {
+    it('should filter the list of scenario', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             const html: HTMLElement = fixture.nativeElement;
 
@@ -124,11 +122,12 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should open scenario as a routerLink anchor so it supports "open in new tab"', waitForAsync(() => {
+    it('should open scenario as a routerLink anchor so it supports "open in new tab"', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.componentInstance.isAuthorizedToReadExecutions = true;
         activatedRouteStub.setParamMap({orderBy: 'id'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const html: HTMLElement = fixture.nativeElement;
@@ -154,11 +153,12 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should fall back to raw-edition when not authorized to read executions', waitForAsync(() => {
+    it('should fall back to raw-edition when not authorized to read executions', fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         fixture.componentInstance.isAuthorizedToReadExecutions = false;
         activatedRouteStub.setParamMap({orderBy: 'id'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const html: HTMLElement = fixture.nativeElement;
@@ -171,10 +171,11 @@ describe('ScenariosComponent', () => {
         });
     }));
 
-    it('should apply filters from the URL',  waitForAsync(() => {
+    it('should apply filters from the URL',  fakeAsync(() => {
         const fixture = TestBed.createComponent(ScenariosComponent);
         activatedRouteStub.setParamMap({ text: 'title', orderBy: 'title', reverseOrder: 'true'});
         fixture.detectChanges();
+        tick();
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             const app = fixture.debugElement.componentInstance;

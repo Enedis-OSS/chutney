@@ -14,7 +14,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateFormatPipe, MomentModule } from 'ngx-moment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FileSaverModule } from 'ngx-filesaver';
-import { TranslateModule } from '@ngx-translate/core';
 // Internal common
 import { SharedModule } from '@shared/shared.module';
 // Internal
@@ -31,7 +30,7 @@ import {
 } from '@modules/scenarios/components/sub/scenario-campaigns/scenario-campaigns.component';
 import { AuthoringInfoComponent } from './components/edition/authoring-info/authoring-info.component';
 import { EditionInfoComponent } from './components/edition/edition-info/edition-info.component';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services/scenario-execution.service';
 import {
     ScenarioExecutionsComponent
 } from '@modules/scenarios/components/execution/history/list/scenario-executions.component';
@@ -39,7 +38,6 @@ import {
     ScenarioExecutionMenuComponent
 } from '@modules/scenarios/components/execution/sub/right-side-bar/scenario-execution-menu.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { ScenarioJiraLinksModalComponent } from './components/scenario-jira-links-modal/scenario-jira-links-modal.component';
 
 const ROUTES = [
     ...scenarioRoute
@@ -57,13 +55,10 @@ const ROUTES = [
         // External libs
         NgbModule,
         NgMultiSelectDropDownModule.forRoot(),
-        TranslateModule,
         FileSaverModule,
         // Internal common
         SharedModule,
-        MoleculesModule
-    ],
-    declarations: [
+        MoleculesModule,
         ScenariosComponent,
         ScenarioCampaignsComponent,
         ScenarioExecutionsHistoryComponent,
@@ -71,8 +66,7 @@ const ROUTES = [
         ScenarioExecutionMenuComponent,
         AuthoringInfoComponent,
         EditionInfoComponent,
-        ScenarioExecutionsComponent,
-        ScenarioJiraLinksModalComponent,
+        ScenarioExecutionsComponent
     ],
     providers: [
         DateFormatPipe,

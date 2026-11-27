@@ -5,16 +5,19 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { Entry } from '@model';
 import { ValidationService } from '../../validation/validation.service';
+import { InputComponent } from '../../../atoms/forms/input/input.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-property-table-panel',
     templateUrl: './property-table-panel.component.html',
     styleUrls: ['./property-table-panel.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [InputComponent, TranslatePipe]
 })
 export class PropertyTablePanelComponent {
 

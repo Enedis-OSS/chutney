@@ -5,13 +5,15 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'chutney-forms-search-field',
     templateUrl: './search-field.component.html',
     styleUrls: ['./search-field.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule]
 })
 export class SearchFieldComponent implements OnInit {
 

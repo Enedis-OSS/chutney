@@ -5,20 +5,12 @@
  *
  */
 
-import { Component, forwardRef, Input, OnDestroy } from '@angular/core';
-import {
-    AbstractControl,
-    ControlValueAccessor,
-    FormArray,
-    FormBuilder,
-    FormGroup,
-    NG_VALIDATORS,
-    NG_VALUE_ACCESSOR,
-    ValidationErrors
-} from '@angular/forms';
+import { Component, forwardRef, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KeyValue } from '@model';
 import { FileSaverService } from 'ngx-filesaver';
 import { Subject, takeUntil } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-forms-key-value',
@@ -36,11 +28,15 @@ import { Subject, takeUntil } from 'rxjs';
             multi: true
         }
     ],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        ReactiveFormsModule,
+        TranslatePipe
+    ]
 })
 export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
 
-    keyValuesForm: FormArray;
+    keyValuesForm: FormArray<FormGroup>;
     isDisabled: boolean;
     @Input() enableImportExport: boolean = true;
 
@@ -50,7 +46,7 @@ export class FormsKeyValueComponent implements ControlValueAccessor, OnDestroy {
         private fb: FormBuilder,
         private fileSaverService: FileSaverService,
     ) {
-        this.keyValuesForm = this.fb.array([]);
+        this.keyValuesForm = this.fb.array<FormGroup>([]);
     }
 
     ngOnDestroy() {

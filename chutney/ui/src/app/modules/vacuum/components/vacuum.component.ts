@@ -5,15 +5,18 @@
  *
  */
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { VacuumService } from '@core/services';
 import { BehaviorSubject, map, Observable, Subscription, switchMap } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-database-admin',
     templateUrl: './vacuum.component.html',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [AsyncPipe, TranslatePipe]
 })
 export class VacuumComponent implements OnDestroy {
 

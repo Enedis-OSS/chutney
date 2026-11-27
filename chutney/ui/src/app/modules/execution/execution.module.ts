@@ -9,7 +9,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@shared/shared.module';
 
 import { ExecutionSearchRoute } from './execution.routes';
@@ -23,26 +22,22 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { RxFor } from '@rx-angular/template/for';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(ExecutionSearchRoute),
-    FormsModule,
-    TranslateModule,
-    MoleculesModule,
-    MomentModule,
-    NgbModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgMultiSelectDropDownModule.forRoot(),
-    SharedModule,
-    RxFor
-  ],
-  declarations: [
-    ExecutionSearchComponent,
-    ExecutionSearchListComponent,
-
-  ],
-  providers: [DateFormatPipe]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(ExecutionSearchRoute),
+        FormsModule,
+        MoleculesModule,
+        MomentModule,
+        NgbModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgMultiSelectDropDownModule.forRoot(),
+        SharedModule,
+        RxFor,
+        ExecutionSearchComponent,
+        ExecutionSearchListComponent
+    ],
+    providers: [DateFormatPipe]
 })
 export class ExecutionModule {
 }

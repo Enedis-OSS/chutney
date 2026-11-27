@@ -5,21 +5,43 @@
  *
  */
 
-import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Dataset, KeyValue, Authorization } from '@core/model';
 import { DataSetService, EnvironmentService } from '@core/services';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
+import { NgbActiveModal, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { catchError, takeUntil } from 'rxjs/operators';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom, Observable, of, Subject } from 'rxjs';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { NgbDropdown as NgbDropdown_1, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownButtonItem, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap/collapse';
+import { NgClass } from '@angular/common';
+import { FormsKeyValueComponent } from '../dataset/forms-key-value/forms-key-value.component';
+import { FormsDataGridComponent } from '../dataset/forms-data-grid/forms-data-grid.component';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
 
 
 @Component({
     selector: 'scenario-execute-modal',
     templateUrl: './scenario-execute-modal.component.html',
     styleUrls: ['./scenario-execute-modal.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        NgbPopover,
+        NgbDropdown_1,
+        NgbDropdownToggle,
+        NgbDropdownMenu,
+        NgbDropdownButtonItem,
+        NgbDropdownItem,
+        NgbCollapse,
+        ReactiveFormsModule,
+        NgClass,
+        FormsKeyValueComponent,
+        FormsDataGridComponent,
+        HasAuthorizationDirective,
+        TranslatePipe
+    ]
 })
 export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
 
@@ -32,6 +54,8 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
     filteredDatasets: Array<Dataset>;
 
     selectedEnv: string = null;
+
+    filterValue: string = "";
     selectedDataset: Dataset = null;
     selectedJiraId: string = null;
     datasetDetails: Dataset = null;
@@ -103,6 +127,13 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
             this.editionDataset = false;
             this.activeModal.update({ size: 'lg' });
         }
+    }
+
+    selectDataset(dataset: Dataset, dropdown: NgbDropdown) {
+        this.selectedDataset = dataset;
+        this.selectedDatasetChanged();
+        this.getDatasetDetails();
+        dropdown.close();
     }
 
     async executeModal() {
@@ -221,6 +252,12 @@ export class ScenarioExecuteModalComponent implements OnInit, OnDestroy {
         } else {
             this.activeModal.update({ size: 'lg' });
         }
+    }
+
+    clearDataset() {
+        this.selectedDataset = null;
+        this.datasetDetails = null;
+        this.isCollapsed = false;
     }
 
     saveDatasetCheckboxChanged() {

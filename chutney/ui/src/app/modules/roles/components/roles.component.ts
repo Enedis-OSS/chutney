@@ -5,19 +5,22 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 
 import { RolesService } from '@core/services';
 
 import { delay } from '@shared/tools';
 import { Subject, takeUntil } from 'rxjs';
+import { NgClass } from '@angular/common';
+import { ChutneyEditorComponent } from '@shared/components/chutney-editor/chutney-editor.component';
 
 @Component({
     selector: 'chutney-roles',
     templateUrl: './roles.component.html',
     styleUrls: ['./roles.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass, ChutneyEditorComponent, TranslatePipe]
 })
 export class RolesComponent implements OnInit {
 

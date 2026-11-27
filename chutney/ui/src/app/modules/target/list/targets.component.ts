@@ -5,18 +5,39 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Environment, Target, Authorization } from '@model';
 import { EnvironmentService, LoginService } from '@core/services';
 import { distinct, filterOnTextContent, match } from '@shared/tools';
 import { Subscription } from 'rxjs';
+import { ErrorPanelComponent } from '@molecules/panel/error-panel/error-panel.component';
+import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap/typeahead';
+import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap/nav';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-targets',
     templateUrl: './targets.component.html',
     styleUrls: ['./targets.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ErrorPanelComponent,
+        NgClass,
+        RouterLink,
+        FormsModule,
+        NgbHighlight,
+        NgbNav,
+        NgbNavItem,
+        NgbNavItemRole,
+        NgbNavLink,
+        NgbNavLinkBase,
+        NgbNavContent,
+        NgbNavOutlet,
+        TranslatePipe
+    ]
 })
 export class TargetsComponent implements OnInit, OnDestroy {
 

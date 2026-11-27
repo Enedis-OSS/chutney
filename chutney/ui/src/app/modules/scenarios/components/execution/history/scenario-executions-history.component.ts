@@ -5,22 +5,45 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { catchError, delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Dataset, Execution, GwtTestCase } from '@model';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services/scenario-execution.service';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { EMPTY, forkJoin, Observable, of, Subject, Subscription, throwError, zip, repeat, retry } from 'rxjs';
 import { ScenarioService } from '@core/services';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { AlertService, EventManagerService } from '@shared';
+import { ScenarioExecutionMenuComponent } from '../sub/right-side-bar/scenario-execution-menu.component';
+import { ScenarioCampaignsComponent } from '../../sub/scenario-campaigns/scenario-campaigns.component';
+import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap/nav';
+import { ScenarioExecutionsComponent } from './list/scenario-executions.component';
+import { ScenarioExecutionComponent } from '@shared/components/scenario-execution/execution.component';
+import { MomentModule } from 'ngx-moment';
+import { LinkifyPipe } from '@shared/pipes';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-scenario-executions-history',
     templateUrl: './scenario-executions-history.component.html',
     styleUrls: ['./scenario-executions-history.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ScenarioExecutionMenuComponent,
+        ScenarioCampaignsComponent,
+        NgbNav,
+        NgbNavItem,
+        NgbNavItemRole,
+        NgbNavLink,
+        NgbNavLinkBase,
+        NgbNavContent,
+        ScenarioExecutionsComponent,
+        ScenarioExecutionComponent,
+        NgbNavOutlet,
+        MomentModule,
+        LinkifyPipe,
+        TranslatePipe
+    ]
 })
 export class ScenarioExecutionsHistoryComponent implements OnInit, OnDestroy {
 

@@ -5,14 +5,29 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MenuItem } from '@shared/components/layout/menuItem';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
+import { HasAuthorizationDirective } from '../../../directives/hasAuthorization.directive';
+import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-chutney-right-menu',
     templateUrl: './chutney-right-menu.component.html',
     styleUrls: ['./chutney-right-menu.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgTemplateOutlet,
+        NgbDropdown,
+        NgbDropdownToggle,
+        NgClass,
+        NgbDropdownMenu,
+        NgbDropdownItem,
+        RouterLink,
+        TranslatePipe,
+        HasAuthorizationDirective
+    ]
 })
 export class ChutneyRightMenuComponent {
 

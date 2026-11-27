@@ -10,27 +10,30 @@ import { CommonModule } from '@angular/common';
 import { EnvironmentsComponent } from './list/environments.component';
 import { RouterModule } from '@angular/router';
 import { environmentsRoutes } from '@modules/environment/environments.routes';
-import { MoleculesModule } from '../../molecules/molecules.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { MoleculesModule } from '@molecules/molecules.module';
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { EnvironmentImportComponent } from './import/environment-import.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 
 @NgModule({
-    declarations: [
-        EnvironmentsComponent,
-        EnvironmentImportComponent
-    ],
     imports: [
         CommonModule,
         RouterModule.forChild(environmentsRoutes),
         FormsModule,
         ReactiveFormsModule,
         MoleculesModule,
-        TranslateModule,
         NgbModule,
-        NgbTooltipModule
+        NgbTooltipModule,
+        TranslatePipe,
+        TranslateDirective,
+        EnvironmentsComponent,
+        EnvironmentImportComponent
+    ],
+    exports: [
+        TranslatePipe,
+        TranslateDirective
     ]
 })
 export class EnvironmentModule {

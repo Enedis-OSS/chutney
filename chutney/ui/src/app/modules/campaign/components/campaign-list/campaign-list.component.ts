@@ -5,9 +5,9 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { Router, RouterLink } from '@angular/router';
 import { Subject, Subscription, takeUntil, timer } from 'rxjs';
 
 import { Authorization, Campaign, CampaignExecutionReport, CampaignScheduling, SelectableTags } from '@model';
@@ -21,12 +21,28 @@ import {
 import { StateService } from '@shared/state/state.service';
 import { distinct, filterOnTextContent, flatMap, intersection } from '@shared/tools/array-utils';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
+import { FormsModule } from '@angular/forms';
+import { NgClass, NgStyle, SlicePipe } from '@angular/common';
+import { ExecutionBadgeComponent } from '@shared/components/execution-badge/execution-badge.component';
+import { DurationPipe, SearchTextPipe } from '@shared/pipes';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-campaigns',
     templateUrl: './campaign-list.component.html',
     styleUrls: ['./campaign-list.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule,
+        NgClass,
+        RouterLink,
+        NgStyle,
+        ExecutionBadgeComponent,
+        SlicePipe,
+        DurationPipe,
+        SearchTextPipe,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class CampaignListComponent implements OnInit, OnDestroy {
 

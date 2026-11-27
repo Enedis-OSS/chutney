@@ -5,17 +5,24 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { CampaignService } from '@core/services';
 import { Authorization, Campaign } from '@model';
 import { Subscription } from 'rxjs';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-scenario-campaigns',
     templateUrl: './scenario-campaigns.component.html',
     styleUrls: ['./scenario-campaigns.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [HasAuthorizationDirective,
+        RouterLink,
+        TranslatePipe
+    ]
 })
 export class ScenarioCampaignsComponent implements OnChanges, OnDestroy {
 

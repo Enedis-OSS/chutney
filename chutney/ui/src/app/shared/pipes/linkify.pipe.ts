@@ -9,10 +9,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Linkifier } from '@model';
 
-@Pipe({
-    name: 'linkify',
-    standalone: false
-})
+@Pipe({ name: 'linkify' })
 export class LinkifyPipe implements PipeTransform {
 
     constructor(protected sanitizer: DomSanitizer) {}

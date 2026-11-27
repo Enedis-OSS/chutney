@@ -9,7 +9,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { PluginConfigurationRoute } from './plugin-configuration.routes';
 
@@ -27,12 +26,9 @@ import { SharedModule } from '@shared/shared.module';
         ReactiveFormsModule,
         RouterModule.forChild(PluginConfigurationRoute),
         SharedModule,
-        TranslateModule,
-    ],
-    declarations: [
         JiraComponent,
         LinkifierComponent,
-        PluginConfigurationComponent
+        PluginConfigurationComponent,
     ],
 })
 export class PluginConfigurationModule {

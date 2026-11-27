@@ -5,14 +5,14 @@
  *
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     selector: 'chutney-toast-info',
     templateUrl: './toast-info.html',
     styleUrls: ['./toast-info.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ToastInfoComponent {
 

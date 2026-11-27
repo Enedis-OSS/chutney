@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, of, Subject, switchMap, timer } from 'rxjs';
 
 import {
@@ -18,21 +18,40 @@ import {
     XrayStatus
 } from '@core/model';
 import { CampaignService, JiraPluginService } from '@core/services';
-import { Params } from '@angular/router';
+import { Params, RouterLink } from '@angular/router';
 import { ExecutionStatus } from '@core/model/scenario/execution-status';
 import { EventManagerService } from '@shared';
 import { sortByAndOrder } from '@shared/tools';
 import { CampaignReportService } from '@core/services/campaign-report.service';
 import { DatasetUtils } from '@shared/tools/dataset-utils';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { ScenarioExecutionService } from 'src/app/core/services/scenario-execution.service';
+import { ScenarioExecutionService } from '@core/services/scenario-execution.service';
 import { ExecutionDataset } from '@core/model/scenario/execution.dataset';
+import { ExecutionBadgeComponent } from '@shared/components/execution-badge/execution-badge.component';
+import { HasAuthorizationDirective } from '@shared/directives/hasAuthorization.directive';
+import { NgClass, SlicePipe } from '@angular/common';
+import { ConfirmDialogComponent } from '@molecules/dialog/delete-confirm-dialog/confirm-dialog.component';
+import { FormsModule } from '@angular/forms';
+import { DurationPipe } from '@shared/pipes';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-campaign-execution',
     templateUrl: './campaign-execution.component.html',
     styleUrls: ['./campaign-execution.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ExecutionBadgeComponent,
+        HasAuthorizationDirective,
+        NgClass,
+        RouterLink,
+        ConfirmDialogComponent,
+        FormsModule,
+        SlicePipe,
+        DurationPipe,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class CampaignExecutionComponent implements OnInit, OnDestroy, OnChanges {
 

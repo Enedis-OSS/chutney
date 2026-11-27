@@ -5,11 +5,18 @@
  *
  */
 
-import { TranslateLoader, TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { DefaultMissingTranslationHandler } from '@core/initializer/app.translate.factory';
+import {
+  provideTranslateService,
+  provideMissingTranslationHandler
+} from '@ngx-translate/core';
+
 import { EventEmitter, Injectable, NgModule, Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import TRANSLATIONS_EN from 'src/assets/i18n/en.json';
+import {TRANSLATIONS_EN} from '../../assets/i18n/i18n.spec';
 
 export class FakeLoader implements TranslateLoader {
     getTranslation(lang: string): Observable<any> {
@@ -18,6 +25,7 @@ export class FakeLoader implements TranslateLoader {
 }
 
 @Pipe({
+    standalone: false,
     name: 'translate'
 })
 export class TranslatePipeMock implements PipeTransform {
@@ -51,15 +59,18 @@ function fromKey(key: string): string {
     providers: [
         { provide: TranslateService, useClass: TranslateServiceStub },
         { provide: TranslatePipe, useClass: TranslatePipeMock },
-    ],
-    imports: [
-        TranslateModule.forRoot({
-            loader: { provide: TranslateLoader, useClass: FakeLoader },
-        })
+        provideTranslateService({
+                    loader: provideTranslateHttpLoader({
+                        prefix: './i18n/',
+                        suffix: '.json'
+                    }),
+                    missingTranslationHandler: provideMissingTranslationHandler(
+                        DefaultMissingTranslationHandler
+                    )
+                }),
     ],
     exports: [
-        TranslatePipeMock,
-        TranslateModule
+        TranslatePipeMock
     ]
 })
 export class TranslateTestingModule {

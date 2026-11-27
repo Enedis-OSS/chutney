@@ -5,7 +5,7 @@
  *
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
@@ -14,12 +14,16 @@ import { InfoService, LoginService } from '@core/services';
 import { SsoService } from '@core/services/sso.service';
 import { AuthenticationConfigService } from '@core/services/authentification-config.service';
 import { ThemeService } from '@core/theme/theme.service';
+import { NgTemplateOutlet } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'chutney-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgTemplateOutlet, FormsModule, TranslatePipe]
 })
 export class LoginComponent implements OnInit, OnDestroy {
     username = '';

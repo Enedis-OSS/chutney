@@ -7,8 +7,8 @@
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { loadTranslations } from '@core/initializer/app.translate.factory';
 import { SsoService } from '@core/services/sso.service';
+import { loadTranslations } from '@core/initializer/app.translate.factory';
 
 /**
  * Translations are loaded before any other call to the server so that the services resolving a

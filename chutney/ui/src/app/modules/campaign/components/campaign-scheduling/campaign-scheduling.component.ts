@@ -5,27 +5,44 @@
  *
  */
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Campaign, Dataset, Environment } from '@core/model';
 import { CampaignService, DataSetService, EnvironmentService } from '@core/services';
 import { CampaignExecutionRequest, CampaignScheduling } from '@core/model/campaign/campaign-scheduling.model';
 import { CampaignSchedulingService } from '@core/services/campaign-scheduling.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbDatepickerConfig, NgbDateStruct, NgbTimepickerConfig } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
-import { NgbTime } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ListItem } from '@shared/types/list-item';
 import { FREQUENCY } from '@core/model/campaign/FREQUENCY';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DROPDOWN_SETTINGS, DropdownSettings } from '@core/model/dropdown-settings';
-import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { finalize, Subject, takeUntil } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap/datepicker';
+import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap/timepicker';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap/popover';
+import { LowerCasePipe } from '@angular/common';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
     selector: 'chutney-campaign-scheduling',
     templateUrl: './campaign-scheduling.component.html',
     styleUrls: ['./campaign-scheduling.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbInputDatepicker,
+        NgbTimepicker,
+        NgMultiSelectDropDownModule,
+        NgbPopover,
+        LowerCasePipe,
+        TranslatePipe,
+        MomentModule
+     ]
 })
 export class CampaignSchedulingComponent implements OnInit, OnDestroy {
 
@@ -120,7 +137,7 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
         }
 
         const date: NgbDate = formValue['date'];
-        const time: NgbTime = formValue['time'];
+        const time: NgbTimeStruct = formValue['time'];
         const campaignList: Array<Campaign> = this.form.get('selectedCampaigns').value;
         const dateTime = new Date(date.year, date.month - 1, date.day, time.hour, time.minute, 0, 0);
         dateTime.setHours(time.hour - dateTime.getTimezoneOffset() / 60);
@@ -198,12 +215,24 @@ export class CampaignSchedulingComponent implements OnInit, OnDestroy {
             });
     }
 
-    selectCampaign(campaign: Campaign) {
+    selectCampaign(item: ListItem) {
+        const campaign = this.campaigns.find(c => c.id === item.id);
+
+        if (!campaign) {
+            return;
+        }
+
         this.datasetsSelected.push({campaign: campaign, dataset: this.EMPTY_DATASET});
         this.jirasSelected.push({campaign: campaign, jira: ""});
     }
 
-    unselectCampaign(campaign: Campaign) {
+    unselectCampaign(item: ListItem) {
+        const campaign = this.campaigns.find(c => c.id === item.id);
+
+        if (!campaign) {
+            return;
+        }
+
         const selectedCampaigns = this.form.get('selectedCampaigns').value.filter( (c: Campaign) => c.id !== campaign.id);
         this.form.get('selectedCampaigns').setValue([...selectedCampaigns]);
 

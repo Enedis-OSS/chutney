@@ -5,13 +5,16 @@
  *
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { InputFocusDirective } from '@shared/directives/input-focus.directive';
 
 @Component({
     selector: 'chutney-forms-editable-badge',
     templateUrl: './editable-badge.component.html',
     styleUrls: ['./editable-badge.component.scss'],
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, InputFocusDirective]
 })
 export class EditableBadgeComponent {
 

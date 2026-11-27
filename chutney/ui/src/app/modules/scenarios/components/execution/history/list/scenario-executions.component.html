@@ -64,7 +64,7 @@
           <tr class=" small mb-1">
             <th></th>
             <th>
-              @if (filtersForm.controls.date.value) {
+              @if (filtersForm.controls['date'].value) {
                 <div (click)="filtersForm.get('date').reset()"
                   class="chutney-tag chutney-tag-selected">
                   {{ getDateFilterValue() | amDateFormat:'LL'}}
@@ -181,7 +181,7 @@
               </td>
               <td>
                 <a (click)="openCampaignExecution(execution, $event)" class="link">
-                  <ngb-highlight [result]="execution.campaignReport?.campaignName"
+                  <ngb-highlight [result]="$safeNavigationMigration(execution.campaignReport?.campaignName)"
                   [term]="filtersForm.get('keyword').value"></ngb-highlight>
                 </a>
               </td>
